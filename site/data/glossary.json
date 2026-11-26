@@ -1,8 +1,76 @@
 {
  "terms": [
-  {"id": "shapley-value", "term": "Shapley 值", "en": "Shapley value",
-   "def": "合作博弈里分配总收益的方法：把一个参与者加入每一种可能的组合，看总收益多了多少，再对所有加入顺序取平均。各参与者的 Shapley 值加起来正好等于总收益，所以常用来回答“总提升里有多少归功于谁”。代价是要把所有组合都跑一遍，n 个参与者就要 2ⁿ 次评估。"},
-  {"id": "mobius-interaction", "term": "Möbius 交互项", "en": "Möbius interaction (Harsanyi dividend)",
-   "def": "把总收益拆成“每个组合独有的那一份”：单个参与者独自带来的部分，加上两两合作才多出来的部分，再加上三方、四方合作才多出来的部分。某个组合的交互项为正，说明这几个参与者必须一起出现才有用（互补）；为负，说明它们的作用有重叠（替代）。Shapley 值就是把这些交互项平均分给组合里的每个成员。"}
+  {
+   "id": "shapley-value",
+   "term": "Shapley 值",
+   "en": "Shapley value",
+   "def": "合作博弈里分配总收益的方法：把一个参与者加入每一种可能的组合，看总收益多了多少，再对所有加入顺序取平均。各参与者的 Shapley 值加起来正好等于总收益，所以常用来回答“总提升里有多少归功于谁”。代价是要把所有组合都跑一遍，n 个参与者就要 2ⁿ 次评估。"
+  },
+  {
+   "id": "mobius-interaction",
+   "term": "Möbius 交互项",
+   "en": "Möbius interaction (Harsanyi dividend)",
+   "def": "把总收益拆成“每个组合独有的那一份”：单个参与者独自带来的部分，加上两两合作才多出来的部分，再加上三方、四方合作才多出来的部分。某个组合的交互项为正，说明这几个参与者必须一起出现才有用（互补）；为负，说明它们的作用有重叠（替代）。Shapley 值就是把这些交互项平均分给组合里的每个成员。"
+  },
+  {
+   "id": "system-one-model",
+   "term": "System One 模型",
+   "en": "System One model",
+   "def": "借用“快思考”的说法，指不逐字生成推理过程、一次前向就输出结构化判断（例如各档相关度的概率）的模型。它比让 LLM 写理由再打分快一到两个数量级，所以适合在 Agent 每一步都调用。本文用的是 TypeSafe 的 Jev。"
+  },
+  {
+   "id": "preview-behavior-recall",
+   "term": "预览召回 / 行为召回",
+   "en": "previewed recall / behavior recall",
+   "def": "沿着 Agent 的轨迹分层统计答案文档的覆盖率：surfaced recall 看搜索返回过的文档，previewed recall 看 Agent 真正看过摘要片段的文档，behavior recall 看它点开全文或在答案里引用的文档。三者对比能看出问题是“没搜到”还是“搜到了但没看”。"
+  },
+  {
+   "id": "kto",
+   "term": "KTO",
+   "en": "Kahneman–Tversky Optimization",
+   "def": "一种离线偏好优化方法。和 DPO 需要“好/坏”成对样本不同，KTO 只要给每条样本单独打“可取/不可取”的二元标签就能训练，借用了前景理论里人对损失更敏感的思路。在搜索 Agent 里，它可以直接用“答对且有证据支撑/答错或超时”这样的整条轨迹标签。"
+  },
+  {
+   "id": "gspo",
+   "term": "GSPO",
+   "en": "Group Sequence Policy Optimization",
+   "def": "GRPO 的变体：同一个问题采样一组回答，用组内相对得分当优势值；区别是重要性比按整条序列计算（对每个 token 的概率比取几何平均），而不是逐 token 计算，长序列训练更稳定。"
+  },
+  {
+   "id": "context-compaction",
+   "term": "上下文压缩",
+   "en": "context compaction",
+   "def": "Agent 的对话历史快要超出上下文窗口时，把旧内容遮掉或总结成短文本，让搜索能继续下去。代价是之后每一步看到的历史和最初生成时不一样了，训练时如果不区分，梯度就算在了错误的上下文上。"
+  },
+  {
+   "id": "late-interaction",
+   "term": "后期交互（MaxSim）",
+   "en": "late interaction",
+   "def": "query 和文档各自编码成一组 token 向量，打分时每个 query token 去文档里找最相似的那个向量，再把这些最大值加起来（即 MaxSim）。它能让不同 query 词命中文档的不同位置，代价是要存和比对大量向量，ColBERT、ColPali 都属于这一类。"
+  },
+  {
+   "id": "false-negative",
+   "term": "假负例",
+   "en": "false negative",
+   "def": "对比学习里被当成负例、其实能回答 query 的候选。挖难负例时它最容易混进来，训练会把本该相关的文档推远，所以要先用判别模型或人工把它们找出来，升为正例或从损失里去掉。"
+  },
+  {
+   "id": "grpo",
+   "term": "GRPO",
+   "en": "Group Relative Policy Optimization",
+   "def": "一种强化学习算法：对同一个输入采样一组回答，用每个回答的奖励减去组内平均作为优势，不需要单独训练价值模型。DeepSeekMath 提出后常用于训练推理模型。"
+  },
+  {
+   "id": "margin-loss",
+   "term": "margin loss（间隔损失）",
+   "en": "hinge margin loss",
+   "def": "要求正确类别的分数比最强的错误类别至少高出一个间隔 m，达不到就按差距罚，达到了就不再管。本文只把它加在输出相关档位数字（0–5）的那个 token 上，用来拉开相邻档位。"
+  },
+  {
+   "id": "dual-head-distillation",
+   "term": "双头蒸馏",
+   "en": "dual-head distillation",
+   "def": "同一个模型骨干上接两个输出：分类头直接给分，生成头学写推理理由。训练时两者一起学，上线时丢掉生成头，只做一次前向，省掉逐 token 生成的延迟。"
+  }
  ]
 }
