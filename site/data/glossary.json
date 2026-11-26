@@ -71,6 +71,54 @@
    "term": "双头蒸馏",
    "en": "dual-head distillation",
    "def": "同一个模型骨干上接两个输出：分类头直接给分，生成头学写推理理由。训练时两者一起学，上线时丢掉生成头，只做一次前向，省掉逐 token 生成的延迟。"
+  },
+  {
+   "id": "policy-grafting",
+   "term": "策略嫁接",
+   "en": "Policy Grafting",
+   "def": "让两个模型在同一条生成轨迹里接力：每个模型只负责自己被分配的那几类片段，比如一个写推理、另一个写搜索词。比较不同分配下的效果，就能看出某个模型的优势具体来自哪一步。"
+  },
+  {
+   "id": "dhen",
+   "term": "DHEN",
+   "en": "Deep and Hierarchical Ensemble Network",
+   "def": "一种推荐模型里的特征交互模块，每层把注意力、MLP、MaskNet 等几个分支的输出和一条捷径相加，再做 LayerNorm。本文的编辑主要发生在这个模块里。"
+  },
+  {
+   "id": "evolution-strategy",
+   "term": "进化策略",
+   "en": "Evolution Strategy (ES)",
+   "def": "一种不用梯度的优化方法：对参数加一批随机扰动，只跑前向看哪些扰动让指标变好，再朝那个方向更新。好处是可以直接优化 recall 这类不可导的线上指标。"
+  },
+  {
+   "id": "splade",
+   "term": "SPLADE",
+   "en": "Sparse Lexical and Expansion model",
+   "def": "一种学出来的稀疏检索模型：用语言模型的词表预测头给 query 和文档在整个词表上打权重，既给原词定权重，也补上没出现但相关的扩展词。结果仍是“词→权重”的稀疏向量，可以直接放进倒排索引检索。"
+  },
+  {
+   "id": "flops-regularization",
+   "term": "FLOPS 正则",
+   "en": "FLOPS regularization",
+   "def": "SPLADE 用来让向量变稀疏的损失项：对每个词在一批文档里的平均权重求平方再相加。某个词在很多文档里都有权重就会被重罚，这直接对应倒排检索时要比对的计算量。"
+  },
+  {
+   "id": "learned-sparse-retrieval",
+   "term": "学习型稀疏检索",
+   "en": "Learned Sparse Retrieval (LSR)",
+   "def": "用模型（如 SPLADE）把 query 和文档编码成词表维度上的稀疏向量，权重由模型学出，再用倒排索引按内积检索。它保留了倒排索引的基础设施，但 query 往往有几十个非零词，传统检索的加速技巧不一定适用。"
+  },
+  {
+   "id": "term-at-a-time",
+   "term": "逐词评估",
+   "en": "Term-at-a-Time (TAAT)",
+   "def": "一次处理 query 的一个词，把这个词整条倒排链上的得分累加到每个文档的累加器里，所有词处理完再取 top-k。与之相对的是逐文档（DAAT）评估，即所有词的倒排链同步前进，一次算完一个文档。"
+  },
+  {
+   "id": "maxscore",
+   "term": "MaxScore 剪枝",
+   "en": "MaxScore / Block-Max MaxScore",
+   "def": "一种精确的动态剪枝算法：根据每个词的得分上界，把上界之和不足以让文档进入 top-k 的词划为非必读，只为少数候选文档去读它们。Block-Max 版本按文档区间分别存上界，界更紧，能跳过更多工作。"
   }
  ]
 }
