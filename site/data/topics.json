@@ -1,0 +1,50 @@
+{
+ "topics": [
+  {
+   "id": "search-rec",
+   "dates": [
+    "2026-11-24"
+   ],
+   "name": "搜索与推荐",
+   "taxonomy_version": "v1",
+   "directions": [
+    {
+     "code": "A",
+     "name": "搜索 Agent / Deep Research"
+    },
+    {
+     "code": "B",
+     "name": "检索模型（Embedding / 多模态检索）"
+    },
+    {
+     "code": "C",
+     "name": "排序与相关性"
+    },
+    {
+     "code": "D",
+     "name": "Query 理解"
+    },
+    {
+     "code": "E",
+     "name": "RAG / GraphRAG"
+    },
+    {
+     "code": "F",
+     "name": "推荐系统"
+    },
+    {
+     "code": "G",
+     "name": "索引与检索系统（ANN / 量化）"
+    },
+    {
+     "code": "H",
+     "name": "评测 / Benchmark / 生成式引擎"
+    },
+    {
+     "code": "Z",
+     "name": "其他"
+    }
+   ]
+  }
+ ]
+}
