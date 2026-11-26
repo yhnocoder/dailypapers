@@ -15,10 +15,11 @@
 
 ## 提交约定
 
-- 不直接 push 到 `main`。每次改动都新建分支，提 PR，再 merge。
-- 分支命名：日报用 `digest/<topic>-<date>`，改规则或模板用 `chore/…` / `feat/…`。
+- 不直接 push 到 `main`。每次改动都新建分支，提 PR，然后 **squash merge**（`gh api -X PUT repos/yhnocoder/dailypapers/pulls/<n>/merge -f merge_method=squash`）。
+- 分支命名：每日更新用 `daily/search/<YYYY-MM-DD>`（前缀见 `topics/<topic>.json` 的 `branch_prefix`）；改规则或模板用 `chore/…` / `feat/…`，merge 后删除分支。
 - 日报 PR 描述里写：漏斗数字、⭐ 论文和入选理由、新增的术语。
 - merge 后由 `.github/workflows/pages.yml` 自动部署。
+- 每次定时任务结束前执行 `bash pipeline/prune_branches.sh 7`，删除 7 天前的 `daily/*` 分支，避免分支越积越多。
 
 ## 规则
 
