@@ -93,18 +93,30 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .rail button.on b{font-weight:800}
 .rail button.on::before{width:7px;height:7px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%)}
 .rail button.on small{color:var(--accent)}
-.c-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(44vw,74vh,620px)) auto;grid-template-areas:"title disc date" "info disc date";grid-template-rows:auto 1fr;
-  gap:0 clamp(20px,3.4vw,56px);align-items:start;align-content:center;padding:clamp(20px,4vh,44px) 0 clamp(28px,5vh,56px)}
-.c-title{grid-area:title}
-.c-title h1{font:900 clamp(92px,min(14.6vw,25vh),224px)/1.06 var(--song);color:var(--ink);letter-spacing:.02em;margin-left:-.045em;white-space:nowrap}
-.c-title h1 .m{display:inline-block;overflow:hidden;vertical-align:top;padding:.02em 0 .05em}
-.c-title h1 .m>i{display:inline-block;font-style:normal;transform:translateY(108%);transition:transform 1.15s var(--ease)}
-.ready .c-title h1 .m>i{transform:none}
-.c-title h1 .m:nth-child(2)>i{transition-delay:.07s}.c-title h1 .m:nth-child(4)>i{transition-delay:.16s}.c-title h1 .m:nth-child(5)>i{transition-delay:.23s}
-.c-info{grid-area:info;padding-top:clamp(14px,2.6vh,30px);max-width:36em}
+.np{font:900 17px/1 var(--song);color:var(--ink);letter-spacing:.2em;margin-right:14px;white-space:nowrap}
+.c-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(46vw,76vh,640px));grid-template-areas:"day disc" "info disc";grid-template-rows:auto 1fr;
+  gap:0 clamp(28px,4.6vw,76px);align-items:start;align-content:center;padding:clamp(20px,4vh,44px) 0 clamp(28px,5vh,56px)}
+.c-day{grid-area:day}
+.lock{display:flex;align-items:flex-start;gap:clamp(10px,1.2vw,18px)}
+.num{font:500 clamp(112px,min(13.5vw,25vh),208px)/.84 var(--serif);color:var(--ink);letter-spacing:-.045em;font-variant-numeric:lining-nums;margin:0 .04em 0 -.04em}
+.num .m{display:inline-block;overflow:hidden;vertical-align:top;padding:.03em .05em .09em 0}
+.num .m>i{display:inline-block;font-style:normal;transform:translateY(112%);transition:transform 1.15s var(--ease)}
+.num .m:nth-child(2)>i{transition-delay:.09s}
+.ready .num .m>i{transform:none}
+.lock .v{writing-mode:vertical-rl;text-orientation:upright;font:700 clamp(16px,1.5vw,21px)/1 var(--song);color:var(--ink);letter-spacing:.34em;white-space:nowrap;padding-top:.5em}
+.lock .v.w{font-weight:400;color:var(--mute)}
+.lock .seal{align-self:flex-end;margin:0 0 .9em 6px}
+.c-day .tally{margin-top:clamp(8px,1.6vh,18px)}
+.c-info{grid-area:info;padding-top:clamp(16px,3vh,34px);max-width:35em}
+.c-info .kick{margin-bottom:12px}
+.c-info .g{font-size:clamp(17px,1.42vw,20px);line-height:2;color:var(--body);text-wrap:pretty}
+#lead{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:3}
+#lead path{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-dasharray:1;stroke-dashoffset:1;animation:draw .5s var(--ease) forwards}
+#lead circle{fill:var(--ink)}
+@keyframes draw{to{stroke-dashoffset:0}}
 .tally{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .4em;font:400 14px/1.5 var(--sans);color:var(--mute);letter-spacing:.04em}
 .tally span{white-space:nowrap}
-.tally b{font:500 clamp(30px,3vw,42px)/1.15 var(--serif);color:var(--ink);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em;margin-right:.08em}
+.tally b{font:500 clamp(28px,2.6vw,38px)/1.15 var(--serif);color:var(--ink);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em;margin-right:.08em}
 .tally b.st{color:var(--accent)}
 .tally i{font-style:normal;color:var(--faint);margin:0 .35em}
 .c-stars{list-style:none;padding:0;margin-top:clamp(12px,2.2vh,24px);border-top:1px solid var(--ink)}
@@ -130,11 +142,6 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 #dtip small{display:block;font:400 11.5px/1.5 var(--sans);letter-spacing:.06em;opacity:.72;margin-bottom:2px}
 #dtip small i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
 
-.c-date{grid-area:date;align-self:stretch;display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:.5em}
-.c-date .v{writing-mode:vertical-rl;text-orientation:upright;font:600 clamp(15px,1.3vw,19px)/1 var(--song);color:var(--ink);letter-spacing:.42em;white-space:nowrap}
-.c-date .v small{font:400 .82em var(--song);color:var(--mute);margin-top:1.2em}
-.c-date::before{content:"";width:1px;flex:0 0 clamp(20px,6vh,64px);background:var(--ink);transform:scaleY(0);transform-origin:50% 0;transition:transform 1s .3s var(--ease)}
-.ready .c-date::before{transform:none}
 .seal{display:block;writing-mode:vertical-rl;text-orientation:upright;background:var(--seal);color:var(--sealink);font:900 clamp(15px,1.25vw,18px)/1 var(--song);letter-spacing:.2em;
   padding:.62em .46em .44em;border-radius:3px;filter:url(#rough);transform:rotate(-2.5deg) scale(1.5);opacity:0}
 .ready .seal{animation:stamp .5s 1.15s cubic-bezier(.3,1.5,.5,1) both}
@@ -200,11 +207,26 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .kick::after{content:"";flex:1;height:1px;background:var(--hair)}
 .guide .cols{columns:2 300px;column-gap:clamp(28px,3vw,48px)}
 .guide p{font-size:clamp(16px,1.25vw,17.5px);line-height:1.95;break-inside:avoid;text-wrap:pretty;margin-bottom:1em}
-.guide p .gl{display:block;font:500 12px/1 var(--sans);letter-spacing:.2em;color:var(--mute);margin-bottom:.9em}
-a.pref{color:var(--accent);font-weight:700;margin:0 .16em;background:linear-gradient(currentColor,currentColor) no-repeat 0 100%/0 1px;transition:background-size .4s var(--ease)}
-a.pref:hover,a.pref:focus-visible{background-size:100% 1px}
+.guide .cols.one p{break-inside:auto}
+/* 导读里的论文名：前面一粒和葵花盘里同色的珠子，底下一道同色的线；
+   指上去整块填满，封面上还会牵一根线到盘里对应的那一粒。 */
+a.pref{--c:var(--accent);font-weight:700;color:var(--ink);margin:0 .12em;padding:.06em .22em .04em .16em;-webkit-box-decoration-break:clone;box-decoration-break:clone;
+  background:linear-gradient(var(--c),var(--c)) no-repeat 0 100%/100% 1.5px;transition:background-size .42s var(--ease),color .25s}
+a.pref::before{content:"";display:inline-block;width:.46em;height:.46em;border-radius:50%;background:var(--c);margin-right:.34em;vertical-align:.1em;transition:background .25s,box-shadow .25s,transform .5s var(--ease)}
+a.pref.s::before{margin:0 .46em 0 .1em;box-shadow:0 0 0 1.5px var(--paper),0 0 0 2.6px var(--c)}
+a.pref:hover,a.pref:focus-visible,a.pref.hot{background-size:100% 100%;color:var(--paper)}
+a.pref:hover::before,a.pref:focus-visible::before,a.pref.hot::before{background:var(--paper);transform:scale(1.25)}
+a.pref.s:hover::before,a.pref.s:focus-visible::before,a.pref.s.hot::before{box-shadow:0 0 0 1.5px var(--c),0 0 0 2.6px var(--paper)}
+.ready .c-info a.pref{animation:uline .8s calc(.9s + var(--i,0)*.16s) var(--ease) backwards}
+.ready .c-info a.pref::before{animation:bead .6s calc(.8s + var(--i,0)*.16s) cubic-bezier(.3,1.6,.5,1) backwards}
+@keyframes uline{from{background-size:0 1.5px}}
+@keyframes bead{from{transform:scale(0)}}
+#pcard{position:absolute;z-index:44;width:max-content;max-width:min(320px,calc(100vw - 32px));background:var(--ink);color:var(--paper);padding:8px 12px 9px;font:600 14px/1.5 var(--song);pointer-events:none;box-shadow:0 14px 30px -14px rgba(0,0,0,.5);animation:pop .22s var(--ease)}
+#pcard small{display:block;font:400 11.5px/1.5 var(--sans);letter-spacing:.06em;opacity:.72;margin-bottom:2px}
+#pcard small i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
 .guide strong,.s-body strong,.s-abs strong,.x strong{font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:.32em}
 .idx{align-self:start}
+.lede.solo{grid-template-columns:minmax(0,1fr)}.lede.solo .guide{display:none}.lede.solo .idx{columns:2 320px;column-gap:clamp(32px,4.4vw,72px)}.lede.solo .idx .kick{column-span:all}.lede.solo .idx .row{break-inside:avoid}
 .idx .row{display:grid;grid-template-columns:22px minmax(0,auto) minmax(0,1fr) auto;align-items:center;gap:0 10px;padding:7px 0;border-bottom:1px solid var(--hair)}
 .idx .row .em{font-size:22px}.idx .row .em *{stroke-width:2.1}
 .idx .row>button{font:400 14.5px/1.45 var(--serif);color:var(--ink);text-align:left;transition:color .2s}
@@ -397,9 +419,10 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 @media(max-width:900px){
   .cover{min-height:0}
   .c-top{flex-wrap:wrap;row-gap:10px}.rail{order:5;flex:1 0 100%;margin:0 -10px}
-  .c-grid{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"title date" "disc disc" "info info";padding-top:22px;gap:0 16px}
-  .c-title h1{font-size:clamp(84px,27vw,190px)}
-  .c-disc{margin:10px auto 0;width:min(100%,520px)}
+  .c-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"day" "disc" "info";padding-top:22px}
+  .num{font-size:clamp(104px,30vw,180px)}
+  .c-disc{margin:14px auto 0;width:min(100%,520px)}
+  #lead{display:none}
   .c-info{max-width:none}
   .c-hint{display:none}
   .bar{flex-wrap:wrap}
@@ -411,7 +434,6 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 }
 @media(max-width:620px){
   .guide .cols{columns:1}
-  .c-disc{margin-top:-104px}
   .sec-l{columns:1}
   .fig.side{float:none;width:100%;margin:1.2em 0 1.3em}
   .lk{margin-left:0}
@@ -434,15 +456,15 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 
 <div class="page">
   <header class="cover" id="cover">
-    <div class="c-top c-fade"><span id="issue"></span><nav class="rail" id="rail" aria-label="各期"></nav><select id="topic" aria-label="主题"></select></div>
-    <div class="c-grid">
-      <div class="c-title"><h1 aria-label="论文日报"><span class="m"><i>论</i></span><span class="m"><i>文</i></span><br><span class="m"><i>日</i></span><span class="m"><i>报</i></span></h1></div>
-      <div class="c-date" id="cdate"></div>
+    <div class="c-top c-fade"><h1 class="np">论文日报</h1><span id="issue"></span><nav class="rail" id="rail" aria-label="各期"></nav><select id="topic" aria-label="主题"></select></div>
+    <div class="c-grid" id="cgrid">
+      <div class="c-day" id="cday"></div>
       <figure class="c-disc c-fade">
         <div class="sq"><canvas id="disc" role="img" aria-label="今日论文一览：每一粒是一篇当天公布的论文"></canvas><div id="dtip" aria-hidden="true"></div></div>
         <figcaption><span class="k0"><i></i>每一粒是今天公布的一篇论文</span><span class="k1"><i></i>入选，按方向着色</span><span class="k2"><i></i>精读</span></figcaption>
       </figure>
       <div class="c-info c-fade" id="cinfo"></div>
+      <svg id="lead" aria-hidden="true"></svg>
     </div>
     <span class="c-hint" aria-hidden="true"></span>
   </header>
@@ -616,8 +638,8 @@ const disc=(()=>{
     x.globalAlpha=1;if(live)raf=requestAnimationFrame(frame)
   }
   function pick(){let best=null,bd=1e9;const lx=(mx-W/2)/sc,ly=(my-W/2)/sc;for(const n of N){if(n.s<.5)continue;const dd=Math.hypot(n.ux-lx,n.uy-ly)-n.r;if(dd<bd){bd=dd;best=n}}return bd*sc<(best&&best.k?5:7)?best:null}
-  function show(n){
-    hov=n;c.style.cursor=n?'pointer':'default';if(!n){tip.classList.remove('on');return}
+  function show(n,quiet){
+    hov=n;c.style.cursor=n?'pointer':'default';if(!quiet)fromDisc(n&&n.k?n:null,n&&pt(n));if(!n){tip.classList.remove('on');return}
     tip.textContent='';const sm=document.createElement('small');
     if(n.k){const i=document.createElement('i');i.style.background=n.k===2?col.accent:col[dc(n.p.direction)];sm.append(i,(n.k===2?'★ 精读 · ':'')+short(dir(n.p.direction).name))}
     else sm.append('未收录'+(n.p.reason?' · '+n.p.reason:'')+' ↗');
@@ -625,6 +647,10 @@ const disc=(()=>{
     const tw=tip.offsetWidth,th=tip.offsetHeight,px=W/2+n.ux*sc,py=W/2+n.uy*sc,r=n.r*sc+10;
     tip.style.left=Math.max(-8,Math.min(px-tw/2,W-tw+8))+'px';tip.style.top=(py-r-th<-40?py+r:py-r-th)+'px';tip.classList.add('on')
   }
+  const pt=n=>{const b=c.getBoundingClientRect();return {x:b.left+W/2+n.ux*sc,y:b.top+W/2+n.uy*sc,r:n.r*sc}};
+  /* 从导读里指过来：点亮对应的那一粒，返回它在页面上的位置 */
+  function focus(id){const n=N.find(v=>v.k&&v.p.id===id);if(!n||!W)return null;show(n,true);kick(600);return pt(n)}
+  const blur=()=>{if(hov){show(null,true);kick(400)}};
   const hide=()=>{armed=null;if(hov){show(null)}};
   const act=n=>{if(n.k)jump(n.p.id);else window.open('https://arxiv.org/abs/'+encodeURIComponent(n.p.id),'_blank','noopener')};
   const at=e=>{const b=c.getBoundingClientRect();mx=e.clientX-b.left;my=e.clientY-b.top};
@@ -635,8 +661,33 @@ const disc=(()=>{
     if(touch&&armed!==n){armed=n;show(n);kick(500);return}
     act(n)});
   if('ResizeObserver' in window)new ResizeObserver(size).observe(c);else addEventListener('resize',size);
-  return {set,colors:()=>{colors();kick(100)},dim:()=>kick(900),hide};
+  return {set,colors:()=>{colors();kick(100)},dim:()=>kick(900),hide,focus,blur};
 })();
+
+/* ── 导读 ↔ 葵花盘：指着论文名，牵一根线到盘里那一粒；指着那一粒，文中的名字亮起来 ── */
+function drawLead(a,p){
+  const L=$('lead');if(!a||!p||innerWidth<=900){L.innerHTML='';return}
+  const g=$('cgrid').getBoundingClientRect(),info=$('cinfo').getBoundingClientRect(),rs=a.getClientRects(),r=rs[rs.length-1];
+  const x0=info.right-g.left+10,y0=r.top+r.height/2-g.top,x1=p.x-g.left-p.r-7,y1=p.y-g.top,dx=Math.max(30,(x1-x0)*.5);
+  L.innerHTML=`<circle cx="${x0}" cy="${y0}" r="2.4"/><path pathLength="1" d="M${x0} ${y0}C${x0+dx} ${y0} ${x1-dx} ${y1} ${x1} ${y1}"/>`;
+}
+const coverRefs=id=>[...$('cinfo').querySelectorAll('a.pref')].filter(a=>a.dataset.ref===id);
+function fromDisc(n,p){document.querySelectorAll('a.pref.hot').forEach(a=>a.classList.remove('hot'));const as=n?coverRefs(n.p.id):[];as.forEach(a=>a.classList.add('hot'));drawLead(as[0],p)}
+const pc=document.createElement('div');pc.id='pcard';pc.hidden=true;document.body.append(pc);
+function refOn(a){
+  if(a.closest('#cinfo')){drawLead(a,disc.focus(a.dataset.ref));return}
+  const p=(S.day?.papers||[]).find(v=>v.id===a.dataset.ref);if(!p)return;
+  pc.textContent='';const sm=document.createElement('small'),i=document.createElement('i');i.style.background=p.star?'var(--accent)':`var(--d${dc(p.direction)})`;
+  sm.append(i,(p.star?'★ 精读 · ':'')+short(dir(p.direction).name)+(p.affiliation?' · '+p.affiliation:''));pc.append(sm,p.title_zh||p.title);
+  pc.hidden=true;pc.hidden=false;const r=a.getClientRects()[0],w=pc.offsetWidth,h=pc.offsetHeight,vw=root.clientWidth;
+  pc.style.left=Math.max(16,Math.min(r.left,vw-16-w))+scrollX+'px';pc.style.top=(r.top-8-h>0?r.top-8-h:r.bottom+8)+scrollY+'px';
+}
+function refOff(){pc.hidden=true;$('lead').innerHTML='';disc.blur()}
+const prefOf=e=>e.target.closest?.('a.pref');
+document.addEventListener('mouseover',e=>{const a=prefOf(e);if(a&&!a.contains(e.relatedTarget))refOn(a)});
+document.addEventListener('mouseout',e=>{const a=prefOf(e);if(a&&!a.contains(e.relatedTarget))refOff()});
+document.addEventListener('focusin',e=>{const a=prefOf(e);if(a)refOn(a)});
+document.addEventListener('focusout',e=>{if(prefOf(e))refOff()});
 
 /* ── 渲染 ─────────────────────────────────────────────── */
 let sTok=0;
@@ -672,10 +723,14 @@ function render(fresh){
 
   /* 封面 */
   $('issue').textContent=`第 ${issueNo()} 期 · arXiv 每日`;
-  $('cdate').innerHTML=`<span class="v">${cnY(t.y)}年${cnN(t.m)}月${cnN(t.d)}日<small>星期${WK[t.w]}</small></span><span class="seal" aria-hidden="true">第${cnN(issueNo())}期</span>`;
+  const gd=d.overview?.guide||[];
   const tally=`<p class="tally">${tot!=null?`<span><b data-n="${+tot||0}">${esc(tot)}</b>篇新论文</span><span><i>→</i>`:'<span>'}<b data-n="${ps.length}">${ps.length}</b>篇入选</span>${nStar?`<span><i>→</i><b class="st" data-n="${nStar}">${nStar}</b>篇精读</span>`:''}</p>`;
-  $('cinfo').innerHTML=tally+`<ol class="c-stars">${allStars.map((p,i)=>`<li><a href="#p-${esc(p.id)}" data-ref="${esc(p.id)}"><b>${ORD[i]||i+1}</b><span>${esc(p.title_zh)}</span><u>→</u></a></li>`).join('')||'<li class="no">今天没有精读</li>'}</ol>`;
-  if(fresh)countUp($('cinfo'));
+  $('cday').innerHTML=`<div class="lock" aria-label="${esc(cn(S.date))}"><span class="num" aria-hidden="true">${[...String(t.d)].map(c=>`<span class="m"><i>${c}</i></span>`).join('')}</span><span class="v" aria-hidden="true">${cnN(t.m)}月</span><span class="v w" aria-hidden="true">星期${WK[t.w]}</span><span class="seal" aria-hidden="true">第${cnN(issueNo())}期</span></div>`+tally;
+  /* 封面的正文是导读第一段；没有导读的日子退回精读标题列表 */
+  $('cinfo').innerHTML=gd.length?`<h2 class="kick">今日导读</h2><p class="g">${rich(gd[0])}</p>`
+    :`<ol class="c-stars">${allStars.map((p,i)=>`<li><a href="#p-${esc(p.id)}" data-ref="${esc(p.id)}"><b>${ORD[i]||i+1}</b><span>${esc(p.title_zh)}</span><u>→</u></a></li>`).join('')||'<li class="no">今天没有精读</li>'}</ol>`;
+  $('lead').innerHTML='';
+  if(fresh)countUp($('cday'));
   disc.set(d,fresh);
 
   $('date').innerHTML=`${t.y}年${t.m}月${t.d}日<small>星期${WK[t.w]}</small>`;
@@ -683,10 +738,14 @@ function render(fresh){
   {const nv=$('nav'),on=nv.querySelector('.on');if(on)nv.scrollLeft=Math.max(0,on.offsetLeft-nv.clientWidth/2+on.offsetWidth/2)}
 
   /* 导读 + 算珠索引 */
-  const gd=d.overview?.guide||[],GL=['★ 精读','其余值得看'];
-  $('lede').innerHTML=`<section class="guide">${gd.length?`<h2 class="kick rv">今日导读</h2><div class="cols">${gd.map((v,i)=>`<p class="rv">${gd.length===2?`<span class="gl">${GL[i]}</span>`:''}${rich(v)}</p>`).join('')}</div>`:''}</section>
+  const more=gd.slice(1);$('lede').classList.toggle('solo',!more.length);
+  $('lede').innerHTML=`<section class="guide">${more.length?`<h2 class="kick rv">其余值得看</h2><div class="cols${more.length===1?' one':''}">${more.map(v=>`<p class="rv">${rich(v)}</p>`).join('')}</div>`:''}</section>
     <nav class="idx" aria-label="各版索引"><h2 class="kick rv">各版</h2>${dirs.map(v=>{const g=by(v.code);
       return `<div class="row rv${S.dir===v.code?' on':''}${g.length?'':' off'}" ${cv(v.code)}>${emblem(v.code)}<button data-k="d" data-d="${esc(v.code)}" ${g.length?'':'disabled'}>${esc(short(v.name))}</button><span class="beads">${g.map(p=>`<a class="${p.star?'s':''}" href="#p-${esc(p.id)}" data-ref="${esc(p.id)}" title="${esc(p.title_zh)}" aria-label="${esc(p.title_zh)}"></a>`).join('')}</span><span class="n">${g.length||''}</span></div>`}).join('')}</nav>`;
+
+  /* 导读里的论文名染上它在葵花盘里的颜色 */
+  {const byId=new Map(ps.map(p=>[p.id,p]));for(const box of [$('cinfo'),$('lede')])box.querySelectorAll('a.pref').forEach((a,i)=>{const p=byId.get(a.dataset.ref);if(!p)return;
+    a.style.setProperty('--c',p.star?'var(--accent)':`var(--d${dc(p.direction)})`);a.style.setProperty('--i',i);if(p.star)a.classList.add('s');if(a.textContent.length<=14)a.style.whiteSpace='nowrap'})}
 
   /* 精读 */
   const f=ps.filter(match).sort((a,b)=>(b.star-a.star)||(b.score-a.score));
@@ -713,6 +772,7 @@ function render(fresh){
 /* 换版面：有 View Transitions 就淡入淡出 */
 function rerender(){if(document.startViewTransition&&!RM.matches)document.startViewTransition(()=>render());else render();disc.dim()}
 function jump(id){
+  refOff();
   let el=$('p-'+id);
   if(!el){S.dir=null;S.star=false;S.q='';$('q').value='';render();el=$('p-'+id)}
   if(el){el.scrollIntoView({behavior:RM.matches?'auto':'smooth',block:'start'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}
@@ -803,7 +863,7 @@ async function loadDay(){
     h+=`<button data-cal="${esc(v)}" class="${v===S.date?'on':''}" aria-label="${esc(cn(v))}"${v===S.date?' aria-current="date"':''}><b>${t.d}</b><small>周${WK[t.w]}</small></button>`}
    const rl=$('rail');rl.innerHTML=h;const on=rl.querySelector('.on');if(on)rl.scrollLeft=on.offsetLeft-rl.clientWidth/2+on.offsetWidth/2}
   try{S.day=await getDay(S.topic.id,S.date);render(true)}
-  catch(e){S.day=null;$('cinfo').innerHTML='<p class="none">本期数据缺失</p>';['lede','stars','inside','foot','nav'].forEach(k=>$(k).innerHTML='');root.classList.add('ready')}
+  catch(e){S.day=null;$('cday').innerHTML='';$('cinfo').innerHTML='<p class="none">本期数据缺失</p>';['lede','stars','inside','foot','nav'].forEach(k=>$(k).innerHTML='');root.classList.add('ready')}
   try{history.replaceState(null,'',`#${S.topic.id}-${S.date}`)}catch(e){}
 }
 const step=d=>{const ds=S.topic.dates,v=ds[ds.indexOf(S.date)+d];if(v)go(v)};
