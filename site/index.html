@@ -181,18 +181,20 @@ a.pref:hover,a.pref:focus-visible,a.pref.hot{background-size:100% 100%;color:var
 #pcard small{display:block;font:400 11.5px/1.5 var(--sans);letter-spacing:.06em;opacity:.72;margin-bottom:2px}
 #pcard small i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
 .guide strong,.s-body strong,.s-abs strong,.x strong{font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:.32em}
-.idx{align-self:start}
-.idx .row{display:grid;grid-template-columns:22px minmax(0,auto) minmax(0,1fr) auto;align-items:center;gap:0 10px;padding:7px 0;border-bottom:1px solid var(--hair)}
-.idx .row .em{font-size:22px}.idx .row .em *{stroke-width:2.1}
-.idx .row>.nm{font:400 14.5px/1.45 var(--serif);color:var(--ink);transition:color .2s}
-.idx .row>a.nm:hover{color:var(--c)}
-.idx .beads{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:3px;position:relative}
-.idx .beads::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px solid var(--hair)}
-.idx .beads a{position:relative;width:9px;height:9px;border-radius:50%;background:var(--c);transition:transform .3s var(--ease)}
-.idx .beads a.s{background:var(--accent);box-shadow:0 0 0 1.5px var(--paper),0 0 0 2.5px var(--accent);margin:0 2px}
-.idx .beads a:hover,.idx .beads a:focus-visible{transform:scale(1.7)}
-.idx .row .n{font:500 15px/1 var(--serif);font-variant-numeric:tabular-nums lining-nums;color:var(--ink);min-width:1.4em;text-align:right}
-.idx .row.off{opacity:.42}
+.heat{align-self:start}
+.heat h3{display:flex;justify-content:space-between;align-items:baseline;font:500 12px/1 var(--sans);letter-spacing:.14em;color:var(--mute);padding:0 0 8px;border-bottom:1px solid var(--ink)}
+.heat h3 a{color:inherit;transition:color .2s}.heat h3 a:hover{color:var(--accent)}
+.heat ol{list-style:none;margin:0 0 22px;padding:0;counter-reset:h}
+.heat li{display:grid;grid-template-columns:1.5em minmax(0,1fr) auto;align-items:baseline;gap:0 8px;padding:8px 0;border-bottom:1px solid var(--hair);counter-increment:h}
+.heat li::before{content:counter(h);font:500 13px/1.5 var(--serif);font-variant-numeric:tabular-nums lining-nums;color:var(--mute)}
+.heat li.rn::before{content:"●";color:var(--accent);font-size:9px}
+.heat .t{font:400 14.5px/1.5 var(--serif);color:var(--ink);transition:color .2s;text-wrap:pretty}
+.heat .t:hover,.heat .t:focus-visible{color:var(--accent)}
+.heat .t .st{color:var(--accent);font-size:.82em;margin-right:.25em}
+.heat .t small{display:block;font:400 11.5px/1.5 var(--sans);letter-spacing:.04em;color:var(--mute)}
+.heat .g{font:500 12.5px/1.5 var(--sans);font-variant-numeric:tabular-nums;color:var(--mute);white-space:nowrap;transition:color .2s}
+.heat .g:hover,.heat .g:focus-visible,.heat li.rn .g{color:var(--accent)}
+.lede.solo{grid-template-columns:minmax(0,1fr)}
 
 /* ── 精读 ─────────────────────────────────────────────── */
 .stars{margin-top:clamp(40px,6vw,84px)}
@@ -388,7 +390,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 .lede{display:block;padding-top:clamp(22px,3vw,36px)}
 .lede .guide .cols{columns:1}
 .lede .guide p{font-size:15.5px;line-height:1.85}
-.lede .idx{margin-top:18px}
+.lede .heat{margin-top:18px}
 #lead:empty{display:none}
 @media(min-width:901px){
   main{display:grid;grid-template-columns:minmax(0,1fr) clamp(270px,25vw,340px);gap:0 clamp(30px,3.4vw,49px);align-items:start}
@@ -398,7 +400,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   /* 没有头条的日子（没有精读，或筛选后没有）：导读和索引横着排满 */
   main.nolead #lede{grid-column:1/-1;border-left:0;padding-left:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(270px,25vw,340px);gap:0 clamp(30px,3.4vw,49px)}
   main.nolead #lede .guide .cols{columns:2 300px;column-gap:clamp(28px,3vw,48px)}
-  main.nolead #lede .idx{margin-top:0}
+  main.nolead #lede .heat{margin-top:0}
 }
 .rv{transform:translateY(8px);transition-duration:.3s}
 .rv.in mark{transition:background-size .4s .1s var(--ease)}
@@ -463,7 +465,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   .s-rail .ord{font-size:60px}.s-rail .em{font-size:40px}
   .s-abs{border-left:0;padding-left:0;margin-top:26px;padding-top:16px;border-top:1px solid var(--hair);font-size:14px}
   .why{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 24px}
-  .lede{grid-template-columns:minmax(0,1fr)}.idx{margin-top:26px}
+  .lede{grid-template-columns:minmax(0,1fr)}.heat{margin-top:26px}
 }
 @media(max-width:900px){
   
@@ -526,6 +528,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
         <h2>设置</h2>
         <div class="srow"><span>纸色</span><p><button data-paper="y"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="x"><i style="background:#faf9f5"></i>宣白</button><button data-paper="w"><i style="background:#fff"></i>纯白</button></p><small>只在日间生效</small></div>
         <div class="srow"><span>明暗</span><p><button data-mode="auto">跟随系统</button><button data-mode="light">日间</button><button data-mode="dark">夜间</button></p></div>
+        <div class="srow"><span>热点</span><p><button data-hot="all">全站</button><button data-hot="topic">本主题</button></p></div>
         <div class="srow"><span>Boost</span><p><input id="ghtok" type="password" autocomplete="off" spellcheck="false" placeholder="GitHub token" aria-label="GitHub token"></p><small id="ghmsg"></small></div>
       </div>
     </div>
@@ -557,12 +560,15 @@ const RM=matchMedia('(prefers-reduced-motion:reduce)');
 const WK='日一二三四五六',CD='〇一二三四五六七八九',ORD='壹贰叁肆伍陆柒捌玖拾';
 const S={topics:[],topic:null,date:null,day:null,q:''};
 /* 设置：纸色（y 暖黄 / x 宣白 / w 纯白）和明暗（auto / light / dark），都记在 localStorage */
+/* 今日热点的范围：all 全站 / topic 只看当前主题 */
+let HOT='all';try{if(localStorage.getItem('hot')==='topic')HOT='topic'}catch(e){}
 let PAPER='y';try{const v=localStorage.getItem('paper');if(v==='w'||v==='x')PAPER=v}catch(e){}
 function syncSet(){
   if(PAPER==='y')delete root.dataset.paper;else root.dataset.paper=PAPER;
   const mode=root.dataset.theme||'auto';
   document.querySelectorAll('#set [data-paper]').forEach(b=>b.classList.toggle('on',b.dataset.paper===PAPER));
   document.querySelectorAll('#set [data-mode]').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+  document.querySelectorAll('#set [data-hot]').forEach(b=>b.classList.toggle('on',b.dataset.hot===HOT));
 }
 function closeSet(){$('set').hidden=true;$('gear').setAttribute('aria-expanded','false')}
 const dir=c=>S.topic.directions.find(d=>d.code===c)||{code:c,name:c};
@@ -646,6 +652,13 @@ const art=p=>`<article class="art rv" id="p-${esc(p.id)}"><h3>${esc(p.title_zh)}
   <p class="x">${rich(p.abstract_zh)}</p>${en(p)}</article>`;
 
 const DAYS=new Map();
+/* 今日热点（pipeline/hot.py）：每次热度快照一份，取这一期当天或之后最近的那份 */
+let HOTIDX=null;const HOTS=new Map();
+const getHot=async key=>{
+  HOTIDX=HOTIDX||fetch('data/hot/index.json').then(r=>r.ok?r.json():{dates:[]}).catch(()=>({dates:[]}));
+  const ds=(await HOTIDX).dates||[],dt=[...ds].reverse().find(v=>v>=key)||ds[0];if(!dt)return null;
+  if(!HOTS.has(dt))HOTS.set(dt,fetch(`data/hot/${encodeURIComponent(dt)}.json`).then(r=>r.ok?r.json():null).catch(()=>null));
+  return HOTS.get(dt)};
 const getDay=async(t,dt)=>{const k=t+'/'+dt;if(!DAYS.has(k)){const r=await fetch(`data/${encodeURIComponent(t)}/${encodeURIComponent(dt)}.json`);if(!r.ok)throw 0;DAYS.set(k,await r.json())}return DAYS.get(k)};
 const one=p=>p.summary_zh||(p.abstract_zh||'').split(/(?<=。)/)[0];
 const hitArt=(p,dt,out)=>`<article class="art hit rv${out?' out':''}"><h3>${p.star?'<span class="st">★</span> ':''}${out?esc(p.title_zh||p.title):`<a href="#p-${esc(p.id)}" data-go="${esc(dt)}" data-p="${esc(p.id)}">${esc(p.title_zh||p.title)}</a>`}</h3><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(p.id)}" target="_blank" rel="noopener" lang="en">${esc(p.title)}</a></p><p class="x">${out?`<span class="tag">${out===true?'未收录':esc(out)}</span>`:''}${rich(one(p))}</p></article>`;
@@ -717,13 +730,23 @@ function render(fresh){
   if(fresh)countUp($('cday'));
 
   $('date').innerHTML=`<span class="yr">${t.y}年</span>${t.m}月`;
-  /* 导读 + 算珠索引 */
+  /* 导读 + 今日热点：HF 和 HN 各一榜，按上一次快照以来新增的热度排；站内有的论文点了去它那一期 */
   const more=gd;
+  const hrow=(r,src)=>{const hm=r.home,tn=HOT==='all'&&S.topics.find(t=>t.id===(hm?.topic||r.topics?.[0]))?.name,
+      tx=`${r.star?'<span class="st">★</span>':''}${esc(r.title_zh||r.title)}${tn?`<small>${esc(tn)}</small>`:''}`,
+      a=!hm?`<a class="t" href="https://arxiv.org/abs/${encodeURIComponent(r.id)}" target="_blank" rel="noopener">${tx}</a>`
+        :hm.topic===S.topic.id?`<a class="t" href="#p-${esc(r.id)}" data-go="${esc(hm.key)}" data-p="${esc(r.id)}">${tx}</a>`
+        :`<a class="t" href="#${esc(hm.topic)}-${esc(hm.key)}" data-ht="${esc(hm.topic)}" data-hk="${esc(hm.key)}" data-p="${esc(r.id)}">${tx}</a>`;
+    return `<li class="rv${r.reign?' rn':''}">${a}<a class="g" href="${url(r.url)}" target="_blank" rel="noopener" aria-label="${src} 讨论页">${r.reign?`连续 ${+r.days||+r.streak} 天`:'+'+(+r.gain)}</a></li>`};
+  const hlist=(src,name,href)=>{const rs=(S.hot?.[src]||[]).filter(r=>HOT==='all'||(r.topics||[]).includes(S.topic.id)).slice(0,10);
+    return rs.length?`<h3 class="rv"><span>${name}</span><a href="${href}" target="_blank" rel="noopener">${src.toUpperCase()}</a></h3><ol>${rs.map(r=>hrow(r,name)).join('')}</ol>`:''};
+  const hl=hlist('hf','Hugging Face','https://huggingface.co/papers')+hlist('hn','Hacker News','https://hn.algolia.com/?query=arxiv.org&type=story&sort=byDate'),
+    heat=hl?`<aside class="heat" aria-label="今日热点"><h2 class="kick rv">今日热点</h2>${hl}</aside>`:'';
   $('lede').innerHTML=`<section class="guide">${more.length?`<h2 class="kick rv">今日导读</h2><div class="cols${more.length===1?' one':''}">${more.map(v=>`<p class="rv">${rich(v)}</p>`).join('')}</div>`:''}</section>
-    <nav class="idx" aria-label="各版索引"><h2 class="kick rv">各版</h2>${dirs.map(v=>{const g=by(v.code);
-      return `<div class="row rv${g.length?'':' off'}" ${cv(v.code)}>${emblem(v.code)}${g.length?`<a class="nm" href="#sec-${dc(v.code)}" data-sec="${dc(v.code)}" data-first="${esc(g[0].id)}">${esc(short(v.name))}</a>`:`<span class="nm">${esc(short(v.name))}</span>`}<span class="beads">${g.map(p=>`<a class="${p.star?'s':''}" href="#p-${esc(p.id)}" data-ref="${esc(p.id)}" title="${esc(p.title_zh)}" aria-label="${esc(p.title_zh)}"></a>`).join('')}</span><span class="n">${g.length||''}</span></div>`}).join('')}</nav>`;
+    ${heat}`;
+  $('lede').classList.toggle('solo',!heat);
 
-  /* 导读里的论文名染上它在各版索引里的颜色 */
+  /* 导读里的论文名染上它所在版面的颜色 */
   {const byId=new Map(ps.map(p=>[p.id,p]));for(const box of [$('lede')])box.querySelectorAll('a.pref').forEach((a,i)=>{const p=byId.get(a.dataset.ref);if(!p)return;
     a.style.setProperty('--c',p.star?'var(--accent)':`var(--d${dc(p.direction)})`);a.style.setProperty('--i',i);if(p.star)a.classList.add('s');if(a.textContent.length<=14)a.style.whiteSpace='nowrap'})}
 
@@ -835,7 +858,7 @@ async function loadDay(){
   {let h='',pm='';for(const v of [...ds].reverse()){const t=ymd(v),k=t.y+'-'+t.m;if(k!==pm){if(pm)h+=`<span class="mo">${t.m}月</span>`;pm=k}
     h+=`<button data-cal="${esc(v)}" class="${v===S.date?'on':''}" aria-label="${esc(cn(v))}"${v===S.date?' aria-current="date"':''}><b>${t.d}</b><small>${issueOf(S.topic,v).length>1?issueOf(S.topic,v).length+' 批':'周'+WK[t.w]}</small></button>`}
    const rl=$('rail');rl.innerHTML=h;const on=rl.querySelector('.on');if(on)rl.scrollLeft=on.offsetLeft-rl.clientWidth/2+on.offsetWidth/2}
-  try{S.day=await getDay(S.topic.id,S.date);render(true)}
+  try{const hot=getHot(S.date);S.day=await getDay(S.topic.id,S.date);S.hot=await hot;render(true)}
   catch(e){S.day=null;$('cday').innerHTML='<p class="none">本期数据缺失</p>';['lede','lead','stars','inside','foot'].forEach(k=>$(k).innerHTML='');root.classList.add('ready')}
   try{history.replaceState(null,'',`#${S.topic.id}-${S.date}`)}catch(e){}
 }
@@ -904,7 +927,8 @@ document.addEventListener('click',e=>{
   if(sb){
     if(sb.classList.contains('on'))return;
     bloom(sb,()=>{
-      if(sb.dataset.paper){PAPER=sb.dataset.paper;try{localStorage.setItem('paper',PAPER)}catch(_){}}
+      if(sb.dataset.hot){HOT=sb.dataset.hot;try{localStorage.setItem('hot',HOT)}catch(_){}if(S.day)render()}
+      else if(sb.dataset.paper){PAPER=sb.dataset.paper;try{localStorage.setItem('paper',PAPER)}catch(_){}}
       else if(sb.dataset.mode==='auto'){delete root.dataset.theme;try{localStorage.removeItem('theme')}catch(_){}}
       else{root.dataset.theme=sb.dataset.mode;try{localStorage.setItem('theme',sb.dataset.mode)}catch(_){}}
       syncSet()});
@@ -924,6 +948,9 @@ document.addEventListener('click',e=>{
     return}
   const ga=e.target.closest('a[data-ref]');if(ga){e.preventDefault();jump(ga.dataset.ref);return}
   /* 各版索引：点方向名滚到那一版；那一版只有精读时滚到它的第一篇 */
+  const ht=e.target.closest('a[data-ht]');
+  if(ht){e.preventDefault();const t=S.topics.find(v=>v.id===ht.dataset.ht);if(!t||!t.dates.includes(ht.dataset.hk)){location.href='https://arxiv.org/abs/'+ht.dataset.p;return}
+    S.q='';$('q').value='';S.topic=t;$('topic').value=t.id;S.date=ht.dataset.hk;const pid=ht.dataset.p;loadDay().then(()=>{scrollTo(0,0);jump(pid)});return}
   const sc=e.target.closest('a[data-sec]');
   if(sc){e.preventDefault();const el=$('sec-'+sc.dataset.sec);if(el)el.scrollIntoView({behavior:RM.matches?'auto':'smooth',block:'start'});else jump(sc.dataset.first)}
 });

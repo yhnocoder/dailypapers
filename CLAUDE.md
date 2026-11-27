@@ -6,9 +6,10 @@
 
 三类运行，各自是一个定时任务、一个独立会话，一次只做一件事：
 
-- **入库**（每天一次）：抓取当天 arXiv 批次（所有主题分类的并集）和 HF / HN 的热门论文，Sonnet 每篇读一次，打上所有主题的标签，存成论文池 `data/papers/<batch>.json`；同时存一份热度快照 `data/heat/<date>.json`（只存数据，页面暂不展示）。
+- **入库**（每天一次）：抓取当天 arXiv 批次（所有主题分类的并集）和 HF / HN 的热门论文，Sonnet 每篇读一次，打上所有主题的标签，存成论文池 `data/papers/<batch>.json`；同时存一份热度快照 `data/heat/<date>.json`，并据此生成当天的热点榜 `site/data/hot/<date>.json`。
 - **出刊**（每个主题按自己的频率）：从论文池取本主题的论文，选出前 N 篇、⭐ 精读、配图、tongtu 全文翻译、导读，产出 `site/data/<topic>/<key>.json`。
 
+- **热点**（每天一次，在当天各主题出刊之后）：把热点榜上还没入选的论文保送进它所属的那一期，榜首补 ⭐ 精读。
 - **Boost**（每天一次）：读者在页面上把已发布的某篇论文提到「入选」或 ⭐，请求写在 GitHub issue 的评论里；这个任务处理这些请求，原地修改已发布的那一期。
 
 论文池和热度快照放在仓库根目录的 `data/`，不部署到 Pages（每天约 2 MB，Pages 站点上限 1 GB）；页面只读 `site/data/` 里每期的数据，那里已经带上了要显示的全部内容。
@@ -24,6 +25,7 @@
 | VLM | `vlm` | 周三、周日 | 23:17 | 20 | 3–5 | `daily/vlm` |
 | Diffusion | `diffusion` | 周三、周日 | 23:47 | 20 | 3–5 | `daily/diffusion` |
 | Embodied AI | `embodied` | 周日 | 22:32 | 20 | 3–5 | `daily/embodied` |
+| —（热点） | — | 每天 | 周一–周五 01:07 | — | — | `daily/hot` |
 | —（Boost） | — | 每天 | 18:23 | — | — | `daily/boost` |
 
 配置：`topics/_ingest.json`（入库）、`topics/<topic>.json`（分类、方向、频率 `cadence.run_days`、上限 `issue_cap`、相关的最低分 `min_score`（默认 0.45，低于它的算「未收录」）、⭐ 数量 `stars`、`start_date`、分支前缀）。范围说明：`prompts/scope/<topic>.md`。
@@ -39,7 +41,7 @@ arXiv 不公布的日子（感恩节等）列在 `topics/_ingest.json` 的 `no_a
 3. **分批**：`python3 pipeline/ingest.py split WORK` → `WORK/batches/b<i>.json`（每批 64 篇）。
 4. **打标签**：用 Workflow 并行跑 Sonnet subagent（每批一个，`model: 'sonnet'`）。每个 agent 读 `prompts/classify.md` 和 `prompts/scope/` 下所有范围说明，把每篇的 `{id, title_zh, summary_zh, affiliation, tags}` 组成一个 **JSON 数组**写到 `WORK/out/b<i>.json`（`tags` 是以主题 id 为键的对象），并用 python 校验 JSON。
 5. **合成论文池**：`python3 pipeline/ingest.py build <batch> WORK`。缺结果会直接报错，按提示补跑对应的批次；有 WARNING 时检查一下。
-6. **热度快照**（每次运行做一次，不管处理了几个批次）：`python3 pipeline/heat.py`，和最后一个批次放在同一个 PR 里；没有批次时单独提一个 `daily/ingest/heat-<date>` 的 PR。
+6. **热度快照和热点榜**（每次运行做一次，不管处理了几个批次）：先 `python3 pipeline/heat.py`，再 `python3 pipeline/hot.py`（它打印的保送计划这里不用管，留给热点任务），和最后一个批次放在同一个 PR 里；没有批次时单独提一个 `daily/ingest/heat-<date>` 的 PR。热点榜在 `site/` 下，所以这个 PR 合并后会触发部署，确认部署成功。
 7. **提交**：按「提交约定」提 PR 并 squash merge。PR 描述写：批次、候选数（arXiv / 热门补充）、每个主题打上标签的篇数、热度快照的条数。
 
 ## 出刊流程（一个主题）
@@ -57,6 +59,21 @@ arXiv 不公布的日子（感恩节等）列在 `topics/_ingest.json` 的 `no_a
 6. **导读**：主会话按 `prompts/writing.md` 写 `WORK/overview.json`：`{"guide": ["段落", …]}`，2–3 段、约 600 字，按话题组织（不按 ⭐ / 非 ⭐ 分段）。⭐ 论文全部提到，非 ⭐ 只写本期 `shown` 里的论文。
 7. **组装**：`python3 pipeline/assemble.py topics/<topic>.json <key> WORK`。更新 `site/data/<topic>/<key>.json`、`site/data/topics.json`（`dates`、`issues`）、`site/data/glossary.json`。
 8. **本地检查**：`cd site && python3 -m http.server 8766`，用 Playwright 在 1280 和 400 宽度下打开 `index.html#<topic>-<key>`，确认没有 pageerror、`scrollWidth` 等于视口宽度、每个 `.term` 都能对应到术语表、导读里的论文链接都能跳到对应论文。
+
+## 热点流程
+
+页面上每一期的「今日热点」分 HF 和 HN 两榜，各显示前 10，读的是 `site/data/hot/<date>.json`（取这一期当天或之后最近的一份）。热点按**新增**算：这次热度快照比上一次多出来的 HF 点赞数、HN 分数，不看累计，也不管论文是哪天发布的；HN 至少新增 `heat.hn_min_points` 分才上榜，凑不满就少显示。每榜留一个位置给连续上榜的论文：最近 `hot.reign_snapshots` 次快照都有新增、累计最高的那篇排在第一行，显示「连续 N 天」。参数在 `topics/_ingest.json` 的 `hot` 里。
+
+榜上的论文有三种去处：已经入选某一期的，点了去那一期；在论文池里、属于我们某个主题、但当时没入选的，由本任务保送进它所属的那一期；不属于任何主题的，只链接到 arXiv。保送复用 Boost 的工具，区别只是请求来自热点榜而不是读者。
+
+1. **榜单和保送计划**：`python3 pipeline/hot.py`。它重写当天的榜单，并每行打印一个要保送的请求 `{"topic", "key", "id", "level", "why", "title"}`：每榜从上往下第一篇没有 ⭐ 的是 `star`，前 10 里其余没入选的是 `shown`。没有请求就跳到第 4 步。
+   - 没有当天的热度快照（入库没跑或失败）时它会报错：先运行 `python3 pipeline/heat.py`，再重跑。
+2. **按期分组保送**：同一个 `<topic> <key>` 的请求放在一起，各用一个新工作目录 `<scratchpad>/hot-<topic>-<key>`，按「Boost 流程」第 3–8 步做（`prepare`、中文摘要、精读与全文翻译、重写导读、`apply`、本地检查）。不同之处：
+   - `prepare` 不带 `--issue`、`--comment`；`--note-file` 里只写 `why`（如「今日热点：HF +124」），它说明这篇为什么被提上来，不是读者的想法，精读不用回应它。
+   - `star` 是榜单定的，不按「宁缺毋滥」否决，论文的问题照实写进精读；只有论文读不了时才改成 `shown`。
+3. **刷新榜单**：全部 `apply` 之后再运行一次 `python3 pipeline/hot.py`，让榜单上被保送的论文链接到它们所在的那一期；这次它不应该再打印任何请求（打印了就说明有保送没成功，查原因）。
+4. **本地检查**：同「出刊流程」第 8 步，另外打开任意一期，确认「今日热点」里每个站内链接都能跳到对应论文（包括跨主题的），被保送的论文出现在了它该在的位置。
+5. **提交**：所有分组放在一个分支 `daily/hot/<date>`、一个 PR 里，按「提交约定」squash merge，确认 Pages 部署成功。PR 描述写：两榜的前 10、每个保送（论文、哪一期、`shown` 还是 `star`、上榜原因）、精读和译文情况、导读改了什么。
 
 ## Boost 流程
 
@@ -108,7 +125,7 @@ boost: <topic> <key> <arXiv 编号> <shown|star>
   Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
   ```
 - 仓库已开启 merge 后自动删除分支，会话里不需要也无法删除分支。
-- merge 后由 `.github/workflows/pages.yml` 自动部署（只在 `site/` 有改动时触发，所以入库 PR 不会部署，也不用检查）。出刊 PR 合并后用 `gh run list --workflow pages.yml` 确认这次合并触发的部署成功；如果失败，用 `gh run rerun <id>` 重跑一次。
+- merge 后由 `.github/workflows/pages.yml` 自动部署（只在 `site/` 有改动时触发；入库 PR 带着热点榜，也会部署）。出刊 PR 合并后用 `gh run list --workflow pages.yml` 确认这次合并触发的部署成功；如果失败，用 `gh run rerun <id>` 重跑一次。
 
 ## 规则
 

@@ -12,6 +12,11 @@
    "hn"
   ]
  },
+ "hot": {
+  "show": 10,
+  "keep": 30,
+  "reign_snapshots": 3
+ },
  "batch_size": 64,
  "no_announce": [
   "2026-11-26"

@@ -1,0 +1,416 @@
+{
+ "date": "2026-11-27",
+ "since": "2026-11-26",
+ "hf": [
+  {
+   "id": "2611.34051",
+   "gain": 124,
+   "total": 124,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34051",
+   "topics": [
+    "llm"
+   ],
+   "title": "Stable Gated DeltaNet-2: Understanding and Mitigating Recurrent State Instability",
+   "title_zh": "Stable Gated DeltaNet-2：理解并缓解循环状态不稳定"
+  },
+  {
+   "id": "2611.34232",
+   "gain": 98,
+   "total": 98,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34232",
+   "topics": [
+    "vlm"
+   ],
+   "title": "OS-Omni: Benchmarking Generalist Computer-Using Agents on Long-Horizon Workflows Across Platforms",
+   "title_zh": "OS-Omni：评测通用计算机使用 Agent 的跨平台长程工作流",
+   "home": {
+    "topic": "vlm",
+    "key": "2026-11-25"
+   },
+   "star": false
+  },
+  {
+   "id": "2611.31619",
+   "gain": 53,
+   "total": 53,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.31619",
+   "topics": [],
+   "title": "What a Forecasting Leaderboard Can Establish: Resolution Reporting for Zero-Shot Time-Series Models",
+   "title_zh": "预测排行榜能证明什么：零样本时间序列模型的分辨率报告"
+  },
+  {
+   "id": "2611.34457",
+   "gain": 36,
+   "total": 36,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34457",
+   "topics": [
+    "diffusion"
+   ],
+   "title": "ProxyGenBench: Benchmarking Proxy-Guided Video Generation",
+   "title_zh": "ProxyGenBench：代理引导视频生成基准"
+  },
+  {
+   "id": "2611.34813",
+   "gain": 31,
+   "total": 31,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34813",
+   "topics": [
+    "vlm"
+   ],
+   "title": "Solve Vision with Code: Coding Agents Are Stronger Visual Reasoners Than Video Models",
+   "title_zh": "用代码解决视觉：编码 Agent 比视频模型更擅长视觉推理"
+  },
+  {
+   "id": "2611.34290",
+   "gain": 24,
+   "total": 24,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34290",
+   "topics": [
+    "diffusion"
+   ],
+   "title": "StateWeaver: Multi-Agent Coordination of Story-State Transitions for Long-Horizon Video Generation",
+   "title_zh": "StateWeaver：面向长程视频生成的故事状态转移多 Agent 协同"
+  },
+  {
+   "id": "2611.34693",
+   "gain": 19,
+   "total": 19,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34693",
+   "topics": [
+    "diffusion",
+    "ai-infra"
+   ],
+   "title": "ShowNow: Fine-Grained Speculative Streaming for Responsive World Models",
+   "title_zh": "ShowNow：面向响应式世界模型的细粒度推测流式生成",
+   "home": {
+    "topic": "ai-infra",
+    "key": "2026-11-25"
+   },
+   "star": false
+  },
+  {
+   "id": "2611.34852",
+   "gain": 16,
+   "total": 16,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34852",
+   "topics": [
+    "search-rec",
+    "llm"
+   ],
+   "title": "DRBench Pro: A Knowledge-Centric Benchmark for Professional Deep Research Agents",
+   "title_zh": "DRBench Pro：面向专业深度研究 Agent 的知识中心基准",
+   "home": {
+    "topic": "search-rec",
+    "key": "2026-11-25"
+   },
+   "star": false
+  },
+  {
+   "id": "2611.28732",
+   "gain": 7,
+   "total": 34,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.28732",
+   "topics": [
+    "embodied"
+   ],
+   "title": "Entangle: Scaling Human-Video In-Context World-Action Models across Unseen Tasks and Contexts",
+   "title_zh": "Entangle：跨未见任务与场景扩展人类视频上下文世界动作模型",
+   "home": {
+    "topic": "embodied",
+    "key": "2026-11-25"
+   },
+   "star": false
+  },
+  {
+   "id": "2611.32238",
+   "gain": 7,
+   "total": 7,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.32238",
+   "topics": [
+    "embodied"
+   ],
+   "title": "Boundary-Aware Policy Learning for Agent-Orchestrated Robot Manipulation",
+   "title_zh": "面向智能体编排机器人操作的边界感知策略学习"
+  },
+  {
+   "id": "2611.34923",
+   "gain": 5,
+   "total": 73,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34923",
+   "topics": [
+    "llm"
+   ],
+   "title": "Mixture-of-Loops Transformer",
+   "title_zh": "Mixture-of-Loops Transformer",
+   "home": {
+    "topic": "llm",
+    "key": "2026-11-25"
+   },
+   "star": false
+  },
+  {
+   "id": "2611.34079",
+   "gain": 5,
+   "total": 10,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34079",
+   "topics": [
+    "diffusion"
+   ],
+   "title": "WorldBridge: Bridging Scattered Views for Coherent 3D World Generation",
+   "title_zh": "WorldBridge：桥接分散视角以生成连贯的 3D 世界"
+  },
+  {
+   "id": "2611.30483",
+   "gain": 4,
+   "total": 4,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.30483",
+   "topics": [
+    "llm"
+   ],
+   "title": "When an AI agent makes a mistake in a database, what decides the damage?",
+   "title_zh": "AI智能体在数据库中出错时，什么决定损失大小？"
+  },
+  {
+   "id": "2611.18397",
+   "gain": 3,
+   "total": 169,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.18397",
+   "topics": [],
+   "title": "Gamer: A Generalist Vision-Language-Action Foundation Model for Long-Horizon Real-Time Game Agent"
+  },
+  {
+   "id": "2611.26358",
+   "gain": 3,
+   "total": 24,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.26358",
+   "topics": [
+    "llm"
+   ],
+   "title": "Beam Model Technical Report",
+   "title_zh": "Beam 模型技术报告",
+   "home": {
+    "topic": "llm",
+    "key": "2026-11-25"
+   },
+   "star": true
+  },
+  {
+   "id": "2611.29897",
+   "gain": 2,
+   "total": 226,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.29897",
+   "topics": [
+    "embodied"
+   ],
+   "title": "Motion Mamba 2.0: Autoregressive Diffusion Mamba for Long-Horizon Humanoid Control",
+   "title_zh": "Motion Mamba 2.0：面向长程人形控制的自回归扩散 Mamba"
+  },
+  {
+   "id": "2611.31205",
+   "gain": 2,
+   "total": 67,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.31205",
+   "topics": [
+    "embodied"
+   ],
+   "title": "ACAP: Asynchronous Coding Agents for Efficient Robot Control",
+   "title_zh": "ACAP：用于高效机器人控制的异步编程智能体"
+  },
+  {
+   "id": "2611.34237",
+   "gain": 2,
+   "total": 57,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34237",
+   "topics": [
+    "diffusion"
+   ],
+   "title": "VibeVideoAgent: Closing the Perceptual Loop for Code-Driven Video Generation",
+   "title_zh": "VibeVideoAgent：为代码驱动视频生成闭合感知回路"
+  },
+  {
+   "id": "2611.34941",
+   "gain": 2,
+   "total": 46,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34941",
+   "topics": [
+    "diffusion"
+   ],
+   "title": "Improving and Expanding Video Editing Capabilities Without Videos",
+   "title_zh": "无需视频即可改进并扩展视频编辑能力",
+   "home": {
+    "topic": "diffusion",
+    "key": "2026-11-25"
+   },
+   "star": false
+  },
+  {
+   "id": "2611.33148",
+   "gain": 2,
+   "total": 17,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.33148",
+   "topics": [
+    "llm"
+   ],
+   "title": "CoT-Proxy: Cross-Format Transfer for Distilling Long-Horizon Policies",
+   "title_zh": "CoT-Proxy：蒸馏长程策略的跨格式迁移"
+  },
+  {
+   "id": "2611.33143",
+   "gain": 2,
+   "total": 15,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.33143",
+   "topics": [
+    "embodied"
+   ],
+   "title": "ROAM-Bench: Evaluating Embodied Active Spatial Intelligence through Evidence Verification",
+   "title_zh": "ROAM-Bench：通过证据验证评测具身主动空间智能"
+  },
+  {
+   "id": "2611.27398",
+   "gain": 2,
+   "total": 14,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.27398",
+   "topics": [],
+   "title": "Taking Apart and Putting Together: Tracking Objects Through Physical Transformations",
+   "title_zh": "拆解与组装：跟踪经历物理变换的物体"
+  },
+  {
+   "id": "2611.28849",
+   "gain": 2,
+   "total": 2,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.28849",
+   "topics": [
+    "vlm"
+   ],
+   "title": "Guarding with Judgment: Learning to Intervene for Multimodal Safety",
+   "title_zh": "凭判断守护：学习干预以保障多模态安全"
+  },
+  {
+   "id": "2611.30494",
+   "gain": 2,
+   "total": 2,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.30494",
+   "topics": [
+    "llm"
+   ],
+   "title": "Revisiting LLMs as Context Engineers",
+   "title_zh": "重新审视作为上下文工程师的LLM"
+  },
+  {
+   "id": "2611.34719",
+   "gain": 2,
+   "total": 2,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34719",
+   "topics": [
+    "diffusion"
+   ],
+   "title": "Reading, Not Adapting: Unlocking Frozen Visual Knowledge for AI-Generated Image Detection",
+   "title_zh": "读取而非适配：释放冻结视觉知识用于AI生成图像检测"
+  },
+  {
+   "id": "2611.34782",
+   "gain": 2,
+   "total": 2,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.34782",
+   "topics": [
+    "diffusion"
+   ],
+   "title": "Generation as Reverse Encoding",
+   "title_zh": "作为逆向编码的生成"
+  },
+  {
+   "id": "2611.30962",
+   "gain": 1,
+   "total": 52,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.30962",
+   "topics": [
+    "vlm",
+    "llm"
+   ],
+   "title": "Self-Evolving Evaluation Environments for Computer-Use Agents",
+   "title_zh": "面向计算机使用智能体的自演化评测环境",
+   "home": {
+    "topic": "vlm",
+    "key": "2026-11-25"
+   },
+   "star": false
+  },
+  {
+   "id": "2611.30254",
+   "gain": 1,
+   "total": 45,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.30254",
+   "topics": [
+    "embodied"
+   ],
+   "title": "Innata-0: A Native Embodied World System with Model-Agent Co-Design",
+   "title_zh": "Innata-0：模型与 Agent 协同设计的原生具身世界系统",
+   "home": {
+    "topic": "embodied",
+    "key": "2026-11-25"
+   },
+   "star": false
+  },
+  {
+   "id": "2611.15348",
+   "gain": 1,
+   "total": 34,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.15348",
+   "topics": [],
+   "title": "Breath-Dx: A Time Series Classification Benchmark for Disease Screening with eNose"
+  },
+  {
+   "id": "2611.28719",
+   "gain": 1,
+   "total": 30,
+   "streak": 1,
+   "url": "https://huggingface.co/papers/2611.28719",
+   "topics": [
+    "llm"
+   ],
+   "title": "KMed-31B Technical Report",
+   "title_zh": "KMed-31B 技术报告"
+  }
+ ],
+ "hn": [
+  {
+   "id": "2611.34924",
+   "gain": 30,
+   "total": 261,
+   "streak": 1,
+   "url": "https://news.ycombinator.com/item?id=50651863",
+   "topics": [],
+   "title": "An algebraic quantization of gravity from the null cone",
+   "title_zh": "基于零锥的引力代数量化"
+  }
+ ]
+}
