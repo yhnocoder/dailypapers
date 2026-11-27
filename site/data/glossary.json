@@ -119,6 +119,42 @@
    "term": "MaxScore 剪枝",
    "en": "MaxScore / Block-Max MaxScore",
    "def": "一种精确的动态剪枝算法：根据每个词的得分上界，把上界之和不足以让文档进入 top-k 的词划为非必读，只为少数候选文档去读它们。Block-Max 版本按文档区间分别存上界，界更紧，能跳过更多工作。"
+  },
+  {
+   "id": "dapo",
+   "term": "DAPO",
+   "en": "Decoupled Clip and Dynamic sAmpling Policy Optimization",
+   "def": "GRPO 的一个改进版强化学习算法：同一输入采一组回答，用组内相对得分当优势。它把裁剪上下界分开设置，并丢掉组内所有回答得分相同、不产生梯度的样本组，训练更稳。"
+  },
+  {
+   "id": "late-chunking",
+   "term": "晚分块",
+   "en": "late chunking",
+   "def": "先把整篇文档送进长上下文编码器得到每个 token 的向量，再按 chunk 边界分段做平均池化，得到每个 chunk 的向量。这样 chunk 向量里带上了全文信息，但上下文只存在向量里，读原文的重排器看不到。"
+  },
+  {
+   "id": "query-tagging",
+   "term": "Query 打标",
+   "en": "Query Tagging (QT)",
+   "def": "把搜索词切成片段并标上类型，例如把“adidas schuhe”标成品牌 adidas、品类 shoes。结果直接给召回和排序当结构化条件用，所以打错标会让后面的检索跟着出错。"
+  },
+  {
+   "id": "negative-transfer",
+   "term": "负迁移",
+   "en": "negative transfer",
+   "def": "多个任务或领域一起训练时，一方的信号反而拖累另一方的效果。推荐里常见于流量悬殊的多域联合训练：大域的梯度主导共享参数，小域被带偏，效果还不如单独训练。"
+  },
+  {
+   "id": "semantic-id",
+   "term": "语义 ID",
+   "en": "semantic ID",
+   "def": "用 RQ-VAE 等残差量化方法，把物品的内容向量离散成一串码字编号（如 3 层、每层 256 选 1）。内容相近的物品前几位码字相同，所以没有共同用户的物品也能共享表示，常用于冷启动和跨域对齐，也是生成式召回的物品标识。"
+  },
+  {
+   "id": "gradient-reversal-layer",
+   "term": "梯度反转层",
+   "en": "gradient reversal layer (GRL)",
+   "def": "前向时原样传递、反向时把梯度乘以负数的一层。把它放在表示和一个领域分类器之间，分类器努力认出样本来自哪个域，表示却被推向让分类器认不出，从而学到与领域无关的特征。"
   }
  ]
 }
