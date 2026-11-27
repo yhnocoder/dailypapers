@@ -1,6 +1,6 @@
 # dailypapers
 
-每日 arXiv 论文日报。页面部署在 GitHub Pages（`site/` → https://yhnocoder.github.io/dailypapers/），有「报纸」`index.html` 和「纸墨」`ink.html` 两个版式，读同一份 `site/data/`。
+每日 arXiv 论文日报。页面部署在 GitHub Pages（`site/` → https://yhnocoder.github.io/dailypapers/），只有一个页面 `site/index.html`，读 `site/data/`。
 
 ## 结构
 
@@ -53,7 +53,7 @@ arXiv 不公布的日子（感恩节等）列在 `topics/_ingest.json` 的 `no_a
    **只要某篇翻译失败过（包括重跑后成功的），都要把它的 tongtu 工作目录打包发给用户调试**：工作目录用 `tongtu status <id> --json` 的 `workdir` 字段取得（形如 `/root/.tongtu/papers/2611.34366v1/`，里面有 `logs/`、`build/manifests/`、`last_run.json` 等），打成 `tongtu_<idv>_<key>.zip` 放在 scratchpad，用发文件的工具（SendUserFile）在会话里发出来，并在汇报里注明。译文只存在 R2，不进仓库，见 `worker/README.md`。
 6. **导读**：主会话按 `prompts/writing.md` 写 `WORK/overview.json`：`{"guide": ["⭐ 段落", "非 ⭐ 段落"]}`，最多 2 段、约 600 字。非 ⭐ 段落只写本期 `shown` 里的论文。
 7. **组装**：`python3 pipeline/assemble.py topics/<topic>.json <key> WORK`。更新 `site/data/<topic>/<key>.json`、`site/data/topics.json`（`dates`、`issues`）、`site/data/glossary.json`。
-8. **本地检查**：`cd site && python3 -m http.server 8766`，用 Playwright 在 1280 和 400 宽度下打开 `index.html#<topic>-<key>` 和 `ink.html#<topic>-<key>`，确认没有 pageerror、`scrollWidth` 等于视口宽度、每个 `.term` 都能对应到术语表、导读里的论文链接都能跳到对应论文。
+8. **本地检查**：`cd site && python3 -m http.server 8766`，用 Playwright 在 1280 和 400 宽度下打开 `index.html#<topic>-<key>`，确认没有 pageerror、`scrollWidth` 等于视口宽度、每个 `.term` 都能对应到术语表、导读里的论文链接都能跳到对应论文。
 
 ## 提交约定
 
