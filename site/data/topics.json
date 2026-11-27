@@ -158,59 +158,6 @@
    }
   },
   {
-   "id": "embodied",
-   "dates": [
-    "2026-11-25"
-   ],
-   "name": "具身智能与 VLA",
-   "taxonomy_version": "v1",
-   "directions": [
-    {
-     "code": "A",
-     "name": "VLA 模型"
-    },
-    {
-     "code": "B",
-     "name": "操作"
-    },
-    {
-     "code": "C",
-     "name": "导航与移动"
-    },
-    {
-     "code": "D",
-     "name": "世界模型与仿真"
-    },
-    {
-     "code": "E",
-     "name": "数据与遥操作"
-    },
-    {
-     "code": "F",
-     "name": "强化学习与控制"
-    },
-    {
-     "code": "G",
-     "name": "人形与全身控制"
-    },
-    {
-     "code": "H",
-     "name": "评测与 Benchmark"
-    },
-    {
-     "code": "Z",
-     "name": "其他"
-    }
-   ],
-   "issues": {
-    "2026-11-25": [
-     "2026-11-23",
-     "2026-11-24",
-     "2026-11-25"
-    ]
-   }
-  },
-  {
    "id": "vlm",
    "dates": [
     "2026-11-25"
@@ -249,6 +196,108 @@
     {
      "code": "H",
      "name": "评测与幻觉"
+    },
+    {
+     "code": "Z",
+     "name": "其他"
+    }
+   ],
+   "issues": {
+    "2026-11-25": [
+     "2026-11-23",
+     "2026-11-24",
+     "2026-11-25"
+    ]
+   }
+  },
+  {
+   "id": "diffusion",
+   "dates": [
+    "2026-11-25"
+   ],
+   "name": "Diffusion / 生成",
+   "taxonomy_version": "v1",
+   "directions": [
+    {
+     "code": "A",
+     "name": "图像生成"
+    },
+    {
+     "code": "B",
+     "name": "视频生成"
+    },
+    {
+     "code": "C",
+     "name": "3D / 4D 生成"
+    },
+    {
+     "code": "D",
+     "name": "世界模型"
+    },
+    {
+     "code": "E",
+     "name": "理论与训练方法"
+    },
+    {
+     "code": "F",
+     "name": "采样加速"
+    },
+    {
+     "code": "G",
+     "name": "评测与安全"
+    },
+    {
+     "code": "Z",
+     "name": "其他"
+    }
+   ],
+   "issues": {
+    "2026-11-25": [
+     "2026-11-23",
+     "2026-11-24",
+     "2026-11-25"
+    ]
+   }
+  },
+  {
+   "id": "embodied",
+   "dates": [
+    "2026-11-25"
+   ],
+   "name": "具身智能与 VLA",
+   "taxonomy_version": "v1",
+   "directions": [
+    {
+     "code": "A",
+     "name": "VLA 模型"
+    },
+    {
+     "code": "B",
+     "name": "操作"
+    },
+    {
+     "code": "C",
+     "name": "导航与移动"
+    },
+    {
+     "code": "D",
+     "name": "世界模型与仿真"
+    },
+    {
+     "code": "E",
+     "name": "数据与遥操作"
+    },
+    {
+     "code": "F",
+     "name": "强化学习与控制"
+    },
+    {
+     "code": "G",
+     "name": "人形与全身控制"
+    },
+    {
+     "code": "H",
+     "name": "评测与 Benchmark"
     },
     {
      "code": "Z",

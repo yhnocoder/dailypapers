@@ -335,6 +335,54 @@
    "term": "单图捷径",
    "en": "single-image shortcut",
    "def": "多图题本该综合几张图作答，模型却只靠其中一张图给出答案。和“只看题干就答”的语言先验不同，它确实用了图像，所以把图全部去掉测不出来，要一次只露一张图才能发现。"
+  },
+  {
+   "id": "gfid-rfid",
+   "term": "gFID / rFID",
+   "en": "generation FID / reconstruction FID",
+   "def": "FID 衡量一批图像和真实图像在 Inception 特征上的分布距离，越低越好。gFID 评的是模型从噪声生成的图，rFID 评的是把真实图编码再解码回来的重建图；前者看生成质量，后者看 tokenizer 丢了多少信息。"
+  },
+  {
+   "id": "flow-matching",
+   "term": "flow matching（流匹配）",
+   "en": "flow matching",
+   "def": "扩散模型的一种训练目标：在噪声和数据之间连一条插值路径（常用直线，即 rectified flow），让网络学习沿路径从噪声走向数据的速度场，采样时解这条常微分方程即可。"
+  },
+  {
+   "id": "cka",
+   "term": "CKA（中心化核对齐）",
+   "en": "Centered Kernel Alignment",
+   "def": "比较两组神经网络激活是否「在表示同一种结构」的相似度指标，取值 0 到 1。常用来逐层对比两个网络或同一网络两次前向的中间表示，看它们从哪一层开始分道扬镳。"
+  },
+  {
+   "id": "nvfp4",
+   "term": "NVFP4",
+   "en": "NVIDIA FP4 (NVFP4)",
+   "def": "NVIDIA Blackwell 显卡原生支持的 4 比特浮点格式：每 16 个数共用一个 FP8 缩放系数，再加一个整张量的 FP32 系数。矩阵乘法吞吐比 FP8 再翻倍，但能表示的数值很少，误差比 8 比特大得多，通常要靠训练来补。"
+  },
+  {
+   "id": "dmd",
+   "term": "DMD（分布匹配蒸馏）",
+   "en": "Distribution Matching Distillation",
+   "def": "把多步扩散模型蒸馏成几步生成器的方法：不逐条对齐老师的输出，而是让学生生成结果的整体分布去贴近老师的分布（最小化反向 KL），梯度由老师和一个跟踪学生分布的“评论家”网络的打分之差给出。它对初始化敏感，起点离老师太远时训练容易不稳。"
+  },
+  {
+   "id": "layerwise-reconstruction",
+   "term": "逐层重建",
+   "en": "layer-wise reconstruction",
+   "def": "量化模型的一种校正方式：给量化层和原始层喂同一份老师的输入，要求两者的输出尽量一致。它只纠正每层自己引入的误差，不让前面层累积的偏差干扰，因此比只看最终输出的 QAT/QAD 更能保住模型原来的行为。"
+  },
+  {
+   "id": "best-of-n",
+   "term": "Best-of-N",
+   "en": "best-of-N sampling",
+   "def": "同一个提示让模型生成 N 个结果，再用一个打分器（选择器、verifier 或奖励模型）挑出最好的一个。不用训练，但每次请求的推理成本约为 N 倍；效果上限取决于打分器能不能认出正确结果。"
+  },
+  {
+   "id": "pass-at-k",
+   "term": "pass@k",
+   "en": "pass@k",
+   "def": "生成 k 个结果里至少有一个正确的概率，相当于有一个完美选择器时 best-of-k 的准确率。常用来区分“模型画不出来”和“画得出但挑不出来”。"
   }
  ]
 }
