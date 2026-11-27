@@ -83,7 +83,11 @@
     "拆出收益来源：召回不变，靠把证据排到前面",
     "同时报告准确率、延迟和美元成本",
     "原问题拼进重排 query 的做法可直接搬用"
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32917v1/2611.32917v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32917v1/2611.32917v1_out.zip"
+   }
   },
   {
    "id": "2611.32125",
