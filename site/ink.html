@@ -329,19 +329,16 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 .xg .t a:hover{color:var(--ink)}
 .xg .x{font:400 14px/1.75 var(--serif);color:var(--body)}
 
-/* ── 翻页幕 ───────────────────────────────────────────── */
-#turn{position:fixed;inset:0;z-index:80;background:var(--paper) var(--grain);display:grid;place-items:center;visibility:hidden;will-change:transform}
-#turn.on{visibility:visible}
-#turn::before{content:"";position:absolute;top:0;bottom:0;width:2px;background:var(--accent)}
-#turn.r::before{left:0}#turn.l::before{right:0}
-#turn .td{display:flex;flex-direction:row-reverse;align-items:flex-start;gap:clamp(14px,2vw,28px)}
-#turn .td b{writing-mode:vertical-rl;text-orientation:upright;font:900 clamp(44px,9vh,92px)/1 var(--song);color:var(--ink);letter-spacing:.12em;white-space:nowrap}
-#turn .td span{writing-mode:vertical-rl;text-orientation:upright;font:600 clamp(15px,2.2vh,20px)/1 var(--song);color:var(--mute);letter-spacing:.5em;padding-top:.3em}
-#turn .td .seal{opacity:.94;transform:rotate(-2.5deg);align-self:flex-end;animation:none}
-#turn .td>*{opacity:0;transform:translateY(16px)}
-#turn.show .td>*{opacity:1;transform:none;transition:opacity .45s var(--ease),transform .6s var(--ease)}
-#turn.show .td .seal{opacity:.94;transform:rotate(-2.5deg);transition-delay:.12s}
-#turn.show .td span{transition-delay:.06s}
+/* ── 翻页：像翻报纸一样，当前这一页沿着一侧立起来掀过去，底下就是新的一期。
+   往新的一期翻，页面绕左边掀走；往旧的一期翻，绕右边掀走。掀起的那页渐暗，底下那页由暗转亮，像被它的影子扫过。 ── */
+.vt-turn::view-transition-group(root){animation:none}
+.vt-turn::view-transition-image-pair(root){isolation:auto}
+.vt-turn::view-transition-old(root){z-index:2;mix-blend-mode:normal;transform-origin:0 50%;backface-visibility:hidden;animation:turn-f .78s cubic-bezier(.55,.06,.3,1) both}
+.vt-turn.back::view-transition-old(root){transform-origin:100% 50%;animation-name:turn-b}
+.vt-turn::view-transition-new(root){mix-blend-mode:normal;animation:under .78s cubic-bezier(.4,0,.2,1) both}
+@keyframes turn-f{from{transform:perspective(4200px) rotateY(0);filter:brightness(1)}to{transform:perspective(4200px) rotateY(-96deg);filter:brightness(.62)}}
+@keyframes turn-b{from{transform:perspective(4200px) rotateY(0);filter:brightness(1)}to{transform:perspective(4200px) rotateY(96deg);filter:brightness(.62)}}
+@keyframes under{from{filter:brightness(.8)}to{filter:brightness(1)}}
 
 /* 看图 */
 #lb{position:fixed;inset:0;z-index:70;background:rgba(18,17,14,.93);display:grid;grid-template-rows:minmax(0,1fr) auto;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));animation:fade .3s}
@@ -523,7 +520,6 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
-<div id="turn" aria-hidden="true"><div class="td"></div></div>
 
 <script>
 {
@@ -781,30 +777,20 @@ function drawCal(){
 }
 function toggleCal(){if($('cal')){closeCal();return}const t=ymd(S.date);calM=[t.y,t.m];drawCal();$('date').setAttribute('aria-expanded','true')}
 
-/* ── 翻页：一张纸从侧面盖过来，上面写着要去的日子，再掀开 ── */
+/* ── 翻页（换期）：新一期的数据先取好，再用 View Transitions 把旧页掀走 ── */
 let busy=false;
 async function go(date,pid){
   if(busy||!S.topic.dates.includes(date))return;
   if(date===S.date&&S.day){if(pid)jump(pid);return}
   const ds=S.topic.dates,older=ds.indexOf(date)>ds.indexOf(S.date);S.date=date;
-  const T=$('turn');
-  if(RM.matches||!S.day||!T.animate){await loadDay();scrollTo(0,0);if(pid)jump(pid);return}
+  if(RM.matches||!S.day||!document.startViewTransition){await loadDay();scrollTo(0,0);if(pid)jump(pid);return}
   busy=true;
   try{
-    const t=ymd(date),from=older?'-100%':'100%',to=older?'100%':'-100%',E='cubic-bezier(.76,0,.24,1)';
-    T.querySelector('.td').innerHTML=`<b>${cnN(t.m)}月${cnN(t.d)}日</b><span>星期${WK[t.w]}</span><span class="seal">第${cnN(ds.length-ds.indexOf(date))}期</span>`;
-    T.className='on '+(older?'l':'r');
-    const pre=getDay(S.topic.id,date).catch(()=>null);
-    const a=T.animate([{transform:`translateX(${from})`},{transform:'none'}],{duration:520,easing:E,fill:'forwards'});
-    setTimeout(()=>T.classList.add('show'),260);
-    await a.finished;await pre;
-    root.classList.remove('ready');
-    await loadDay();scrollTo(0,0);
-    await sleep(430);
-    const b=T.animate([{transform:'none'},{transform:`translateX(${to})`}],{duration:620,easing:E,fill:'forwards'});
-    await b.finished;a.cancel();b.cancel();T.className='';
-    if(pid)jump(pid);
-  }finally{busy=false;$('turn').className=''}
+    await getDay(S.topic.id,date).catch(()=>null);
+    root.classList.add('vt-turn');root.classList.toggle('back',older);
+    await document.startViewTransition(async()=>{await loadDay();scrollTo(0,0)}).finished;
+  }catch(e){}finally{busy=false;root.classList.remove('vt-turn','back')}
+  if(pid)jump(pid);
 }
 async function loadDay(){
   const ds=S.topic.dates,i=ds.indexOf(S.date);
