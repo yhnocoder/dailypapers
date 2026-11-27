@@ -709,7 +709,7 @@ function render(fresh){
       <div class="sec-l">${g.map(art).join('')}</div></section>`).join('')||(stars.length?'':'<p class="none">这一版今天没有论文</p>');
 
   /* 来源说明里的 HF / HN 挂上各自的页面 */
-  const src=s=>esc(s).replace(/\bHF\b/,'<a href="https://huggingface.co/papers" target="_blank" rel="noopener">HF</a>').replace(/\bHN\b/,'<a href="https://news.ycombinator.com/" target="_blank" rel="noopener">HN</a>');
+  const src=s=>esc(s).replace(/\bHF\b/,'<a href="https://huggingface.co/papers" target="_blank" rel="noopener">HF</a>').replace(/\bHN\b/,'<a href="https://hn.algolia.com/?query=arxiv.org&type=story&sort=byDate" target="_blank" rel="noopener">HN</a>');
   const fsrc=(d.funnel?.[0]?.[0]||'').match(/（(.+)）/)?.[1]||'';
   $('foot').innerHTML=`<p class="fin rv"><i></i>本期完<i></i></p>
     <div class="colo"><div>${esc(d.batch||d.date)}${fsrc?`<br>${src(fsrc)}`:''}</div><div class="keys"><kbd>←</kbd><kbd>→</kbd> 翻期　<kbd>/</kbd> 检索　<kbd>Esc</kbd> 返回</div></div>
