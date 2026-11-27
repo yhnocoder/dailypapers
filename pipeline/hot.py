@@ -18,9 +18,10 @@ Every paper gets a `home` when the site has a place for it:
   in the pool, tagged for a topic  → the issue of that topic that covers its batch, once it is published;
                                      there it is folded or not listed, and a boost brings it in
   otherwise                        → no home: the board links to arXiv
-The boosts: per board, the highest paper that has a home and no ⭐ becomes a ⭐; the other papers of
-the top `hot.show` that are not shown yet become shown. Run it again after the boosts are applied, so
-that the boards link to the boosted papers.
+The boosts: per board, the highest paper of the top `hot.show` that belongs to a topic and has no ⭐
+becomes a ⭐ (picked once per day and kept in the board file as `picked`); the other papers of the top
+that are not shown yet become shown. Run it again after the boosts are applied, so that the boards link
+to the boosted papers; that run prints no boosts.
 """
 import argparse, glob, json, os, sys
 from datetime import date
@@ -151,25 +152,28 @@ def main():
     pl, pub = pool(), published(ids)
     topics = {t["id"]: t for t in load(os.path.join(ROOT, "site", "data", "topics.json"))["topics"]}
     titles = arxiv_titles(sorted(i for i in ids if i not in pl))
+    # The ⭐ of each board is picked once per day and remembered in the board file: after it is boosted the
+    # next run must not hand the ⭐ to the paper below it.
+    picked = dict((load(os.path.join(OUT, day + ".json")) or {}).get("picked", {}))
     plan = {}
     for src, rows in boards.items():
-        starred = False
         for n, r in enumerate(rows):
             target = place(r, pl, pub, topics)
             r.setdefault("title", titles.get(r["id"]) or r.get("hn_title") or r["id"])
             r.pop("hn_title", None)
             if not target or n >= cfg["show"]:
                 continue
-            level = "shown" if starred else "star"
-            starred = True
-            if level == "shown" and "home" in r:
-                continue  # already shown, and the ⭐ of this board went to a paper above it
+            if src not in picked and not r.get("star"):
+                picked[src] = r["id"]
+            level = "star" if picked.get(src) == r["id"] else "shown"
+            if r.get("star") or (level == "shown" and "home" in r):
+                continue  # nothing left to do for this paper
             old = plan.get(r["id"])
             if not old or (level == "star" and old["level"] == "shown"):
                 plan[r["id"]] = {"topic": target[0], "key": target[1], "id": r["id"], "level": level,
                                  "why": f"{src.upper()} +{r['gain']}", "title": r["title"]}
     os.makedirs(OUT, exist_ok=True)
-    dump({"date": day, "since": since, **boards}, os.path.join(OUT, day + ".json"))
+    dump({"date": day, "since": since, "picked": picked, **boards}, os.path.join(OUT, day + ".json"))
     days = sorted({os.path.basename(f)[:-5] for f in glob.glob(os.path.join(OUT, "2*.json"))}, reverse=True)
     dump({"dates": days}, os.path.join(OUT, "index.json"))
     print(f"hot {day} (since {since}): hf {len(boards['hf'])}, hn {len(boards['hn'])}; "

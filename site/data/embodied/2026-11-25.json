@@ -11,7 +11,7 @@
  "overview": {
   "guide": [
    "怎样用人类数据和多种机器人的数据做预训练，本期有三篇可以对照着读。[[@2611.34449|HoloBrain-0.5]] 把各家机器人描述文件里随手定的关节坐标系统一成同一套约定，再把机器人结构作为输入，让 15 类机器人共用一个动作空间。只用 Piper 机械臂示范后训练、直接换到结构不同的 Piper-X 上，平均进度分（按任务里程碑累加，0–100）是 63，π0.5 只有 17；但论文没有消融，这个差距里结构输入和 1 万小时预训练各占多少分不开。[[@2611.30490|EgoStudy]] 固定机器人数据，只改人类第一人称视频的用量：从 1% 加到 100%，手腕平移的预测误差降 10%–20%，手腕旋转和手指动作却没有一致改善，闭环只在仿真里测过。[[@2611.28873|NAT]] 是把连续动作编成离散 token 的通用分词器，**只用人手动作训练的版本，表现接近用机器人数据训练的版本**。",
-   "另一条线是视觉表征和鲁棒性。[[@2611.29483|一项关于 VLA 表征对齐的研究]]让 π0.5 微调时的视觉 token 贴近冻结视觉编码器的特征，试了 11 个现成编码器：干净环境里没有一个涨超过 1 个点，加干扰物和光照扰动后**全部掉 10 到 39 个点**。作者提出==行为结构指标==，看教师特征认为相近的画面，后续专家动作是否也相近（1 为完全一致，0 与随机无异），现成编码器都低于 π0.5 自己的 0.497。按论文附录的数据重算（见精读），这个指标更适合筛掉很差的教师，排不准中间档。[[@2611.30813|HIVE-Bench]] 在 24 个双臂任务上比较 20 个视觉编码器，发现把每个视角平均成一个 token 会丢掉大部分成功率，识别、深度这类能力分数也预测不了下游效果，可以和上一篇对照着读。[[@2611.33010|RoboDojo-Mirror]] 只在场景里放一面镜子，五个策略成功率平均降 10.8 到 56.7 个点，比同形状的不反光板多出的失败里，50%–88% 机器人根本没碰到它，问题出在把倒影当成了目标。"
+   "另一条线是视觉表征和鲁棒性。[[@2611.29483|一项关于 VLA 表征对齐的研究]]让 π0.5 微调时的视觉 token 贴近冻结视觉编码器的特征，试了 11 个现成编码器：干净环境里没有一个涨超过 1 个点，加干扰物和光照扰动后**全部掉 10 到 39 个点**。作者提出==行为结构指标==，看教师特征认为相近的画面，后续专家动作是否也相近（1 为完全一致，0 与随机无异），现成编码器都低于 π0.5 自己的 0.497。按论文附录的数据重算（见精读），这个指标更适合筛掉很差的教师，排不准中间档。[[@2611.30813|HIVE-Bench]] 在 24 个双臂任务上比较 20 个视觉编码器，发现把每个视角平均成一个 token 会丢掉大部分成功率，识别、深度这类能力分数也预测不了下游效果，可以和上一篇对照着读。[[@2611.33010|RoboDojo-Mirror]] 只在场景里放一面镜子，五个策略成功率平均降 10.8 到 56.7 个点，比同形状的不反光板多出的失败里，50%–88% 机器人根本没碰到它，问题出在把倒影当成了目标。[[@2611.32238|Boundary-Aware Policy Learning]] 处理多模态 Agent 调用视觉运动策略时的交接失败：策略只在一部分起始状态下可靠，Agent 却可能在这个范围之外调用它。作者先用多样的起始位姿微调把这个范围做宽、并明确告诉 Agent，再用成功的系统轨迹重训把它往任务前段推，在 RoboTwin 2.0 的随机化场景里成功率 98.4%。"
   ]
  },
  "funnel": [
@@ -20,12 +20,12 @@
    3052
   ],
   [
-   "判定具身智能与 VLA相关",
+   "判定Embodied AI相关",
    211
   ],
   [
    "入选",
-   20
+   21
   ],
   [
    "⭐ 精读",
@@ -595,6 +595,30 @@
     "hf": 33,
     "hn": 0
    }
+  },
+  {
+   "id": "2611.32238",
+   "title": "Boundary-Aware Policy Learning for Agent-Orchestrated Robot Manipulation",
+   "title_zh": "面向智能体编排机器人操作的边界感知策略学习",
+   "affiliation": "",
+   "primary_cat": "cs.RO",
+   "direction": "B",
+   "star": false,
+   "score": 0.45,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.32238",
+    "pdf": "https://arxiv.org/pdf/2611.32238",
+    "code": null
+   },
+   "summary_zh": "让策略的交接边界更宽、更易被智能体刻画，减少智能体在不可靠起始状态调用策略而失败。",
+   "abstract_zh": "由 agent 编排的机器人系统把多模态 agent 的通用推理能力与学习得到的视觉运动策略的精确物理控制结合起来。但这类系统常在交接的时刻失败：策略只在有限的一组起始状态下可靠，而 agent 可能在这一区域之外调用它。我们把这一区域称为策略的交接边界（handoff boundary）。现有的整任务策略的交接边界通常很窄，agent 也难以刻画，使得可靠的协同很困难。我们提出 ==Boundary-Aware Policy Learning==，显式地塑造并扩展视觉运动策略的交接边界。第一步，==Boundary-Explicit Training== 在起始位姿多样的接触片段上微调策略，得到宽而明确的边界，并通过一个简单的交接协议告知 agent。第二步，==Boundary-Expanding Self-Improvement== 用筛选后的系统成功 rollout 重新训练策略，把边界向每个任务更早的阶段延伸，使 agent 能更早交接，所需的语言模型调用也更少。在 RoboTwin 2.0 和 RoboDojo 上，我们的系统**比最强基线高出 26 个百分点以上，在随机化的 RoboTwin 2.0 场景中成功率达到 98.4%**，同时 API 成本和执行时间分别降低 41.3% 和 37.5%。这些结果表明，稳健的 agent 与策略编排，关键不仅在于单独改进其中任何一个部分，还在于显式塑造二者之间的边界。",
+   "abstract_en": "Agent-orchestrated robot systems combine the general reasoning capability of multimodal agents with the precise physical control of learned visuomotor policies. Yet such systems often fail at the moment of handoff: a policy is reliable only from a limited set of start states, while the agent may invoke it outside this region. We call this region the policy's handoff boundary. Existing whole-task policies typically have handoff boundaries that are narrow and difficult for an agent to characterize, making reliable coordination challenging. We propose Boundary-Aware Policy Learning, which explicitly shapes and then expands the handoff boundary of a visuomotor policy. First, Boundary-Explicit Training fine-tunes the policy on contact segments with diverse start poses, yielding a wide and well-defined boundary that can be communicated to the agent through a simple handoff protocol. Second, Boundary-Expanding Self-Improvement retrains the policy on curated successful system rollouts, extending the boundary toward earlier stages of each task and allowing the agent to hand over sooner with fewer language-model calls. Across RoboTwin 2.0 and RoboDojo, our system outperforms the strongest baseline by over 26 percentage points, reaching 98.4% success in randomized RoboTwin 2.0 scenes, while further reducing its API cost and execution time by 41.3% and 37.5%, respectively. These results suggest that the key to robust agent-policy orchestration lies not only in improving either component individually, but also in explicitly shaping the boundary between them.",
+   "batch": "2026-11-24",
+   "heat": {
+    "hf": 7,
+    "hn": 0
+   },
+   "boosted": "shown"
   }
  ],
  "others": [
@@ -1965,14 +1989,6 @@
    "cat": "cs.AI",
    "summary_zh": "两阶段优化 3D 触发器并用双 LoRA 解耦，在仅 1% 投毒率下实现 VLA 的轨迹级后门。",
    "direction": "A"
-  },
-  {
-   "id": "2611.32238",
-   "title": "Boundary-Aware Policy Learning for Agent-Orchestrated Robot Manipulation",
-   "title_zh": "面向智能体编排机器人操作的边界感知策略学习",
-   "cat": "cs.RO",
-   "summary_zh": "让策略的交接边界更宽、更易被智能体刻画，减少智能体在不可靠起始状态调用策略而失败。",
-   "direction": "B"
   },
   {
    "id": "2611.32053",

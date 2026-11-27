@@ -12,7 +12,7 @@
   "guide": [
    "生成过程中模型还在不在看图，本期有两篇可以对照着读。[[@2611.28665|Seeing Right, Writing Wrong]] 解释了为什么先写推理再答空间题常常更差：一旦写下一句空间关系，答案就照着这句话读。把推理原样接到只交换遮挡前后、答案相反的图后面，7 个 8B 及以下模型的答案随图变化的幅度（100 表示完全跟着图走，0 表示完全不看图）从直接作答时的 3.0–76.5 降到 2.0–8.9。读它时要注意，**错多半出在写下的那句关系本身**，模型中间层其实还能解出正确的前后顺序。[[@2611.28684|一项关于视觉 token 保留的研究]]从注意力上看到相似的时间结构：视觉注意力在生成最初几步达到峰值，随后转向已生成的推理 token，沿生成时间移除最多 59% 的输入 token，性能只有很小的下降。",
    "另外两篇怀疑的是分数本身。[[@2611.32316|ASTERISM]] 逐题审查 19 个多图基准的 32,688 道题，发现 24.2% 只看一张图或只读题目就能答对；重建后的基准上，最强的闭源模型 Claude Opus 5.5 在人工核验的 400 道难题上只有 67.9%。它还提出 ==CICA==，在 [[rlvr|RLVR]] 里按每个 token 对其他图的依赖程度分配奖励，在三个 7B–9B 模型上的提升是同数据训练的 GRPO 等五种 RL 目标的两倍以上。[[@2611.30320|Accuracy Is Not Evidence]] 在视频时序定位上可以对照着读：监督微调和三个用 IoU 当奖励的 RL checkpoint 让 Qwen2.5-VL-7B 的准确率涨了 9–20 个点，答案却并不比基础模型更依赖事件所在的帧；作者用编辑事件帧后答案似然的下降度量这种依赖，并拿它当训练目标。",
-   "模型结构上，[[@2611.29146|RVLM]] 用不需要训练的颜色分割把图切成区域，每个区域池化成一个 token：同样的训练下平均少用 21.5% 的视觉 token，在最大一档的图上少用 51.8%、分数高 5.3。我怀疑这一档的差距有一部分来自基线在超出训练长度的视觉序列上退化。Agent 方面，[[@2611.34232|OS-Omni]] 在六类系统环境里评测跨平台长程工作流，人完成一个任务平均要 67.54 步；最强的 Claude Opus 5.5 成功率 68.5%，比人类低 8.8 个点，在 iOS 和 macOS 上落后超过 25 个点。"
+   "模型结构上，[[@2611.29146|RVLM]] 用不需要训练的颜色分割把图切成区域，每个区域池化成一个 token：同样的训练下平均少用 21.5% 的视觉 token，在最大一档的图上少用 51.8%、分数高 5.3。我怀疑这一档的差距有一部分来自基线在超出训练长度的视觉序列上退化。Agent 方面，[[@2611.34232|OS-Omni]] 在六类系统环境里评测跨平台长程工作流，人完成一个任务平均要 67.54 步；最强的 Claude Opus 5.5 成功率 68.5%，比人类低 8.8 个点，在 iOS 和 macOS 上落后超过 25 个点。[[@2611.34813|Solve Vision with Code]] 给「让视频生成模型当视觉推理器」的做法找了一个对照：同样的首帧和提示，让编码 Agent 写程序渲染出答案视频，三个闭源 Agent 在 VBVR-Pro-Bench 的 500 题上得 0.89–0.92，都比最强的视频模型高 0.22 以上。"
   ]
  },
  "funnel": [
@@ -21,12 +21,12 @@
    3052
   ],
   [
-   "判定VLM / 多模态相关",
+   "判定VLM相关",
    142
   ],
   [
    "入选",
-   20
+   21
   ],
   [
    "⭐ 精读",
@@ -602,6 +602,30 @@
     "hf": 20,
     "hn": 0
    }
+  },
+  {
+   "id": "2611.34813",
+   "title": "Solve Vision with Code: Coding Agents Are Stronger Visual Reasoners Than Video Models",
+   "title_zh": "用代码解决视觉：编码 Agent 比视频模型更擅长视觉推理",
+   "affiliation": "",
+   "primary_cat": "cs.CV",
+   "direction": "B",
+   "star": false,
+   "score": 0.5,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34813",
+    "pdf": "https://arxiv.org/pdf/2611.34813",
+    "code": null
+   },
+   "summary_zh": "对比视频生成模型与编码 Agent 在视觉推理任务上的表现。",
+   "abstract_zh": "视频生成模型正越来越多地被当作视觉推理器来评测：给定首帧和自然语言提示，模型能否生成完成指定任务的视频？这一范式被认为有优势，因为推理是在视觉媒介中原生进行的，直接展开在画面里，而不是通过语言或代码。但这条原生路径是否真比符号方法更可靠，还没有在相同条件下检验过。因此我们把相同的任务、相同的输入、输出规范和评测器同时交给两种媒介：不去对像素去噪，而是让 coding agent 编写一个渲染答案视频的程序，再由未经修改的基于规则的评测器打分。在 VBVR-Pro-Bench（Xu et al., 2026）上，这是一个包含 500 个实例、覆盖五类认知类别、带符号真值的测试集，agent 拿到与视频模型相同的首帧和提示，无法访问真值、元数据或生成模型，每个实例只试一次。三个闭源模型 agent（Codex 搭配 gpt-6-astra、Claude Code 搭配 Fable 5.1、Gemini CLI 搭配 Gemini 3.1 Pro）分别得分 0.923、0.894 和 0.893，**均比最强的视频模型高出 0.22 以上**。在 23 个可运行的开源权重模型中，最好的 GLM-5 得分 0.572，高于除经过 RL 训练的那个以外的所有视频模型。综合来看，对于解法可以由首帧和提示计算出来的任务，==程序合成==目前是比视频生成可靠得多的视觉推理路径。我们进一步区分了 ==depictive 程序==（在图像中导航以恢复可迁移的方案）与 ==propositional 程序==（在硬编码的数值上运算），以揭示视觉推理在 agent 编写的程序中如何展开，以及这对推理本质意味着什么。",
+   "abstract_en": "Video generation models are increasingly evaluated as visual reasoners: given a first frame and a natural-language prompt, can the model produce the video in which the specified task is carried out? The paradigm is considered advantageous because the reasoning is native to the visual medium, unfolding directly in the frames rather than through language or code. Whether this native route is in fact the more reliable path to visual reasoning has not been tested against a symbolic alternative under the same conditions. We therefore pose the same tasks, with identical inputs, output specification and evaluator, to both media: rather than denoising pixels, a coding agent writes a program that renders the answer video, which an unmodified rule-based evaluator scores. On VBVR-Pro-Bench (Xu et al., 2026), a 500-instance suite spanning five cognitive categories with symbolic ground truth, the agent receives the same first frame and prompt as the video model, with no access to ground truth, metadata or generation models, and one attempt per instance. Three closed-model agents (Codex with gpt-6-astra, Claude Code with Fable 5.1 and Gemini CLI with Gemini 3.1 Pro) score 0.923, 0.894 and 0.893, each more than 0.22 above the strongest video model. Among 23 runnable open-weight models, the best, GLM-5, reaches 0.572, above all video models except the RL-trained one. Together, we show that for tasks whose solutions can be computed from a first frame and a prompt, program synthesis is currently a substantially more reliable route to visual reasoning than video generation. We further distinguish depictive programs, which navigate the image to recover a transferable scheme, from propositional programs, which operate on hard-coded values, revealing how visual reasoning unfolds in agent-written programs and what it implies for its nature of reasoning in general.",
+   "batch": "2026-11-25",
+   "heat": {
+    "hf": 31,
+    "hn": 0
+   },
+   "boosted": "shown"
   }
  ],
  "others": [
@@ -1099,14 +1123,6 @@
    "title_zh": "图像生成能帮助视觉推理吗？一项实证研究",
    "cat": "cs.LG",
    "summary_zh": "在 13 个视觉语言模型与生成模型组合上，检验生成辅助图能否提升视觉问答。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.34813",
-   "title": "Solve Vision with Code: Coding Agents Are Stronger Visual Reasoners Than Video Models",
-   "title_zh": "用代码解决视觉：编码 Agent 比视频模型更擅长视觉推理",
-   "cat": "cs.CV",
-   "summary_zh": "对比视频生成模型与编码 Agent 在视觉推理任务上的表现。",
    "direction": "B"
   },
   {
