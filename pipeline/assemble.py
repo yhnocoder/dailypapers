@@ -61,6 +61,8 @@ def main(topic_path, day, work):
         }
         if s:
             rec.update(title_zh=s["title_zh"], analysis=s["analysis"], star_reasons=s.get("star_reasons", []))
+            if s.get("figures"):
+                rec["figures"] = s["figures"]
             t = translations.get(pid, {})
             if t.get("pdf"):
                 rec["translation"] = {"pdf": t["pdf"], "zip": t.get("zip")}
