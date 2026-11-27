@@ -7,7 +7,7 @@
   "2026-11-25"
  ],
  "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25（3 批）",
- "rules_version": "v1",
+ "rules_version": "v2",
  "overview": {
   "guide": [
    "[[@2611.34449|HoloBrain-0.5]] 把 15 类本体的关节坐标统一后混训，跨臂零样本迁移得分是 π0.5 的 3.6 倍；论文真正推荐的配方是用离散动作头初始化、再换上扩散头。[[@2611.29483|行为结构对齐]]发现给 π0.5 加现成视觉编码器做表征对齐，扰动下成功率反掉 10–39 个点，有没有用取决于教师的行为结构指标是否高于学生。[[@2611.30490|EgoStudy]] 把人类第一视角数据扩到 100 倍，误差下降几乎全在手腕平移，手指和接触仍得靠机器人数据。",
@@ -21,7 +21,7 @@
   ],
   [
    "判定具身智能与 VLA相关",
-   359
+   211
   ],
   [
    "入选",
@@ -783,14 +783,6 @@
    "direction": "A"
   },
   {
-   "id": "2611.29897",
-   "title": "Motion Mamba 2.0: Autoregressive Diffusion Mamba for Long-Horizon Humanoid Control",
-   "title_zh": "Motion Mamba 2.0：面向长程人形控制的自回归扩散 Mamba",
-   "cat": "cs.RO",
-   "summary_zh": "基于 Mamba 的根-躯干扩散架构，实现长程实时可控动作生成。",
-   "direction": "G"
-  },
-  {
    "id": "2611.29553",
    "title": "Detecting Is Not Choosing: What a World Model Needs to Keep a VLA Policy Safe",
    "title_zh": "检测不等于选择：世界模型要怎样才能保证 VLA 策略安全",
@@ -813,14 +805,6 @@
    "cat": "cs.CV",
    "summary_zh": "在 VLA 中加入空间定位与对未来场景的潜变量预测，以提升精确操作。",
    "direction": "A"
-  },
-  {
-   "id": "2611.31205",
-   "title": "ACAP: Asynchronous Coding Agents for Efficient Robot Control",
-   "title_zh": "ACAP：用于高效机器人控制的异步编程智能体",
-   "cat": "cs.RO",
-   "summary_zh": "把一台机器人组织成一队持续运行的异步编程智能体，避免单个智能体拖慢相互独立的工作。",
-   "direction": "B"
   },
   {
    "id": "2611.31195",
@@ -1005,14 +989,6 @@
    "cat": "cs.CV",
    "summary_zh": "让空中导航 VLA 策略从自身失败中迭代学习，由策略自己判断修复动作的好坏。",
    "direction": "C"
-  },
-  {
-   "id": "2611.34849",
-   "title": "Real2SimLab: A Unified Platform for Real-to-Simulation Transfer",
-   "title_zh": "Real2SimLab：真实到仿真迁移的统一平台",
-   "cat": "cs.RO",
-   "summary_zh": "提供统一平台，评测编码 Agent 从视频生成仿真程序的能力。",
-   "direction": "D"
   },
   {
    "id": "2611.34698",
@@ -1831,54 +1807,6 @@
    "direction": "A"
   },
   {
-   "id": "2611.34811",
-   "title": "HOG-WAM: Improving Visual Robustness through Future Gradient Prediction",
-   "title_zh": "HOG-WAM：通过未来梯度预测提升视觉鲁棒性",
-   "cat": "cs.CV",
-   "summary_zh": "为世界动作模型加入未来 HOG 结构监督，抵御视觉扰动。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32649",
-   "title": "ICLWorld: Benchmarking In-Context Learning of Agents from Digital to Physical Worlds",
-   "title_zh": "ICLWorld：从数字世界到物理世界评测 Agent 的上下文学习",
-   "cat": "cs.CV",
-   "summary_zh": "构建在线、交互式基准，评测 Agent 在电脑与机器人场景中从上下文学习新规则的能力。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34347",
-   "title": "AIRIS: Benchmarking Social Embodied Intelligence in Egocentric Streaming Videos",
-   "title_zh": "AIRIS：第一视角流式视频中的社会具身智能评测",
-   "cat": "cs.CV",
-   "summary_zh": "评测具身智能体在流式第一人称视频中判断证据是否充分、是否介入以及如何得体回应。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33143",
-   "title": "ROAM-Bench: Evaluating Embodied Active Spatial Intelligence through Evidence Verification",
-   "title_zh": "ROAM-Bench：通过证据验证评测具身主动空间智能",
-   "cat": "cs.RO",
-   "summary_zh": "在机器人运动与碰撞约束下，用仿真状态独立验证智能体的探索、推理与行动是否真正完成。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30149",
-   "title": "LeadVLA: Learning Follower-Aware Route Execution for Robot Leading",
-   "title_zh": "LeadVLA：面向机器人带领的跟随者感知路径执行学习",
-   "cat": "cs.RO",
-   "summary_zh": "保留显式路径参考，并学习步速与残差来适应跟随者的机器人带领策略。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33915",
-   "title": "SEEK: Self-Evolution through Execution Knowledge for Agentic Robot Manipulation",
-   "title_zh": "SEEK：通过执行知识实现智能体机器人操作的自我进化",
-   "cat": "cs.RO",
-   "summary_zh": "让机器人把执行中学到的知识沉淀下来，任务结束后仍能复用，而不只留在模型上下文里。",
-   "direction": "B"
-  },
-  {
    "id": "2611.30963",
    "title": "Foresight Forcing: Learning Spatial Foresight for Robotic Manipulation",
    "title_zh": "Foresight Forcing：学习空间前瞻用于机器人操作",
@@ -2197,1118 +2125,6 @@
    "cat": "cs.RO",
    "summary_zh": "比较并统一 flow-matching 机器人策略中的速度预测和端点预测目标。",
    "direction": "B"
-  },
-  {
-   "id": "2611.30597",
-   "title": "ViDiHand2: Unifying Video Diffusion Priors and Hand Geometry for 3D Hand Motion Reconstruction in the Wild",
-   "title_zh": "ViDiHand2：融合视频扩散先验与手部几何的野外3D手部运动重建",
-   "cat": "cs.CV",
-   "summary_zh": "用几何驱动方式改写视频扩散模型的手部深度估计，从人类第一视角视频恢复度量3D手部运动。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.31053",
-   "title": "ReWeave: Emergent Physical Task Topologies for Embodied Harness Optimization and Cross-Task Meta-Distillation",
-   "title_zh": "ReWeave：用涌现的物理任务拓扑做具身Harness优化与跨任务元蒸馏",
-   "cat": "cs.RO",
-   "summary_zh": "从交互中提取物理前置条件构成任务拓扑，引导长程具身任务的Harness优化与迁移。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.31038",
-   "title": "Boltz-Flow: Generating High-Quality Robot Action from Boltzmann Machine",
-   "title_zh": "Boltz-Flow：用玻尔兹曼机生成高质量机器人动作",
-   "cat": "cs.AI",
-   "summary_zh": "用玻尔兹曼机替代固定高斯源分布，增强流匹配策略在多任务下的表达能力。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30734",
-   "title": "EgoDepth-Bench: Benchmarking Metric Depth for Egocentric Manipulation",
-   "title_zh": "EgoDepth-Bench：评测第一视角操作中的度量深度",
-   "cat": "cs.CV",
-   "summary_zh": "发布覆盖37个环境、94万余个样本的第一视角多视角度量深度基准，毫米级几何精度。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30666",
-   "title": "Zhengrong: World Models with Pole-Based Action-Response Factorization for Direct Visual Planning",
-   "title_zh": "Zhengrong：基于极点的动作响应分解的世界模型，用于直接视觉规划",
-   "cat": "cs.CV",
-   "summary_zh": "把潜在轨迹分解为初始锚点、自由响应和动作延迟响应，并用共享的稳定共轭极点组控制响应。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30209",
-   "title": "RoboAda: Adapting Frozen Robot Policies at Test Time to Physics They Cannot See",
-   "title_zh": "RoboAda：在测试时让冻结的机器人策略适应其看不见的物理特性",
-   "cat": "cs.RO",
-   "summary_zh": "在测试时让冻结的机器人策略适应图像中不可见的质量、关节等物理变化。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.30171",
-   "title": "Audio-Visual Rearrangement",
-   "title_zh": "视听重排",
-   "cat": "cs.CV",
-   "summary_zh": "提出让 Agent 听取口头请求、取物并送达说话人的视听重排任务与数据集。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.30120",
-   "title": "AxE: Benchmarking Agent-Environment Generalization of Video World Models via Grounded Events",
-   "title_zh": "AxE：基于接地事件评测视频世界模型的 Agent-环境泛化",
-   "cat": "cs.CV",
-   "summary_zh": "提出 AxE 基准，评测视频世界模型在新的 Agent 与环境组合下的泛化。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30111",
-   "title": "RoboThink: Let the Agent Think, Let the Policy Act",
-   "title_zh": "RoboThink：让 Agent 思考，让策略行动",
-   "cat": "cs.RO",
-   "summary_zh": "让推理 Agent 在机器人执行过程中纠正偏差，而不只是下达新指令。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30041",
-   "title": "Spiking World-Action Models for Robotic Manipulation",
-   "title_zh": "面向机器人操作的脉冲世界动作模型",
-   "cat": "cs.RO",
-   "summary_zh": "用脉冲神经网络构建稀疏、低功耗的世界动作模型，便于部署到机器人。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.29850",
-   "title": "Ego2Wrist: Bootstrapping Wrist-View Synthesis from Egocentric Video",
-   "title_zh": "Ego2Wrist：从第一人称视频引导合成腕部视角",
-   "cat": "cs.CV",
-   "summary_zh": "从头戴第一人称视频合成同步的腕部相机视角，用于机器人操作数据。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29839",
-   "title": "Dynamics Forcing: Mitigating Error Accumulation in Causal Video World Models",
-   "title_zh": "Dynamics Forcing：缓解因果视频世界模型的误差累积",
-   "cat": "cs.CV",
-   "summary_zh": "改进训练方式，缓解因果视频世界模型逐块生成时的误差累积。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.29637",
-   "title": "TASC: Time-to-Collision Anticipation and Selective Crowd Attention for Non-Holonomic Service Robots",
-   "title_zh": "TASC：面向非完整约束服务机器人的碰撞时间预判与选择性人群注意力",
-   "cat": "cs.RO",
-   "summary_zh": "为非完整约束服务机器人设计碰撞时间预判与选择性注意力，用于拥挤人群中的导航。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.28919",
-   "title": "When Do Better Visual World Models Make Better Plans? Decision-Aligned Selection for Latent Planning",
-   "title_zh": "更好的视觉世界模型何时带来更好的规划？面向潜空间规划的决策对齐选择",
-   "cat": "cs.AI",
-   "summary_zh": "提出决策相关残差 DRR，说明候选排序而非逐个预测精度决定规划效果。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28871",
-   "title": "KineState-SWAM: A Surgical World Action Model with Explicit Kinematics and Causal Interaction Dynamics",
-   "title_zh": "KineState-SWAM：显式运动学与因果交互动力学的手术世界动作模型",
-   "cat": "cs.CV",
-   "summary_zh": "用持久交互状态耦合动作预测与视频生成，区分器械运动与组织响应。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28796",
-   "title": "NavDecision: Parallel Multi-Step Action Prediction with Persistent Self-Referential Learning for Vision-and-Language Navigation",
-   "title_zh": "NavDecision：面向视觉语言导航的并行多步动作预测与持续自参照学习",
-   "cat": "cs.CV",
-   "summary_zh": "并行预测多步动作分布，降低视觉语言导航模型逐 token 解码的推理开销。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.28585",
-   "title": "AsyncMixVLA: Runtime Asynchronous Robot Policy Switching for Adaptation to Dynamic Environments",
-   "title_zh": "AsyncMixVLA：面向动态环境自适应的运行时异步机器人策略切换",
-   "cat": "cs.RO",
-   "summary_zh": "在 VLA 推理中异步切换互补策略，应对执行中物体移动等扰动。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30636",
-   "title": "ABI: Actor-Free Behavior-Induced Representations for Zero-Shot Test-Time Guidance",
-   "title_zh": "ABI：无 Actor 的行为诱导表征，用于零样本测试时引导",
-   "cat": "cs.RO",
-   "summary_zh": "利用数据采集行为下动作相对价值基本保持的观察，免去 actor 依赖以引导行为克隆策略泛化到新任务。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.29453",
-   "title": "What Test-Time Training Corrects in Latent World Models? A Slow-Fast Approach",
-   "title_zh": "测试时训练在潜空间世界模型中纠正了什么？一种慢快方法",
-   "cat": "cs.RO",
-   "summary_zh": "把世界模型预测误差分解为动作共有的偏移和依赖动作的部分，发现测试时训练主要跟踪前者。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28274",
-   "title": "Neural Fidelity Calibration for Informative Sim-to-Real Adaptation",
-   "title_zh": "面向信息量充足的仿真到真实适应的神经保真度校准",
-   "cat": "cs.RO",
-   "summary_zh": "用神经方法校准仿真器，减少依赖领域随机化来弥合机器人RL的仿真到真实差距。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30667",
-   "title": "LLM-Guided Compositional Continual Learning for Robot Manipulation with Gated Low-Rank Experts",
-   "title_zh": "LLM引导的组合式持续学习：基于门控低秩专家的机器人操作",
-   "cat": "cs.RO",
-   "summary_zh": "用渐进网络加低秩适配把每个技能表示为专家子网络，在LLM引导下持续学习操作技能。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30312",
-   "title": "One Policy, Many Bodies: Cooperative Human-Object Interaction with Heterogeneous Teams",
-   "title_zh": "一个策略，多种身体：异构团队的协同人物交互",
-   "cat": "cs.RO",
-   "summary_zh": "用单个物理策略让不同形态、不同组成的角色团队协同搬运物体。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.30004",
-   "title": "EnvTrap: Revealing the Environment-Only Attack Surface in Embodied AI via Consequence-Blind Action Execution",
-   "title_zh": "EnvTrap：通过无视后果的动作执行揭示具身AI中仅环境的攻击面",
-   "cat": "cs.CR",
-   "summary_zh": "研究仅重排环境物体、不改动模型和输入的攻击对具身AI的影响。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.29868",
-   "title": "Arcadian: Open-Source Humanoid Ecosystem for Accessible and Customizable Research and Education",
-   "title_zh": "Arcadian：面向研究与教学的开源人形机器人生态",
-   "cat": "cs.RO",
-   "summary_zh": "提供开源的米级人形机器人硬件与软件，便于资源有限的团队复现和修改。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.29230",
-   "title": "InfoField3D: Differentiable Information Field for Embodied Task-Oriented View Planning",
-   "title_zh": "InfoField3D：面向具身任务的可微信息场视角规划",
-   "cat": "cs.RO",
-   "summary_zh": "把几何信息提升为可微解析信息场，在三维空间中直接优化任务相关的观察位置。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.28675",
-   "title": "Doing More with Less: Complex Manipulation with a Contact-Adaptive Robotic Hand",
-   "title_zh": "事半功倍：用接触自适应机械手完成复杂操作",
-   "cat": "cs.RO",
-   "summary_zh": "提出手指细长、抓取范围大的接触自适应机械手机构，并配套四元数动捕手套提取人类操作意图。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.32776",
-   "title": "Learning World Models through Contrastive Identification of Actions",
-   "title_zh": "通过动作的对比辨识学习世界模型",
-   "cat": "cs.AI",
-   "summary_zh": "用对比式动作辨识替代平方误差回归，让潜在世界模型保留与动作相关的区分信息。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.32727",
-   "title": "Support2Sim: Visually Faithful Real2Sim with Stable Object Supports",
-   "title_zh": "Support2Sim：具备稳定物体支撑关系、视觉忠实的 Real2Sim",
-   "cat": "cs.RO",
-   "summary_zh": "从单张 RGB 图像重建带支撑关系、可直接用于物理仿真的场景。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.32705",
-   "title": "Knocked Off Course: Tracing Uncommanded Motion from Perception to Action in Embodied VLAs",
-   "title_zh": "偏离航线：追踪具身 VLA 从感知到动作的非指令运动",
-   "cat": "cs.CV",
-   "summary_zh": "在风、地形不平等扰动下，追踪具身跟踪 VLA 从感知到动作环节产生非指令运动的原因。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32483",
-   "title": "CodeWAM: A Code World Action Model for End-to-End Autonomous Driving",
-   "title_zh": "CodeWAM：面向端到端自动驾驶的代码世界动作模型",
-   "cat": "cs.RO",
-   "summary_zh": "把可执行代码作为世界表示的一部分，描述自车在计划下的动力学，并与学习的视觉模型共同预测后果。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.32218",
-   "title": "PoseVLN: Learning Geometric State Evolution for Vision-Language Navigation",
-   "title_zh": "PoseVLN：学习几何状态演化的视觉语言导航",
-   "cat": "cs.AI",
-   "summary_zh": "把长程记忆、状态推理和未来预测统一为随时间演化的几何位姿状态，用于视觉语言导航。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31919",
-   "title": "DUALingo: A Dual-Hand Instruction-Guided Dataset for Affordance Grounding on 3D Objects",
-   "title_zh": "DUALingo：面向 3D 物体可供性 Grounding 的双手指令数据集",
-   "cat": "cs.CV",
-   "summary_zh": "构建双手协作的 3D 可供性 Grounding 数据集，涵盖双手互补角色的操作任务。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.31689",
-   "title": "GeoMVGen: Joint Appearance-Geometry Modeling for Multi-View Video Generation in Robotic Manipulation",
-   "title_zh": "GeoMVGen：机器人操作中外观与几何联合建模的多视角视频生成",
-   "cat": "cs.CV",
-   "summary_zh": "联合建模外观与几何，生成多相机视角一致且受动作控制的操作视频。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.32858",
-   "title": "What Does a Skill Vocabulary Cost? A Closed-Loop Decomposition over Demonstrated Motions",
-   "title_zh": "技能词表的代价是什么？基于示范动作的闭环分解",
-   "cat": "cs.RO",
-   "summary_zh": "提出 MPQ，用示范动作库作为离散技能词表，使闭环失败可追溯到词表、技能选择或执行。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.32797",
-   "title": "Supply Geometry, Learn Execution: Screw Attention for Zero-Shot Policy Transfer in Robot Manipulation",
-   "title_zh": "提供几何，学习执行：用于机器人操作零样本策略迁移的螺旋注意力",
-   "cat": "cs.RO",
-   "summary_zh": "Screw Attention Policy 显式输入任务几何、只学执行，仅 30K 参数且在仿真训练后零样本迁移。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.32788",
-   "title": "Keypose or Dense? A Controlled Comparison of Action Representations for Stage-Structured Manipulation",
-   "title_zh": "关键位姿还是稠密动作？阶段式操作中动作表示的对照比较",
-   "cat": "cs.RO",
-   "summary_zh": "在多个任务上对比稠密动作块与关键位姿动作块两种模仿学习动作表示。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.32579",
-   "title": "Follow-Bench 2.0: An End-to-End 3D Benchmark for Socially-Aware Robot Person Following",
-   "title_zh": "Follow-Bench 2.0：面向社交感知机器人人物跟随的端到端 3D 基准",
-   "cat": "cs.RO",
-   "summary_zh": "联合评测目标身份保持、避障与社交队形的机器人人物跟随 3D 基准。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.32186",
-   "title": "SkillHarness: Execution-Aware Coordination with Plug-and-Play Skills for Long-Horizon Traversal",
-   "title_zh": "SkillHarness：面向长时程穿越的即插即用技能执行感知协调",
-   "cat": "cs.RO",
-   "summary_zh": "协调多种运动技能并监控执行，使足式机器人适应未见障碍和复杂地形。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.31826",
-   "title": "VG-GP: Uncertainty-Gated Visuo-Geometric Memory for Negative-Transfer-Resistant Grasp Adaptation",
-   "title_zh": "VG-GP：抗负迁移的不确定性门控视觉-几何记忆抓取适应",
-   "cat": "cs.RO",
-   "summary_zh": "为冻结的抓取网络加入不确定性门控的经验记忆，在新物体上自适应而不覆盖已有可行抓取。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.21485",
-   "title": "Lost in the Hallway: Benchmarking Persistent Spatial Memory Across Revisits",
-   "title_zh": "迷失在走廊：跨多次重访的持久空间记忆基准",
-   "cat": "cs.CV",
-   "summary_zh": "提出 ReSpaceBench，含 590 个场景、3244 个问题，评测重访场景中的空间记忆。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34750",
-   "title": "SOLVE: Sparse, Ordered Keyposes Make LLM Agents Versatile and Efficient Robot Manipulator",
-   "title_zh": "SOLVE：稀疏有序关键位姿让LLM智能体成为通用高效的机械臂操作器",
-   "cat": "cs.RO",
-   "summary_zh": "免训练的LLM智能体每次调用输出稀疏有序的6-DoF末端关键位姿，降低机械臂操作的推理开销。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.34739",
-   "title": "Was the Model Given the Right Action? Auditing and Repairing Action Interfaces in Navigation World Models",
-   "title_zh": "模型得到了正确的动作吗？导航世界模型中动作接口的审计与修复",
-   "cat": "cs.CV",
-   "summary_zh": "审计导航世界模型NWM的动作接口，发现推理时动作处理与训练不一致会使模型显得不准。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.34656",
-   "title": "Do We Still Need Reinforcement Learning When We Can Read the World Model?",
-   "title_zh": "能读取世界模型时，我们还需要强化学习吗？",
-   "cat": "cs.LG",
-   "summary_zh": "探讨在可直接读取世界模型时是否还需要强化学习来得到策略。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.34416",
-   "title": "CHASE: Curiosity-Guided Skill Acquisition for Embodied Task Execution",
-   "title_zh": "CHASE：面向具身任务执行的好奇心引导技能获取",
-   "cat": "cs.RO",
-   "summary_zh": "让机器人在部分可观测环境中提出任务相关假设、寻找证据并补齐缺失技能。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.34360",
-   "title": "One Patch, Many Policies: Object-Associated Physical Patch Attacks on Robotic Manipulation",
-   "title_zh": "一个补丁，多种策略：针对机器人操作的物体关联物理补丁攻击",
-   "cat": "cs.CV",
-   "summary_zh": "提出 OAPA，对 VLA 与世界动作模型实施通用、可迁移的物理对抗补丁攻击。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34328",
-   "title": "LUDIUS: A Benchmark for Embodied Social Intelligence in Everyday Human-Robot Interactions",
-   "title_zh": "LUDIUS：面向日常人机交互的具身社会智能基准",
-   "cat": "cs.RO",
-   "summary_zh": "评测视觉语言模型在机器人场景中通过话语和动作表达社会判断的能力。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34249",
-   "title": "Navigent: A Geometry-Grounded Agentic Framework for Vision Language Navigation",
-   "title_zh": "Navigent：基于几何约束的视觉语言导航 Agent 框架",
-   "cat": "cs.AI",
-   "summary_zh": "在冻结 MLLM 外加几何执行校验器，检查动作与实际运动是否一致。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33865",
-   "title": "Measuring the Value of One Shared Image at Robot Handoffs in Vision-and-Language Navigation",
-   "title_zh": "衡量机器人交接中一张共享图像在视觉语言导航里的价值",
-   "cat": "cs.RO",
-   "summary_zh": "在 3920 次自主交接中测量，附上领队最后动作前的视图能使成功率提升 7.51 个百分点。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33772",
-   "title": "Triage Before Fine-Tuning: Feasibility-Gated Selection and Monitored Adaptation of Embodied Foundation Models for a Fixed Physical Platform",
-   "title_zh": "微调之前先分诊：面向固定物理平台的具身基础模型可行性筛选与受控适配",
-   "cat": "cs.RO",
-   "summary_zh": "TRIAGE 把固定平台上的性能损失拆成感知、时延和分布三类缺口，只对分布缺口做微调。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33745",
-   "title": "WhatIf: Counterfactual World Models over Action-Grounded Causal Graphs for Robotic Manipulation",
-   "title_zh": "WhatIf：面向机器人操作、基于动作接地因果图的反事实世界模型",
-   "cat": "cs.AI",
-   "summary_zh": "通过共享潜在物理与转移噪声耦合候选未来，用因果图对机器人操作做反事实比较。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.34014",
-   "title": "Hetero-Associative Visuomotor Memory: Soft Recall as a Base for Learned Residuals in Few-Demonstration Imitation",
-   "title_zh": "异联想视觉运动记忆：少样本模仿中作为学习残差基础的软召回",
-   "cat": "cs.RO",
-   "summary_zh": "对整个示范记忆做softmax加权软召回，作为少样本模仿的残差修正基础。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.33460",
-   "title": "Fast Muscle-Driven Whole-Body Motion Tracking with a Differentiable World Model",
-   "title_zh": "基于可微世界模型的快速肌肉驱动全身动作跟踪",
-   "cat": "cs.LG",
-   "summary_zh": "在可微世界模型上训练肌肉骨骼模型的跟踪策略，单卡 RTX 5090 上 6.3 分钟达到原方法 3.9 小时的回报。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.34915",
-   "title": "Memory Is Not Ground Truth: Revising Navigation Authority under Unreliable VLM Evidence for Persistent Semantic Navigation",
-   "title_zh": "记忆不是真值：在不可靠 VLM 证据下修正持久语义导航的导航权威",
-   "cat": "cs.RO",
-   "summary_zh": "在 Spot 上测量 VLM 否定验证的相关性，提出可逆的依赖感知记忆更新机制，避免把过时记忆当作导航目标。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.34485",
-   "title": "SkySearcher: High-Altitude Onboard VLM Reasoning for Aerial Semantic Search",
-   "title_zh": "SkySearcher：用于空中语义搜索的高空机载 VLM 推理",
-   "cat": "cs.RO",
-   "summary_zh": "机载 VLM 提取高空语义线索并投影到地面概率图，指导无人机语义搜索，并在无人机上完全机载运行。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.34297",
-   "title": "BOT-Scale: A Traceable Evaluation Methodology for Robotic Manipulation",
-   "title_zh": "BOT-Scale：可追溯的机器人操作评估方法",
-   "cat": "cs.RO",
-   "summary_zh": "把操作得分定义为行为因子惩罚之和，使每项扣分都可检查，并发布带八位评分员标注的 BOT-Events 数据集。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33731",
-   "title": "RoboJackVR: Turning Robot Tasks into VR Games for Scalable Demonstration Collection",
-   "title_zh": "RoboJackVR：把机器人任务变成 VR 游戏以规模化采集示教",
-   "cat": "cs.RO",
-   "summary_zh": "用独立 VR 游戏让玩家操控仿真机器人执行战斗技能，从而收集机器人示教数据。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.33352",
-   "title": "Why Does Sensor Depth Fail Learned Manipulation Policies? Finding the Failure Mode with ACT",
-   "title_zh": "为何传感器深度会让学习型操作策略失效？用 ACT 找出失效模式",
-   "cat": "cs.RO",
-   "summary_zh": "用 ACT 区分深度相机噪声与缺失值（空洞）各自对学习型操作策略的影响。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.26745",
-   "title": "MomentMem: Memorizing Key Moments for Robot Manipulation",
-   "title_zh": "MomentMem：为机器人操作记住关键时刻",
-   "cat": "cs.RO",
-   "summary_zh": "研究视觉关键时刻记忆，让操作策略只保留必要的历史画面而非完整观测序列。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.27689",
-   "title": "Embodied-Harness: Towards Recursive Self-Improvement for Robotic Manipulation",
-   "title_zh": "Embodied-Harness：迈向机器人操作的递归自我改进",
-   "cat": "cs.RO",
-   "summary_zh": "双智能体框架在不更新模型的前提下改进执行 Harness，处理记忆组织、失败归因和经验复用。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.32473",
-   "title": "OmniPersist: Persistent Dynamic World Modeling via Coupled Panoramic Evolution",
-   "title_zh": "OmniPersist：通过耦合全景演化实现持久的动态世界建模",
-   "cat": "cs.CV",
-   "summary_zh": "在单阶段扩散模型中把透视视频生成与低分辨率全景演化耦合，使镜头转开再转回时视野外的动态物体保持连贯。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30659",
-   "title": "ActField: Learning Action Effects as Continuous-Time Latent Dynamics",
-   "title_zh": "ActField：把动作效应学习为连续时间潜在动力学",
-   "cat": "cs.AI",
-   "summary_zh": "提出连续时间JEPA世界模型，用动作条件向量场在物理时间上积分来显式建模潜状态演化。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30177",
-   "title": "Resource-Aware VLA-MPC Co-Location for Efficient Embodied AI",
-   "title_zh": "面向高效具身 AI 的资源感知 VLA-MPC 协同部署",
-   "cat": "cs.AR",
-   "summary_zh": "Dubot 在单块移动 GPU 上调度 VLA 推理与 MPC，减少控制截止期错过。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30083",
-   "title": "MotionServe: Efficient Multi-Robot Serving by Exploiting Robot Execution Slack",
-   "title_zh": "MotionServe：利用机器人执行余量实现高效多机器人推理服务",
-   "cat": "cs.RO",
-   "summary_zh": "利用动作分块的执行余量，让多个机器人共享 GPU 并发服务各自的 VLA 策略。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28666",
-   "title": "RecallWorld: Episodic Memory for Persistent Embodied Video World Models",
-   "title_zh": "RecallWorld：面向持久具身视频世界模型的情景记忆",
-   "cat": "cs.CV",
-   "summary_zh": "为视频世界模型加入情景记忆，使重访场景时保持几何与外观一致。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28509",
-   "title": "AlpaSafe: Risk-Aware Trajectory Selection for Vision-Language-Action Models in Autonomous Driving",
-   "title_zh": "AlpaSafe：面向自动驾驶视觉语言动作模型的风险感知轨迹选择",
-   "cat": "cs.RO",
-   "summary_zh": "复用冻结驾驶 VLA 的场景表示，在候选轨迹中选出风险更低的一条执行。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28350",
-   "title": "Two Actions from One State: Fork Futures Teach JEPA World Models to Compare",
-   "title_zh": "同一状态下的两个动作：分叉未来教会 JEPA 世界模型做比较",
-   "cat": "cs.CV",
-   "summary_zh": "用同一还原状态下执行两个动作的结果差异补充数据，解决 JEPA 世界模型无法比较反事实动作的问题。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28319",
-   "title": "Learning a Food World Model That Predicts the Next State from Production Data",
-   "title_zh": "从生产数据学习食物世界模型以预测下一状态",
-   "cat": "cs.RO",
-   "summary_zh": "基于 61773 次生产取料数据，预测取料后的料堆高度图与取出质量。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30264",
-   "title": "Skill-Adaptive Noise Scheduling for Diffusion Policies",
-   "title_zh": "扩散策略的技能自适应噪声调度",
-   "cat": "cs.RO",
-   "summary_zh": "为分层技能学习中的扩散策略按技能学习噪声调度，提升接触密集型灵巧操作表现。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.29759",
-   "title": "What Should World Models Plan Over? Learning Geometry-Aligned Representations of Body Motion",
-   "title_zh": "世界模型应该在什么上做规划？学习几何对齐的身体运动表示",
-   "cat": "cs.LG",
-   "summary_zh": "提出 MotionPort，用身体轨迹的低维潜表示提升世界模型的动力学预测与长程规划。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.29518",
-   "title": "Reset Dependence Is Embodied: Training Protocol Changes Which Morphologies Appear Optimal",
-   "title_zh": "重置依赖是具身的：训练协议改变哪种形态看起来最优",
-   "cat": "cs.RO",
-   "summary_zh": "在 100 个 UNIMAL 形态上改变 PPO 的重置阈值，发现机器人形态排名随训练协议改变。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.28345",
-   "title": "Toward Adversarially Robust World Models",
-   "title_zh": "迈向对抗鲁棒的世界模型",
-   "cat": "cs.LG",
-   "summary_zh": "研究潜空间动力学世界模型的对抗脆弱性，面向规划与策略学习提升其鲁棒性。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.31037",
-   "title": "SurgeCount: A Protocol-Guided Composition Harness for Bimanual Surgical Sponge Counting",
-   "title_zh": "SurgeCount：协议引导的双臂手术海绵计数组合式Harness",
-   "cat": "cs.RO",
-   "summary_zh": "在书面流程协议下组合学得的技能，让机器人双臂完成可审计的手术海绵计数。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30072",
-   "title": "HERO: Hierarchical Region-Aware Reinforcement Learning for Autonomous Exploration",
-   "title_zh": "HERO：用于自主探索的分层区域感知强化学习",
-   "cat": "cs.RO",
-   "summary_zh": "用分层区域感知强化学习兼顾自主探索的路径效率与低在线计算量。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.29918",
-   "title": "TidyFlow: Geometry-Aware Tabletop Arrangement Generation with Human-Aligned Tidiness Evaluation",
-   "title_zh": "TidyFlow：几何感知的桌面整理生成与人类对齐的整洁度评估",
-   "cat": "cs.RO",
-   "summary_zh": "用条件流匹配结合拓扑约束生成符合人类偏好的整洁桌面布局，并提出整洁度评估。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.29907",
-   "title": "UnderGrasp: Envelopment-Oriented Grasp Refinement for an Underactuated Gripper",
-   "title_zh": "UnderGrasp：面向欠驱动夹爪的包络导向抓取精修",
-   "cat": "cs.RO",
-   "summary_zh": "针对欠驱动夹爪的闭合过程精修抓取位姿，并区分有害干涉与可接受接触。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.29662",
-   "title": "Grounded in Contact: Reducing Floating and Interpenetration Artifacts with Multimodal Skill-Effect Models",
-   "title_zh": "接触落地：用多模态技能效果模型减少漂浮与穿插伪影",
-   "cat": "cs.RO",
-   "summary_zh": "用概率多模态模型预测推、抓、放等技能对物体位姿的影响，减少漂浮与穿插。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33011",
-   "title": "MESSI: Multi-Expert Soccer Skill Integration for Physics-Based Character Control",
-   "title_zh": "MESSI：面向物理角色控制的多专家足球技能整合",
-   "cat": "cs.CV",
-   "summary_zh": "通过共享适配整合多个足球技能专家，使物理角色在运球射门等技能间平滑切换。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32718",
-   "title": "Seeing to Drive on a Single Board: Attention-Free Depth for Onboard Robot Navigation",
-   "title_zh": "单板上的驾驶视觉：用于机载机器人导航的无注意力深度估计",
-   "cat": "cs.RO",
-   "summary_zh": "把量化后的深度基础模型部署到 Raspberry Pi 5 加 Hailo-8L，用单目相机为小型地面机器人提供深度。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.32645",
-   "title": "TeamFlowRL: Online Policy Optimization of Decentralized Flow Policies for Multi-Agent Coordination",
-   "title_zh": "TeamFlowRL：面向多智能体协作的去中心化流策略在线优化",
-   "cat": "cs.LG",
-   "summary_zh": "解决流策略难以在线微调的问题，对去中心化的多智能体流策略做在线强化学习。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32510",
-   "title": "GeoVLDrive: Geometry-Grounded Vision-Language Reasoning for Autonomous Driving",
-   "title_zh": "GeoVLDrive：面向自动驾驶的几何驱动视觉语言推理",
-   "cat": "cs.CV",
-   "summary_zh": "用门控交叉注意力引入 3D 基础模型特征，并以结构化隐式思维链组织未来场景几何，辅助 VLA 规划轨迹。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32119",
-   "title": "CoverMem: Coverage-Constrained Visual Memory for Budgeted Embodied Question Answering",
-   "title_zh": "CoverMem：面向预算受限具身问答的覆盖约束视觉记忆",
-   "cat": "cs.AI",
-   "summary_zh": "在有限算力下用覆盖约束构建紧凑视觉记忆，并检索足够证据回答具身问题。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31835",
-   "title": "POISE: Curvature-Aware Critic Regularization for Smooth Actor-Critic Control",
-   "title_zh": "POISE：面向平滑 Actor-Critic 控制的曲率感知 Critic 正则化",
-   "cat": "cs.RO",
-   "summary_zh": "通过正则化 critic 的动作梯度变化与曲率，抑制机器人控制中的动作高频振荡。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32357",
-   "title": "CriticJEPA: World Models Are Better Critics Than Optimizers",
-   "title_zh": "CriticJEPA：世界模型作为评判器优于作为优化器",
-   "cat": "cs.LG",
-   "summary_zh": "发现梯度规划会利用世界模型预测误差，让世界模型做评判器比做优化器更可靠。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33229",
-   "title": "Effect-Driven Skill Abstractions for Offline Reinforcement Learning",
-   "title_zh": "面向离线强化学习的效果驱动技能抽象",
-   "cat": "cs.RO",
-   "summary_zh": "学习由状态可达效果驱动而非动作聚类的离散技能，服务长程目标条件任务。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.31446",
-   "title": "Learning from Human Corrections through Temporal Preferences",
-   "title_zh": "通过时间偏好从人类纠正中学习",
-   "cat": "cs.RO",
-   "summary_zh": "利用人类介入的时机以及介入前后的行为，从纠正信号中学习偏好。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32493",
-   "title": "CoFiNav: VLM-Guided Coarse-to-Fine Semantic Navigation for Open-Ended Last-Mile UAV Delivery",
-   "title_zh": "CoFiNav：VLM 引导的开放式末端无人机配送由粗到细语义导航",
-   "cat": "cs.RO",
-   "summary_zh": "用 VLM 根据开放式语义描述，由粗到细地引导无人机完成末端配送导航。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31843",
-   "title": "Co-DRIS: Physics-Informed Predictive Belief and Variable-Impedance Learning for Reactive Catching under Coupled Uncertainty",
-   "title_zh": "Co-DRIS：耦合不确定性下反应式接球的物理信息预测信念与变阻抗学习",
-   "cat": "cs.RO",
-   "summary_zh": "以预测信念和变阻抗学习，应对感知与执行不确定性同时出现时的接球任务。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.34614",
-   "title": "Commit2Drive: Perception-Grounded Language Decisions as Commitments for Trajectory Planning in Vision-Language-Action Driving Models",
-   "title_zh": "Commit2Drive：以感知接地的语言决策作为承诺用于VLA驾驶模型的轨迹规划",
-   "cat": "cs.CV",
-   "summary_zh": "让VLA驾驶模型的语言决策作为承诺约束轨迹规划。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34597",
-   "title": "$μ$MPC: Microsecond-Scale Nonlinear and World Model Control from Edge to GPU via Koopman-Linearized Precompilation",
-   "title_zh": "μMPC：基于Koopman线性化预编译的微秒级非线性与世界模型控制",
-   "cat": "cs.RO",
-   "summary_zh": "用Koopman线性化预编译得到动作维度的QP，实现微秒级MPC。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.34115",
-   "title": "A Simple Yet Effective Agent for Open-World Aerial Object Search",
-   "title_zh": "面向开放世界空中目标搜索的简单有效 Agent",
-   "cat": "cs.CV",
-   "summary_zh": "SimpleUAV 基于冻结 VLM，免训练完成空中目标搜索。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33934",
-   "title": "Towards 360$^\\circ$ Embodied UAV Tracking Without Turning",
-   "title_zh": "迈向无需转向的 360° 具身无人机跟踪",
-   "cat": "cs.CV",
-   "summary_zh": "用全景感知跟踪目标，使无人机无需主动调整航向。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33407",
-   "title": "An Adversarial Multi-Agent Pursuit Game for Locomotor Agility Pretraining",
-   "title_zh": "用于运动敏捷性预训练的对抗式多智能体追逐游戏",
-   "cat": "cs.RO",
-   "summary_zh": "提出 MJTag 任务集，通过追逐逃避的联赛式自博弈让人形运动控制器涌现闪避、冲刺和擒抱策略。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.34020",
-   "title": "Ask to Land: Learning a Mask-Conditioned Open-Vocabulary Landing Policy via Differentiable Physics",
-   "title_zh": "Ask to Land：通过可微物理学习掩码条件的开放词汇降落策略",
-   "cat": "cs.RO",
-   "summary_zh": "冻结开放词汇分割前端，用可微物理训练控制策略，使四旋翼降落到语言指定的静止或移动平台。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.33911",
-   "title": "CoTAMP: Cooperative Task and Motion Planning for Quadruped Robots with Large Language Models",
-   "title_zh": "CoTAMP：基于大语言模型的四足机器人协作任务与运动规划",
-   "cat": "cs.RO",
-   "summary_zh": "LLM 与代码模块协作生成并校验多四足机器人协作运动，三个仿真场景 30 次试验全部得到运动学有效参考。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.33880",
-   "title": "Integration of Vision-Language-Action Control for Autonomous Forklift Unloading with Limited Real-World Data",
-   "title_zh": "在有限真实数据下集成 VLA 控制用于自主叉车卸货",
-   "cat": "cs.RO",
-   "summary_zh": "用 9.38 小时仿真数据加 0.8 小时真实演示微调预训练 VLA，72 次真机试验完成叉车卸货。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33739",
-   "title": "RegHarness: Regulating What Code-as-Policy Agents Keep from Steps to Skills",
-   "title_zh": "RegHarness：规范 Code-as-Policy 智能体从步骤到技能的保留内容",
-   "cat": "cs.RO",
-   "summary_zh": "为 Code-as-Policy 机器人智能体设计机制，控制单次执行内保留哪些动作、跨执行保留哪些代码修改。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.33705",
-   "title": "Lab2Sim: Agentic Generation of Interactive Laboratory Equipment from Operation Videos",
-   "title_zh": "Lab2Sim：从操作视频智能体式生成可交互实验室设备",
-   "cat": "cs.RO",
-   "summary_zh": "从操作视频出发，用智能体生成外观、结构和关节运动都忠实的实验室设备仿真资产。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30658",
-   "title": "Active Observation for Robust Visual Servoing in Robotic Manipulation",
-   "title_zh": "面向机器人操作中鲁棒视觉伺服的主动观测",
-   "cat": "cs.RO",
-   "summary_zh": "让双臂平台的一只手臂携带RGB-D相机作为主动观察者，在抓取接近阶段避免遮挡。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30195",
-   "title": "Quantization for Action, Execution for Deployment: Joint Precision and Execution Selection for World Action Models",
-   "title_zh": "面向行动的量化，面向部署的执行：世界动作模型的精度与执行联合选择",
-   "cat": "cs.CV",
-   "summary_zh": "为世界动作模型联合选择量化位宽与执行方式，兼顾任务表现与显存限制。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.29818",
-   "title": "How Should a Home Robot Update Its Memories When Human Routines Change?",
-   "title_zh": "人类作息改变时，家用机器人该如何更新记忆？",
-   "cat": "cs.RO",
-   "summary_zh": "研究家用机器人在人类作息变化后如何更新物品位置记忆而不抹掉旧经验。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.28616",
-   "title": "Fast World Planner: Advantage-Aware Action-Chunk Policy for Online Planning",
-   "title_zh": "Fast World Planner：面向在线规划的优势感知动作块策略",
-   "cat": "cs.RO",
-   "summary_zh": "提出 SWAN，让策略学习 MPPI 规划器完整的 H 步提案，减少规划迭代带来的延迟。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.30064",
-   "title": "How Latent Transition Geometry Matters for Planning in World Models",
-   "title_zh": "潜在转移几何如何影响世界模型中的规划",
-   "cat": "cs.LG",
-   "summary_zh": "以曲率正则作为干预，研究潜空间转移几何对世界模型多步规划效用的影响。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.29426",
-   "title": "Phase-Conditioned Action Contracts for Auditable Microsurgical Control",
-   "title_zh": "面向可审计显微外科控制的阶段条件动作契约",
-   "cat": "cs.RO",
-   "summary_zh": "用分阶段动作头加确定性动作契约生成任务空间指令，应对阶段间动作语义漂移。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.28387",
-   "title": "Knowing What You Carry: Scalable Physics-Anchored World Models for Robotic Planning with Liquid Payloads",
-   "title_zh": "知道你载着什么：面向液体载荷机器人规划的可扩展物理锚定世界模型",
-   "cat": "cs.RO",
-   "summary_zh": "为液体载荷的晃动设计既便宜又准确的物理锚定世界模型，用于 GPU 上批量候选运动评估。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33137",
-   "title": "Physicl Scenes: An Artist-created 3D Dataset for Learning Perception and Action",
-   "title_zh": "Physicl Scenes：用于感知与行动学习的艺术家创作 3D 数据集",
-   "cat": "cs.CV",
-   "summary_zh": "发布 6,499 个艺术家制作的 3D 场景，带物体与部件级语义标注，用于视觉与具身学习。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.32986",
-   "title": "CAPER: PartGround and PlanRefine for Reliable Manual-Guided Robotic Assembly Planning",
-   "title_zh": "CAPER：面向机器人装配规划的 PartGround 与 PlanRefine，实现可靠的手册引导",
-   "cat": "cs.RO",
-   "summary_zh": "通过零件对齐和证据精炼，让 VLM 依据装配手册生成零件编号一致的装配步骤。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.32216",
-   "title": "NativeDrive: Native Multimodal Foundations for Autonomous Driving",
-   "title_zh": "NativeDrive：面向自动驾驶的原生多模态基础模型",
-   "cat": "cs.CV",
-   "summary_zh": "为自动驾驶 VLA 引入结构化监督，避免视觉生成带来的外观重建开销。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32185",
-   "title": "OVOK: A Recursive Self-Improving Agentic Framework for Video-Based Articulated Robot State Estimation",
-   "title_zh": "OVOK：基于视频的关节机器人状态估计的递归自改进智能体框架",
-   "cat": "cs.RO",
-   "summary_zh": "智能体框架从视频中恢复关节机器人状态，无需已知内参且不针对单个机器人训练。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.32093",
-   "title": "MARGIN: A Risk-Aware Agent for Robot Program Refinement",
-   "title_zh": "MARGIN：面向机器人程序精炼的风险感知智能体",
-   "cat": "cs.RO",
-   "summary_zh": "用成功执行中的近失余量作为证据，让机器人编程智能体精炼控制程序。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.31844",
-   "title": "BendGS: Observation-Conditioned Gaussian Self-Modeling for Continuum Robots",
-   "title_zh": "BendGS：面向连续体机器人的观测条件高斯自建模",
-   "cat": "cs.RO",
-   "summary_zh": "用 3D Gaussian 从观测中预测连续体机器人的下一步 3D 形状、外观与末端位姿。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.31694",
-   "title": "CATWAY: Cost-sensitive agentic three-way robot decisions with calibrated language-model confidence",
-   "title_zh": "CATWAY：基于校准语言模型置信度的代价敏感三向机器人决策",
-   "cat": "cs.RO",
-   "summary_zh": "用损失矩阵和校准概率决定机器人执行、询问还是拒绝指令。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.33040",
-   "title": "At the Limit: Autonomous Vehicle Drifting under Generative Policies",
-   "title_zh": "极限边缘：生成式策略下的自动驾驶漂移",
-   "cat": "cs.RO",
-   "summary_zh": "对流策略做在线强化学习，用 SDE 采样探索，实现自动驾驶车辆漂移控制。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32937",
-   "title": "Self-Sensing Compliant Anthropomorphic Hand for Speed-Dictated Shared Force Control in Teleoperation",
-   "title_zh": "用于遥操作中速度主导共享力控制的自感知柔顺仿人手",
-   "cat": "cs.RO",
-   "summary_zh": "利用柔顺手指自身的形变感知抓握力，在无触觉传感器的视觉遥操作中调节抓力。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32582",
-   "title": "Design, Control, and Teleoperation of a Dexterous Robotic Hand with Soft-Rigid Hybrid Fingers",
-   "title_zh": "软硬混合手指灵巧机械手的设计、控制与遥操作",
-   "cat": "cs.RO",
-   "summary_zh": "把软硬混合手指扩展为五指肌腱驱动灵巧手，兼顾柔顺性与可控性。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.31925",
-   "title": "Learning When a Robot Should Ask For Help: Adaptive Intervention Requests in Human-Robot Teaming",
-   "title_zh": "学习机器人何时求助：人机协作中的自适应干预请求",
-   "cat": "cs.RO",
-   "summary_zh": "学习在导航失败风险与操作员负担之间权衡，决定何时向人类请求干预。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31676",
-   "title": "Exact Collision Gradients for Ellipsoids in Differentiable Simulation",
-   "title_zh": "可微仿真中椭球体的精确碰撞梯度",
-   "cat": "cs.RO",
-   "summary_zh": "研究椭球体碰撞，给出冲击时刻附近更可靠的精确梯度。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.34830",
-   "title": "Not all world models can doubt: how training objective and architecture shape epistemic uncertainty in JEPA and RSSM world models",
-   "title_zh": "并非所有世界模型都会怀疑：训练目标与架构如何影响 JEPA 与 RSSM 世界模型的认知不确定性",
-   "cat": "cs.LG",
-   "summary_zh": "比较 JEPA 与 RSSM 世界模型在认知不确定性上的差异及其成因。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.34745",
-   "title": "How Well Do Vision-Language Scene Graphs Serve as Memory for Embodied Question Answering?",
-   "title_zh": "视觉语言场景图作为具身问答记忆的效果如何？",
-   "cat": "cs.RO",
-   "summary_zh": "用可回答性指标衡量场景图记忆，基线仅恢复24.1%的可见物体类别。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34054",
-   "title": "CARE-WM: Same-Horizon Self-Conditioning with Constraint-Adaptive Regularization for Latent World Models",
-   "title_zh": "CARE-WM：面向潜在世界模型的同视野自条件与约束自适应正则",
-   "cat": "cs.LG",
-   "summary_zh": "改进潜在世界模型训练，使多步预测与目标距离更适合规划。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.34932",
-   "title": "MERLoc: Robust Robot Localization in Dynamic Environments with Pose-Based Retrieval over 3D Gaussian Splatting References",
-   "title_zh": "MERLoc：基于 3D Gaussian Splatting 参考的位姿检索，动态环境下的鲁棒机器人定位",
-   "cat": "cs.RO",
-   "summary_zh": "用单次 3DGS 扫描渲染稠密参考视图并按位姿检索，真实数据上位置 RMSE 降低 15-60%，Jetson Orin NX 上 5 Hz 运行。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.34658",
-   "title": "FeaXDrive2: Body-Scene Spatial Grounding for Feasibility-Aware Generative Driving",
-   "title_zh": "FeaXDrive2：面向可行性感知生成式驾驶的车身-场景空间对齐",
-   "cat": "cs.RO",
-   "summary_zh": "用车身角点构造空间查询并动态更新采样位置，NAVSIM 上碰撞减少 36.5%，PDMS 从 87.0 升至 88.8。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.34519",
-   "title": "AGLR: Attribute-Guided Latent Refinement for Fine-Grained Humanoid Motion Generation and Editing",
-   "title_zh": "AGLR：用于细粒度人形动作生成与编辑的属性引导隐空间精修",
-   "cat": "cs.RO",
-   "summary_zh": "用属性残差适配器对基础隐变量单次修正，实现人形动作的几何可控生成与编辑，500 帧编辑仅 9.1 ms。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.34287",
-   "title": "DataForgeVLA: Fully Synthetic Manipulation Demonstrations for Vision-Language-Action Training",
-   "title_zh": "DataForgeVLA：用于 VLA 训练的全合成操作演示",
-   "cat": "cs.RO",
-   "summary_zh": "用 LoRA 微调的 Cosmos-3 生成操作视频并恢复轨迹，得到 340 条合成演示，GR00T N1.6 微调后真机成功 16/20。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.33586",
-   "title": "DFLAT: Model-based Diffusion on Differentially Flat Spaces for Long-Horizon Trajectory Optimization",
-   "title_zh": "DFLAT：在微分平坦空间上做基于模型的扩散以优化长时程轨迹",
-   "cat": "cs.RO",
-   "summary_zh": "在微分平坦轨迹表示上直接做扩散规划，兼顾长时程规划的可扩展性与可行性。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.33560",
-   "title": "Skeptic: Grounding Failure Diagnosis for Robot Skill Discovery",
-   "title_zh": "Skeptic：面向机器人技能发现的落地式失败诊断",
-   "cat": "cs.RO",
-   "summary_zh": "诊断机器人技能发现中把失败程序误判为任务物理上不可行的问题，并比较两种应对方式。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30836",
-   "title": "Can Multimodal Fusion MakeSense for Embodied Vision in Degraded Sensing?",
-   "title_zh": "多模态融合能否让退化感知下的具身视觉更可靠？",
-   "cat": "cs.CV",
-   "summary_zh": "提出MakeSense融合框架，用私有流加共享瓶颈token避免加传感器反而增大误差的负融合。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.29454",
-   "title": "MobileNeTTT: a Lightweight DNN-based Time-To-Transit Estimator for Visual Navigation",
-   "title_zh": "MobileNeTTT：面向视觉导航的轻量级 DNN 通过时间估计器",
-   "cat": "cs.RO",
-   "summary_zh": "用轻量网络从单目相机估计通过时间（TTT），用于仿生移动机器人导航。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.28978",
-   "title": "World Models for Ocean Engineering: A Critical Review of Maritime Autonomy, Adaptive Latent Prediction, Digital Twins, and Biodiversity Monitoring",
-   "title_zh": "海洋工程中的世界模型：海事自主、自适应潜变量预测、数字孪生与生物多样性监测的批判性综述",
-   "cat": "cs.RO",
-   "summary_zh": "梳理海洋机器人世界模型的功能分类，聚焦 JEPA 及其测试时适应。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.31341",
-   "title": "EvoMisty: Building, Optimizing, and Evolving Capabilities on a Social Robot",
-   "title_zh": "EvoMisty：在社交机器人上构建、优化并演化能力",
-   "cat": "cs.RO",
-   "summary_zh": "让LLM在社交机器人上自动构建控制接口、按用户指标优化任务并复用已有能力。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.30928",
-   "title": "Personalization of a Commercial Powered Knee Prosthesis Under Clinically Realistic Conditions via Reinforcement Learning: A Feasibility Study",
-   "title_zh": "通过强化学习在临床真实条件下个性化商用动力膝关节假肢：可行性研究",
-   "cat": "cs.RO",
-   "summary_zh": "验证PICE强化学习调参方法能否在临床真实条件下个性化商用动力膝假肢。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.30133",
-   "title": "Value function based Reward shaping for safety in quadrupeds",
-   "title_zh": "基于价值函数的奖励塑形用于四足机器人安全",
-   "cat": "cs.RO",
-   "summary_zh": "提出基于价值函数的奖励塑形方法，缩短四足机器人安全强化学习的训练时间。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32967",
-   "title": "VidForce: Predicting Force-Aware Articulation by Observing Humans",
-   "title_zh": "VidForce：通过观察人类预测感知受力的关节运动",
-   "cat": "cs.CV",
-   "summary_zh": "从第三人称 RGB 视频估计交互轨迹和受力曲线，用学到的物理原型利用少量带力测量的数据。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.32765",
-   "title": "EviCraft: Can Minecraft Agents Find What They Cannot See?",
-   "title_zh": "EviCraft：Minecraft Agent 能找到看不见的东西吗？",
-   "cat": "cs.AI",
-   "summary_zh": "指出 Minecraft 语义工具可绕过可见性检验，提出证据闭合要求来评测 Agent 是否真的在搜索。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.31902",
-   "title": "MIFLOW: Dynamic Recent-Behavior Priors for Reference-Calibrated Online Flow-Policy Reinforcement Learning",
-   "title_zh": "MIFLOW：用动态近期行为先验校准参考的在线 Flow 策略强化学习",
-   "cat": "cs.LG",
-   "summary_zh": "用拟合近期行为的 flow matching 先验校准在线 Flow 策略的 actor-critic 学习。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32584",
-   "title": "An XR-Based System for Enhanced Spatial Awareness in Mobile Robot Teleoperation",
-   "title_zh": "面向移动机器人遥操作、增强空间感知的 XR 系统",
-   "cat": "cs.RO",
-   "summary_zh": "集成沉浸式视觉与触觉反馈的 XR 遥操作系统，并缓解晕动症。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32523",
-   "title": "AirLeg: A Robust and Accurate Self-Supervised Visual-Inertial-Leg SLAM System",
-   "title_zh": "AirLeg：鲁棒精确的自监督视觉-惯性-腿式 SLAM 系统",
-   "cat": "cs.RO",
-   "summary_zh": "自监督学习腿式里程计，与视觉和 IMU 融合，用于足式机器人定位。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.31488",
-   "title": "Embodied Neuro-symbolic AI: Making Robot Behavior Auditable, Safe, and Scalable",
-   "title_zh": "具身神经符号 AI：让机器人行为可审计、安全且可扩展",
-   "cat": "cs.RO",
-   "summary_zh": "指出端到端 VLA 在泛化、物理推理与可审计性上的不足，主张引入神经符号方法。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34925",
-   "title": "One Ocean, Many Tasks: A Data-Grounded Simulation Suite and Benchmark for Marine Robotics",
-   "title_zh": "一片海洋，多种任务：面向海洋机器人的数据驱动仿真套件与基准",
-   "cat": "cs.RO",
-   "summary_zh": "OneOcean 基于真实海洋数据构建统一的仿真套件与海洋机器人基准。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33991",
-   "title": "QK-Bench: Benchmarking Quantitative Kinematic Understanding for Dynamic Spatial Intelligence",
-   "title_zh": "QK-Bench：评测动态空间智能的定量运动学理解",
-   "cat": "cs.RO",
-   "summary_zh": "评测模型对速度、接近与相遇等定量运动学量的理解。",
-   "direction": "H"
   }
  ],
  "excluded": [
@@ -3789,6 +2605,14 @@
    "summary_zh": "把种植者的反馈纳入推荐流程，为农场给出可部署的氮肥用量建议。"
   },
   {
+   "id": "2611.31038",
+   "title": "Boltz-Flow: Generating High-Quality Robot Action from Boltzmann Machine",
+   "title_zh": "Boltz-Flow：用玻尔兹曼机生成高质量机器人动作",
+   "cat": "cs.AI",
+   "summary_zh": "用玻尔兹曼机替代固定高斯源分布，增强流匹配策略在多任务下的表达能力。",
+   "direction": "B"
+  },
+  {
    "id": "2611.31036",
    "title": "Déjà VAE: When Do Autoencoder Traces Reveal Generated Images?",
    "title_zh": "Déjà VAE：自编码器痕迹何时能暴露生成图像",
@@ -4132,6 +2956,14 @@
    "summary_zh": "把约 1700 条法规要求对应到报告段落，由 LLM 推荐相关段落并让审计员判定合规。"
   },
   {
+   "id": "2611.30836",
+   "title": "Can Multimodal Fusion MakeSense for Embodied Vision in Degraded Sensing?",
+   "title_zh": "多模态融合能否让退化感知下的具身视觉更可靠？",
+   "cat": "cs.CV",
+   "summary_zh": "提出MakeSense融合框架，用私有流加共享瓶颈token避免加传感器反而增大误差的负融合。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.30826",
    "title": "Task-Dependent Linguistic Measures in Aphasia Discourse: A Comparative Analysis of Narrative, Descriptive, and Procedural Speech",
    "title_zh": "失语症话语中与任务相关的语言学指标：叙述、描述与程序性话语的比较分析",
@@ -4314,6 +3146,14 @@
    "summary_zh": "把以物体为中心的表示与可微逻辑网络结合，提升抽象视觉推理的泛化。"
   },
   {
+   "id": "2611.30734",
+   "title": "EgoDepth-Bench: Benchmarking Metric Depth for Egocentric Manipulation",
+   "title_zh": "EgoDepth-Bench：评测第一视角操作中的度量深度",
+   "cat": "cs.CV",
+   "summary_zh": "发布覆盖37个环境、94万余个样本的第一视角多视角度量深度基准，毫米级几何精度。",
+   "direction": "H"
+  },
+  {
    "id": "2611.30733",
    "title": "Can Cities Have Personalities? Introducing the SCD City Personality Assessment",
    "title_zh": "城市有性格吗？提出SCD城市性格评估",
@@ -4447,11 +3287,35 @@
    "summary_zh": "APEC基于求解日志诊断每个实例的瓶颈，为MIP求解器做可解释的逐实例调参。"
   },
   {
+   "id": "2611.30666",
+   "title": "Zhengrong: World Models with Pole-Based Action-Response Factorization for Direct Visual Planning",
+   "title_zh": "Zhengrong：基于极点的动作响应分解的世界模型，用于直接视觉规划",
+   "cat": "cs.CV",
+   "summary_zh": "把潜在轨迹分解为初始锚点、自由响应和动作延迟响应，并用共享的稳定共轭极点组控制响应。",
+   "direction": "D"
+  },
+  {
    "id": "2611.30662",
    "title": "WeMM-Ecom: Advancing Multimodal Content Understanding for WeChat E-Commerce",
    "title_zh": "WeMM-Ecom：推进微信电商的多模态内容理解",
    "cat": "cs.AI",
    "summary_zh": "发布从0.8B稠密到35B MoE（3B激活）共五个规格的电商多模态大模型，兼顾通用性能。"
+  },
+  {
+   "id": "2611.30659",
+   "title": "ActField: Learning Action Effects as Continuous-Time Latent Dynamics",
+   "title_zh": "ActField：把动作效应学习为连续时间潜在动力学",
+   "cat": "cs.AI",
+   "summary_zh": "提出连续时间JEPA世界模型，用动作条件向量场在物理时间上积分来显式建模潜状态演化。",
+   "direction": "D"
+  },
+  {
+   "id": "2611.30658",
+   "title": "Active Observation for Robust Visual Servoing in Robotic Manipulation",
+   "title_zh": "面向机器人操作中鲁棒视觉伺服的主动观测",
+   "cat": "cs.RO",
+   "summary_zh": "让双臂平台的一只手臂携带RGB-D相机作为主动观察者，在抓取接近阶段避免遮挡。",
+   "direction": "B"
   },
   {
    "id": "2611.30646",
@@ -4557,6 +3421,14 @@
    "title_zh": "JaxNaviSim：面向海事导航的GPU加速、数据驱动模拟器与学习基准",
    "cat": "cs.AI",
    "summary_zh": "给出基于AIS数据、逐步交互的港口船舶导航模拟器和学习基准。"
+  },
+  {
+   "id": "2611.30597",
+   "title": "ViDiHand2: Unifying Video Diffusion Priors and Hand Geometry for 3D Hand Motion Reconstruction in the Wild",
+   "title_zh": "ViDiHand2：融合视频扩散先验与手部几何的野外3D手部运动重建",
+   "cat": "cs.CV",
+   "summary_zh": "用几何驱动方式改写视频扩散模型的手部深度估计，从人类第一视角视频恢复度量3D手部运动。",
+   "direction": "E"
   },
   {
    "id": "2611.30593",
@@ -5378,6 +4250,14 @@
    "summary_zh": "在校准的四类标签误差下，对九个地理空间基础模型编码器做微调基准评测。"
   },
   {
+   "id": "2611.30209",
+   "title": "RoboAda: Adapting Frozen Robot Policies at Test Time to Physics They Cannot See",
+   "title_zh": "RoboAda：在测试时让冻结的机器人策略适应其看不见的物理特性",
+   "cat": "cs.RO",
+   "summary_zh": "在测试时让冻结的机器人策略适应图像中不可见的质量、关节等物理变化。",
+   "direction": "F"
+  },
+  {
    "id": "2611.31318",
    "title": "Scoring Recovery-Time Agent Security: Proposals, Effects, and Retry Instructions",
    "title_zh": "恢复阶段 Agent 安全评分：提议、效果与重试指令",
@@ -5434,6 +4314,14 @@
    "summary_zh": "解耦临床文本阅读与冻结的多语言概念空间，无需标注即可切换临床编码本。"
   },
   {
+   "id": "2611.30195",
+   "title": "Quantization for Action, Execution for Deployment: Joint Precision and Execution Selection for World Action Models",
+   "title_zh": "面向行动的量化，面向部署的执行：世界动作模型的精度与执行联合选择",
+   "cat": "cs.CV",
+   "summary_zh": "为世界动作模型联合选择量化位宽与执行方式，兼顾任务表现与显存限制。",
+   "direction": "D"
+  },
+  {
    "id": "2611.30193",
    "title": "Visual-RFT++: Extending Visual Reinforcement Fine-Tuning to Multimodal Tool Use",
    "title_zh": "Visual-RFT++：将视觉强化微调扩展到多模态工具使用",
@@ -5483,6 +4371,14 @@
    "summary_zh": "把基础模型规划器当作不可信黑盒，在安全约束下做月球机器人偶然规划。"
   },
   {
+   "id": "2611.30177",
+   "title": "Resource-Aware VLA-MPC Co-Location for Efficient Embodied AI",
+   "title_zh": "面向高效具身 AI 的资源感知 VLA-MPC 协同部署",
+   "cat": "cs.AR",
+   "summary_zh": "Dubot 在单块移动 GPU 上调度 VLA 推理与 MPC，减少控制截止期错过。",
+   "direction": "A"
+  },
+  {
    "id": "2611.30176",
    "title": "OmniSenMo: A Unified Multisensory Language Model for Generalizable Human Motion Estimation, Understanding, and Prediction",
    "title_zh": "OmniSenMo：面向通用人体运动估计、理解与预测的统一多传感语言模型",
@@ -5495,6 +4391,14 @@
    "title_zh": "自信地迷失：光子匮乏下稠密视觉 SLAM 的静默失效与边缘部署",
    "cat": "cs.RO",
    "summary_zh": "发现学习式稠密 SLAM 在极暗下仍自信输出错误几何，并分析边缘部署问题。"
+  },
+  {
+   "id": "2611.30171",
+   "title": "Audio-Visual Rearrangement",
+   "title_zh": "视听重排",
+   "cat": "cs.CV",
+   "summary_zh": "提出让 Agent 听取口头请求、取物并送达说话人的视听重排任务与数据集。",
+   "direction": "C"
   },
   {
    "id": "2611.30170",
@@ -5574,6 +4478,14 @@
    "summary_zh": "从骨干、读出头等三种接口分析持续学习中遗忘发生的位置。"
   },
   {
+   "id": "2611.30149",
+   "title": "LeadVLA: Learning Follower-Aware Route Execution for Robot Leading",
+   "title_zh": "LeadVLA：面向机器人带领的跟随者感知路径执行学习",
+   "cat": "cs.RO",
+   "summary_zh": "保留显式路径参考，并学习步速与残差来适应跟随者的机器人带领策略。",
+   "direction": "A"
+  },
+  {
    "id": "2611.30142",
    "title": "Separating Protocol Effects from Spatio-Temporal Evidence in Person Re-Identification Re-Ranking",
    "title_zh": "行人重识别重排序中协议效应与时空证据的分离",
@@ -5623,6 +4535,14 @@
    "summary_zh": "利用跨语言词义对等对齐新增词嵌入，减少多语言词表扩展带来的参数。"
   },
   {
+   "id": "2611.30120",
+   "title": "AxE: Benchmarking Agent-Environment Generalization of Video World Models via Grounded Events",
+   "title_zh": "AxE：基于接地事件评测视频世界模型的 Agent-环境泛化",
+   "cat": "cs.CV",
+   "summary_zh": "提出 AxE 基准，评测视频世界模型在新的 Agent 与环境组合下的泛化。",
+   "direction": "D"
+  },
+  {
    "id": "2611.30119",
    "title": "Could This BE Any More Wrong? Teaching VLMs to Know What They Don't Know in Document Extraction",
    "title_zh": "教 VLM 知道自己不知道：文档抽取中的置信度估计",
@@ -5656,6 +4576,14 @@
    "title_zh": "热红外引导的低光无人机图像增强：可靠性感知引导网络与统一基准",
    "cat": "cs.CV",
    "summary_zh": "用可靠性感知的热红外引导增强夜间无人机可见光图像，并提供统一基准。"
+  },
+  {
+   "id": "2611.30111",
+   "title": "RoboThink: Let the Agent Think, Let the Policy Act",
+   "title_zh": "RoboThink：让 Agent 思考，让策略行动",
+   "cat": "cs.RO",
+   "summary_zh": "让推理 Agent 在机器人执行过程中纠正偏差，而不只是下达新指令。",
+   "direction": "A"
   },
   {
    "id": "2611.30106",
@@ -5698,6 +4626,14 @@
    "title_zh": "构造性相关：端点选择与蛋白筛选的验证",
    "cat": "cs.AI",
    "summary_zh": "检验微型化蛋白筛选测得的金属亲和力能否迁移到固定化稀土分离场景。"
+  },
+  {
+   "id": "2611.30083",
+   "title": "MotionServe: Efficient Multi-Robot Serving by Exploiting Robot Execution Slack",
+   "title_zh": "MotionServe：利用机器人执行余量实现高效多机器人推理服务",
+   "cat": "cs.RO",
+   "summary_zh": "利用动作分块的执行余量，让多个机器人共享 GPU 并发服务各自的 VLA 策略。",
+   "direction": "A"
   },
   {
    "id": "2611.30078",
@@ -5796,6 +4732,14 @@
    "title_zh": "SWAM：面向多智能体 3D 环境的状态感知世界动作模型",
    "cat": "cs.AI",
    "summary_zh": "在交互式世界模型中显式建模视野外 NPC 的状态，用于多智能体 3D 场景生成。"
+  },
+  {
+   "id": "2611.30041",
+   "title": "Spiking World-Action Models for Robotic Manipulation",
+   "title_zh": "面向机器人操作的脉冲世界动作模型",
+   "cat": "cs.RO",
+   "summary_zh": "用脉冲神经网络构建稀疏、低功耗的世界动作模型，便于部署到机器人。",
+   "direction": "D"
   },
   {
    "id": "2611.30040",
@@ -6127,6 +5071,14 @@
    "summary_zh": "分析欧盟、加州和中国的 AI 监管如何应对世界模型带来的挑战。"
   },
   {
+   "id": "2611.29897",
+   "title": "Motion Mamba 2.0: Autoregressive Diffusion Mamba for Long-Horizon Humanoid Control",
+   "title_zh": "Motion Mamba 2.0：面向长程人形控制的自回归扩散 Mamba",
+   "cat": "cs.RO",
+   "summary_zh": "基于 Mamba 的根-躯干扩散架构，实现长程实时可控动作生成。",
+   "direction": "G"
+  },
+  {
    "id": "2611.29896",
    "title": "Segment Anything In-Context via Visual Demonstrations",
    "title_zh": "通过视觉示例分割万物：上下文分割",
@@ -6211,6 +5163,14 @@
    "summary_zh": "提出基准和指标，衡量开放词表检测器对文本提示用词变化的敏感程度。"
   },
   {
+   "id": "2611.29850",
+   "title": "Ego2Wrist: Bootstrapping Wrist-View Synthesis from Egocentric Video",
+   "title_zh": "Ego2Wrist：从第一人称视频引导合成腕部视角",
+   "cat": "cs.CV",
+   "summary_zh": "从头戴第一人称视频合成同步的腕部相机视角，用于机器人操作数据。",
+   "direction": "E"
+  },
+  {
    "id": "2611.29847",
    "title": "MobileGrail: Learning Compact Guardrails for On-Device deployable Mobile GUI Agent Safety",
    "title_zh": "MobileGrail：学习可端侧部署的紧凑护栏以保障移动 GUI Agent 安全",
@@ -6223,6 +5183,14 @@
    "title_zh": "时间残差：向预训练语言模型快速有效地改装潜在反馈",
    "cat": "cs.CL",
    "summary_zh": "提出第二条残差流，把隐状态跨 token 反馈回预训练语言模型。"
+  },
+  {
+   "id": "2611.29839",
+   "title": "Dynamics Forcing: Mitigating Error Accumulation in Causal Video World Models",
+   "title_zh": "Dynamics Forcing：缓解因果视频世界模型的误差累积",
+   "cat": "cs.CV",
+   "summary_zh": "改进训练方式，缓解因果视频世界模型逐块生成时的误差累积。",
+   "direction": "D"
   },
   {
    "id": "2611.29838",
@@ -6265,6 +5233,14 @@
    "title_zh": "Vibe Coding 能生成无障碍网站吗：LLM 编码 Agent 与技能的实证研究",
    "cat": "cs.SE",
    "summary_zh": "评估 LLM 编码 Agent 生成的网站在无障碍方面的缺陷。"
+  },
+  {
+   "id": "2611.29818",
+   "title": "How Should a Home Robot Update Its Memories When Human Routines Change?",
+   "title_zh": "人类作息改变时，家用机器人该如何更新记忆？",
+   "cat": "cs.RO",
+   "summary_zh": "研究家用机器人在人类作息变化后如何更新物品位置记忆而不抹掉旧经验。",
+   "direction": "Z"
   },
   {
    "id": "2611.29815",
@@ -6594,6 +5570,14 @@
    "title_zh": "通过风格条件改写降低学生文本的作者归属识别风险",
    "cat": "cs.CL",
    "summary_zh": "分别控制内容、结构和风格来改写学生论坛帖子，在保留分析价值的同时降低可识别性。"
+  },
+  {
+   "id": "2611.29637",
+   "title": "TASC: Time-to-Collision Anticipation and Selective Crowd Attention for Non-Holonomic Service Robots",
+   "title_zh": "TASC：面向非完整约束服务机器人的碰撞时间预判与选择性人群注意力",
+   "cat": "cs.RO",
+   "summary_zh": "为非完整约束服务机器人设计碰撞时间预判与选择性注意力，用于拥挤人群中的导航。",
+   "direction": "C"
   },
   {
    "id": "2611.29635",
@@ -6930,6 +5914,14 @@
    "title_zh": "PAWP-TTS：用于紧凑英语-尼泊尔语双语语音合成的音素感知权重编程",
    "cat": "cs.CL",
    "summary_zh": "面向英语、尼泊尔语及混合语的紧凑非自回归 TTS，推理时无需语言模型。"
+  },
+  {
+   "id": "2611.29454",
+   "title": "MobileNeTTT: a Lightweight DNN-based Time-To-Transit Estimator for Visual Navigation",
+   "title_zh": "MobileNeTTT：面向视觉导航的轻量级 DNN 通过时间估计器",
+   "cat": "cs.RO",
+   "summary_zh": "用轻量网络从单目相机估计通过时间（TTT），用于仿生移动机器人导航。",
+   "direction": "C"
   },
   {
    "id": "2611.29450",
@@ -7933,6 +6925,14 @@
    "summary_zh": "在冻结的单目手部重建先验上对齐多视角预测，使各视角网格在尺度和位置上一致。"
   },
   {
+   "id": "2611.28978",
+   "title": "World Models for Ocean Engineering: A Critical Review of Maritime Autonomy, Adaptive Latent Prediction, Digital Twins, and Biodiversity Monitoring",
+   "title_zh": "海洋工程中的世界模型：海事自主、自适应潜变量预测、数字孪生与生物多样性监测的批判性综述",
+   "cat": "cs.RO",
+   "summary_zh": "梳理海洋机器人世界模型的功能分类，聚焦 JEPA 及其测试时适应。",
+   "direction": "D"
+  },
+  {
    "id": "2611.28972",
    "title": "Learning from Another Angle: Rotation-Based Test-Time Training for Multimodal Large Language Models",
    "title_zh": "换个角度学习：多模态大语言模型的旋转式测试时训练",
@@ -8059,6 +7059,14 @@
    "summary_zh": "在固定 token 预算下显式保留运动学信号，压缩人体运动序列。"
   },
   {
+   "id": "2611.28919",
+   "title": "When Do Better Visual World Models Make Better Plans? Decision-Aligned Selection for Latent Planning",
+   "title_zh": "更好的视觉世界模型何时带来更好的规划？面向潜空间规划的决策对齐选择",
+   "cat": "cs.AI",
+   "summary_zh": "提出决策相关残差 DRR，说明候选排序而非逐个预测精度决定规划效果。",
+   "direction": "D"
+  },
+  {
    "id": "2611.28917",
    "title": "Div3DAfford: Diverse 3D affordance grounding",
    "title_zh": "Div3DAfford：多样化三维可供性定位",
@@ -8148,6 +7156,14 @@
    "title_zh": "SENSA：基于个体化被试状态迁移与适应的视觉到大脑生成",
    "cat": "cs.CV",
    "summary_zh": "从视觉刺激生成神经响应，并在少量校准数据下实现跨被试泛化。"
+  },
+  {
+   "id": "2611.28871",
+   "title": "KineState-SWAM: A Surgical World Action Model with Explicit Kinematics and Causal Interaction Dynamics",
+   "title_zh": "KineState-SWAM：显式运动学与因果交互动力学的手术世界动作模型",
+   "cat": "cs.CV",
+   "summary_zh": "用持久交互状态耦合动作预测与视频生成，区分器械运动与组织响应。",
+   "direction": "D"
   },
   {
    "id": "2611.28860",
@@ -8309,6 +7325,14 @@
    "title_zh": "HighwayVerse：面向高速公路基础设施异常理解的检查链 Benchmark",
    "cat": "cs.CV",
    "summary_zh": "构建覆盖路面、护栏、防眩板和排水系统的逐阶段检查链，评测多模态大模型。"
+  },
+  {
+   "id": "2611.28796",
+   "title": "NavDecision: Parallel Multi-Step Action Prediction with Persistent Self-Referential Learning for Vision-and-Language Navigation",
+   "title_zh": "NavDecision：面向视觉语言导航的并行多步动作预测与持续自参照学习",
+   "cat": "cs.CV",
+   "summary_zh": "并行预测多步动作分布，降低视觉语言导航模型逐 token 解码的推理开销。",
+   "direction": "C"
   },
   {
    "id": "2611.28795",
@@ -8626,6 +7650,14 @@
    "summary_zh": "用决策模型调度测试、修复与重新生成，减少无参考测试平台时的 RTL 生成开销。"
   },
   {
+   "id": "2611.28666",
+   "title": "RecallWorld: Episodic Memory for Persistent Embodied Video World Models",
+   "title_zh": "RecallWorld：面向持久具身视频世界模型的情景记忆",
+   "cat": "cs.CV",
+   "summary_zh": "为视频世界模型加入情景记忆，使重访场景时保持几何与外观一致。",
+   "direction": "D"
+  },
+  {
    "id": "2611.28665",
    "title": "Seeing Right, Writing Wrong: Where Short Chain-of-Thought Breaks Spatial VQA",
    "title_zh": "看对写错：短思维链在哪里破坏了空间 VQA",
@@ -8759,6 +7791,14 @@
    "summary_zh": "用 LLM 智能体写改规格、EDA 工具判定接受与否，构建五级 Verilog 数据集。"
   },
   {
+   "id": "2611.28616",
+   "title": "Fast World Planner: Advantage-Aware Action-Chunk Policy for Online Planning",
+   "title_zh": "Fast World Planner：面向在线规划的优势感知动作块策略",
+   "cat": "cs.RO",
+   "summary_zh": "提出 SWAN，让策略学习 MPPI 规划器完整的 H 步提案，减少规划迭代带来的延迟。",
+   "direction": "F"
+  },
+  {
    "id": "2611.28613",
    "title": "Internalized Experience: How Training Data Shapes Memory Formation in LLMs",
    "title_zh": "内化的经验：训练数据如何塑造 LLM 的记忆形成",
@@ -8848,6 +7888,14 @@
    "title_zh": "MedCoast：面向测试时生物医学问答的推理轨迹语义抽象",
    "cat": "cs.CL",
    "summary_zh": "把采样的思维链聚类成紧凑空间做结构化过程监督，降低测试时搜索的冗余。"
+  },
+  {
+   "id": "2611.28585",
+   "title": "AsyncMixVLA: Runtime Asynchronous Robot Policy Switching for Adaptation to Dynamic Environments",
+   "title_zh": "AsyncMixVLA：面向动态环境自适应的运行时异步机器人策略切换",
+   "cat": "cs.RO",
+   "summary_zh": "在 VLA 推理中异步切换互补策略，应对执行中物体移动等扰动。",
+   "direction": "A"
   },
   {
    "id": "2611.28584",
@@ -9058,6 +8106,14 @@
    "title_zh": "反向缝雕：面向固定芯片面积布局布线的结构化空白预处理",
    "cat": "cs.AR",
    "summary_zh": "把空白重新分配成贯穿核心区的低密度缝，在不改面积和利用率下改善布线线长。"
+  },
+  {
+   "id": "2611.28509",
+   "title": "AlpaSafe: Risk-Aware Trajectory Selection for Vision-Language-Action Models in Autonomous Driving",
+   "title_zh": "AlpaSafe：面向自动驾驶视觉语言动作模型的风险感知轨迹选择",
+   "cat": "cs.RO",
+   "summary_zh": "复用冻结驾驶 VLA 的场景表示，在候选轨迹中选出风险更低的一条执行。",
+   "direction": "A"
   },
   {
    "id": "2611.28508",
@@ -9326,6 +8382,14 @@
    "summary_zh": "在 3 个数据集、7 种架构上系统分析 EEG 模型遭受成员推断攻击的影响因素。"
   },
   {
+   "id": "2611.28350",
+   "title": "Two Actions from One State: Fork Futures Teach JEPA World Models to Compare",
+   "title_zh": "同一状态下的两个动作：分叉未来教会 JEPA 世界模型做比较",
+   "cat": "cs.CV",
+   "summary_zh": "用同一还原状态下执行两个动作的结果差异补充数据，解决 JEPA 世界模型无法比较反事实动作的问题。",
+   "direction": "D"
+  },
+  {
    "id": "2611.28349",
    "title": "Grammar-as-a-Drafter: More Tokens per Speculative Decoding Step on Grammar-Constrained Structured Outputs",
    "title_zh": "Grammar-as-a-Drafter：语法约束结构化输出下每步投机解码生成更多 token",
@@ -9380,6 +8444,14 @@
    "title_zh": "点击并计数：类别无关目标计数的多模态原型适配",
    "cat": "cs.CV",
    "summary_zh": "用视觉示例、文本描述或两者结合来指定目标，做类别无关的密度式计数。"
+  },
+  {
+   "id": "2611.28319",
+   "title": "Learning a Food World Model That Predicts the Next State from Production Data",
+   "title_zh": "从生产数据学习食物世界模型以预测下一状态",
+   "cat": "cs.RO",
+   "summary_zh": "基于 61773 次生产取料数据，预测取料后的料堆高度图与取出质量。",
+   "direction": "D"
   },
   {
    "id": "2611.28318",
@@ -9816,6 +8888,14 @@
    "summary_zh": "用时间分桶处理延迟反馈、辅助任务缓解稀疏，在私有数据集和 Criteo 上做 CVR 预测。"
   },
   {
+   "id": "2611.30636",
+   "title": "ABI: Actor-Free Behavior-Induced Representations for Zero-Shot Test-Time Guidance",
+   "title_zh": "ABI：无 Actor 的行为诱导表征，用于零样本测试时引导",
+   "cat": "cs.RO",
+   "summary_zh": "利用数据采集行为下动作相对价值基本保持的观察，免去 actor 依赖以引导行为克隆策略泛化到新任务。",
+   "direction": "F"
+  },
+  {
    "id": "2611.30635",
    "title": "Robust Mixture Regressions and EM Algorithms via the Log-Truncated Likelihood",
    "title_zh": "基于对数截断似然的稳健混合回归与 EM 算法",
@@ -10019,6 +9099,14 @@
    "summary_zh": "引入安全引导策略约束，缓解离策略安全强化学习中拉格朗日乘子引起的震荡。"
   },
   {
+   "id": "2611.30264",
+   "title": "Skill-Adaptive Noise Scheduling for Diffusion Policies",
+   "title_zh": "扩散策略的技能自适应噪声调度",
+   "cat": "cs.RO",
+   "summary_zh": "为分层技能学习中的扩散策略按技能学习噪声调度，提升接触密集型灵巧操作表现。",
+   "direction": "B"
+  },
+  {
    "id": "2611.30255",
    "title": "Operator-Valued Q-Learning: Compositional Bellman Recursions for Order-Sensitive Decision Making",
    "title_zh": "算子值 Q 学习：面向顺序敏感决策的组合式 Bellman 递归",
@@ -10136,6 +9224,14 @@
    "title_zh": "诊断精度不等于部署价值：材料发现中基础 MLIP 的决策对齐可靠性评估",
    "cat": "cs.LG",
    "summary_zh": "指出不确定性等可靠性指标与下游材料筛选决策不一致，并提出决策对齐的评估。"
+  },
+  {
+   "id": "2611.30064",
+   "title": "How Latent Transition Geometry Matters for Planning in World Models",
+   "title_zh": "潜在转移几何如何影响世界模型中的规划",
+   "cat": "cs.LG",
+   "summary_zh": "以曲率正则作为干预，研究潜空间转移几何对世界模型多步规划效用的影响。",
+   "direction": "D"
   },
   {
    "id": "2611.30062",
@@ -10299,6 +9395,14 @@
    "summary_zh": "提供统一的 Python 库，覆盖不确定性的表示、量化与评估。"
   },
   {
+   "id": "2611.29759",
+   "title": "What Should World Models Plan Over? Learning Geometry-Aligned Representations of Body Motion",
+   "title_zh": "世界模型应该在什么上做规划？学习几何对齐的身体运动表示",
+   "cat": "cs.LG",
+   "summary_zh": "提出 MotionPort，用身体轨迹的低维潜表示提升世界模型的动力学预测与长程规划。",
+   "direction": "D"
+  },
+  {
    "id": "2611.29756",
    "title": "Mitigating Nested GTP Attacks: A Closed-Loop eBPF Defense for 5G and Beyond Networks",
    "title_zh": "缓解嵌套 GTP 攻击：面向 5G 及后续网络的闭环 eBPF 防御",
@@ -10425,6 +9529,14 @@
    "summary_zh": "用 Fisher-Rao 度量衡量各节点游走分布的收缩，作为 MPNN 过平滑的诊断指标。"
   },
   {
+   "id": "2611.29518",
+   "title": "Reset Dependence Is Embodied: Training Protocol Changes Which Morphologies Appear Optimal",
+   "title_zh": "重置依赖是具身的：训练协议改变哪种形态看起来最优",
+   "cat": "cs.RO",
+   "summary_zh": "在 100 个 UNIMAL 形态上改变 PPO 的重置阈值，发现机器人形态排名随训练协议改变。",
+   "direction": "H"
+  },
+  {
    "id": "2611.29510",
    "title": "GeoFusion: An Uncertain Machine Learning Framework for Sensor Fusion",
    "title_zh": "GeoFusion：用于传感器融合的不确定机器学习框架",
@@ -10437,6 +9549,14 @@
    "title_zh": "消失初始化使对角张量梯度流变为贪心匹配",
    "cat": "cs.LG",
    "summary_zh": "证明 CP 分解在消失初始化下的梯度流极限等价于按激活时钟排序的贪心二部匹配。"
+  },
+  {
+   "id": "2611.29453",
+   "title": "What Test-Time Training Corrects in Latent World Models? A Slow-Fast Approach",
+   "title_zh": "测试时训练在潜空间世界模型中纠正了什么？一种慢快方法",
+   "cat": "cs.RO",
+   "summary_zh": "把世界模型预测误差分解为动作共有的偏移和依赖动作的部分，发现测试时训练主要跟踪前者。",
+   "direction": "D"
   },
   {
    "id": "2611.29452",
@@ -10458,6 +9578,14 @@
    "title_zh": "带切换代价的最优多臂老虎机：(T/log T)^{2/3} 遗憾",
    "cat": "cs.LG",
    "summary_zh": "证明带切换代价的对抗性老虎机极小极大遗憾为 Θ(K^{1/3}T^{2/3}/log^{2/3}(2+T/K))。"
+  },
+  {
+   "id": "2611.29426",
+   "title": "Phase-Conditioned Action Contracts for Auditable Microsurgical Control",
+   "title_zh": "面向可审计显微外科控制的阶段条件动作契约",
+   "cat": "cs.RO",
+   "summary_zh": "用分阶段动作头加确定性动作契约生成任务空间指令，应对阶段间动作语义漂移。",
+   "direction": "B"
   },
   {
    "id": "2611.29418",
@@ -11125,6 +10253,14 @@
    "summary_zh": "形式化需求侧与供给侧两个图相互依赖的共演化图博弈，并用耦合感知RL求解。"
   },
   {
+   "id": "2611.28345",
+   "title": "Toward Adversarially Robust World Models",
+   "title_zh": "迈向对抗鲁棒的世界模型",
+   "cat": "cs.LG",
+   "summary_zh": "研究潜空间动力学世界模型的对抗脆弱性，面向规划与策略学习提升其鲁棒性。",
+   "direction": "D"
+  },
+  {
    "id": "2611.28342",
    "title": "Which Loans, Not How Many: Exactly Level-Invariant, Anytime-Valid Monitoring of Deployed Risk Models",
    "title_zh": "是哪些贷款而非多少笔：已部署风险模型的精确水平不变、随时有效监控",
@@ -11172,6 +10308,14 @@
    "title_zh": "以智能为奠基原则：面向人工智能的O-RAN架构及其参考实现",
    "cat": "cs.NI",
    "summary_zh": "梳理O-RAN中AI/ML从开放规范、参考实现到6G设计的演进。"
+  },
+  {
+   "id": "2611.28274",
+   "title": "Neural Fidelity Calibration for Informative Sim-to-Real Adaptation",
+   "title_zh": "面向信息量充足的仿真到真实适应的神经保真度校准",
+   "cat": "cs.RO",
+   "summary_zh": "用神经方法校准仿真器，减少依赖领域随机化来弥合机器人RL的仿真到真实差距。",
+   "direction": "D"
   },
   {
    "id": "2611.28272",
@@ -11244,11 +10388,51 @@
    "summary_zh": "为把顶层状态反馈到输入的Transformer设计投机解码，解决草稿验证依赖前一位置顶层状态的问题。"
   },
   {
+   "id": "2611.31205",
+   "title": "ACAP: Asynchronous Coding Agents for Efficient Robot Control",
+   "title_zh": "ACAP：用于高效机器人控制的异步编程智能体",
+   "cat": "cs.RO",
+   "summary_zh": "把一台机器人组织成一队持续运行的异步编程智能体，避免单个智能体拖慢相互独立的工作。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.31341",
+   "title": "EvoMisty: Building, Optimizing, and Evolving Capabilities on a Social Robot",
+   "title_zh": "EvoMisty：在社交机器人上构建、优化并演化能力",
+   "cat": "cs.RO",
+   "summary_zh": "让LLM在社交机器人上自动构建控制接口、按用户指标优化任务并复用已有能力。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.31054",
    "title": "Completing analytical conversion scheme among DH, Hayati, CPC and POE models for manipulator calibration",
    "title_zh": "补全DH、Hayati、CPC与POE模型之间的解析转换方案用于机械臂标定",
    "cat": "cs.RO",
    "summary_zh": "给出四种机械臂运动学模型之间的解析转换算法，并研究其对标定性能的作用。"
+  },
+  {
+   "id": "2611.31053",
+   "title": "ReWeave: Emergent Physical Task Topologies for Embodied Harness Optimization and Cross-Task Meta-Distillation",
+   "title_zh": "ReWeave：用涌现的物理任务拓扑做具身Harness优化与跨任务元蒸馏",
+   "cat": "cs.RO",
+   "summary_zh": "从交互中提取物理前置条件构成任务拓扑，引导长程具身任务的Harness优化与迁移。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.31037",
+   "title": "SurgeCount: A Protocol-Guided Composition Harness for Bimanual Surgical Sponge Counting",
+   "title_zh": "SurgeCount：协议引导的双臂手术海绵计数组合式Harness",
+   "cat": "cs.RO",
+   "summary_zh": "在书面流程协议下组合学得的技能，让机器人双臂完成可审计的手术海绵计数。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.30928",
+   "title": "Personalization of a Commercial Powered Knee Prosthesis Under Clinically Realistic Conditions via Reinforcement Learning: A Feasibility Study",
+   "title_zh": "通过强化学习在临床真实条件下个性化商用动力膝关节假肢：可行性研究",
+   "cat": "cs.RO",
+   "summary_zh": "验证PICE强化学习调参方法能否在临床真实条件下个性化商用动力膝假肢。",
+   "direction": "F"
   },
   {
    "id": "2611.30741",
@@ -11270,6 +10454,14 @@
    "title_zh": "概率程序的层半群语义",
    "cat": "cs.LO",
    "summary_zh": "为支持连续分布采样的概率语言构建基于层的指称语义，并支持逻辑推理。"
+  },
+  {
+   "id": "2611.30667",
+   "title": "LLM-Guided Compositional Continual Learning for Robot Manipulation with Gated Low-Rank Experts",
+   "title_zh": "LLM引导的组合式持续学习：基于门控低秩专家的机器人操作",
+   "cat": "cs.RO",
+   "summary_zh": "用渐进网络加低秩适配把每个技能表示为专家子网络，在LLM引导下持续学习操作技能。",
+   "direction": "B"
   },
   {
    "id": "2611.30513",
@@ -11307,6 +10499,14 @@
    "summary_zh": "提出面向正确舍入数学库的实现语言，支持扩展精度运算和预计算常数的高层抽象。"
   },
   {
+   "id": "2611.30312",
+   "title": "One Policy, Many Bodies: Cooperative Human-Object Interaction with Heterogeneous Teams",
+   "title_zh": "一个策略，多种身体：异构团队的协同人物交互",
+   "cat": "cs.RO",
+   "summary_zh": "用单个物理策略让不同形态、不同组成的角色团队协同搬运物体。",
+   "direction": "G"
+  },
+  {
    "id": "2611.30307",
    "title": "Robust Lateral String Stability and Error Attenuation for Heterogeneous Vehicle Platoons",
    "title_zh": "异构车辆编队的鲁棒横向队列稳定性与误差衰减",
@@ -11335,6 +10535,22 @@
    "summary_zh": "探索用深度与惯性里程计替代ARKit黑盒，实现每个环节可检查的房间扫描。"
   },
   {
+   "id": "2611.30133",
+   "title": "Value function based Reward shaping for safety in quadrupeds",
+   "title_zh": "基于价值函数的奖励塑形用于四足机器人安全",
+   "cat": "cs.RO",
+   "summary_zh": "提出基于价值函数的奖励塑形方法，缩短四足机器人安全强化学习的训练时间。",
+   "direction": "F"
+  },
+  {
+   "id": "2611.30072",
+   "title": "HERO: Hierarchical Region-Aware Reinforcement Learning for Autonomous Exploration",
+   "title_zh": "HERO：用于自主探索的分层区域感知强化学习",
+   "cat": "cs.RO",
+   "summary_zh": "用分层区域感知强化学习兼顾自主探索的路径效率与低在线计算量。",
+   "direction": "C"
+  },
+  {
    "id": "2611.30026",
    "title": "Design of a Compact Cable-driven 4-DoF Salamander Robotic Limb with Large Range of Motion and High Load Capacity",
    "title_zh": "大活动范围高负载的紧凑缆驱四自由度蝾螈机器人肢体设计",
@@ -11356,6 +10572,14 @@
    "summary_zh": "通过直接射线解码，让LiDAR世界模型摆脱单一传感器扫描模式。"
   },
   {
+   "id": "2611.30004",
+   "title": "EnvTrap: Revealing the Environment-Only Attack Surface in Embodied AI via Consequence-Blind Action Execution",
+   "title_zh": "EnvTrap：通过无视后果的动作执行揭示具身AI中仅环境的攻击面",
+   "cat": "cs.CR",
+   "summary_zh": "研究仅重排环境物体、不改动模型和输入的攻击对具身AI的影响。",
+   "direction": "H"
+  },
+  {
    "id": "2611.29947",
    "title": "SAGE-Drive: Benefit-Aware Adaptive Reasoning for Autonomous Driving Planning",
    "title_zh": "SAGE-Drive：面向自动驾驶规划的收益感知自适应推理",
@@ -11363,11 +10587,35 @@
    "summary_zh": "判断显式推理何时能提升规划精度，据此自适应地调用推理以降低计算开销。"
   },
   {
+   "id": "2611.29918",
+   "title": "TidyFlow: Geometry-Aware Tabletop Arrangement Generation with Human-Aligned Tidiness Evaluation",
+   "title_zh": "TidyFlow：几何感知的桌面整理生成与人类对齐的整洁度评估",
+   "cat": "cs.RO",
+   "summary_zh": "用条件流匹配结合拓扑约束生成符合人类偏好的整洁桌面布局，并提出整洁度评估。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.29907",
+   "title": "UnderGrasp: Envelopment-Oriented Grasp Refinement for an Underactuated Gripper",
+   "title_zh": "UnderGrasp：面向欠驱动夹爪的包络导向抓取精修",
+   "cat": "cs.RO",
+   "summary_zh": "针对欠驱动夹爪的闭合过程精修抓取位姿，并区分有害干涉与可接受接触。",
+   "direction": "B"
+  },
+  {
    "id": "2611.29886",
    "title": "Active sensing as control over sensory acquisition",
    "title_zh": "作为感知获取控制的主动感知",
    "cat": "q-bio.NC",
    "summary_zh": "提出把主动感知理解为对感知获取的控制，并给出区分各类行为的框架。"
+  },
+  {
+   "id": "2611.29868",
+   "title": "Arcadian: Open-Source Humanoid Ecosystem for Accessible and Customizable Research and Education",
+   "title_zh": "Arcadian：面向研究与教学的开源人形机器人生态",
+   "cat": "cs.RO",
+   "summary_zh": "提供开源的米级人形机器人硬件与软件，便于资源有限的团队复现和修改。",
+   "direction": "G"
   },
   {
    "id": "2611.29801",
@@ -11398,6 +10646,14 @@
    "summary_zh": "给 Agent 一个动态 Datalog REPL，复用知识图谱问答中已推导的关系，输出 token 比 SQL 和 Python 少。"
   },
   {
+   "id": "2611.29662",
+   "title": "Grounded in Contact: Reducing Floating and Interpenetration Artifacts with Multimodal Skill-Effect Models",
+   "title_zh": "接触落地：用多模态技能效果模型减少漂浮与穿插伪影",
+   "cat": "cs.RO",
+   "summary_zh": "用概率多模态模型预测推、抓、放等技能对物体位姿的影响，减少漂浮与穿插。",
+   "direction": "D"
+  },
+  {
    "id": "2611.29603",
    "title": "Hashing Theorems Modulo Rewrites and Binder Permutation Enables Equivalence Search over 200k Mathlib Theorems",
    "title_zh": "模重写与绑定变量置换的定理哈希，支持在 20 万条 Mathlib 定理上做等价搜索",
@@ -11424,6 +10680,14 @@
    "title_zh": "规格感知的稀疏微分：基于 Sparsemax 鲁棒度的信号时序逻辑规划",
    "cat": "cs.RO",
    "summary_zh": "直接由 STL 语法给出雅可比和海森矩阵的稀疏结构，降低 STL 约束最优控制的求解开销。"
+  },
+  {
+   "id": "2611.29230",
+   "title": "InfoField3D: Differentiable Information Field for Embodied Task-Oriented View Planning",
+   "title_zh": "InfoField3D：面向具身任务的可微信息场视角规划",
+   "cat": "cs.RO",
+   "summary_zh": "把几何信息提升为可微解析信息场，在三维空间中直接优化任务相关的观察位置。",
+   "direction": "C"
   },
   {
    "id": "2611.29158",
@@ -11510,6 +10774,14 @@
    "summary_zh": "先将轨迹聚类为行为模式，再对每个模式求解凸优化生成候选轨迹，用于自动驾驶多模态预测。"
   },
   {
+   "id": "2611.28675",
+   "title": "Doing More with Less: Complex Manipulation with a Contact-Adaptive Robotic Hand",
+   "title_zh": "事半功倍：用接触自适应机械手完成复杂操作",
+   "cat": "cs.RO",
+   "summary_zh": "提出手指细长、抓取范围大的接触自适应机械手机构，并配套四元数动捕手套提取人类操作意图。",
+   "direction": "B"
+  },
+  {
    "id": "2611.28554",
    "title": "VAPY: Circuit Optimization with Backpropagation",
    "title_zh": "VAPY：基于反向传播的电路优化",
@@ -11580,6 +10852,14 @@
    "summary_zh": "在 Rocq 中把 QBlue 编译器的验证从 Trotter 算法扩展到更多哈密顿量模拟算法，给出端到端误差界。"
   },
   {
+   "id": "2611.28387",
+   "title": "Knowing What You Carry: Scalable Physics-Anchored World Models for Robotic Planning with Liquid Payloads",
+   "title_zh": "知道你载着什么：面向液体载荷机器人规划的可扩展物理锚定世界模型",
+   "cat": "cs.RO",
+   "summary_zh": "为液体载荷的晃动设计既便宜又准确的物理锚定世界模型，用于 GPU 上批量候选运动评估。",
+   "direction": "D"
+  },
+  {
    "id": "2611.33268",
    "title": "JetDiffusion: Pushing the Speed Limits of Video Generation with NVFP4 Sparse Attention",
    "title_zh": "JetDiffusion：用 NVFP4 稀疏注意力突破视频生成的速度极限",
@@ -11634,6 +10914,22 @@
    "title_zh": "Lost on Campus：在真实环境中评测视觉语言模型的具身空间推理",
    "cat": "cs.CV",
    "summary_zh": "构建校园真实场景基准，评测 VLM 在无语义捷径时的具身空间推理能力。"
+  },
+  {
+   "id": "2611.33143",
+   "title": "ROAM-Bench: Evaluating Embodied Active Spatial Intelligence through Evidence Verification",
+   "title_zh": "ROAM-Bench：通过证据验证评测具身主动空间智能",
+   "cat": "cs.RO",
+   "summary_zh": "在机器人运动与碰撞约束下，用仿真状态独立验证智能体的探索、推理与行动是否真正完成。",
+   "direction": "H"
+  },
+  {
+   "id": "2611.33137",
+   "title": "Physicl Scenes: An Artist-created 3D Dataset for Learning Perception and Action",
+   "title_zh": "Physicl Scenes：用于感知与行动学习的艺术家创作 3D 数据集",
+   "cat": "cs.CV",
+   "summary_zh": "发布 6,499 个艺术家制作的 3D 场景，带物体与部件级语义标注，用于视觉与具身学习。",
+   "direction": "D"
   },
   {
    "id": "2611.33135",
@@ -11916,6 +11212,14 @@
    "summary_zh": "在 MedAgentBench 的正确轨迹中注入临床错误，检验 LLM 评判器识别危险操作的可靠性。"
   },
   {
+   "id": "2611.33011",
+   "title": "MESSI: Multi-Expert Soccer Skill Integration for Physics-Based Character Control",
+   "title_zh": "MESSI：面向物理角色控制的多专家足球技能整合",
+   "cat": "cs.CV",
+   "summary_zh": "通过共享适配整合多个足球技能专家，使物理角色在运球射门等技能间平滑切换。",
+   "direction": "F"
+  },
+  {
    "id": "2611.33009",
    "title": "Train What You Run: Probabilistic Convolutions for Learning Token Compaction in State Space Models",
    "title_zh": "训练即所运行：状态空间模型中学习词元压缩的概率卷积",
@@ -11986,6 +11290,14 @@
    "summary_zh": "把向量量化注意力与精确局部注意力结合，训练和推理代价均为 O(NM)，可直接替换预训练模型的注意力层。"
   },
   {
+   "id": "2611.32986",
+   "title": "CAPER: PartGround and PlanRefine for Reliable Manual-Guided Robotic Assembly Planning",
+   "title_zh": "CAPER：面向机器人装配规划的 PartGround 与 PlanRefine，实现可靠的手册引导",
+   "cat": "cs.RO",
+   "summary_zh": "通过零件对齐和证据精炼，让 VLM 依据装配手册生成零件编号一致的装配步骤。",
+   "direction": "B"
+  },
+  {
    "id": "2611.32982",
    "title": "When Repair Accuracy Misleads: Training a VLM on Its Own Failures",
    "title_zh": "修复准确率会误导：让 VLM 在自身失败样本上训练",
@@ -12026,6 +11338,14 @@
    "title_zh": "CriticalScenes：面向闭环驾驶适配的可扩展真实感危险场景生成",
    "cat": "cs.CV",
    "summary_zh": "把普通驾驶记录重建成带避撞监督的危险交互场景，53 个源场景中 92.4% 的尝试生成了可行威胁轨迹。"
+  },
+  {
+   "id": "2611.32967",
+   "title": "VidForce: Predicting Force-Aware Articulation by Observing Humans",
+   "title_zh": "VidForce：通过观察人类预测感知受力的关节运动",
+   "cat": "cs.CV",
+   "summary_zh": "从第三人称 RGB 视频估计交互轨迹和受力曲线，用学到的物理原型利用少量带力测量的数据。",
+   "direction": "Z"
   },
   {
    "id": "2611.32964",
@@ -12441,11 +11761,27 @@
    "summary_zh": "用自然语言描述为每栋建筑自适应对齐视觉特征，改进双时相遥感影像的损毁分级。"
   },
   {
+   "id": "2611.32776",
+   "title": "Learning World Models through Contrastive Identification of Actions",
+   "title_zh": "通过动作的对比辨识学习世界模型",
+   "cat": "cs.AI",
+   "summary_zh": "用对比式动作辨识替代平方误差回归，让潜在世界模型保留与动作相关的区分信息。",
+   "direction": "D"
+  },
+  {
    "id": "2611.32772",
    "title": "RubikSQL-HB: Agentic Text-to-SQL with Knowledge in the Loop",
    "title_zh": "RubikSQL-HB：知识入环的 Agent 式 Text-to-SQL",
    "cat": "cs.AI",
    "summary_zh": "把业务含义、存储值和参考查询组织成可查询的知识工作区，供数据库 Agent 在推理各阶段调用。"
+  },
+  {
+   "id": "2611.32765",
+   "title": "EviCraft: Can Minecraft Agents Find What They Cannot See?",
+   "title_zh": "EviCraft：Minecraft Agent 能找到看不见的东西吗？",
+   "cat": "cs.AI",
+   "summary_zh": "指出 Minecraft 语义工具可绕过可见性检验，提出证据闭合要求来评测 Agent 是否真的在搜索。",
+   "direction": "H"
   },
   {
    "id": "2611.32762",
@@ -12518,11 +11854,27 @@
    "summary_zh": "针对二进制编码不连续的问题，改进稠密语义关键点定位以提升 6D 位姿估计。"
   },
   {
+   "id": "2611.32727",
+   "title": "Support2Sim: Visually Faithful Real2Sim with Stable Object Supports",
+   "title_zh": "Support2Sim：具备稳定物体支撑关系、视觉忠实的 Real2Sim",
+   "cat": "cs.RO",
+   "summary_zh": "从单张 RGB 图像重建带支撑关系、可直接用于物理仿真的场景。",
+   "direction": "D"
+  },
+  {
    "id": "2611.33242",
    "title": "CypherMAS: Benchmarking Routing Reliability in LLM-Based Multi-Agent Systems",
    "title_zh": "CypherMAS：评测基于 LLM 的多智能体系统的路由可靠性",
    "cat": "cs.MA",
    "summary_zh": "将通信与开放域任务解耦，评测多智能体系统中消息交换与工具调用的路由可靠性。"
+  },
+  {
+   "id": "2611.32718",
+   "title": "Seeing to Drive on a Single Board: Attention-Free Depth for Onboard Robot Navigation",
+   "title_zh": "单板上的驾驶视觉：用于机载机器人导航的无注意力深度估计",
+   "cat": "cs.RO",
+   "summary_zh": "把量化后的深度基础模型部署到 Raspberry Pi 5 加 Hailo-8L，用单目相机为小型地面机器人提供深度。",
+   "direction": "C"
   },
   {
    "id": "2611.32716",
@@ -12544,6 +11896,14 @@
    "title_zh": "对主权 LLM、其推理与训练阶段的红队测试",
    "cat": "cs.CL",
    "summary_zh": "对 Apertus v1.5 等六类模型做六种语言的红队测试，检验系统提示能否保护机密信息。"
+  },
+  {
+   "id": "2611.32705",
+   "title": "Knocked Off Course: Tracing Uncommanded Motion from Perception to Action in Embodied VLAs",
+   "title_zh": "偏离航线：追踪具身 VLA 从感知到动作的非指令运动",
+   "cat": "cs.CV",
+   "summary_zh": "在风、地形不平等扰动下，追踪具身跟踪 VLA 从感知到动作环节产生非指令运动的原因。",
+   "direction": "A"
   },
   {
    "id": "2611.32697",
@@ -12651,11 +12011,27 @@
    "summary_zh": "构建来自三个仿真器的转弯基准，发现主流端到端驾驶模型难以可靠完成 90 度转弯。"
   },
   {
+   "id": "2611.32649",
+   "title": "ICLWorld: Benchmarking In-Context Learning of Agents from Digital to Physical Worlds",
+   "title_zh": "ICLWorld：从数字世界到物理世界评测 Agent 的上下文学习",
+   "cat": "cs.CV",
+   "summary_zh": "构建在线、交互式基准，评测 Agent 在电脑与机器人场景中从上下文学习新规则的能力。",
+   "direction": "H"
+  },
+  {
    "id": "2611.32646",
    "title": "A Text-to-SQL Benchmark for Official Statistics",
    "title_zh": "面向官方统计数据的 Text-to-SQL 基准",
    "cat": "cs.AI",
    "summary_zh": "为官方统计数据的问答构建 Text-to-SQL 基准。"
+  },
+  {
+   "id": "2611.32645",
+   "title": "TeamFlowRL: Online Policy Optimization of Decentralized Flow Policies for Multi-Agent Coordination",
+   "title_zh": "TeamFlowRL：面向多智能体协作的去中心化流策略在线优化",
+   "cat": "cs.LG",
+   "summary_zh": "解决流策略难以在线微调的问题，对去中心化的多智能体流策略做在线强化学习。",
+   "direction": "F"
   },
   {
    "id": "2611.32634",
@@ -12917,6 +12293,14 @@
    "summary_zh": "在锚点空间而非关节坐标上做少步扩散，用更低的推理成本完成单目 3D 手部姿态估计。"
   },
   {
+   "id": "2611.32510",
+   "title": "GeoVLDrive: Geometry-Grounded Vision-Language Reasoning for Autonomous Driving",
+   "title_zh": "GeoVLDrive：面向自动驾驶的几何驱动视觉语言推理",
+   "cat": "cs.CV",
+   "summary_zh": "用门控交叉注意力引入 3D 基础模型特征，并以结构化隐式思维链组织未来场景几何，辅助 VLA 规划轨迹。",
+   "direction": "A"
+  },
+  {
    "id": "2611.32509",
    "title": "Analysis of Federated Graph Neural Networks for Predicting Nuclear Core Properties",
    "title_zh": "用于预测核反应堆堆芯属性的联邦图神经网络分析",
@@ -12966,6 +12350,14 @@
    "summary_zh": "前馈模型在给定图像、物体掩码和各物体资产后，联合预测每个资产的旋转、平移和逐轴缩放。"
   },
   {
+   "id": "2611.32483",
+   "title": "CodeWAM: A Code World Action Model for End-to-End Autonomous Driving",
+   "title_zh": "CodeWAM：面向端到端自动驾驶的代码世界动作模型",
+   "cat": "cs.RO",
+   "summary_zh": "把可执行代码作为世界表示的一部分，描述自车在计划下的动力学，并与学习的视觉模型共同预测后果。",
+   "direction": "D"
+  },
+  {
    "id": "2611.32482",
    "title": "COHERE4D: Training-Free Dense Surface Alignment for Coherent Metric 4D Human-Scene Reconstruction",
    "title_zh": "COHERE4D：免训练的稠密表面对齐，实现一致的度量级 4D 人体-场景重建",
@@ -12992,6 +12384,14 @@
    "title_zh": "面向黑盒通用域适应的渐进式可靠监督",
    "cat": "cs.CV",
    "summary_zh": "PReS 在无法访问源数据和源模型参数时，逐步建立并修正可靠的目标域监督。"
+  },
+  {
+   "id": "2611.32473",
+   "title": "OmniPersist: Persistent Dynamic World Modeling via Coupled Panoramic Evolution",
+   "title_zh": "OmniPersist：通过耦合全景演化实现持久的动态世界建模",
+   "cat": "cs.CV",
+   "summary_zh": "在单阶段扩散模型中把透视视频生成与低分辨率全景演化耦合，使镜头转开再转回时视野外的动态物体保持连贯。",
+   "direction": "D"
   },
   {
    "id": "2611.32472",
@@ -13603,6 +13003,22 @@
    "summary_zh": "在 Cool-Chic 编码器中用人脸识别网络特征替换 VGG 特征来优化感知质量。"
   },
   {
+   "id": "2611.32218",
+   "title": "PoseVLN: Learning Geometric State Evolution for Vision-Language Navigation",
+   "title_zh": "PoseVLN：学习几何状态演化的视觉语言导航",
+   "cat": "cs.AI",
+   "summary_zh": "把长程记忆、状态推理和未来预测统一为随时间演化的几何位姿状态，用于视觉语言导航。",
+   "direction": "C"
+  },
+  {
+   "id": "2611.32216",
+   "title": "NativeDrive: Native Multimodal Foundations for Autonomous Driving",
+   "title_zh": "NativeDrive：面向自动驾驶的原生多模态基础模型",
+   "cat": "cs.CV",
+   "summary_zh": "为自动驾驶 VLA 引入结构化监督，避免视觉生成带来的外观重建开销。",
+   "direction": "A"
+  },
+  {
    "id": "2611.32214",
    "title": "EvoSearch: Self-Evolving Active Perception for Wide-Area Geospatial Search",
    "title_zh": "EvoSearch：面向大范围地理空间搜索的自进化主动感知",
@@ -13706,6 +13122,14 @@
    "title_zh": "怪机器、让受害者买单？模拟陪审员如何在生成式 AI 侵权中重新分配过错",
    "cat": "cs.HC",
    "summary_zh": "通过模拟陪审实验研究人们把生成式 AI 的过错归给谁，以及不连续分摊规则的影响。"
+  },
+  {
+   "id": "2611.32185",
+   "title": "OVOK: A Recursive Self-Improving Agentic Framework for Video-Based Articulated Robot State Estimation",
+   "title_zh": "OVOK：基于视频的关节机器人状态估计的递归自改进智能体框架",
+   "cat": "cs.RO",
+   "summary_zh": "智能体框架从视频中恢复关节机器人状态，无需已知内参且不针对单个机器人训练。",
+   "direction": "Z"
   },
   {
    "id": "2611.32183",
@@ -13848,6 +13272,14 @@
    "summary_zh": "把目标字符生成与源图视觉迁移结合，在替换区域文字时保留字体、颜色和纹理。"
   },
   {
+   "id": "2611.32119",
+   "title": "CoverMem: Coverage-Constrained Visual Memory for Budgeted Embodied Question Answering",
+   "title_zh": "CoverMem：面向预算受限具身问答的覆盖约束视觉记忆",
+   "cat": "cs.AI",
+   "summary_zh": "在有限算力下用覆盖约束构建紧凑视觉记忆，并检索足够证据回答具身问题。",
+   "direction": "C"
+  },
+  {
    "id": "2611.32116",
    "title": "The Old Scene Lives in the Cache: Diagnosing and Shedding Stale History in Streaming Video Generation",
    "title_zh": "旧场景留在缓存里：诊断并清除流式视频生成中的陈旧历史",
@@ -13902,6 +13334,14 @@
    "title_zh": "Clinical3D-Bench：评测并提升多模态大模型在医院环境中的空间智能",
    "cat": "cs.CV",
    "summary_zh": "含 3368 道题、覆盖 373 个医院房间布局的模拟基准，测试第一视角空间推理。"
+  },
+  {
+   "id": "2611.32093",
+   "title": "MARGIN: A Risk-Aware Agent for Robot Program Refinement",
+   "title_zh": "MARGIN：面向机器人程序精炼的风险感知智能体",
+   "cat": "cs.RO",
+   "summary_zh": "用成功执行中的近失余量作为证据，让机器人编程智能体精炼控制程序。",
+   "direction": "Z"
   },
   {
    "id": "2611.32091",
@@ -14380,6 +13820,14 @@
    "summary_zh": "用时间锚点稠密化与可靠性感知记忆，补全内窥镜视频的稀疏深度。"
   },
   {
+   "id": "2611.31919",
+   "title": "DUALingo: A Dual-Hand Instruction-Guided Dataset for Affordance Grounding on 3D Objects",
+   "title_zh": "DUALingo：面向 3D 物体可供性 Grounding 的双手指令数据集",
+   "cat": "cs.CV",
+   "summary_zh": "构建双手协作的 3D 可供性 Grounding 数据集，涵盖双手互补角色的操作任务。",
+   "direction": "B"
+  },
+  {
    "id": "2611.31918",
    "title": "HiGS: A Hierarchical Architecture for Fast Differentiable 3D Gaussian Splatting",
    "title_zh": "HiGS：面向快速可微 3D Gaussian Splatting 的分层架构",
@@ -14399,6 +13847,14 @@
    "title_zh": "你的 VLM 知道该看哪里：面向 GUI Grounding 的语义探针引导自适应聚焦",
    "cat": "cs.CV",
    "summary_zh": "利用 VLM 对视觉证据的描述能力引导多视图聚焦，提升 GUI 定位精度。"
+  },
+  {
+   "id": "2611.31902",
+   "title": "MIFLOW: Dynamic Recent-Behavior Priors for Reference-Calibrated Online Flow-Policy Reinforcement Learning",
+   "title_zh": "MIFLOW：用动态近期行为先验校准参考的在线 Flow 策略强化学习",
+   "cat": "cs.LG",
+   "summary_zh": "用拟合近期行为的 flow matching 先验校准在线 Flow 策略的 actor-critic 学习。",
+   "direction": "F"
   },
   {
    "id": "2611.31895",
@@ -14541,6 +13997,14 @@
    "summary_zh": "用双流精炼同时保留稳定特质与情境化的非典型立场，改进 LLM 人设引导。"
   },
   {
+   "id": "2611.31844",
+   "title": "BendGS: Observation-Conditioned Gaussian Self-Modeling for Continuum Robots",
+   "title_zh": "BendGS：面向连续体机器人的观测条件高斯自建模",
+   "cat": "cs.RO",
+   "summary_zh": "用 3D Gaussian 从观测中预测连续体机器人的下一步 3D 形状、外观与末端位姿。",
+   "direction": "D"
+  },
+  {
    "id": "2611.31839",
    "title": "Spec-Test Coverage Gap: Detecting Overspecified Tests in SWE-Bench-Style Benchmarks",
    "title_zh": "Spec-Test 覆盖缺口：检测 SWE-Bench 类基准中过度指定的测试",
@@ -14553,6 +14017,14 @@
    "title_zh": "注视世界模型",
    "cat": "cs.CV",
    "summary_zh": "用世界模型建模场景动态引发的注视转移，改进注视目标估计。"
+  },
+  {
+   "id": "2611.31835",
+   "title": "POISE: Curvature-Aware Critic Regularization for Smooth Actor-Critic Control",
+   "title_zh": "POISE：面向平滑 Actor-Critic 控制的曲率感知 Critic 正则化",
+   "cat": "cs.RO",
+   "summary_zh": "通过正则化 critic 的动作梯度变化与曲率，抑制机器人控制中的动作高频振荡。",
+   "direction": "F"
   },
   {
    "id": "2611.31833",
@@ -14870,6 +14342,14 @@
    "summary_zh": "构建 32.8 万张图的基准，标注数据中心部件类别、状况和印刷文字。"
   },
   {
+   "id": "2611.31694",
+   "title": "CATWAY: Cost-sensitive agentic three-way robot decisions with calibrated language-model confidence",
+   "title_zh": "CATWAY：基于校准语言模型置信度的代价敏感三向机器人决策",
+   "cat": "cs.RO",
+   "summary_zh": "用损失矩阵和校准概率决定机器人执行、询问还是拒绝指令。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.31693",
    "title": "Rapid Exploratory Maps and their potential role in supporting evidence-to-policy dialogues and processes",
    "title_zh": "快速探索图谱及其在循证政策对话中的潜在作用",
@@ -14882,6 +14362,14 @@
    "title_zh": "GRUN：面向图像复原的广义 Retinex 展开网络",
    "cat": "cs.CV",
    "summary_zh": "把 Retinex 推广为内容-环境分解先验，设计展开网络做图像复原。"
+  },
+  {
+   "id": "2611.31689",
+   "title": "GeoMVGen: Joint Appearance-Geometry Modeling for Multi-View Video Generation in Robotic Manipulation",
+   "title_zh": "GeoMVGen：机器人操作中外观与几何联合建模的多视角视频生成",
+   "cat": "cs.CV",
+   "summary_zh": "联合建模外观与几何，生成多相机视角一致且受动作控制的操作视频。",
+   "direction": "D"
   },
   {
    "id": "2611.31686",
@@ -15640,6 +15128,14 @@
    "summary_zh": "把 Kumo 与 LimiX 流程混合成紧凑集成，在 TabArena 上精度更高、耗时更低。"
   },
   {
+   "id": "2611.32858",
+   "title": "What Does a Skill Vocabulary Cost? A Closed-Loop Decomposition over Demonstrated Motions",
+   "title_zh": "技能词表的代价是什么？基于示范动作的闭环分解",
+   "cat": "cs.RO",
+   "summary_zh": "提出 MPQ，用示范动作库作为离散技能词表，使闭环失败可追溯到词表、技能选择或执行。",
+   "direction": "B"
+  },
+  {
    "id": "2611.32855",
    "title": "Speculative Decoding for Semantic-ID-Based Generative Recommendations",
    "title_zh": "基于语义 ID 的生成式推荐的投机解码",
@@ -15934,6 +15430,14 @@
    "summary_zh": "由 DrugBank 描述构造 DDI 分类基准，发现分子表示的排名随数据划分而变。"
   },
   {
+   "id": "2611.32357",
+   "title": "CriticJEPA: World Models Are Better Critics Than Optimizers",
+   "title_zh": "CriticJEPA：世界模型作为评判器优于作为优化器",
+   "cat": "cs.LG",
+   "summary_zh": "发现梯度规划会利用世界模型预测误差，让世界模型做评判器比做优化器更可靠。",
+   "direction": "D"
+  },
+  {
    "id": "2611.32347",
    "title": "Beyond Hard Tokens: Predictive Memory for Multimodal Protein Generation",
    "title_zh": "超越硬 token：多模态蛋白质生成的预测式记忆",
@@ -15974,6 +15478,14 @@
    "title_zh": "TimeTravelContainer：面向有状态 Agent 探索的实时分叉沙箱",
    "cat": "cs.OS",
    "summary_zh": "为 LLM Agent 提供可实时克隆与回溯的容器沙箱，避免序列化状态或重启的高开销。"
+  },
+  {
+   "id": "2611.33229",
+   "title": "Effect-Driven Skill Abstractions for Offline Reinforcement Learning",
+   "title_zh": "面向离线强化学习的效果驱动技能抽象",
+   "cat": "cs.RO",
+   "summary_zh": "学习由状态可达效果驱动而非动作聚类的离散技能，服务长程目标条件任务。",
+   "direction": "F"
   },
   {
    "id": "2611.33228",
@@ -16354,6 +15866,14 @@
    "summary_zh": "把模型拆成与图无关的局部时间算子和空间部分，在不规则网格上做非递归的时间并行预测。"
   },
   {
+   "id": "2611.31446",
+   "title": "Learning from Human Corrections through Temporal Preferences",
+   "title_zh": "通过时间偏好从人类纠正中学习",
+   "cat": "cs.RO",
+   "summary_zh": "利用人类介入的时机以及介入前后的行为，从纠正信号中学习偏好。",
+   "direction": "F"
+  },
+  {
    "id": "2611.31442",
    "title": "Small Learned Projections for Semantic-Reversal-Aware Retrieval with Spectral Acceleration: A Four-Domain Empirical Study",
    "title_zh": "面向语义反转感知检索的小型学习投影与谱加速：四领域实证研究",
@@ -16396,6 +15916,14 @@
    "summary_zh": "用神经隐式表示从 AUV 侧扫声呐图像估计水深。"
   },
   {
+   "id": "2611.33040",
+   "title": "At the Limit: Autonomous Vehicle Drifting under Generative Policies",
+   "title_zh": "极限边缘：生成式策略下的自动驾驶漂移",
+   "cat": "cs.RO",
+   "summary_zh": "对流策略做在线强化学习，用 SDE 采样探索，实现自动驾驶车辆漂移控制。",
+   "direction": "F"
+  },
+  {
    "id": "2611.32960",
    "title": "From Safety-Driven Redundancy to Value-Driven Architecture: An ODD-Based Rationalization Framework for Level 4 Autonomous Vehicles",
    "title_zh": "从安全驱动的冗余到价值驱动的架构：面向 L4 自动驾驶的基于 ODD 的合理化框架",
@@ -16403,11 +15931,35 @@
    "summary_zh": "基于运行设计域提出安全约束下的系统工程框架，权衡 L4 车辆容错架构的复杂度与成本。"
   },
   {
+   "id": "2611.32937",
+   "title": "Self-Sensing Compliant Anthropomorphic Hand for Speed-Dictated Shared Force Control in Teleoperation",
+   "title_zh": "用于遥操作中速度主导共享力控制的自感知柔顺仿人手",
+   "cat": "cs.RO",
+   "summary_zh": "利用柔顺手指自身的形变感知抓握力，在无触觉传感器的视觉遥操作中调节抓力。",
+   "direction": "E"
+  },
+  {
    "id": "2611.32920",
    "title": "Increasing the Precision of IR Mapping for Incremental Data Flow Analysis",
    "title_zh": "提高增量数据流分析中 IR 映射的精度",
    "cat": "cs.PL",
    "summary_zh": "提高新旧程序版本 IR 对象映射的准确度，使增量数据流分析能安全复用缓存结果。"
+  },
+  {
+   "id": "2611.32797",
+   "title": "Supply Geometry, Learn Execution: Screw Attention for Zero-Shot Policy Transfer in Robot Manipulation",
+   "title_zh": "提供几何，学习执行：用于机器人操作零样本策略迁移的螺旋注意力",
+   "cat": "cs.RO",
+   "summary_zh": "Screw Attention Policy 显式输入任务几何、只学执行，仅 30K 参数且在仿真训练后零样本迁移。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.32788",
+   "title": "Keypose or Dense? A Controlled Comparison of Action Representations for Stage-Structured Manipulation",
+   "title_zh": "关键位姿还是稠密动作？阶段式操作中动作表示的对照比较",
+   "cat": "cs.RO",
+   "summary_zh": "在多个任务上对比稠密动作块与关键位姿动作块两种模仿学习动作表示。",
+   "direction": "B"
   },
   {
    "id": "2611.32760",
@@ -16424,6 +15976,30 @@
    "summary_zh": "用半定规划求解 GNSS 多普勒冷启动姿态对准，并与非线性最小二乘比较。"
   },
   {
+   "id": "2611.32584",
+   "title": "An XR-Based System for Enhanced Spatial Awareness in Mobile Robot Teleoperation",
+   "title_zh": "面向移动机器人遥操作、增强空间感知的 XR 系统",
+   "cat": "cs.RO",
+   "summary_zh": "集成沉浸式视觉与触觉反馈的 XR 遥操作系统，并缓解晕动症。",
+   "direction": "E"
+  },
+  {
+   "id": "2611.32582",
+   "title": "Design, Control, and Teleoperation of a Dexterous Robotic Hand with Soft-Rigid Hybrid Fingers",
+   "title_zh": "软硬混合手指灵巧机械手的设计、控制与遥操作",
+   "cat": "cs.RO",
+   "summary_zh": "把软硬混合手指扩展为五指肌腱驱动灵巧手，兼顾柔顺性与可控性。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.32579",
+   "title": "Follow-Bench 2.0: An End-to-End 3D Benchmark for Socially-Aware Robot Person Following",
+   "title_zh": "Follow-Bench 2.0：面向社交感知机器人人物跟随的端到端 3D 基准",
+   "cat": "cs.RO",
+   "summary_zh": "联合评测目标身份保持、避障与社交队形的机器人人物跟随 3D 基准。",
+   "direction": "H"
+  },
+  {
    "id": "2611.32550",
    "title": "Self-supervised quality evaluation of grid maps without ground truth",
    "title_zh": "无需真值的栅格地图自监督质量评估",
@@ -16431,11 +16007,27 @@
    "summary_zh": "仅以地图本身为输入，自监督地评估栅格地图各区域的质量。"
   },
   {
+   "id": "2611.32523",
+   "title": "AirLeg: A Robust and Accurate Self-Supervised Visual-Inertial-Leg SLAM System",
+   "title_zh": "AirLeg：鲁棒精确的自监督视觉-惯性-腿式 SLAM 系统",
+   "cat": "cs.RO",
+   "summary_zh": "自监督学习腿式里程计，与视觉和 IMU 融合，用于足式机器人定位。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.32502",
    "title": "MRCT: An Object-Centric Two-Layer Control Architecture for Heavy-Payload Multi-Robot Transportation",
    "title_zh": "MRCT：面向重载多机器人运输的以物体为中心的两层控制架构",
    "cat": "cs.RO",
    "summary_zh": "物体层 MPC 生成接触力参考，机器人层全身阻抗控制协同搬运重物。"
+  },
+  {
+   "id": "2611.32493",
+   "title": "CoFiNav: VLM-Guided Coarse-to-Fine Semantic Navigation for Open-Ended Last-Mile UAV Delivery",
+   "title_zh": "CoFiNav：VLM 引导的开放式末端无人机配送由粗到细语义导航",
+   "cat": "cs.RO",
+   "summary_zh": "用 VLM 根据开放式语义描述，由粗到细地引导无人机完成末端配送导航。",
+   "direction": "C"
   },
   {
    "id": "2611.32475",
@@ -16480,6 +16072,14 @@
    "summary_zh": "把内存空间、链路与容量写进程序文本的系统编程语言，在编译期发现数据竞争等问题。"
   },
   {
+   "id": "2611.32186",
+   "title": "SkillHarness: Execution-Aware Coordination with Plug-and-Play Skills for Long-Horizon Traversal",
+   "title_zh": "SkillHarness：面向长时程穿越的即插即用技能执行感知协调",
+   "cat": "cs.RO",
+   "summary_zh": "协调多种运动技能并监控执行，使足式机器人适应未见障碍和复杂地形。",
+   "direction": "F"
+  },
+  {
    "id": "2611.32184",
    "title": "Wind-Aware Trajectory Planning for Deformable Aerial Formations",
    "title_zh": "可变形空中编队的风感知轨迹规划",
@@ -16494,6 +16094,14 @@
    "summary_zh": "在 Dafny 中给出非传递无干扰类型系统可靠性的机器检验证明。"
   },
   {
+   "id": "2611.31925",
+   "title": "Learning When a Robot Should Ask For Help: Adaptive Intervention Requests in Human-Robot Teaming",
+   "title_zh": "学习机器人何时求助：人机协作中的自适应干预请求",
+   "cat": "cs.RO",
+   "summary_zh": "学习在导航失败风险与操作员负担之间权衡，决定何时向人类请求干预。",
+   "direction": "C"
+  },
+  {
    "id": "2611.31865",
    "title": "Accelerating Equivariant Interatomic Potentials for Molecular Dynamics through Radial tabulation and Kernel Fusion",
    "title_zh": "通过径向制表与算子融合加速分子动力学中的等变原子间势",
@@ -16506,6 +16114,22 @@
    "title_zh": "基于超图变换的函数式编程",
    "cat": "cs.PL",
    "summary_zh": "博士论文，提出 λ_GT，把图变换与函数式编程结合以保持数据结构形状不变式。"
+  },
+  {
+   "id": "2611.31843",
+   "title": "Co-DRIS: Physics-Informed Predictive Belief and Variable-Impedance Learning for Reactive Catching under Coupled Uncertainty",
+   "title_zh": "Co-DRIS：耦合不确定性下反应式接球的物理信息预测信念与变阻抗学习",
+   "cat": "cs.RO",
+   "summary_zh": "以预测信念和变阻抗学习，应对感知与执行不确定性同时出现时的接球任务。",
+   "direction": "F"
+  },
+  {
+   "id": "2611.31826",
+   "title": "VG-GP: Uncertainty-Gated Visuo-Geometric Memory for Negative-Transfer-Resistant Grasp Adaptation",
+   "title_zh": "VG-GP：抗负迁移的不确定性门控视觉-几何记忆抓取适应",
+   "cat": "cs.RO",
+   "summary_zh": "为冻结的抓取网络加入不确定性门控的经验记忆，在新物体上自适应而不覆盖已有可行抓取。",
+   "direction": "B"
   },
   {
    "id": "2611.31798",
@@ -16543,6 +16167,14 @@
    "summary_zh": "基于组合子设计内存模型与谓词管理，构建经 Rocq 机器验证的组合式符号执行工具。"
   },
   {
+   "id": "2611.31676",
+   "title": "Exact Collision Gradients for Ellipsoids in Differentiable Simulation",
+   "title_zh": "可微仿真中椭球体的精确碰撞梯度",
+   "cat": "cs.RO",
+   "summary_zh": "研究椭球体碰撞，给出冲击时刻附近更可靠的精确梯度。",
+   "direction": "D"
+  },
+  {
    "id": "2611.31667",
    "title": "Exteroceptive Sensor Faults in Autonomous Vehicles: A Cross-Modal Taxonomy and Fault Injection Toolkit",
    "title_zh": "自动驾驶外感知传感器故障：跨模态分类法与故障注入工具包",
@@ -16576,6 +16208,14 @@
    "title_zh": "规模化采样：分布式多智能体轨迹优化",
    "cat": "cs.RO",
    "summary_zh": "把采样方法引入分布式优化，在大规模多智能体轨迹优化中兼顾探索与扩展性。"
+  },
+  {
+   "id": "2611.31488",
+   "title": "Embodied Neuro-symbolic AI: Making Robot Behavior Auditable, Safe, and Scalable",
+   "title_zh": "具身神经符号 AI：让机器人行为可审计、安全且可扩展",
+   "cat": "cs.RO",
+   "summary_zh": "指出端到端 VLA 在泛化、物理推理与可审计性上的不足，主张引入神经符号方法。",
+   "direction": "A"
   },
   {
    "id": "2611.31470",
@@ -16725,6 +16365,14 @@
    "summary_zh": "归纳编程智能体隐式做出架构决策的五种机制，并提出六种提示词与架构的耦合模式。"
   },
   {
+   "id": "2611.21485",
+   "title": "Lost in the Hallway: Benchmarking Persistent Spatial Memory Across Revisits",
+   "title_zh": "迷失在走廊：跨多次重访的持久空间记忆基准",
+   "cat": "cs.CV",
+   "summary_zh": "提出 ReSpaceBench，含 590 个场景、3244 个问题，评测重访场景中的空间记忆。",
+   "direction": "H"
+  },
+  {
    "id": "2611.25252",
    "title": "Moving Generality from Model to Modeler: LLM Agents for PHM on a Deployment-Style Benchmark",
    "title_zh": "把通用性从模型转移到建模者：部署式基准上用于 PHM 的 LLM 智能体",
@@ -16856,6 +16504,14 @@
    "title_zh": "面向难题数学题的多样化替代推理轨迹",
    "cat": "cs.CL",
    "summary_zh": "针对难题中通过验证的轨迹稀少的问题，生成多样的替代推理轨迹用于后训练。"
+  },
+  {
+   "id": "2611.34925",
+   "title": "One Ocean, Many Tasks: A Data-Grounded Simulation Suite and Benchmark for Marine Robotics",
+   "title_zh": "一片海洋，多种任务：面向海洋机器人的数据驱动仿真套件与基准",
+   "cat": "cs.RO",
+   "summary_zh": "OneOcean 基于真实海洋数据构建统一的仿真套件与海洋机器人基准。",
+   "direction": "H"
   },
   {
    "id": "2611.34923",
@@ -16991,6 +16647,14 @@
    "summary_zh": "从知识覆盖与深度角度评测深度研究 Agent 生成的报告。"
   },
   {
+   "id": "2611.34849",
+   "title": "Real2SimLab: A Unified Platform for Real-to-Simulation Transfer",
+   "title_zh": "Real2SimLab：真实到仿真迁移的统一平台",
+   "cat": "cs.RO",
+   "summary_zh": "提供统一平台，评测编码 Agent 从视频生成仿真程序的能力。",
+   "direction": "D"
+  },
+  {
    "id": "2611.34843",
    "title": "Probing Visual Idiosyncrasies in Text-to-Image Models",
    "title_zh": "探查文生图模型的视觉特异性",
@@ -17024,6 +16688,14 @@
    "title_zh": "修复蒸馏语言模型的可信度",
    "cat": "cs.CL",
    "summary_zh": "修复知识蒸馏后学生模型在可信度上的退化，无需原始蒸馏语料。"
+  },
+  {
+   "id": "2611.34830",
+   "title": "Not all world models can doubt: how training objective and architecture shape epistemic uncertainty in JEPA and RSSM world models",
+   "title_zh": "并非所有世界模型都会怀疑：训练目标与架构如何影响 JEPA 与 RSSM 世界模型的认知不确定性",
+   "cat": "cs.LG",
+   "summary_zh": "比较 JEPA 与 RSSM 世界模型在认知不确定性上的差异及其成因。",
+   "direction": "D"
   },
   {
    "id": "2611.34828",
@@ -17066,6 +16738,14 @@
    "title_zh": "用代码解决视觉：编码 Agent 比视频模型更擅长视觉推理",
    "cat": "cs.CV",
    "summary_zh": "对比视频生成模型与编码 Agent 在视觉推理任务上的表现。"
+  },
+  {
+   "id": "2611.34811",
+   "title": "HOG-WAM: Improving Visual Robustness through Future Gradient Prediction",
+   "title_zh": "HOG-WAM：通过未来梯度预测提升视觉鲁棒性",
+   "cat": "cs.CV",
+   "summary_zh": "为世界动作模型加入未来 HOG 结构监督，抵御视觉扰动。",
+   "direction": "A"
   },
   {
    "id": "2611.34810",
@@ -17178,6 +16858,30 @@
    "title_zh": "理论对LLM求解器价值几何？在上下文中度量、归纳与合并理论",
    "cat": "cs.AI",
    "summary_zh": "在上下文中加入正确理论可使Qwen3-14B在等待时间问题上pass@1从0.37升至0.83，并研究模型能否自行归纳理论。"
+  },
+  {
+   "id": "2611.34750",
+   "title": "SOLVE: Sparse, Ordered Keyposes Make LLM Agents Versatile and Efficient Robot Manipulator",
+   "title_zh": "SOLVE：稀疏有序关键位姿让LLM智能体成为通用高效的机械臂操作器",
+   "cat": "cs.RO",
+   "summary_zh": "免训练的LLM智能体每次调用输出稀疏有序的6-DoF末端关键位姿，降低机械臂操作的推理开销。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.34745",
+   "title": "How Well Do Vision-Language Scene Graphs Serve as Memory for Embodied Question Answering?",
+   "title_zh": "视觉语言场景图作为具身问答记忆的效果如何？",
+   "cat": "cs.RO",
+   "summary_zh": "用可回答性指标衡量场景图记忆，基线仅恢复24.1%的可见物体类别。",
+   "direction": "H"
+  },
+  {
+   "id": "2611.34739",
+   "title": "Was the Model Given the Right Action? Auditing and Repairing Action Interfaces in Navigation World Models",
+   "title_zh": "模型得到了正确的动作吗？导航世界模型中动作接口的审计与修复",
+   "cat": "cs.CV",
+   "summary_zh": "审计导航世界模型NWM的动作接口，发现推理时动作处理与训练不一致会使模型显得不准。",
+   "direction": "D"
   },
   {
    "id": "2611.34730",
@@ -17306,6 +17010,14 @@
    "summary_zh": "利用视频编解码器记录的运动信息，帮助冻结的扩散VLM做视频计数。"
   },
   {
+   "id": "2611.34656",
+   "title": "Do We Still Need Reinforcement Learning When We Can Read the World Model?",
+   "title_zh": "能读取世界模型时，我们还需要强化学习吗？",
+   "cat": "cs.LG",
+   "summary_zh": "探讨在可直接读取世界模型时是否还需要强化学习来得到策略。",
+   "direction": "F"
+  },
+  {
    "id": "2611.34649",
    "title": "Atunda: Building an Afrogenic Dance Movement Dataset for AI-Driven Classification",
    "title_zh": "Atunda：面向AI分类的非洲裔舞蹈动作数据集",
@@ -17397,6 +17109,14 @@
    "summary_zh": "在PCIe服务器和异构GPU集群上，把流水线并行服务中的计算粒度与通信粒度解耦。"
   },
   {
+   "id": "2611.34614",
+   "title": "Commit2Drive: Perception-Grounded Language Decisions as Commitments for Trajectory Planning in Vision-Language-Action Driving Models",
+   "title_zh": "Commit2Drive：以感知接地的语言决策作为承诺用于VLA驾驶模型的轨迹规划",
+   "cat": "cs.CV",
+   "summary_zh": "让VLA驾驶模型的语言决策作为承诺约束轨迹规划。",
+   "direction": "A"
+  },
+  {
    "id": "2611.34612",
    "title": "Do We Really Need an LLM for Weight-Space Programming? A Deterministic Forward-Only Paradigm and Its Capability Boundaries",
    "title_zh": "权重空间编程真的需要LLM吗？确定性前向专用范式及其能力边界",
@@ -17437,6 +17157,14 @@
    "title_zh": "SEAM：自进化自适应探测的MLLM幻觉自动评测框架",
    "cat": "cs.CV",
    "summary_zh": "自动生成并更新探测题，评测多模态大模型的幻觉。"
+  },
+  {
+   "id": "2611.34597",
+   "title": "$μ$MPC: Microsecond-Scale Nonlinear and World Model Control from Edge to GPU via Koopman-Linearized Precompilation",
+   "title_zh": "μMPC：基于Koopman线性化预编译的微秒级非线性与世界模型控制",
+   "cat": "cs.RO",
+   "summary_zh": "用Koopman线性化预编译得到动作维度的QP，实现微秒级MPC。",
+   "direction": "F"
   },
   {
    "id": "2611.34591",
@@ -17747,6 +17475,14 @@
    "summary_zh": "以小型像素空间生成器实现单步超分辨率，对比现有最高 14 亿参数的生成器。"
   },
   {
+   "id": "2611.34416",
+   "title": "CHASE: Curiosity-Guided Skill Acquisition for Embodied Task Execution",
+   "title_zh": "CHASE：面向具身任务执行的好奇心引导技能获取",
+   "cat": "cs.RO",
+   "summary_zh": "让机器人在部分可观测环境中提出任务相关假设、寻找证据并补齐缺失技能。",
+   "direction": "B"
+  },
+  {
    "id": "2611.34414",
    "title": "SemProxy: Semantic 3D Proxies for Controllable Agentic 3D Modeling",
    "title_zh": "SemProxy：面向可控 Agent 式 3D 建模的语义 3D 代理",
@@ -17824,11 +17560,27 @@
    "summary_zh": "在多个隐藏的生成数据库上执行最终查询作为反事实奖励，防止错误 SQL 靠运气得分。"
   },
   {
+   "id": "2611.34360",
+   "title": "One Patch, Many Policies: Object-Associated Physical Patch Attacks on Robotic Manipulation",
+   "title_zh": "一个补丁，多种策略：针对机器人操作的物体关联物理补丁攻击",
+   "cat": "cs.CV",
+   "summary_zh": "提出 OAPA，对 VLA 与世界动作模型实施通用、可迁移的物理对抗补丁攻击。",
+   "direction": "A"
+  },
+  {
    "id": "2611.34351",
    "title": "Inverse Reinforcement Learning with State-Dependent Foresight for Human Decision-Making",
    "title_zh": "具有状态相关远见的人类决策逆强化学习",
    "cat": "cs.LG",
    "summary_zh": "用状态相关的远见参数刻画人类在自然任务中的决策并做逆强化学习推断。"
+  },
+  {
+   "id": "2611.34347",
+   "title": "AIRIS: Benchmarking Social Embodied Intelligence in Egocentric Streaming Videos",
+   "title_zh": "AIRIS：第一视角流式视频中的社会具身智能评测",
+   "cat": "cs.CV",
+   "summary_zh": "评测具身智能体在流式第一人称视频中判断证据是否充分、是否介入以及如何得体回应。",
+   "direction": "H"
   },
   {
    "id": "2611.34344",
@@ -17850,6 +17602,14 @@
    "title_zh": "Puzzling-Bench：基于 23,777 道人工谜题与社区验证答案评测语言模型",
    "cat": "cs.CL",
    "summary_zh": "收集 Puzzling Stack Exchange 上 23,777 道带社区验证答案的谜题，用于评测语言模型。"
+  },
+  {
+   "id": "2611.34328",
+   "title": "LUDIUS: A Benchmark for Embodied Social Intelligence in Everyday Human-Robot Interactions",
+   "title_zh": "LUDIUS：面向日常人机交互的具身社会智能基准",
+   "cat": "cs.RO",
+   "summary_zh": "评测视觉语言模型在机器人场景中通过话语和动作表达社会判断的能力。",
+   "direction": "H"
   },
   {
    "id": "2611.34327",
@@ -17969,6 +17729,14 @@
    "title_zh": "MedSkill-E²：评测并演化医疗 Agent 的技能",
    "cat": "cs.AI",
    "summary_zh": "针对 Agent 有技能却用不好的现象，提出医疗技能评测与演化框架。"
+  },
+  {
+   "id": "2611.34249",
+   "title": "Navigent: A Geometry-Grounded Agentic Framework for Vision Language Navigation",
+   "title_zh": "Navigent：基于几何约束的视觉语言导航 Agent 框架",
+   "cat": "cs.AI",
+   "summary_zh": "在冻结 MLLM 外加几何执行校验器，检查动作与实际运动是否一致。",
+   "direction": "C"
   },
   {
    "id": "2611.34248",
@@ -18270,6 +18038,14 @@
    "title_zh": "从数据室到报告：并购法律尽调的端到端 AI 支持",
    "cat": "cs.CL",
    "summary_zh": "LEXI 系统用 LLM 完成文档分类、信息提取到尽调报告生成。"
+  },
+  {
+   "id": "2611.34115",
+   "title": "A Simple Yet Effective Agent for Open-World Aerial Object Search",
+   "title_zh": "面向开放世界空中目标搜索的简单有效 Agent",
+   "cat": "cs.CV",
+   "summary_zh": "SimpleUAV 基于冻结 VLM，免训练完成空中目标搜索。",
+   "direction": "C"
   },
   {
    "id": "2611.34112",
@@ -18580,6 +18356,14 @@
    "summary_zh": "估计随时间变化的度量修正，改善世界坐标系下人体网格恢复的空间一致性。"
   },
   {
+   "id": "2611.33991",
+   "title": "QK-Bench: Benchmarking Quantitative Kinematic Understanding for Dynamic Spatial Intelligence",
+   "title_zh": "QK-Bench：评测动态空间智能的定量运动学理解",
+   "cat": "cs.RO",
+   "summary_zh": "评测模型对速度、接近与相遇等定量运动学量的理解。",
+   "direction": "H"
+  },
+  {
    "id": "2611.33990",
    "title": "geo-eval-harness: An Evaluation Harness for Geospatial Foundation Models",
    "title_zh": "geo-eval-harness：地理空间基础模型评测框架",
@@ -18748,6 +18532,14 @@
    "summary_zh": "为免训练的全切片病理智能体加入显式的鉴别诊断与证据可靠性贝叶斯推理。"
   },
   {
+   "id": "2611.33934",
+   "title": "Towards 360$^\\circ$ Embodied UAV Tracking Without Turning",
+   "title_zh": "迈向无需转向的 360° 具身无人机跟踪",
+   "cat": "cs.CV",
+   "summary_zh": "用全景感知跟踪目标，使无人机无需主动调整航向。",
+   "direction": "C"
+  },
+  {
    "id": "2611.33926",
    "title": "Connecting AI Agents to Live Discrete Element Simulations via the Model Context Protocol",
    "title_zh": "通过 Model Context Protocol 将 AI 智能体连接到实时离散元模拟",
@@ -18767,6 +18559,14 @@
    "title_zh": "DiCALM：把自回归卷积-注意力语言模型转换为离散扩散语言模型",
    "cat": "cs.CL",
    "summary_zh": "给出把 LFM2 系列混合卷积-注意力模型从自回归转为掩码扩散的转换配方。"
+  },
+  {
+   "id": "2611.33915",
+   "title": "SEEK: Self-Evolution through Execution Knowledge for Agentic Robot Manipulation",
+   "title_zh": "SEEK：通过执行知识实现智能体机器人操作的自我进化",
+   "cat": "cs.RO",
+   "summary_zh": "让机器人把执行中学到的知识沉淀下来，任务结束后仍能复用，而不只留在模型上下文里。",
+   "direction": "B"
   },
   {
    "id": "2611.33909",
@@ -18900,6 +18700,14 @@
    "title_zh": "MAFNet-UR$^3$：统一去除雨滴与反射的掩码感知融合网络",
    "cat": "cs.CV",
    "summary_zh": "用掩码感知融合网络统一去除挡风玻璃上同时出现的雨滴和反射。"
+  },
+  {
+   "id": "2611.33865",
+   "title": "Measuring the Value of One Shared Image at Robot Handoffs in Vision-and-Language Navigation",
+   "title_zh": "衡量机器人交接中一张共享图像在视觉语言导航里的价值",
+   "cat": "cs.RO",
+   "summary_zh": "在 3920 次自主交接中测量，附上领队最后动作前的视图能使成功率提升 7.51 个百分点。",
+   "direction": "C"
   },
   {
    "id": "2611.33861",
@@ -19175,6 +18983,14 @@
    "summary_zh": "提出面向先天性心脏病的交互式诊断基准，覆盖 247 例 CT 与 MRI 的多标签任务。"
   },
   {
+   "id": "2611.33772",
+   "title": "Triage Before Fine-Tuning: Feasibility-Gated Selection and Monitored Adaptation of Embodied Foundation Models for a Fixed Physical Platform",
+   "title_zh": "微调之前先分诊：面向固定物理平台的具身基础模型可行性筛选与受控适配",
+   "cat": "cs.RO",
+   "summary_zh": "TRIAGE 把固定平台上的性能损失拆成感知、时延和分布三类缺口，只对分布缺口做微调。",
+   "direction": "A"
+  },
+  {
    "id": "2611.33765",
    "title": "EMMA: Efficient and Effective Cooperative Multi-Modal Analytics over Embodied AI Data",
    "title_zh": "EMMA：面向具身 AI 数据的高效协同多模态分析",
@@ -19257,6 +19073,14 @@
    "title_zh": "说谎机器的破绽：分析中文狼人杀中 LLM 生成的策略性对话",
    "cat": "cs.CL",
    "summary_zh": "分析 12 个模型在 150 局中文狼人杀中的 5,404 条发言，比较狼人与村民的语言特征。"
+  },
+  {
+   "id": "2611.33745",
+   "title": "WhatIf: Counterfactual World Models over Action-Grounded Causal Graphs for Robotic Manipulation",
+   "title_zh": "WhatIf：面向机器人操作、基于动作接地因果图的反事实世界模型",
+   "cat": "cs.AI",
+   "summary_zh": "通过共享潜在物理与转移噪声耦合候选未来，用因果图对机器人操作做反事实比较。",
+   "direction": "D"
   },
   {
    "id": "2611.33741",
@@ -20554,6 +20378,14 @@
    "summary_zh": "为概率测度上KL散度的多目标优化提出加速近端梯度方法。"
   },
   {
+   "id": "2611.34054",
+   "title": "CARE-WM: Same-Horizon Self-Conditioning with Constraint-Adaptive Regularization for Latent World Models",
+   "title_zh": "CARE-WM：面向潜在世界模型的同视野自条件与约束自适应正则",
+   "cat": "cs.LG",
+   "summary_zh": "改进潜在世界模型训练，使多步预测与目标距离更适合规划。",
+   "direction": "D"
+  },
+  {
    "id": "2611.34050",
    "title": "A Nationwide Snapshot of Starlink Affordability",
    "title_zh": "美国Starlink可负担性的全国快照",
@@ -20566,6 +20398,14 @@
    "title_zh": "面向LEO星座蜂窝流量预测的去中心化聚类联邦学习",
    "cat": "cs.LG",
    "summary_zh": "在LEO星座上用去中心化聚类联邦学习做蜂窝流量预测。"
+  },
+  {
+   "id": "2611.34014",
+   "title": "Hetero-Associative Visuomotor Memory: Soft Recall as a Base for Learned Residuals in Few-Demonstration Imitation",
+   "title_zh": "异联想视觉运动记忆：少样本模仿中作为学习残差基础的软召回",
+   "cat": "cs.RO",
+   "summary_zh": "对整个示范记忆做softmax加权软召回，作为少样本模仿的残差修正基础。",
+   "direction": "B"
   },
   {
    "id": "2611.33998",
@@ -20911,6 +20751,14 @@
    "summary_zh": "在线性 MDP 中给出联合差分隐私的批量 PPO 算法，隐私代价只带来低阶遗憾项。"
   },
   {
+   "id": "2611.33460",
+   "title": "Fast Muscle-Driven Whole-Body Motion Tracking with a Differentiable World Model",
+   "title_zh": "基于可微世界模型的快速肌肉驱动全身动作跟踪",
+   "cat": "cs.LG",
+   "summary_zh": "在可微世界模型上训练肌肉骨骼模型的跟踪策略，单卡 RTX 5090 上 6.3 分钟达到原方法 3.9 小时的回报。",
+   "direction": "G"
+  },
+  {
    "id": "2611.33454",
    "title": "A Realistic End-to-End Runtime Crossover Estimation for Quantum-Enhanced Training of Large-Scale Machine Learning Models",
    "title_zh": "面向大规模机器学习模型量子增强训练的端到端实际运行时间交叉点估计",
@@ -20937,6 +20785,14 @@
    "title_zh": "又一个概念漂移基准？评估漂移检测器的原则性框架",
    "cat": "cs.LG",
    "summary_zh": "基于漂移可观测性与告警语义提出概念漂移检测基准，对 10 个检测器、16 个数据集做压力测试。"
+  },
+  {
+   "id": "2611.33407",
+   "title": "An Adversarial Multi-Agent Pursuit Game for Locomotor Agility Pretraining",
+   "title_zh": "用于运动敏捷性预训练的对抗式多智能体追逐游戏",
+   "cat": "cs.RO",
+   "summary_zh": "提出 MJTag 任务集，通过追逐逃避的联赛式自博弈让人形运动控制器涌现闪避、冲刺和擒抱策略。",
+   "direction": "G"
   },
   {
    "id": "2611.33400",
@@ -21037,6 +20893,22 @@
    "summary_zh": "基于 MPEG-V 和 HbbTV 实现带灯光、振动、气味等感官效果的混合电视原型，106 人主观评测。"
   },
   {
+   "id": "2611.34932",
+   "title": "MERLoc: Robust Robot Localization in Dynamic Environments with Pose-Based Retrieval over 3D Gaussian Splatting References",
+   "title_zh": "MERLoc：基于 3D Gaussian Splatting 参考的位姿检索，动态环境下的鲁棒机器人定位",
+   "cat": "cs.RO",
+   "summary_zh": "用单次 3DGS 扫描渲染稠密参考视图并按位姿检索，真实数据上位置 RMSE 降低 15-60%，Jetson Orin NX 上 5 Hz 运行。",
+   "direction": "C"
+  },
+  {
+   "id": "2611.34915",
+   "title": "Memory Is Not Ground Truth: Revising Navigation Authority under Unreliable VLM Evidence for Persistent Semantic Navigation",
+   "title_zh": "记忆不是真值：在不可靠 VLM 证据下修正持久语义导航的导航权威",
+   "cat": "cs.RO",
+   "summary_zh": "在 Spot 上测量 VLM 否定验证的相关性，提出可逆的依赖感知记忆更新机制，避免把过时记忆当作导航目标。",
+   "direction": "C"
+  },
+  {
    "id": "2611.34764",
    "title": "Anytime-Valid Sequential Verification for Sensing-Efficient Robot Navigation under Perception Uncertainty",
    "title_zh": "面向节省传感的机器人导航、感知不确定下的随时有效序贯验证",
@@ -21049,6 +20921,14 @@
    "title_zh": "面向弯曲软组织弹性建图的自主遍历式机器人触诊",
    "cat": "cs.RO",
    "summary_zh": "基于点云与 Laplace-Beltrami 算子的遍历式触诊框架，在硅胶仿体上定位硬质内含物。"
+  },
+  {
+   "id": "2611.34658",
+   "title": "FeaXDrive2: Body-Scene Spatial Grounding for Feasibility-Aware Generative Driving",
+   "title_zh": "FeaXDrive2：面向可行性感知生成式驾驶的车身-场景空间对齐",
+   "cat": "cs.RO",
+   "summary_zh": "用车身角点构造空间查询并动态更新采样位置，NAVSIM 上碰撞减少 36.5%，PDMS 从 87.0 升至 88.8。",
+   "direction": "Z"
   },
   {
    "id": "2611.34586",
@@ -21065,11 +20945,27 @@
    "summary_zh": "用局部参考模型加卡尔曼预测邻机运动，免去交换预测轨迹，并在分布式多机平台上实飞验证。"
   },
   {
+   "id": "2611.34519",
+   "title": "AGLR: Attribute-Guided Latent Refinement for Fine-Grained Humanoid Motion Generation and Editing",
+   "title_zh": "AGLR：用于细粒度人形动作生成与编辑的属性引导隐空间精修",
+   "cat": "cs.RO",
+   "summary_zh": "用属性残差适配器对基础隐变量单次修正，实现人形动作的几何可控生成与编辑，500 帧编辑仅 9.1 ms。",
+   "direction": "G"
+  },
+  {
    "id": "2611.34490",
    "title": "An Exact Branch-Price-and-Cut Algorithm for the Vehicle Routing Problem with Floating Targets",
    "title_zh": "带浮动目标车辆路径问题的精确分支定价切割算法",
    "cat": "cs.RO",
    "summary_zh": "为 VRPFT 的定价标号算法提出基于轨迹代价上下界的支配准则，比先前精确动态规划更快。"
+  },
+  {
+   "id": "2611.34485",
+   "title": "SkySearcher: High-Altitude Onboard VLM Reasoning for Aerial Semantic Search",
+   "title_zh": "SkySearcher：用于空中语义搜索的高空机载 VLM 推理",
+   "cat": "cs.RO",
+   "summary_zh": "机载 VLM 提取高空语义线索并投影到地面概率图，指导无人机语义搜索，并在无人机上完全机载运行。",
+   "direction": "C"
   },
   {
    "id": "2611.34463",
@@ -21100,6 +20996,22 @@
    "summary_zh": "基于超图传播和桥优先分裂启发式构造可均匀采样 CSP 解的生成器，用于基于约束的随机测试。"
   },
   {
+   "id": "2611.34297",
+   "title": "BOT-Scale: A Traceable Evaluation Methodology for Robotic Manipulation",
+   "title_zh": "BOT-Scale：可追溯的机器人操作评估方法",
+   "cat": "cs.RO",
+   "summary_zh": "把操作得分定义为行为因子惩罚之和，使每项扣分都可检查，并发布带八位评分员标注的 BOT-Events 数据集。",
+   "direction": "H"
+  },
+  {
+   "id": "2611.34287",
+   "title": "DataForgeVLA: Fully Synthetic Manipulation Demonstrations for Vision-Language-Action Training",
+   "title_zh": "DataForgeVLA：用于 VLA 训练的全合成操作演示",
+   "cat": "cs.RO",
+   "summary_zh": "用 LoRA 微调的 Cosmos-3 生成操作视频并恢复轨迹，得到 340 条合成演示，GR00T N1.6 微调后真机成功 16/20。",
+   "direction": "E"
+  },
+  {
    "id": "2611.34246",
    "title": "Autonomous Vineyard Exploration using LiDAR Sensing: A Field Evaluation on Legged-Wheeled Quadruped Robot",
    "title_zh": "基于激光雷达感知的葡萄园自主探索：轮足四足机器人的野外评估",
@@ -21112,6 +21024,30 @@
    "title_zh": "xFORM：用精确因子压缩加速定滞后激光雷达里程计",
    "cat": "cs.RO",
    "summary_zh": "把数十万特征匹配压缩为每对扫描 34 个标量残差，GPU 版比 FORM 快 2.0-4.0 倍且结果一致。"
+  },
+  {
+   "id": "2611.34020",
+   "title": "Ask to Land: Learning a Mask-Conditioned Open-Vocabulary Landing Policy via Differentiable Physics",
+   "title_zh": "Ask to Land：通过可微物理学习掩码条件的开放词汇降落策略",
+   "cat": "cs.RO",
+   "summary_zh": "冻结开放词汇分割前端，用可微物理训练控制策略，使四旋翼降落到语言指定的静止或移动平台。",
+   "direction": "F"
+  },
+  {
+   "id": "2611.33911",
+   "title": "CoTAMP: Cooperative Task and Motion Planning for Quadruped Robots with Large Language Models",
+   "title_zh": "CoTAMP：基于大语言模型的四足机器人协作任务与运动规划",
+   "cat": "cs.RO",
+   "summary_zh": "LLM 与代码模块协作生成并校验多四足机器人协作运动，三个仿真场景 30 次试验全部得到运动学有效参考。",
+   "direction": "Z"
+  },
+  {
+   "id": "2611.33880",
+   "title": "Integration of Vision-Language-Action Control for Autonomous Forklift Unloading with Limited Real-World Data",
+   "title_zh": "在有限真实数据下集成 VLA 控制用于自主叉车卸货",
+   "cat": "cs.RO",
+   "summary_zh": "用 9.38 小时仿真数据加 0.8 小时真实演示微调预训练 VLA，72 次真机试验完成叉车卸货。",
+   "direction": "A"
   },
   {
    "id": "2611.33817",
@@ -21128,6 +21064,22 @@
    "summary_zh": "从上下两侧给出严格单纯复形复杂度的界，并给出球面与曲面的显式覆盖和可验证证书。"
   },
   {
+   "id": "2611.33739",
+   "title": "RegHarness: Regulating What Code-as-Policy Agents Keep from Steps to Skills",
+   "title_zh": "RegHarness：规范 Code-as-Policy 智能体从步骤到技能的保留内容",
+   "cat": "cs.RO",
+   "summary_zh": "为 Code-as-Policy 机器人智能体设计机制，控制单次执行内保留哪些动作、跨执行保留哪些代码修改。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.33731",
+   "title": "RoboJackVR: Turning Robot Tasks into VR Games for Scalable Demonstration Collection",
+   "title_zh": "RoboJackVR：把机器人任务变成 VR 游戏以规模化采集示教",
+   "cat": "cs.RO",
+   "summary_zh": "用独立 VR 游戏让玩家操控仿真机器人执行战斗技能，从而收集机器人示教数据。",
+   "direction": "E"
+  },
+  {
    "id": "2611.33721",
    "title": "A general-purpose safe manipulator planning framework for diverse environments without retraining",
    "title_zh": "无需重训即可适应多样环境的通用安全机械臂规划框架",
@@ -21135,11 +21087,35 @@
    "summary_zh": "提出无需针对新环境重训的机械臂安全抓取规划框架，面向不同物体与条件。"
   },
   {
+   "id": "2611.33705",
+   "title": "Lab2Sim: Agentic Generation of Interactive Laboratory Equipment from Operation Videos",
+   "title_zh": "Lab2Sim：从操作视频智能体式生成可交互实验室设备",
+   "cat": "cs.RO",
+   "summary_zh": "从操作视频出发，用智能体生成外观、结构和关节运动都忠实的实验室设备仿真资产。",
+   "direction": "D"
+  },
+  {
    "id": "2611.33702",
    "title": "Systematic study of the performance of small robots on controlled laboratory substrates",
    "title_zh": "小型机器人在受控实验室基质上的性能系统研究",
    "cat": "physics.bio-ph",
    "summary_zh": "在受控颗粒基质上系统测试小型机器人的运动表现，为地面相互作用建模提供依据。"
+  },
+  {
+   "id": "2611.33586",
+   "title": "DFLAT: Model-based Diffusion on Differentially Flat Spaces for Long-Horizon Trajectory Optimization",
+   "title_zh": "DFLAT：在微分平坦空间上做基于模型的扩散以优化长时程轨迹",
+   "cat": "cs.RO",
+   "summary_zh": "在微分平坦轨迹表示上直接做扩散规划，兼顾长时程规划的可扩展性与可行性。",
+   "direction": "F"
+  },
+  {
+   "id": "2611.33560",
+   "title": "Skeptic: Grounding Failure Diagnosis for Robot Skill Discovery",
+   "title_zh": "Skeptic：面向机器人技能发现的落地式失败诊断",
+   "cat": "cs.RO",
+   "summary_zh": "诊断机器人技能发现中把失败程序误判为任务物理上不可行的问题，并比较两种应对方式。",
+   "direction": "B"
   },
   {
    "id": "2611.33490",
@@ -21156,6 +21132,14 @@
    "summary_zh": "提出场重叠碰撞积分算法，直接在 3DGS 表示上优化机器人轨迹。"
   },
   {
+   "id": "2611.33352",
+   "title": "Why Does Sensor Depth Fail Learned Manipulation Policies? Finding the Failure Mode with ACT",
+   "title_zh": "为何传感器深度会让学习型操作策略失效？用 ACT 找出失效模式",
+   "cat": "cs.RO",
+   "summary_zh": "用 ACT 区分深度相机噪声与缺失值（空洞）各自对学习型操作策略的影响。",
+   "direction": "B"
+  },
+  {
    "id": "2611.25476",
    "title": "WeightCode: Installing New Capabilities into Neural Networks via Weight-Space Programming",
    "title_zh": "WeightCode：通过权重空间编程向神经网络植入新能力",
@@ -21168,6 +21152,22 @@
    "title_zh": "AutoPILOT：面向实时游戏的视觉智能体 Harness",
    "cat": "cs.AI",
    "summary_zh": "设计让多模态模型在游戏持续运行时仍能决策的 Harness，缩小与等待式游戏之间的差距。"
+  },
+  {
+   "id": "2611.26745",
+   "title": "MomentMem: Memorizing Key Moments for Robot Manipulation",
+   "title_zh": "MomentMem：为机器人操作记住关键时刻",
+   "cat": "cs.RO",
+   "summary_zh": "研究视觉关键时刻记忆，让操作策略只保留必要的历史画面而非完整观测序列。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.27689",
+   "title": "Embodied-Harness: Towards Recursive Self-Improvement for Robotic Manipulation",
+   "title_zh": "Embodied-Harness：迈向机器人操作的递归自我改进",
+   "cat": "cs.RO",
+   "summary_zh": "双智能体框架在不更新模型的前提下改进执行 Harness，处理记忆组织、失败归因和经验复用。",
+   "direction": "B"
   },
   {
    "id": "2611.26358",

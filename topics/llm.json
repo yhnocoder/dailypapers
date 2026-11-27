@@ -2,7 +2,7 @@
  "id": "llm",
  "name": "LLM",
  "taxonomy_version": "v1",
- "rules_version": "v1",
+ "rules_version": "v2",
  "categories": [
   "cs.CL",
   "cs.LG",
@@ -78,5 +78,6 @@
   "tongtu_mode": "fast",
   "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
   "files_base": "https://dailypapers-files.awesomedays.workers.dev"
- }
+ },
+ "min_score": 0.45
 }

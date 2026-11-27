@@ -7,7 +7,7 @@
   "2026-11-25"
  ],
  "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25（3 批）",
- "rules_version": "v1",
+ "rules_version": "v2",
  "overview": {
   "guide": [
    "[[@2611.29064|UNIFIED]] 让一个 DiT 同时做编码、生成和解码，215M 参数 gFID 2.08；读的时候注意它按 epoch 比较，按训练 FLOPs 算只和 UNITE 打平。[[@2611.33268|JetDiffusion]] 的 273 倍里约 32 倍来自把 50 步压到 3 步，新东西是 4 比特稀疏注意力和「先逐层对齐老师再蒸馏」的训练顺序。[[@2611.33232|Best-of-N 对 RL]] 发现 Flow-GRPO 的优势几乎只在位置类提示上，还指出两种自动裁判会朝相反方向出错，只信一个裁判结论可能颠倒。",
@@ -21,7 +21,7 @@
   ],
   [
    "判定Diffusion / 生成相关",
-   263
+   143
   ],
   [
    "入选",
@@ -1257,30 +1257,6 @@
    "direction": "D"
   },
   {
-   "id": "2611.34237",
-   "title": "VibeVideoAgent: Closing the Perceptual Loop for Code-Driven Video Generation",
-   "title_zh": "VibeVideoAgent：为代码驱动视频生成闭合感知回路",
-   "cat": "cs.CV",
-   "summary_zh": "让编码 Agent 在渲染视频后做感知反馈，修正重叠标签、音画不同步等问题。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.31237",
-   "title": "Let Vision-Language Models Generate Images through Their Representations",
-   "title_zh": "让视觉语言模型通过自身表征生成图像",
-   "cat": "cs.CV",
-   "summary_zh": "提出Integral，把预训练VLM转成统一理解与生成模型，解决理解与生成视觉表征不一致的问题。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34929",
-   "title": "High-Fidelity Image Matting with Pixel-Space Diffusion Transformers",
-   "title_zh": "基于像素空间扩散 Transformer 的高保真图像抠图",
-   "cat": "cs.CV",
-   "summary_zh": "改用像素空间扩散 Transformer，避开潜空间 VAE 重建造成的细节损失。",
-   "direction": "A"
-  },
-  {
    "id": "2611.31048",
    "title": "Distill the Correction, Not the Rewrite: Hindsight Twins for Self-Improving Text-to-Image Models",
    "title_zh": "蒸馏修正而非改写：面向自我改进文生图模型的事后孪生",
@@ -1297,28 +1273,12 @@
    "direction": "C"
   },
   {
-   "id": "2611.33925",
-   "title": "Beyond the Happy Path: Generalizing Robot World Models from Simulated Failures",
-   "title_zh": "走出理想路径：从模拟失败中泛化机器人世界模型",
-   "cat": "cs.RO",
-   "summary_zh": "用模拟的失败数据训练，改善机器人世界模型在抓取偏差、滑落等情形下的预测。",
-   "direction": "D"
-  },
-  {
    "id": "2611.33894",
    "title": "SIA: Selective Image Analogy",
    "title_zh": "SIA：选择性图像类比",
    "cat": "cs.CV",
    "summary_zh": "新设定：只把示例前后图对中用户想要的那部分编辑迁移到新图像上。",
    "direction": "A"
-  },
-  {
-   "id": "2611.31895",
-   "title": "Loupe: Reinforcing Knowledge-Intensive Video Generation Agents",
-   "title_zh": "Loupe：用强化学习训练知识密集型视频生成 Agent",
-   "cat": "cs.CV",
-   "summary_zh": "用搜索补全事实并以强化学习训练 Agent，提升知识密集型视频生成的准确性。",
-   "direction": "B"
   },
   {
    "id": "2611.31163",
@@ -1601,22 +1561,6 @@
    "direction": "B"
   },
   {
-   "id": "2611.25946",
-   "title": "Point Dynamics as Proxy for Robotic World Models",
-   "title_zh": "以点动态作为机器人世界模型的代理",
-   "cat": "cs.CV",
-   "summary_zh": "用点动态约束机器人世界模型，缓解物体随动作塌陷",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30013",
-   "title": "3AGameFactory-Motion: Agentic Rigging and Reliable Complex Motion Generation for Diverse 3D Assets",
-   "title_zh": "3AGameFactory-Motion：面向多样 3D 资产的 Agent 式绑定与可靠复杂动作生成",
-   "cat": "cs.CV",
-   "summary_zh": "提出 DivDynBench 并比较三种范式，用 Agent 为多样 3D 资产绑定骨骼并生成动作。",
-   "direction": "C"
-  },
-  {
    "id": "2611.31466",
    "title": "AdProducer: Towards Agentic Advertising Video Generation",
    "title_zh": "AdProducer：迈向智能体式广告视频生成",
@@ -1625,915 +1569,12 @@
    "direction": "B"
   },
   {
-   "id": "2611.32786",
-   "title": "Simulator-as-Proxy World Model for Robot Manipulation",
-   "title_zh": "Simulator-as-Proxy 世界模型：面向机器人操作",
-   "cat": "cs.RO",
-   "summary_zh": "以可显式扰动的模拟器场景作为代理来条件化视频世界模型，检验视频是否忠实呈现代理状态。",
+   "id": "2611.25946",
+   "title": "Point Dynamics as Proxy for Robotic World Models",
+   "title_zh": "以点动态作为机器人世界模型的代理",
+   "cat": "cs.CV",
+   "summary_zh": "用点动态约束机器人世界模型，缓解物体随动作塌陷",
    "direction": "D"
-  },
-  {
-   "id": "2611.30945",
-   "title": "Diffutoon-2: Toon Shading with Video Diffusion Models",
-   "title_zh": "Diffutoon-2：基于视频扩散模型的卡通渲染",
-   "cat": "cs.CV",
-   "summary_zh": "用视频扩散模型把写实视频转成动漫风格，且不依赖精心整理的配对数据或参考图。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30879",
-   "title": "Learning the Next Best Move with Visual Diffusion Models",
-   "title_zh": "用视觉扩散模型学习下一步最佳走法",
-   "cat": "cs.GR",
-   "summary_zh": "证明视觉扩散模型无需显式搜索未来步骤，即可在序列推理任务中预测下一步最佳走法。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.30673",
-   "title": "Optimising VLM Harnesses to Localise Errors in Generated Videos",
-   "title_zh": "优化VLM框架以定位生成视频中的错误",
-   "cat": "cs.CV",
-   "summary_zh": "研究检查哪些帧、调用哪些工具和如何合并预测的VLM工作流，用于定位生成视频中的细微错误。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.30671",
-   "title": "DriveDreamer-RSI: Recursive Self-Improvement of Driving Perception and Agentic Data Generation",
-   "title_zh": "DriveDreamer-RSI：驾驶感知与智能体式数据生成的递归自我改进",
-   "cat": "cs.CV",
-   "summary_zh": "让感知模型与数据生成互相反馈，随感知模型演进调整生成什么数据以及如何构造。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30607",
-   "title": "Tri-DNO: Trilateral Diffusion Noise Optimization for 3D Human Object Interaction",
-   "title_zh": "Tri-DNO：用于3D人物-物体交互的三边扩散噪声优化",
-   "cat": "cs.CV",
-   "summary_zh": "通过扩散噪声优化生成手部接触更真实、穿插更少的3D人物-物体交互。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.30592",
-   "title": "HOSE: Hierarchical Orthogonal Subspace Erasure for Concept Unlearning in Diffusion Models",
-   "title_zh": "HOSE：用于扩散模型概念遗忘的层级正交子空间擦除",
-   "cat": "cs.CV",
-   "summary_zh": "在正交子空间中擦除有害概念，让文生图扩散模型遗忘敏感内容。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.30154",
-   "title": "Preserve to Compress: Beyond Low-Dimensional Latents in One-Step Diffusion Codec",
-   "title_zh": "为压缩而保留：一步扩散编解码器中超越低维潜空间",
-   "cat": "cs.CV",
-   "summary_zh": "在超低码率图像压缩的一步扩散编解码器里，缓解低维潜空间丢失细节的问题。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30067",
-   "title": "FolioWeaver: A LayerGraph-Grounded Agent for Layered Image Generation and Editing",
-   "title_zh": "FolioWeaver：基于 LayerGraph 的分层图像生成与编辑 Agent",
-   "cat": "cs.CV",
-   "summary_zh": "用 LayerGraph 和可执行场景状态，把分层图像生成与多轮编辑统一到一个 Agent 里。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.29764",
-   "title": "Selecting Stable Sampling Dynamics for Compositional Diffusion: A Feynman-Kac Weight Reduction",
-   "title_zh": "为组合式扩散选择稳定的采样动力学：Feynman-Kac 权重约简",
-   "cat": "cs.LG",
-   "summary_zh": "研究如何从多个扩散模型的加权乘积分布中选择稳定的 Feynman-Kac 采样动力学。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29311",
-   "title": "PrimiTok: Learning to Diversify and Allocate Primitives for Visual Tokenization",
-   "title_zh": "PrimiTok：学习多样化并分配基元的视觉分词",
-   "cat": "cs.CV",
-   "summary_zh": "把码字视为可复用视觉基元，按每个Token内容自适应分配与加权组合。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.29029",
-   "title": "T2ISpec: Benchmarking Speculative Decoding for Text-to-Image Generation",
-   "title_zh": "T2ISpec：文生图推测解码基准",
-   "cat": "cs.CV",
-   "summary_zh": "用 1400 条提示覆盖七类渲染主题，评测自回归与扩散加速器在文生图推测解码中的延迟与表现。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.28842",
-   "title": "Learning How a Body Moves: Few-Shot Body Inference for Visual World Models of Animated Characters",
-   "title_zh": "学习身体如何运动：动画角色视觉世界模型的少样本身体推断",
-   "cat": "cs.CV",
-   "summary_zh": "提出上下文世界模型，从少量样例推断外观相同角色的不同身体动力学。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28779",
-   "title": "Imagine Smarter, Drive Faster: Efficient World Modeling for Decision-Aware Autonomous Driving",
-   "title_zh": "想得更巧，开得更快：面向决策感知自动驾驶的高效世界建模",
-   "cat": "cs.CV",
-   "summary_zh": "FastWorld 用紧凑场景表示和短时域动作条件预测，降低驾驶世界模型的计算量。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28682",
-   "title": "CHORD: Closed-loop Human-Object Rectified-flow Decomposition",
-   "title_zh": "CHORD：闭环人物体矫正流分解",
-   "cat": "cs.CV",
-   "summary_zh": "用矫正流分解关键交互变量，生成文本驱动的 3D 人与物体交互运动。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.28621",
-   "title": "Interpreting Diffusion Model Activations in Natural Language",
-   "title_zh": "用自然语言解读扩散模型的激活",
-   "cat": "cs.LG",
-   "summary_zh": "把LatentQA从LLM扩展到扩散模型，用自然语言开放式提问来解读其中间激活。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.33261",
-   "title": "Same Tokenizer, Better Tokens: Choosing Image Tokens by MAP Inference",
-   "title_zh": "同一个 Tokenizer，更好的词元：用 MAP 推断选择图像词元",
-   "cat": "cs.CV",
-   "summary_zh": "把编码特征的离散码分配改为联合优化的最近向量问题，提升重建保真度。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33016",
-   "title": "RePix-VFI: Re-rendering Observed Pixels for Video Frame Interpolation with Generative Priors from One-Step Diffusion",
-   "title_zh": "RePix-VFI：借助单步扩散生成先验重渲染已观测像素的视频插帧",
-   "cat": "cs.CV",
-   "summary_zh": "用单步扩散的生成先验重渲染已观测像素，兼顾多帧插值的运动准确与外观忠实。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.32232",
-   "title": "MYSTIQUE: Few-Shot Facial Identity Transfer with Performance Preservation",
-   "title_zh": "MYSTIQUE：保留表演的少样本人脸身份迁移",
-   "cat": "cs.CV",
-   "summary_zh": "针对自重建训练造成的身份泄漏，提出少样本身份迁移方法并保留表情、光照与姿态。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32152",
-   "title": "RoboProbe: Benchmarking Physical Plausibility of Robot World Models",
-   "title_zh": "RoboProbe：机器人世界模型物理合理性的评测基准",
-   "cat": "cs.CV",
-   "summary_zh": "评测机器人世界模型生成视频的物理合理性，避免错误的动作可行性判断。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.32034",
-   "title": "BodyWeave: Native Body-Conditioned 3D Garment Generation",
-   "title_zh": "BodyWeave：原生身体条件的 3D 服装生成",
-   "cat": "cs.CV",
-   "summary_zh": "在 3D 空间中以身体形状和姿态为条件生成服装，同时保留参考设计细节。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31976",
-   "title": "CodeHOI: Code with Agents for Physically Plausible 4D Hand-Object Interaction",
-   "title_zh": "CodeHOI：用 Agent 写代码生成物理合理的 4D 手物交互",
-   "cat": "cs.CV",
-   "summary_zh": "让编码 Agent 写物理程序，生成物理合理的 4D 手物交互。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31774",
-   "title": "BODYBENCH: Evaluating Adversarial Image Defenses Against AI Nudification Inpainting",
-   "title_zh": "BODYBENCH：评估对抗图像防御对 AI 裸体化修复的有效性",
-   "cat": "cs.CV",
-   "summary_zh": "评测对抗扰动防御在针对 AI 裸体化 inpainting 编辑时的保护效果。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.31651",
-   "title": "Anchoring VAE Fine-Tuning to Its Latent Diffusion Prior",
-   "title_zh": "将 VAE 微调锚定到其潜在扩散先验",
-   "cat": "cs.CV",
-   "summary_zh": "提出 Diffusion Prior Anchoring，用分数蒸馏更新约束 VAE 微调时的潜变量。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.31647",
-   "title": "MSW: a Multi-Scale Sliced Wasserstein Distance Between Image Distributions",
-   "title_zh": "MSW：图像分布之间的多尺度切片 Wasserstein 距离",
-   "cat": "cs.CV",
-   "summary_zh": "在像素空间用固定 DCT 滤波器组比较图像分布，无需训练网络并附精确检验。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.31558",
-   "title": "Denoising Diffusion with Progressive Posterior Sampling",
-   "title_zh": "渐进式后验采样的去噪扩散",
-   "cat": "cs.LG",
-   "summary_zh": "提出 PPS，无需 SVD 并自动估计噪声方差，用扩散先验解线性逆问题。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.27229",
-   "title": "Prune to Expand: Training Prompt Enhancers with Less to Imitate",
-   "title_zh": "以剪枝求扩展：用更少的模仿内容训练提示词增强器",
-   "cat": "cs.CV",
-   "summary_zh": "发现提示增强模型用生成增益大的样本对与增益小的样本对训练效果相当，并据此精简监督数据。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34940",
-   "title": "LuxAvatar: Real-Time Relightable Head Avatars via Causal Neural Shading of 3D Intrinsic Proxies",
-   "title_zh": "LuxAvatar：基于 3D 本征代理因果神经着色的实时可重光照头部虚拟人",
-   "cat": "cs.CV",
-   "summary_zh": "从单张肖像前馈生成可实时驱动并重光照的头部虚拟人。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.34839",
-   "title": "Diffusion Steering via Adaptive Reward Estimation and Resampling",
-   "title_zh": "通过自适应奖励估计与重采样引导扩散",
-   "cat": "cs.CV",
-   "summary_zh": "重新分配概率到更成功的样本，使文生图更好地满足提示中的对象与关系。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.34719",
-   "title": "Reading, Not Adapting: Unlocking Frozen Visual Knowledge for AI-Generated Image Detection",
-   "title_zh": "读取而非适配：释放冻结视觉知识用于AI生成图像检测",
-   "cat": "cs.CV",
-   "summary_zh": "不适配骨干网络，直接读取冻结视觉基础模型中已有的检测知识来识别AI生成图像。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.34690",
-   "title": "PoVi: Agentic Poetry-to-Video Generation with Knowledge Grounding and Figurative Understanding",
-   "title_zh": "PoVi：具备知识接地与比喻理解的智能体式诗歌转视频生成",
-   "cat": "cs.CL",
-   "summary_zh": "提出诗歌转视频的基准与智能体框架，处理诗歌中的典故与比喻。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.34644",
-   "title": "Motion Beyond Pixels: Learning Future Visual Representations for Object-Centric Dynamics",
-   "title_zh": "超越像素的运动：为以物体为中心的动力学学习未来视觉表征",
-   "cat": "cs.CV",
-   "summary_zh": "MotionRep联合生成未来DINO表征与3D物体流，作为面向具身的视觉表征世界模型。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.34622",
-   "title": "Beyond Pose Control: Anatomically Consistent Ultrasound Video Generation",
-   "title_zh": "超越位姿控制：解剖结构一致的超声视频生成",
-   "cat": "cs.CV",
-   "summary_zh": "以解剖先验约束探头位姿控制下的超声视频生成。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.34418",
-   "title": "SPGSR: A Small Pixel-Space Generator for One-Step Super-Resolution",
-   "title_zh": "SPGSR：面向单步超分辨率的小型像素空间生成器",
-   "cat": "cs.CV",
-   "summary_zh": "以小型像素空间生成器实现单步超分辨率，对比现有最高 14 亿参数的生成器。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33982",
-   "title": "FasterGRN: Reducing the Refinement Redundancy for Accelerating Generative Refinement Networks",
-   "title_zh": "FasterGRN：减少精修冗余以加速生成式精修网络",
-   "cat": "cs.CV",
-   "summary_zh": "削减生成式精修网络中对全部视觉表示的重复计算，加速图像生成。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.33885",
-   "title": "LayoutRecall: Preserving Appearance in Multi-Round 3D Layout-Controlled Image Editing",
-   "title_zh": "LayoutRecall：在多轮 3D 布局控制的图像编辑中保持外观",
-   "cat": "cs.CV",
-   "summary_zh": "多轮编辑中物体被遮挡或移出视野后，仍能恢复其原有外观。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33371",
-   "title": "MotifFlow: Training-Free, Self-Contained Style Transfer from Color to Motif in Rectified Flow Transformers",
-   "title_zh": "MotifFlow：整流流Transformer中免训练、自包含的从色彩到图案的风格迁移",
-   "cat": "cs.CV",
-   "summary_zh": "在FLUX上免训练地迁移绘画的色彩、笔触与图案。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33323",
-   "title": "StyleID++: Position-Decoupled and Structure-Coherent Style Retrieval across Diffusion Architectures",
-   "title_zh": "StyleID++：跨扩散架构的位置解耦、结构一致的风格检索",
-   "cat": "cs.CV",
-   "summary_zh": "针对注意力注入式免训练风格迁移中位置信号造成的失效，解耦位置并保持结构一致，适配多种扩散架构。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33296",
-   "title": "CoSMo: A Compact Spectral Space of Body Motion in Video",
-   "title_zh": "CoSMo：视频中人体运动的紧凑谱空间",
-   "cat": "cs.CV",
-   "summary_zh": "把视频中的人体运动编码为一个紧凑谱空间中的单一编码，可无训练地比较、编辑、迁移和重新采样。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30898",
-   "title": "World Models as Native Latent Action Models",
-   "title_zh": "世界模型即原生隐动作模型",
-   "cat": "cs.CV",
-   "summary_zh": "让世界模型直接充当隐动作模型，从无动作标注的人类与机器人视频中恢复动力学。"
-  },
-  {
-   "id": "2611.32793",
-   "title": "Back to Raw Motion: Latent-Free Diffusion Transformers for Text-to-Motion and Exact Conditional Generation",
-   "title_zh": "回到原始运动：面向文本到动作与精确条件生成的无隐空间 Diffusion Transformer",
-   "cat": "cs.CV",
-   "summary_zh": "直接在原始动作数据空间训练 Diffusion Transformer，免去编码器误差并可精确满足给定条件。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31766",
-   "title": "RoMo Hands: A Large Scale Richly Organized Text to Hand Motion Dataset",
-   "title_zh": "RoMo Hands：大规模丰富组织的文本到手部动作数据集",
-   "cat": "cs.CV",
-   "summary_zh": "发布约 54.2 万条序列、884 小时的野外文本-手部动作配对数据集。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31128",
-   "title": "CrownFusion: 3D Dental Crown Generation Using Geometry Images and Latent Diffusion",
-   "title_zh": "CrownFusion：基于几何图像与潜扩散的3D牙冠生成",
-   "cat": "cs.CV",
-   "summary_zh": "用几何图像编码表面坐标，以潜扩散模型生成3D牙冠设计。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.30964",
-   "title": "Graph2Scene: Relation-Aware Text-to-Image Generation with Graph-Guided Diffusion Model",
-   "title_zh": "Graph2Scene：基于图引导扩散模型的关系感知文生图",
-   "cat": "cs.CV",
-   "summary_zh": "用场景图引导扩散模型，使复杂提示中物体间的交互关系得到更准确的生成。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30345",
-   "title": "SceneCast: Learning Indoor Scene Synthesis from Curated Synthetic Videos with LLM Reward",
-   "title_zh": "SceneCast：用 LLM 奖励从精选合成视频学习室内场景合成",
-   "cat": "cs.CV",
-   "summary_zh": "不依赖人工标注，从大规模无标注合成视频中学习室内 3D 场景合成。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.30203",
-   "title": "ToWo-VTON: Take-Off Wear-On Virtual Try-On via Topology-aware Decoupling",
-   "title_zh": "ToWo-VTON：基于拓扑感知解耦的脱衣-穿衣虚拟试穿",
-   "cat": "cs.CV",
-   "summary_zh": "先生成贴身人体代理再合成目标服装，改善下装和全身虚拟试穿。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30163",
-   "title": "ReVAgent: Multi-Agent Reasoning-Intensive Video Generation",
-   "title_zh": "ReVAgent：多智能体推理密集型视频生成",
-   "cat": "cs.AI",
-   "summary_zh": "多智能体先解题再生成关键帧和讲解视频，并检查渲染结果以修正。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.30073",
-   "title": "SF-Flow: Spectral Flow Matching with High Structural Fidelity for Hallucination-Suppressed Scientific Image Generation",
-   "title_zh": "SF-Flow：面向抑制幻觉的科学图像生成的高结构保真谱流匹配",
-   "cat": "cs.CV",
-   "summary_zh": "用谱流匹配在无配对数据下生成科学图像，并保持预设相界的位置结构。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.29766",
-   "title": "CivicBench: Robust Detection of AI-Generated Political Video",
-   "title_zh": "CivicBench：稳健检测 AI 生成的政治视频",
-   "cat": "cs.CV",
-   "summary_zh": "发布含 10,800 段生成视频的基准，检测 AI 生成的政治人物视频并测试攻击。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.29678",
-   "title": "Ref2Light: From One Image to Interactive Glasses-Free 3D Characters",
-   "title_zh": "Ref2Light：从单张图像生成可交互的裸眼 3D 角色",
-   "cat": "cs.CV",
-   "summary_zh": "前馈地把单张 A-pose 插画转为可实时控制姿态与表情的光场显示 3D 角色。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.29125",
-   "title": "SilentWAM: Planning in the Masked State of a Diffusion World Model",
-   "title_zh": "SilentWAM：在扩散世界模型的掩码状态中做规划",
-   "cat": "cs.CV",
-   "summary_zh": "读取掩码未来 token 的隐状态直接规划，不生成未来帧，在 NAVSIM v1 上达到 92.0 PDMS。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28871",
-   "title": "KineState-SWAM: A Surgical World Action Model with Explicit Kinematics and Causal Interaction Dynamics",
-   "title_zh": "KineState-SWAM：显式运动学与因果交互动力学的手术世界动作模型",
-   "cat": "cs.CV",
-   "summary_zh": "用持久交互状态耦合动作预测与视频生成，区分器械运动与组织响应。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.28836",
-   "title": "Omni-H3-Image: Constrained Foundation Priors Usher in a New Era of All-in-One Blind Image Restoration",
-   "title_zh": "Omni-H3-Image：受约束的基础先验用于一体化盲图像复原",
-   "cat": "cs.CV",
-   "summary_zh": "在通用图像模型之上做三阶段约束后验投影，用于多种退化的盲图像复原。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28485",
-   "title": "VICA: Video Contextual Agreement for AIGC Video Detection and Localization",
-   "title_zh": "VICA：用于 AIGC 视频检测与定位的视频上下文一致性方法",
-   "cat": "cs.CV",
-   "summary_zh": "利用局部区域与全局上下文的一致性来检测并定位 AI 生成或编辑的视频。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.28654",
-   "title": "Stein Guidance without Gradients: Discretization Uniform Diffusion Inference Time Scaling beyond Particle SMC",
-   "title_zh": "无梯度的Stein引导：超越粒子SMC的离散化均匀扩散推理时扩展",
-   "cat": "cs.LG",
-   "summary_zh": "提出无导数引导结合全路径独立MH校正的Stein Guidance，用于奖励引导扩散的推理时扩展。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.30007",
-   "title": "One Latent World for Heterogeneous LiDARs: A Scan Pattern Agnostic 4D World Model via Direct Ray Decoding",
-   "title_zh": "异构LiDAR的统一潜在世界：通过直接射线解码的扫描模式无关4D世界模型",
-   "cat": "cs.RO",
-   "summary_zh": "通过直接射线解码，让LiDAR世界模型摆脱单一传感器扫描模式。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33096",
-   "title": "EventDiffusion: Learning Native Event Stream Distribution from Videos",
-   "title_zh": "EventDiffusion：从视频中学习原生事件流分布",
-   "cat": "cs.CV",
-   "summary_zh": "用扩散模型从视频生成事件相机的原生事件流，摆脱对固定传感器仿真假设的依赖。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.33003",
-   "title": "One, No One and One Hundred Thousand CTs: Testing Anatomical Control in Text-to-CT Generation",
-   "title_zh": "一张、零张与十万张 CT：检验文本到 CT 生成中的解剖控制",
-   "cat": "cs.CV",
-   "summary_zh": "统一预处理与指标，检验修改报告后文本到 CT 生成器的解剖结构是否随之改变。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.32483",
-   "title": "CodeWAM: A Code World Action Model for End-to-End Autonomous Driving",
-   "title_zh": "CodeWAM：面向端到端自动驾驶的代码世界动作模型",
-   "cat": "cs.RO",
-   "summary_zh": "把可执行代码作为世界表示的一部分，描述自车在计划下的动力学，并与学习的视觉模型共同预测后果。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.32327",
-   "title": "FlowVecFont: Scalable Vector Font Generation via Latent Flow Matching",
-   "title_zh": "FlowVecFont：基于潜在流匹配的可扩展矢量字体生成",
-   "cat": "cs.CV",
-   "summary_zh": "通过放大简单模型的规模，不依赖外部预训练即可直接生成高质量矢量字体轮廓。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32196",
-   "title": "What to Change, What to Keep: Experience-Evolving Agents for Video Recasting",
-   "title_zh": "改什么、留什么：用于视频重塑的经验演化智能体",
-   "cat": "cs.CV",
-   "summary_zh": "RecastAgent 通过经验引导的智能体框架，把已有视频中的实体和环境改造成新场景并保持动作。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.32099",
-   "title": "PreferenceScene: Personalized Indoor Scene Synthesis from Feedback",
-   "title_zh": "PreferenceScene：基于反馈的个性化室内场景合成",
-   "cat": "cs.CV",
-   "summary_zh": "多轮展示 3D 房间并根据用户反馈推断隐藏偏好，合成个性化室内场景。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.32029",
-   "title": "Do Occupancy World Models Really Follow Actions?",
-   "title_zh": "占用世界模型真的遵循动作吗？",
-   "cat": "cs.CV",
-   "summary_zh": "检验占用世界模型在反事实动作下的预测是否忠实遵循指定轨迹。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.15449",
-   "title": "Reading the Unreadable: Text-Aware Image Super-Resolution Needs Reasoning",
-   "title_zh": "读出不可读之字：含文字图像超分辨率需要推理",
-   "cat": "cs.CV",
-   "summary_zh": "指出严重退化的文字无法仅凭局部视觉证据还原，需结合图像上下文推理。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34783",
-   "title": "SceneDesigner3D: Agentic Evolutionary Search for Principled Rearrangement of 3D Indoor Scenes",
-   "title_zh": "SceneDesigner3D：面向 3D 室内场景原则性重排的 Agent 式进化搜索",
-   "cat": "cs.CV",
-   "summary_zh": "用 Agent 式进化搜索生成多样、美观且合理的 3D 室内场景重排。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.34739",
-   "title": "Was the Model Given the Right Action? Auditing and Repairing Action Interfaces in Navigation World Models",
-   "title_zh": "模型得到了正确的动作吗？导航世界模型中动作接口的审计与修复",
-   "cat": "cs.CV",
-   "summary_zh": "审计导航世界模型NWM的动作接口，发现推理时动作处理与训练不一致会使模型显得不准。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.34414",
-   "title": "SemProxy: Semantic 3D Proxies for Controllable Agentic 3D Modeling",
-   "title_zh": "SemProxy：面向可控 Agent 式 3D 建模的语义 3D 代理",
-   "cat": "cs.CV",
-   "summary_zh": "以语义 3D 代理让用户精确传达空间意图，从而控制代码 Agent 的 3D 建模过程。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.34075",
-   "title": "Hijacking 3D Generation: Targeted Adversarial Attacks against Image-to-3D Models via Prefix Trajectory Alignment",
-   "title_zh": "劫持 3D 生成：基于前缀轨迹对齐的图像到 3D 模型定向对抗攻击",
-   "cat": "cs.CV",
-   "summary_zh": "通过前缀轨迹对齐，对图像到 3D 模型发起能绕过内容审查的定向对抗攻击。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.34022",
-   "title": "MoSk: A Unified Motion-Skeleton Foundation Model for Human Motion Understanding and Generation",
-   "title_zh": "MoSk：统一的动作-骨架基础模型，用于人体动作理解与生成",
-   "cat": "cs.CV",
-   "summary_zh": "统一动作与骨架表示的基础模型，同时支持人体动作的理解与生成。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33874",
-   "title": "X-Matte: VAE-Free Pixel-Space Flow Matching for Single-Step Image Matting",
-   "title_zh": "X-Matte：无 VAE 的像素空间 Flow Matching 单步图像抠图",
-   "cat": "cs.CV",
-   "summary_zh": "去掉 VAE，在像素空间用 flow matching 单步完成图像抠图，保留精细 alpha 细节。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33797",
-   "title": "DriftWAM: Faster World-Action Models via Action-Aware Video Drifting",
-   "title_zh": "DriftWAM：通过动作感知视频漂移实现更快的世界动作模型",
-   "cat": "cs.CV",
-   "summary_zh": "把世界动作模型蒸馏为少步生成器，并在激进步数压缩下保持任务性能。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33682",
-   "title": "WorldUAV: Scaling UAV Data Synthesis via World Models",
-   "title_zh": "WorldUAV：通过世界模型扩展无人机数据合成",
-   "cat": "cs.CV",
-   "summary_zh": "把无人机植入真实视频，用世界模型合成高质量无人机检测与跟踪数据。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.25595",
-   "title": "LoopedWAM: Looped World Action Models for Elastic Inference",
-   "title_zh": "LoopedWAM：面向弹性推理的循环世界动作模型",
-   "cat": "cs.CV",
-   "summary_zh": "共享 6 层核心循环执行 30 层，压缩世界动作模型参数",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30573",
-   "title": "Write, Evolve, Read: Streaming Cameras into a Persistent World State for 4D Occupancy Forecasting",
-   "title_zh": "写入、演化、读取：把相机流写入持久世界状态做4D占用预测",
-   "cat": "cs.CV",
-   "summary_zh": "用持久世界状态保留已观测区域，改进基于相机的4D占用预测。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.31156",
-   "title": "Tokens as Locality-Preserving Anchors: Scalable Novel View Synthesis with Target-Adaptive Token Routing",
-   "title_zh": "token作为保持局部性的锚点：基于目标自适应token路由的可扩展新视角合成",
-   "cat": "cs.CV",
-   "summary_zh": "利用源token的空间锚点性质做目标自适应路由，使Transformer新视角合成的渲染不再随源图数量变慢。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.30897",
-   "title": "Predicting Rare-Mode Collapse in Recursive Generative Training from Single-Generation Calibration",
-   "title_zh": "从单代校准预测递归生成式训练中的稀有模式坍缩",
-   "cat": "cs.LG",
-   "summary_zh": "仅凭单代校准预测递归训练中稀有区域特征的逐步丢失，免去多代链式实验。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.30666",
-   "title": "Zhengrong: World Models with Pole-Based Action-Response Factorization for Direct Visual Planning",
-   "title_zh": "Zhengrong：基于极点的动作响应分解的世界模型，用于直接视觉规划",
-   "cat": "cs.CV",
-   "summary_zh": "把潜在轨迹分解为初始锚点、自由响应和动作延迟响应，并用共享的稳定共轭极点组控制响应。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30236",
-   "title": "AIGI-26: A Benchmark for AI-Generated Image Detection Across Diverse Modern Generators",
-   "title_zh": "AIGI-26：覆盖多种现代生成器的 AI 生成图像检测基准",
-   "cat": "cs.CV",
-   "summary_zh": "构建含 253,200 张图像、覆盖当代高保真生成器的 AI 生成图像检测基准。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.29999",
-   "title": "Antiphony: A Dual-Process Agent for Deepfake Video Detection with Real-Video Calibration",
-   "title_zh": "Antiphony：带真实视频校准的双过程深度伪造视频检测 Agent",
-   "cat": "cs.CV",
-   "summary_zh": "结合校准融合与双过程 Agent，在未见生成器下检测伪造视频并减少误报。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.29218",
-   "title": "Ego-HMB: Human Motion Bridging from Egocentric Images via A Motion Bridge Diffusion Model",
-   "title_zh": "Ego-HMB：用运动桥接扩散模型从第一视角图像生成人体运动",
-   "cat": "cs.CV",
-   "summary_zh": "提出由两张第一视角端点图像生成连贯 3D 人体运动的扩散框架。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.29026",
-   "title": "RAGA: Refreshable Animatable Gaussian Avatars from a Single Photo",
-   "title_zh": "RAGA：从单张照片生成可刷新的可驱动高斯头像",
-   "cat": "cs.CV",
-   "summary_zh": "单图约一秒生成全身高斯头像，新图像出现时无需重新训练即可刷新未见区域。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.28922",
-   "title": "PIAE: Physics-Informed Continuous Autoencoding for Compact 3D Human Motion",
-   "title_zh": "PIAE：面向紧凑三维人体运动的物理信息连续自编码",
-   "cat": "cs.CV",
-   "summary_zh": "在固定 token 预算下显式保留运动学信号，压缩人体运动序列。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31301",
-   "title": "MOZAIC: An Audio-Video Deepfake Benchmark for Telling What Is Fake",
-   "title_zh": "MOZAIC：区分伪造内容的音视频深度伪造基准",
-   "cat": "cs.AI",
-   "summary_zh": "每个源片段发布真伪音视频四种组合，直接衡量检测器依赖哪个模态。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.29318",
-   "title": "Reward Tilting via Semantic Noising",
-   "title_zh": "通过语义加噪实现奖励倾斜",
-   "cat": "cs.LG",
-   "summary_zh": "以带噪语义表示为条件生成，使单个模型在训练后即可支持不同的奖励与强度。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29008",
-   "title": "Mirrored Min-of-K Training",
-   "title_zh": "镜像 Min-of-K 训练",
-   "cat": "cs.LG",
-   "summary_zh": "分析 Min-of-K 训练在不同 K 下的偏差，并提出镜像版本。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32632",
-   "title": "HazeFlux: Few-Step Generative Priors for Real-World Image Dehazing",
-   "title_zh": "HazeFlux：面向真实图像去雾的少步生成先验",
-   "cat": "cs.CV",
-   "summary_zh": "借助预训练生成式编辑模型的少步先验，缓解真实去雾中合成数据泛化差的问题。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32549",
-   "title": "MinPair: Measured Minimal Pairs for Fine-Grained Control in Text-to-Motion Generation",
-   "title_zh": "MinPair：用于文本到动作生成细粒度控制的度量最小对",
-   "cat": "cs.CV",
-   "summary_zh": "从真实动作中构造只在单个属性词上不同的最小字幕对，用来训练并评测文本到动作生成对该词的响应。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.32491",
-   "title": "X-3DComposer: Feed-Forward 3D Scene Composition with Any Assets from Any Views",
-   "title_zh": "X-3DComposer：用任意来源资产从任意视角前馈式组合 3D 场景",
-   "cat": "cs.CV",
-   "summary_zh": "前馈模型在给定图像、物体掩码和各物体资产后，联合预测每个资产的旋转、平移和逐轴缩放。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.32406",
-   "title": "BEACON: Learning Observation-Conditioned Starting Points for Guided Conditional Flow Matching in Microscopy",
-   "title_zh": "BEACON：为显微成像中的引导条件流匹配学习观测条件起点",
-   "cat": "cs.CV",
-   "summary_zh": "不再为每个干净目标配独立高斯噪声，而是学习观测条件的起点，用于荧光显微图像的复原。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32383",
-   "title": "Improving Character Identity Consistency in Diffusion-Based Visual Story Generation through Identity Memory and Automatic Reranking",
-   "title_zh": "通过身份记忆与自动重排提升扩散模型视觉故事生成中的角色身份一致性",
-   "cat": "cs.CV",
-   "summary_zh": "基于 SDXL 结合 LoRA、ControlNet、身份记忆与自动重排，提升多帧故事中角色的一致性。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32242",
-   "title": "Can You Find the Edit When Nothing Looks Wrong? A Paired Benchmark for Text-Driven Image Manipulation Localization Beyond Semantic Abnormality",
-   "title_zh": "当编辑看起来毫无异常时能找到吗？超越语义异常的文本驱动图像篡改定位配对基准",
-   "cat": "cs.CV",
-   "summary_zh": "构建同一目标的合理与异常编辑配对基准，衡量篡改定位性能如何随语义合理性变化。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.32054",
-   "title": "SurgGenesis: A Generative Surgical World Model for Future-Aware Surgical Understanding",
-   "title_zh": "SurgGenesis：面向未来感知手术理解的生成式手术世界模型",
-   "cat": "cs.CV",
-   "summary_zh": "用生成式世界模型学习手术状态转移并合成数据，缓解手术视频标注稀缺与长尾问题。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.32014",
-   "title": "DynaCue: Comparing Motion and Timing Between Groups of Videos",
-   "title_zh": "DynaCue：比较视频组之间的运动与时序",
-   "cat": "cs.CV",
-   "summary_zh": "指出时序一致性评分难以反映运动偏好差异，提出比较视频组运动与时序的方法。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.31740",
-   "title": "LeanWAM: Learning Latent World Action Models from Frozen Video Models",
-   "title_zh": "LeanWAM：从冻结视频模型中学习潜在世界动作模型",
-   "cat": "cs.CV",
-   "summary_zh": "把冻结视频生成器的先验压缩成少量未来 token，训练轻量策略。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.34564",
-   "title": "Score-based Black-box Attack via Adversarial Condition Guided Diffusion Model",
-   "title_zh": "基于对抗条件引导扩散模型的得分式黑盒攻击",
-   "cat": "cs.CV",
-   "summary_zh": "用对抗条件引导的扩散模型做不依赖替代模型迁移的黑盒对抗攻击。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.34062",
-   "title": "Surf-Style: Surface-Based Scene Stylization",
-   "title_zh": "Surf-Style：基于表面的场景风格化",
-   "cat": "cs.CV",
-   "summary_zh": "在表面表示上做 3D 场景风格化，保证多视角一致且可控。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.34032",
-   "title": "Counter-DECEIVR: Counterfactual Explanations for Deepfake Detectors using Detector-Guided Rectified Flow Inversion",
-   "title_zh": "Counter-DECEIVR：基于检测器引导整流流反演的深度伪造检测器反事实解释",
-   "cat": "cs.CV",
-   "summary_zh": "用检测器引导的整流流反演生成反事实图像，解释深度伪造检测器的判断。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.34027",
-   "title": "ContextHands: Completing Hand Motion with Learned Context and Joint-Specific Body Kinematics",
-   "title_zh": "ContextHands：利用学习到的上下文与关节特定身体运动学补全手部动作",
-   "cat": "cs.CV",
-   "summary_zh": "根据身体动作序列与文本描述补全细致的手部运动。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33826",
-   "title": "MotionODE: Enhancing Autoregressive Text-to-Motion Generation with Continuous-Depth Modeling",
-   "title_zh": "MotionODE：用连续深度建模增强自回归文本到动作生成",
-   "cat": "cs.CV",
-   "summary_zh": "在自回归文本生成动作中引入连续深度建模，改善条件动作表示的形成。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33819",
-   "title": "MMotion: Collaborative Cross-Scale Memory for Text-to-Motion Generation",
-   "title_zh": "MMotion：面向文本到动作生成的协同跨尺度记忆",
-   "cat": "cs.CV",
-   "summary_zh": "用跨尺度记忆同时利用检索的动作样例和长程上下文生成动作。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33693",
-   "title": "GeoTex: Geometry-as-Texture Encoding and History-Grounded 4D Occupancy Forecasting",
-   "title_zh": "GeoTex：几何即纹理编码与历史接地的 4D 占用预测",
-   "cat": "cs.CV",
-   "summary_zh": "联合建模柱内高度模式与跨柱关系，用于自动驾驶世界模型的 4D 占用预测。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33588",
-   "title": "SEEL: Towards End-to-End 3D Sign Generation with Language Models",
-   "title_zh": "SEEL：基于语言模型的端到端 3D 手语生成",
-   "cat": "cs.CV",
-   "summary_zh": "端到端对齐运动 tokenizer 与生成器，在 CSL-Daily、How2Sign 和 Phoenix-2014T 上取得最优。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33439",
-   "title": "OnCue: Generating Safety-Critical Driving Scenarios under Occlusion with Temporal Control",
-   "title_zh": "OnCue：生成具时间控制的遮挡下安全关键驾驶场景",
-   "cat": "cs.RO",
-   "summary_zh": "在真实驾驶日志中生成可控制暴露时间的遮挡危险场景。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33374",
-   "title": "VersionGS: Compact and Motion-Robust Dynamic Gaussian Splatting via Versioned Gaussians",
-   "title_zh": "VersionGS：基于版本化高斯的紧凑且抗运动的动态高斯溅射",
-   "cat": "cs.CV",
-   "summary_zh": "用版本化高斯改善快速运动下的动态高斯溅射质量。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.32745",
-   "title": "MemAnchorWorld: A Sparse World Model with Horizon-Conditioned Memory Retrieval for Autonomous Driving",
-   "title_zh": "MemAnchorWorld：面向自动驾驶、带视野条件记忆检索的稀疏世界模型",
-   "cat": "cs.CV",
-   "summary_zh": "为稀疏 4D 语义占据预测世界模型加入按预测视野检索历史记忆的机制。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.31132",
-   "title": "Genome-to-Image Translation: Reconstructing Escherichia coli Morphology from Genomic Sequences",
-   "title_zh": "基因组到图像翻译：由基因组序列重建大肠杆菌形态",
-   "cat": "cs.AI",
-   "summary_zh": "把由大肠杆菌基因组序列预测菌落形态表述为条件图像生成问题。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30523",
-   "title": "VeriOrigin: A Proactive Image Protection Framework for Provenance, Tamper Localization, and Lossless Recovery",
-   "title_zh": "VeriOrigin：面向溯源、篡改定位与无损恢复的主动图像保护框架",
-   "cat": "cs.CV",
-   "summary_zh": "统一实现图像溯源、篡改精确定位和载体无损恢复的多功能水印框架。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.29468",
-   "title": "RSWP: Robust SO(3)-Equivariant Watermarking for Panoramic Images",
-   "title_zh": "RSWP：面向全景图像的鲁棒 SO(3) 等变水印",
-   "cat": "cs.CV",
-   "summary_zh": "针对全景图的球面特性，设计对 SO(3) 视角旋转鲁棒的等变水印。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.28636",
-   "title": "SemGuard: Semantics-Decoupled Watermarking for Gaussian Splatting",
-   "title_zh": "SemGuard：面向高斯泼溅的语义解耦水印",
-   "cat": "cs.CV",
-   "summary_zh": "解耦水印信息与场景语义，提升 CLIP 引导的高斯资产版权水印的提取效果。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.28623",
-   "title": "Neural Schrödinger Bridge via Yasue Action with Applications to Generative Modeling",
-   "title_zh": "基于Yasue作用量的神经Schrödinger桥及其在生成建模中的应用",
-   "cat": "math.OC",
-   "summary_zh": "基于Yasue作用量的鞍点形式学习ODE速度场，求解Schrödinger桥问题并用于生成建模。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32538",
-   "title": "Advanced Synthetic Image Detection Using Hybrid Feature Extraction",
-   "title_zh": "基于混合特征提取的先进合成图像检测",
-   "cat": "cs.CV",
-   "summary_zh": "通过分析生成模型难以复现的细粒度纹理与复杂目标特征，区分真实图像与 AI 生成图像。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.33234",
-   "title": "Diagnostically Meaningful, Privacy-aware Synthetic Chest CT via Class-Conditional Latent Sampling in Diffusion Autoencoders",
-   "title_zh": "基于扩散自编码器类条件隐空间采样的诊断有意义且保护隐私的合成胸部 CT",
-   "cat": "eess.IV",
-   "summary_zh": "在 RSNA 肺栓塞数据上训练扩散自编码器，并用隐空间距离过滤降低重现训练样本的可能。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.31487",
-   "title": "GDD: A Remote Sensing Image Deepfake Detection and Manipulation Localization Dataset",
-   "title_zh": "GDD：遥感图像深度伪造检测与篡改定位数据集",
-   "cat": "cs.CV",
-   "summary_zh": "构建注重真实感与分布外测试协议的遥感深度伪造检测与定位基准。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.34568",
-   "title": "Physics-Guided Generative Modelling of Oxy-Combustion Flame Images: From Conditional LSGANs to Denoising Diffusion Models",
-   "title_zh": "物理引导的富氧燃烧火焰图像生成建模：从条件LSGAN到去噪扩散模型",
-   "cat": "cs.CV",
-   "summary_zh": "用条件LSGAN与扩散模型生成富氧燃烧火焰图像，作为实验的代理。",
-   "direction": "A"
   }
  ],
  "excluded": [
@@ -2550,6 +1591,14 @@
    "title_zh": "现代自监督视觉Transformer存在空想性错觉",
    "cat": "cs.CV",
    "summary_zh": "发现DINOv2、DINOv3等自监督ViT在白噪声上也会形成空间连贯的特征模式，称为pareidolia。"
+  },
+  {
+   "id": "2611.31237",
+   "title": "Let Vision-Language Models Generate Images through Their Representations",
+   "title_zh": "让视觉语言模型通过自身表征生成图像",
+   "cat": "cs.CV",
+   "summary_zh": "提出Integral，把预训练VLM转成统一理解与生成模型，解决理解与生成视觉表征不一致的问题。",
+   "direction": "A"
   },
   {
    "id": "2611.31233",
@@ -2678,6 +1727,14 @@
    "summary_zh": "维护奖励与策略对的种群，让可执行的智能体目标开放式演化。"
   },
   {
+   "id": "2611.31156",
+   "title": "Tokens as Locality-Preserving Anchors: Scalable Novel View Synthesis with Target-Adaptive Token Routing",
+   "title_zh": "token作为保持局部性的锚点：基于目标自适应token路由的可扩展新视角合成",
+   "cat": "cs.CV",
+   "summary_zh": "利用源token的空间锚点性质做目标自适应路由，使Transformer新视角合成的渲染不再随源图数量变慢。",
+   "direction": "C"
+  },
+  {
    "id": "2611.31350",
    "title": "GHC:Expanding Residual Interfaces in Hyper-Connections",
    "title_zh": "GHC：扩展超连接中的残差接口",
@@ -2720,11 +1777,27 @@
    "summary_zh": "用角色PageRank分布的基尼系数度量19世纪法国小说的叙事注意力集中度。"
   },
   {
+   "id": "2611.31132",
+   "title": "Genome-to-Image Translation: Reconstructing Escherichia coli Morphology from Genomic Sequences",
+   "title_zh": "基因组到图像翻译：由基因组序列重建大肠杆菌形态",
+   "cat": "cs.AI",
+   "summary_zh": "把由大肠杆菌基因组序列预测菌落形态表述为条件图像生成问题。",
+   "direction": "A"
+  },
+  {
    "id": "2611.31129",
    "title": "FATCAT: Fault Injection Attacks Targeting Chip-level Alignment",
    "title_zh": "FATCAT：针对芯片级对齐的故障注入攻击",
    "cat": "cs.CR",
    "summary_zh": "首次用非侵入式电磁故障注入攻击GPU SoC，使大模型和VLM丧失拒答能力。"
+  },
+  {
+   "id": "2611.31128",
+   "title": "CrownFusion: 3D Dental Crown Generation Using Geometry Images and Latent Diffusion",
+   "title_zh": "CrownFusion：基于几何图像与潜扩散的3D牙冠生成",
+   "cat": "cs.CV",
+   "summary_zh": "用几何图像编码表面坐标，以潜扩散模型生成3D牙冠设计。",
+   "direction": "C"
   },
   {
    "id": "2611.31126",
@@ -3077,6 +2150,14 @@
    "summary_zh": "不再只依赖自洽性，让 LLM 在无标注问题上于测试时递归地改进自身解答。"
   },
   {
+   "id": "2611.30964",
+   "title": "Graph2Scene: Relation-Aware Text-to-Image Generation with Graph-Guided Diffusion Model",
+   "title_zh": "Graph2Scene：基于图引导扩散模型的关系感知文生图",
+   "cat": "cs.CV",
+   "summary_zh": "用场景图引导扩散模型，使复杂提示中物体间的交互关系得到更准确的生成。",
+   "direction": "A"
+  },
+  {
    "id": "2611.30963",
    "title": "Foresight Forcing: Learning Spatial Foresight for Robotic Manipulation",
    "title_zh": "Foresight Forcing：学习空间前瞻用于机器人操作",
@@ -3110,6 +2191,14 @@
    "title_zh": "语言模型议价中的否决与错失的协议",
    "cat": "cs.MA",
    "summary_zh": "让语言模型扮演三方代表进行投票议价，观察否决行为如何导致协议落空。"
+  },
+  {
+   "id": "2611.30945",
+   "title": "Diffutoon-2: Toon Shading with Video Diffusion Models",
+   "title_zh": "Diffutoon-2：基于视频扩散模型的卡通渲染",
+   "cat": "cs.CV",
+   "summary_zh": "用视频扩散模型把写实视频转成动漫风格，且不依赖精心整理的配对数据或参考图。",
+   "direction": "B"
   },
   {
    "id": "2611.30941",
@@ -3210,6 +2299,14 @@
    "summary_zh": "让世界模型直接充当隐动作模型，从无动作标注的人类与机器人视频中恢复动力学。"
   },
   {
+   "id": "2611.30897",
+   "title": "Predicting Rare-Mode Collapse in Recursive Generative Training from Single-Generation Calibration",
+   "title_zh": "从单代校准预测递归生成式训练中的稀有模式坍缩",
+   "cat": "cs.LG",
+   "summary_zh": "仅凭单代校准预测递归训练中稀有区域特征的逐步丢失，免去多代链式实验。",
+   "direction": "E"
+  },
+  {
    "id": "2611.30895",
    "title": "Speak When You See It: Proactive Task Assistants Should Wait for Evidence, Not the Clock",
    "title_zh": "看到证据再开口：主动式任务助手应等待证据而非时钟",
@@ -3229,6 +2326,14 @@
    "title_zh": "西高止山热带森林柚木树冠分割的高分辨率无人机基准数据集与基线评测",
    "cat": "cs.CV",
    "summary_zh": "发布 2cm 分辨率的柚木树冠分割数据集，并评测四个主流分割模型。"
+  },
+  {
+   "id": "2611.30879",
+   "title": "Learning the Next Best Move with Visual Diffusion Models",
+   "title_zh": "用视觉扩散模型学习下一步最佳走法",
+   "cat": "cs.GR",
+   "summary_zh": "证明视觉扩散模型无需显式搜索未来步骤，即可在序列推理任务中预测下一步最佳走法。",
+   "direction": "E"
   },
   {
    "id": "2611.30874",
@@ -3595,6 +2700,14 @@
    "summary_zh": "在MLP下投影的单列粒度上做干预，测量后训练医疗LLM的决策依赖哪些内部组件。"
   },
   {
+   "id": "2611.30673",
+   "title": "Optimising VLM Harnesses to Localise Errors in Generated Videos",
+   "title_zh": "优化VLM框架以定位生成视频中的错误",
+   "cat": "cs.CV",
+   "summary_zh": "研究检查哪些帧、调用哪些工具和如何合并预测的VLM工作流，用于定位生成视频中的细微错误。",
+   "direction": "G"
+  },
+  {
    "id": "2611.30672",
    "title": "Uncovering Hidden Behaviours in Language Models via Limited-Parameter Finetuning",
    "title_zh": "通过有限参数微调发现语言模型的隐藏行为",
@@ -3602,11 +2715,27 @@
    "summary_zh": "只训练3%到25%的LoRA参数做有限参数微调，即可在常规行为评测发现不了时揭示模型是否有隐藏行为。"
   },
   {
+   "id": "2611.30671",
+   "title": "DriveDreamer-RSI: Recursive Self-Improvement of Driving Perception and Agentic Data Generation",
+   "title_zh": "DriveDreamer-RSI：驾驶感知与智能体式数据生成的递归自我改进",
+   "cat": "cs.CV",
+   "summary_zh": "让感知模型与数据生成互相反馈，随感知模型演进调整生成什么数据以及如何构造。",
+   "direction": "B"
+  },
+  {
    "id": "2611.30670",
    "title": "Beyond the Black Box: A Diagnosis-Driven Agent for Interpretable MIP Solver Tuning",
    "title_zh": "超越黑箱：面向可解释MIP求解器调参的诊断驱动智能体",
    "cat": "cs.AI",
    "summary_zh": "APEC基于求解日志诊断每个实例的瓶颈，为MIP求解器做可解释的逐实例调参。"
+  },
+  {
+   "id": "2611.30666",
+   "title": "Zhengrong: World Models with Pole-Based Action-Response Factorization for Direct Visual Planning",
+   "title_zh": "Zhengrong：基于极点的动作响应分解的世界模型，用于直接视觉规划",
+   "cat": "cs.CV",
+   "summary_zh": "把潜在轨迹分解为初始锚点、自由响应和动作延迟响应，并用共享的稳定共轭极点组控制响应。",
+   "direction": "D"
   },
   {
    "id": "2611.30662",
@@ -3707,6 +2836,14 @@
    "summary_zh": "提出AuxCA强化学习框架，让多模态模型学会可迁移的辅助线构造策略来解几何题。"
   },
   {
+   "id": "2611.30607",
+   "title": "Tri-DNO: Trilateral Diffusion Noise Optimization for 3D Human Object Interaction",
+   "title_zh": "Tri-DNO：用于3D人物-物体交互的三边扩散噪声优化",
+   "cat": "cs.CV",
+   "summary_zh": "通过扩散噪声优化生成手部接触更真实、穿插更少的3D人物-物体交互。",
+   "direction": "C"
+  },
+  {
    "id": "2611.30603",
    "title": "Towards an Armenian Epigraphic Corpus",
    "title_zh": "迈向亚美尼亚铭文语料库",
@@ -3747,6 +2884,14 @@
    "title_zh": "基于新型多层堆叠U-Net的糖尿病视网膜病变分类进展",
    "cat": "cs.CV",
    "summary_zh": "用多层堆叠U-Net对糖尿病视网膜病变做自动分类。"
+  },
+  {
+   "id": "2611.30592",
+   "title": "HOSE: Hierarchical Orthogonal Subspace Erasure for Concept Unlearning in Diffusion Models",
+   "title_zh": "HOSE：用于扩散模型概念遗忘的层级正交子空间擦除",
+   "cat": "cs.CV",
+   "summary_zh": "在正交子空间中擦除有害概念，让文生图扩散模型遗忘敏感内容。",
+   "direction": "G"
   },
   {
    "id": "2611.30589",
@@ -3803,6 +2948,14 @@
    "title_zh": "面向不完整数据的保守重叠模糊粗糙集",
    "cat": "cs.AI",
    "summary_zh": "提出保守重叠模糊粗糙集模型，用于含缺失值数据的属性约简。"
+  },
+  {
+   "id": "2611.30573",
+   "title": "Write, Evolve, Read: Streaming Cameras into a Persistent World State for 4D Occupancy Forecasting",
+   "title_zh": "写入、演化、读取：把相机流写入持久世界状态做4D占用预测",
+   "cat": "cs.CV",
+   "summary_zh": "用持久世界状态保留已观测区域，改进基于相机的4D占用预测。",
+   "direction": "D"
   },
   {
    "id": "2611.30572",
@@ -3915,6 +3068,14 @@
    "title_zh": "Assembly-JEPA：用世界模型做细粒度工业图像验证",
    "cat": "cs.CV",
    "summary_zh": "用JEPA式世界模型验证工业装配过程，缓解缺陷标注稀缺的问题。"
+  },
+  {
+   "id": "2611.30523",
+   "title": "VeriOrigin: A Proactive Image Protection Framework for Provenance, Tamper Localization, and Lossless Recovery",
+   "title_zh": "VeriOrigin：面向溯源、篡改定位与无损恢复的主动图像保护框架",
+   "cat": "cs.CV",
+   "summary_zh": "统一实现图像溯源、篡改精确定位和载体无损恢复的多功能水印框架。",
+   "direction": "G"
   },
   {
    "id": "2611.30519",
@@ -4267,6 +3428,14 @@
    "summary_zh": "构建基准，评测 Agent 能否安全识别并删除仓库中冗余或过时的代码。"
   },
   {
+   "id": "2611.30345",
+   "title": "SceneCast: Learning Indoor Scene Synthesis from Curated Synthetic Videos with LLM Reward",
+   "title_zh": "SceneCast：用 LLM 奖励从精选合成视频学习室内场景合成",
+   "cat": "cs.CV",
+   "summary_zh": "不依赖人工标注，从大规模无标注合成视频中学习室内 3D 场景合成。",
+   "direction": "C"
+  },
+  {
    "id": "2611.30342",
    "title": "Shift by Analogy for Compositional Zero-Shot Learning",
    "title_zh": "类比迁移：组合式零样本学习",
@@ -4484,6 +3653,14 @@
    "summary_zh": "为 GBDT 的反事实补救加入保形分布外检测，避免利用决策边界伪影。"
   },
   {
+   "id": "2611.30236",
+   "title": "AIGI-26: A Benchmark for AI-Generated Image Detection Across Diverse Modern Generators",
+   "title_zh": "AIGI-26：覆盖多种现代生成器的 AI 生成图像检测基准",
+   "cat": "cs.CV",
+   "summary_zh": "构建含 253,200 张图像、覆盖当代高保真生成器的 AI 生成图像检测基准。",
+   "direction": "G"
+  },
+  {
    "id": "2611.30235",
    "title": "PixelOne: From Options to Pixels in a Single Forward for GUI Grounding",
    "title_zh": "PixelOne：GUI 定位从选项到像素的单次前向",
@@ -4559,6 +3736,14 @@
    "title_zh": "PackLoop：并发场景下循环语言模型的行打包自推测解码",
    "cat": "cs.LG",
    "summary_zh": "按请求行重排推测计算布局，使循环语言模型的自推测解码在高并发下仍有加速。"
+  },
+  {
+   "id": "2611.30203",
+   "title": "ToWo-VTON: Take-Off Wear-On Virtual Try-On via Topology-aware Decoupling",
+   "title_zh": "ToWo-VTON：基于拓扑感知解耦的脱衣-穿衣虚拟试穿",
+   "cat": "cs.CV",
+   "summary_zh": "先生成贴身人体代理再合成目标服装，改善下装和全身虚拟试穿。",
+   "direction": "A"
   },
   {
    "id": "2611.30202",
@@ -4701,6 +3886,14 @@
    "summary_zh": "用小波条件的潜空间扩散做医学图像分割，保持解剖边界。"
   },
   {
+   "id": "2611.30163",
+   "title": "ReVAgent: Multi-Agent Reasoning-Intensive Video Generation",
+   "title_zh": "ReVAgent：多智能体推理密集型视频生成",
+   "cat": "cs.AI",
+   "summary_zh": "多智能体先解题再生成关键帧和讲解视频，并检查渲染结果以修正。",
+   "direction": "B"
+  },
+  {
    "id": "2611.30161",
    "title": "OpenViVE: New Benchmark and Dual-Stream Co-Attention Framework for Vietnamese Visual Entailment",
    "title_zh": "OpenViVE：越南语视觉蕴含新基准与双流协同注意力框架",
@@ -4720,6 +3913,14 @@
    "title_zh": "UUBench：面向全双工多模态交互的“言外之意”理解",
    "cat": "cs.CV",
    "summary_zh": "评测多模态交互系统理解用户隐含需求并给出恰当视听回应的基准。"
+  },
+  {
+   "id": "2611.30154",
+   "title": "Preserve to Compress: Beyond Low-Dimensional Latents in One-Step Diffusion Codec",
+   "title_zh": "为压缩而保留：一步扩散编解码器中超越低维潜空间",
+   "cat": "cs.CV",
+   "summary_zh": "在超低码率图像压缩的一步扩散编解码器里，缓解低维潜空间丢失细节的问题。",
+   "direction": "A"
   },
   {
    "id": "2611.30151",
@@ -4904,6 +4105,14 @@
    "summary_zh": "分析技能内化中的上下文错配问题，并提出方法让 Agent 无需提示即可使用技能。"
   },
   {
+   "id": "2611.30073",
+   "title": "SF-Flow: Spectral Flow Matching with High Structural Fidelity for Hallucination-Suppressed Scientific Image Generation",
+   "title_zh": "SF-Flow：面向抑制幻觉的科学图像生成的高结构保真谱流匹配",
+   "cat": "cs.CV",
+   "summary_zh": "用谱流匹配在无配对数据下生成科学图像，并保持预设相界的位置结构。",
+   "direction": "A"
+  },
+  {
    "id": "2611.30071",
    "title": "SalivaryHSI-Seg: A New Challenging Benchmark for Ex Vivo Salivary Gland Hyperspectral Tissue Segmentation",
    "title_zh": "SalivaryHSI-Seg：离体涎腺高光谱组织分割的新挑战性基准",
@@ -4916,6 +4125,14 @@
    "title_zh": "以像素为通用语言：基于视觉渲染的统一多模态嵌入",
    "cat": "cs.CV",
    "summary_zh": "RenderEmbed 把文本、图像和组合输入都渲染成图像再编码，统一多模态嵌入。"
+  },
+  {
+   "id": "2611.30067",
+   "title": "FolioWeaver: A LayerGraph-Grounded Agent for Layered Image Generation and Editing",
+   "title_zh": "FolioWeaver：基于 LayerGraph 的分层图像生成与编辑 Agent",
+   "cat": "cs.CV",
+   "summary_zh": "用 LayerGraph 和可执行场景状态，把分层图像生成与多轮编辑统一到一个 Agent 里。",
+   "direction": "A"
   },
   {
    "id": "2611.30065",
@@ -5044,6 +4261,14 @@
    "summary_zh": "用 SAM 2 对 XCT 三维颗粒堆积做零样本逐颗粒分割。"
   },
   {
+   "id": "2611.30013",
+   "title": "3AGameFactory-Motion: Agentic Rigging and Reliable Complex Motion Generation for Diverse 3D Assets",
+   "title_zh": "3AGameFactory-Motion：面向多样 3D 资产的 Agent 式绑定与可靠复杂动作生成",
+   "cat": "cs.CV",
+   "summary_zh": "提出 DivDynBench 并比较三种范式，用 Agent 为多样 3D 资产绑定骨骼并生成动作。",
+   "direction": "C"
+  },
+  {
    "id": "2611.30012",
    "title": "FlexGaze: Weakly Supervised Gaze Estimation at Scale",
    "title_zh": "FlexGaze：大规模弱监督视线估计",
@@ -5056,6 +4281,14 @@
    "title_zh": "MORSE：通过开放世界自动研究优化流式记忆设计",
    "cat": "cs.CV",
    "summary_zh": "用开放世界自动研究方式自动优化流式视频系统的记忆存储与检索设计。"
+  },
+  {
+   "id": "2611.29999",
+   "title": "Antiphony: A Dual-Process Agent for Deepfake Video Detection with Real-Video Calibration",
+   "title_zh": "Antiphony：带真实视频校准的双过程深度伪造视频检测 Agent",
+   "cat": "cs.CV",
+   "summary_zh": "结合校准融合与双过程 Agent，在未见生成器下检测伪造视频并减少误报。",
+   "direction": "G"
   },
   {
    "id": "2611.29998",
@@ -5555,11 +4788,27 @@
    "summary_zh": "研究估计零温一阶相变点所需的态拷贝数随系统规模的变化。"
   },
   {
+   "id": "2611.29766",
+   "title": "CivicBench: Robust Detection of AI-Generated Political Video",
+   "title_zh": "CivicBench：稳健检测 AI 生成的政治视频",
+   "cat": "cs.CV",
+   "summary_zh": "发布含 10,800 段生成视频的基准，检测 AI 生成的政治人物视频并测试攻击。",
+   "direction": "G"
+  },
+  {
    "id": "2611.29765",
    "title": "Sánchez, Feijóo, or Abascal? Speaker Attribution and Ideological Congruence in LLM Personas Reading Posts on X of the Leaders of the Three Main Parties of the 29N General Election in Spain",
    "title_zh": "桑切斯、费霍还是阿巴斯卡尔？西班牙 29N 大选三大党领袖 X 帖子中 LLM 人设的说话者归因与意识形态一致性",
    "cat": "cs.CL",
    "summary_zh": "用 1,075 条领袖帖子检验 LLM 人设是否对说话者身份做出反应。"
+  },
+  {
+   "id": "2611.29764",
+   "title": "Selecting Stable Sampling Dynamics for Compositional Diffusion: A Feynman-Kac Weight Reduction",
+   "title_zh": "为组合式扩散选择稳定的采样动力学：Feynman-Kac 权重约简",
+   "cat": "cs.LG",
+   "summary_zh": "研究如何从多个扩散模型的加权乘积分布中选择稳定的 Feynman-Kac 采样动力学。",
+   "direction": "E"
   },
   {
    "id": "2611.29760",
@@ -5728,6 +4977,14 @@
    "title_zh": "MERIT：面向长程人设化说服对话的经验引导记忆",
    "cat": "cs.CL",
    "summary_zh": "用记录用户信任和策略变化的经验记忆支持跨会话的说服对话。"
+  },
+  {
+   "id": "2611.29678",
+   "title": "Ref2Light: From One Image to Interactive Glasses-Free 3D Characters",
+   "title_zh": "Ref2Light：从单张图像生成可交互的裸眼 3D 角色",
+   "cat": "cs.CV",
+   "summary_zh": "前馈地把单张 A-pose 插画转为可实时控制姿态与表情的光场显示 3D 角色。",
+   "direction": "C"
   },
   {
    "id": "2611.29674",
@@ -6050,6 +5307,14 @@
    "title_zh": "GraphSeer：借助 MLLM 的多模态知识图谱关系图像检索",
    "cat": "cs.CL",
    "summary_zh": "给定新照片，检索多模态知识图谱中与之关系相关的实体，而非仅外观相似的实体。"
+  },
+  {
+   "id": "2611.29468",
+   "title": "RSWP: Robust SO(3)-Equivariant Watermarking for Panoramic Images",
+   "title_zh": "RSWP：面向全景图像的鲁棒 SO(3) 等变水印",
+   "cat": "cs.CV",
+   "summary_zh": "针对全景图的球面特性，设计对 SO(3) 视角旋转鲁棒的等变水印。",
+   "direction": "G"
   },
   {
    "id": "2611.29467",
@@ -6388,6 +5653,14 @@
    "summary_zh": "发现现有方法对点击提示不敏感而过拟合，提出让预测遵循提示语义的方法。"
   },
   {
+   "id": "2611.29311",
+   "title": "PrimiTok: Learning to Diversify and Allocate Primitives for Visual Tokenization",
+   "title_zh": "PrimiTok：学习多样化并分配基元的视觉分词",
+   "cat": "cs.CV",
+   "summary_zh": "把码字视为可复用视觉基元，按每个Token内容自适应分配与加权组合。",
+   "direction": "A"
+  },
+  {
    "id": "2611.29309",
    "title": "Counting Symbols on Technical Drawings: A Benchmark and Verified Rewards for MLLMs",
    "title_zh": "技术图纸中的符号计数：基准与可验证奖励的MLLM训练",
@@ -6640,6 +5913,14 @@
    "summary_zh": "在网页版 DAW 中通过 MCP 工具让 LLM 以自然语言迭代编辑多轨符号音乐。"
   },
   {
+   "id": "2611.29218",
+   "title": "Ego-HMB: Human Motion Bridging from Egocentric Images via A Motion Bridge Diffusion Model",
+   "title_zh": "Ego-HMB：用运动桥接扩散模型从第一视角图像生成人体运动",
+   "cat": "cs.CV",
+   "summary_zh": "提出由两张第一视角端点图像生成连贯 3D 人体运动的扩散框架。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.29213",
    "title": "PartPO: Part-Level Policy Optimization for Shape-to-Program Generation",
    "title_zh": "PartPO：面向形状到程序生成的部件级策略优化",
@@ -6808,6 +6089,14 @@
    "summary_zh": "GB-SFT 在目标序列中按语义角色均衡损失预算，比均匀 SFT 更好地注入新知识。"
   },
   {
+   "id": "2611.29125",
+   "title": "SilentWAM: Planning in the Masked State of a Diffusion World Model",
+   "title_zh": "SilentWAM：在扩散世界模型的掩码状态中做规划",
+   "cat": "cs.CV",
+   "summary_zh": "读取掩码未来 token 的隐状态直接规划，不生成未来帧，在 NAVSIM v1 上达到 92.0 PDMS。",
+   "direction": "D"
+  },
+  {
    "id": "2611.29120",
    "title": "When Can a Rewiring Control Test LLM Weight Readers? C2 and an Eligibility Protocol",
    "title_zh": "重连对照何时能检验 LLM 的权重读取？C2 与资格协议",
@@ -6948,6 +6237,14 @@
    "summary_zh": "基于文献按具体使用场景生成 LLM 部署风险卡片的安全评估框架。"
   },
   {
+   "id": "2611.29029",
+   "title": "T2ISpec: Benchmarking Speculative Decoding for Text-to-Image Generation",
+   "title_zh": "T2ISpec：文生图推测解码基准",
+   "cat": "cs.CV",
+   "summary_zh": "用 1400 条提示覆盖七类渲染主题，评测自回归与扩散加速器在文生图推测解码中的延迟与表现。",
+   "direction": "F"
+  },
+  {
    "id": "2611.29028",
    "title": "Do You Even Know What I Want? Improving LLMs Ability to Detect Hidden User Intent",
    "title_zh": "你真的知道我想要什么吗？提升 LLM 检测用户隐藏意图的能力",
@@ -6960,6 +6257,14 @@
    "title_zh": "3D-EMCAD：用于三维脑肿瘤分割的高效多尺度卷积注意力解码器",
    "cat": "eess.IV",
    "summary_zh": "把轻量解码器 EMCAD 从二维扩展到三维，用于体数据脑肿瘤分割。"
+  },
+  {
+   "id": "2611.29026",
+   "title": "RAGA: Refreshable Animatable Gaussian Avatars from a Single Photo",
+   "title_zh": "RAGA：从单张照片生成可刷新的可驱动高斯头像",
+   "cat": "cs.CV",
+   "summary_zh": "单图约一秒生成全身高斯头像，新图像出现时无需重新训练即可刷新未见区域。",
+   "direction": "C"
   },
   {
    "id": "2611.29018",
@@ -7158,6 +6463,14 @@
    "summary_zh": "用 45 个数据集、192975 条记录评测多模态 System One 决策模型，并与通用 VLM 对比。"
   },
   {
+   "id": "2611.28922",
+   "title": "PIAE: Physics-Informed Continuous Autoencoding for Compact 3D Human Motion",
+   "title_zh": "PIAE：面向紧凑三维人体运动的物理信息连续自编码",
+   "cat": "cs.CV",
+   "summary_zh": "在固定 token 预算下显式保留运动学信号，压缩人体运动序列。",
+   "direction": "C"
+  },
+  {
    "id": "2611.28919",
    "title": "When Do Better Visual World Models Make Better Plans? Decision-Aligned Selection for Latent Planning",
    "title_zh": "更好的视觉世界模型何时带来更好的规划？面向潜空间规划的决策对齐选择",
@@ -7207,6 +6520,14 @@
    "summary_zh": "用图表示手术室中临床人员的视觉注意力，关联被注视的场景实体与三维位置。"
   },
   {
+   "id": "2611.31301",
+   "title": "MOZAIC: An Audio-Video Deepfake Benchmark for Telling What Is Fake",
+   "title_zh": "MOZAIC：区分伪造内容的音视频深度伪造基准",
+   "cat": "cs.AI",
+   "summary_zh": "每个源片段发布真伪音视频四种组合，直接衡量检测器依赖哪个模态。",
+   "direction": "G"
+  },
+  {
    "id": "2611.28894",
    "title": "Topological Neural Collapse",
    "title_zh": "拓扑神经坍缩",
@@ -7240,6 +6561,14 @@
    "title_zh": "SENSA：基于个体化被试状态迁移与适应的视觉到大脑生成",
    "cat": "cs.CV",
    "summary_zh": "从视觉刺激生成神经响应，并在少量校准数据下实现跨被试泛化。"
+  },
+  {
+   "id": "2611.28871",
+   "title": "KineState-SWAM: A Surgical World Action Model with Explicit Kinematics and Causal Interaction Dynamics",
+   "title_zh": "KineState-SWAM：显式运动学与因果交互动力学的手术世界动作模型",
+   "cat": "cs.CV",
+   "summary_zh": "用持久交互状态耦合动作预测与视频生成，区分器械运动与组织响应。",
+   "direction": "D"
   },
   {
    "id": "2611.28860",
@@ -7291,6 +6620,14 @@
    "summary_zh": "评测个人 Agent 在信息不完整或相互矛盾时，工具调用与用户交互的效率。"
   },
   {
+   "id": "2611.28842",
+   "title": "Learning How a Body Moves: Few-Shot Body Inference for Visual World Models of Animated Characters",
+   "title_zh": "学习身体如何运动：动画角色视觉世界模型的少样本身体推断",
+   "cat": "cs.CV",
+   "summary_zh": "提出上下文世界模型，从少量样例推断外观相同角色的不同身体动力学。",
+   "direction": "D"
+  },
+  {
    "id": "2611.28841",
    "title": "Task-Conditioned Detail Allocation for Synthetic Segmentation Data",
    "title_zh": "合成分割数据的任务条件细节分配",
@@ -7303,6 +6640,14 @@
    "title_zh": "视觉语言动作模型的空间落地潜变量前瞻",
    "cat": "cs.CV",
    "summary_zh": "在 VLA 中加入空间定位与对未来场景的潜变量预测，以提升精确操作。"
+  },
+  {
+   "id": "2611.28836",
+   "title": "Omni-H3-Image: Constrained Foundation Priors Usher in a New Era of All-in-One Blind Image Restoration",
+   "title_zh": "Omni-H3-Image：受约束的基础先验用于一体化盲图像复原",
+   "cat": "cs.CV",
+   "summary_zh": "在通用图像模型之上做三阶段约束后验投影，用于多种退化的盲图像复原。",
+   "direction": "A"
   },
   {
    "id": "2611.28834",
@@ -7429,6 +6774,14 @@
    "title_zh": "权重编辑智能体在哪里有用？视觉模型部署故障的盲诊断与修复",
    "cat": "cs.CV",
    "summary_zh": "在 183 次运行中检验智能体通过编辑权重诊断并修复视觉模型部署故障的能力。"
+  },
+  {
+   "id": "2611.28779",
+   "title": "Imagine Smarter, Drive Faster: Efficient World Modeling for Decision-Aware Autonomous Driving",
+   "title_zh": "想得更巧，开得更快：面向决策感知自动驾驶的高效世界建模",
+   "cat": "cs.CV",
+   "summary_zh": "FastWorld 用紧凑场景表示和短时域动作条件预测，降低驾驶世界模型的计算量。",
+   "direction": "D"
   },
   {
    "id": "2611.28778",
@@ -7641,6 +6994,14 @@
    "summary_zh": "研究视觉 Token 影响随生成时间和网络深度的变化，检验持续访问视觉 Token 是否必要。"
   },
   {
+   "id": "2611.28682",
+   "title": "CHORD: Closed-loop Human-Object Rectified-flow Decomposition",
+   "title_zh": "CHORD：闭环人物体矫正流分解",
+   "cat": "cs.CV",
+   "summary_zh": "用矫正流分解关键交互变量，生成文本驱动的 3D 人与物体交互运动。",
+   "direction": "C"
+  },
+  {
    "id": "2611.28680",
    "title": "Improving the Improver: Semantic PID Control for Medical Agent Self-Improvement",
    "title_zh": "改进改进者：用于医疗智能体自我改进的语义 PID 控制",
@@ -7765,6 +7126,14 @@
    "title_zh": "让位置不再携带信息：可交换自蒸馏抹平“迷失在中间”曲线",
    "cat": "cs.CL",
    "summary_zh": "用打乱上下文训练小 adapter 复现模型单独读答案文档时的输出，消除 RAG 中的位置偏置。"
+  },
+  {
+   "id": "2611.28636",
+   "title": "SemGuard: Semantics-Decoupled Watermarking for Gaussian Splatting",
+   "title_zh": "SemGuard：面向高斯泼溅的语义解耦水印",
+   "cat": "cs.CV",
+   "summary_zh": "解耦水印信息与场景语义，提升 CLIP 引导的高斯资产版权水印的提取效果。",
+   "direction": "G"
   },
   {
    "id": "2611.28635",
@@ -8171,6 +7540,14 @@
    "title_zh": "SoK：拆分触发器还是增加攻击者？联邦学习中分布式后门攻击的辨析",
    "cat": "cs.CR",
    "summary_zh": "系统梳理分布式后门攻击文献，检验其优于单攻击者完整触发器的说法是否成立。"
+  },
+  {
+   "id": "2611.28485",
+   "title": "VICA: Video Contextual Agreement for AIGC Video Detection and Localization",
+   "title_zh": "VICA：用于 AIGC 视频检测与定位的视频上下文一致性方法",
+   "cat": "cs.CV",
+   "summary_zh": "利用局部区域与全局上下文的一致性来检测并定位 AI 生成或编辑的视频。",
+   "direction": "G"
   },
   {
    "id": "2611.28483",
@@ -9636,6 +9013,14 @@
    "summary_zh": "提出 DeepOJamba，结合选择性状态空间递归与全注意力预测结构响应历史。"
   },
   {
+   "id": "2611.29318",
+   "title": "Reward Tilting via Semantic Noising",
+   "title_zh": "通过语义加噪实现奖励倾斜",
+   "cat": "cs.LG",
+   "summary_zh": "以带噪语义表示为条件生成，使单个模型在训练后即可支持不同的奖励与强度。",
+   "direction": "E"
+  },
+  {
    "id": "2611.29285",
    "title": "Compared to What? Calibrating Machine-Unlearning Diagnostics with Present, Absent and Suppressed Anchors",
    "title_zh": "对比什么？用存在、缺失与抑制锚点校准机器遗忘诊断",
@@ -9802,6 +9187,14 @@
    "title_zh": "更大的全连接神经网络泛化得更好吗？",
    "cat": "cs.LG",
    "summary_zh": "在 Fashion-MNIST 上比较 95,410 与 561,470 参数的全连接网络共八种配置的泛化表现。"
+  },
+  {
+   "id": "2611.29008",
+   "title": "Mirrored Min-of-K Training",
+   "title_zh": "镜像 Min-of-K 训练",
+   "cat": "cs.LG",
+   "summary_zh": "分析 Min-of-K 训练在不同 K 下的偏差，并提出镜像版本。",
+   "direction": "E"
   },
   {
    "id": "2611.28995",
@@ -10028,6 +9421,14 @@
    "summary_zh": "把小波分解与条件流匹配结合，快速生成引力透镜、SZ效应和CIB等相关天体物理场。"
   },
   {
+   "id": "2611.28654",
+   "title": "Stein Guidance without Gradients: Discretization Uniform Diffusion Inference Time Scaling beyond Particle SMC",
+   "title_zh": "无梯度的Stein引导：超越粒子SMC的离散化均匀扩散推理时扩展",
+   "cat": "cs.LG",
+   "summary_zh": "提出无导数引导结合全路径独立MH校正的Stein Guidance，用于奖励引导扩散的推理时扩展。",
+   "direction": "F"
+  },
+  {
    "id": "2611.28645",
    "title": "PROSPER: LLMs as Sparse Retrievers for First-Stage Product Search",
    "title_zh": "PROSPER：用LLM做商品搜索首阶段的稀疏检索器",
@@ -10047,6 +9448,22 @@
    "title_zh": "自然策略梯度近乎极小极大最优的样本复杂度及匹配的信息论下界",
    "cat": "cs.LG",
    "summary_zh": "证明表格有限时域MDP中自然策略梯度的样本复杂度近乎极小极大最优，并给出匹配下界。"
+  },
+  {
+   "id": "2611.28623",
+   "title": "Neural Schrödinger Bridge via Yasue Action with Applications to Generative Modeling",
+   "title_zh": "基于Yasue作用量的神经Schrödinger桥及其在生成建模中的应用",
+   "cat": "math.OC",
+   "summary_zh": "基于Yasue作用量的鞍点形式学习ODE速度场，求解Schrödinger桥问题并用于生成建模。",
+   "direction": "E"
+  },
+  {
+   "id": "2611.28621",
+   "title": "Interpreting Diffusion Model Activations in Natural Language",
+   "title_zh": "用自然语言解读扩散模型的激活",
+   "cat": "cs.LG",
+   "summary_zh": "把LatentQA从LLM扩展到扩散模型，用自然语言开放式提问来解读其中间激活。",
+   "direction": "Z"
   },
   {
    "id": "2611.28615",
@@ -10651,6 +10068,14 @@
    "summary_zh": "提出用类型编码统计角色的领域专用语言，把研究协议写成程序并检查统计声明。"
   },
   {
+   "id": "2611.30007",
+   "title": "One Latent World for Heterogeneous LiDARs: A Scan Pattern Agnostic 4D World Model via Direct Ray Decoding",
+   "title_zh": "异构LiDAR的统一潜在世界：通过直接射线解码的扫描模式无关4D世界模型",
+   "cat": "cs.RO",
+   "summary_zh": "通过直接射线解码，让LiDAR世界模型摆脱单一传感器扫描模式。",
+   "direction": "D"
+  },
+  {
    "id": "2611.30004",
    "title": "EnvTrap: Revealing the Environment-Only Attack Surface in Embodied AI via Consequence-Blind Action Execution",
    "title_zh": "EnvTrap：通过无视后果的动作执行揭示具身AI中仅环境的攻击面",
@@ -11218,6 +10643,14 @@
    "summary_zh": "前沿模型主导任务、把简单子任务委派给小模型，长程编程的前沿模型成本降低 67%。"
   },
   {
+   "id": "2611.33096",
+   "title": "EventDiffusion: Learning Native Event Stream Distribution from Videos",
+   "title_zh": "EventDiffusion：从视频中学习原生事件流分布",
+   "cat": "cs.CV",
+   "summary_zh": "用扩散模型从视频生成事件相机的原生事件流，摆脱对固定传感器仿真假设的依赖。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.33093",
    "title": "AIChipBench: Benchmarking LLM Agents for Automated AI Accelerator Design",
    "title_zh": "AIChipBench：评测 LLM 智能体自动设计 AI 加速器的能力",
@@ -11293,6 +10726,14 @@
    "title_zh": "ClusterVAD：基于预训练神经表示的免阈值无监督语音活动检测",
    "cat": "eess.AS",
    "summary_zh": "对预训练语音表示做聚类，实现无需阈值的无监督语音活动检测。"
+  },
+  {
+   "id": "2611.33261",
+   "title": "Same Tokenizer, Better Tokens: Choosing Image Tokens by MAP Inference",
+   "title_zh": "同一个 Tokenizer，更好的词元：用 MAP 推断选择图像词元",
+   "cat": "cs.CV",
+   "summary_zh": "把编码特征的离散码分配改为联合优化的最近向量问题，提升重建保真度。",
+   "direction": "A"
   },
   {
    "id": "2611.33050",
@@ -11400,6 +10841,14 @@
    "summary_zh": "从测试时回归视角出发，在 Gated DeltaNet 线性注意力中加入滑动窗口注意力。"
   },
   {
+   "id": "2611.33016",
+   "title": "RePix-VFI: Re-rendering Observed Pixels for Video Frame Interpolation with Generative Priors from One-Step Diffusion",
+   "title_zh": "RePix-VFI：借助单步扩散生成先验重渲染已观测像素的视频插帧",
+   "cat": "cs.CV",
+   "summary_zh": "用单步扩散的生成先验重渲染已观测像素，兼顾多帧插值的运动准确与外观忠实。",
+   "direction": "B"
+  },
+  {
    "id": "2611.33014",
    "title": "Training Lightweight Gaze Models without Target Gaze Annotation: What Makes a Good Teacher?",
    "title_zh": "无需目标凝视标注训练轻量凝视模型：什么样的教师才好？",
@@ -11454,6 +10903,14 @@
    "title_zh": "LEGOSpec：可组合的高效投机草稿设计与训练框架",
    "cat": "cs.LG",
    "summary_zh": "把草稿模型拆成 Context、Backbone、Proposal、Objective 四类组件，系统比较其效果与组合收益。"
+  },
+  {
+   "id": "2611.33003",
+   "title": "One, No One and One Hundred Thousand CTs: Testing Anatomical Control in Text-to-CT Generation",
+   "title_zh": "一张、零张与十万张 CT：检验文本到 CT 生成中的解剖控制",
+   "cat": "cs.CV",
+   "summary_zh": "统一预处理与指标，检验修改报告后文本到 CT 生成器的解剖结构是否随之改变。",
+   "direction": "G"
   },
   {
    "id": "2611.32998",
@@ -11918,11 +11375,27 @@
    "summary_zh": "探测 Mimi 编码阶段保留了哪些与韵律相关的语音信息。"
   },
   {
+   "id": "2611.32793",
+   "title": "Back to Raw Motion: Latent-Free Diffusion Transformers for Text-to-Motion and Exact Conditional Generation",
+   "title_zh": "回到原始运动：面向文本到动作与精确条件生成的无隐空间 Diffusion Transformer",
+   "cat": "cs.CV",
+   "summary_zh": "直接在原始动作数据空间训练 Diffusion Transformer，免去编码器误差并可精确满足给定条件。",
+   "direction": "C"
+  },
+  {
    "id": "2611.32792",
    "title": "Accuracy of Noise Ceiling Estimators for Brain Scores",
    "title_zh": "脑分数噪声上限估计器的准确性",
    "cat": "cs.AI",
    "summary_zh": "分析估计脑活动噪声上限的方法有多准确，进而影响脑分数的可信度。"
+  },
+  {
+   "id": "2611.32786",
+   "title": "Simulator-as-Proxy World Model for Robot Manipulation",
+   "title_zh": "Simulator-as-Proxy 世界模型：面向机器人操作",
+   "cat": "cs.RO",
+   "summary_zh": "以可显式扰动的模拟器场景作为代理来条件化视频世界模型，检验视频是否忠实呈现代理状态。",
+   "direction": "D"
   },
   {
    "id": "2611.32782",
@@ -11986,6 +11459,14 @@
    "title_zh": "ReQOR：针对大语言模型量化条件后门的算子差异子空间修复",
    "cat": "cs.CR",
    "summary_zh": "定位量化引入的算子差异子空间并加以修复，消除只在量化后触发的 LLM 后门。"
+  },
+  {
+   "id": "2611.32745",
+   "title": "MemAnchorWorld: A Sparse World Model with Horizon-Conditioned Memory Retrieval for Autonomous Driving",
+   "title_zh": "MemAnchorWorld：面向自动驾驶、带视野条件记忆检索的稀疏世界模型",
+   "cat": "cs.CV",
+   "summary_zh": "为稀疏 4D 语义占据预测世界模型加入按预测视野检索历史记忆的机制。",
+   "direction": "D"
   },
   {
    "id": "2611.32742",
@@ -12233,6 +11714,14 @@
    "summary_zh": "让在线、异步、批处理与 rollout 等推理服务共享 GPU，空闲服务缩容以提高利用率。"
   },
   {
+   "id": "2611.32632",
+   "title": "HazeFlux: Few-Step Generative Priors for Real-World Image Dehazing",
+   "title_zh": "HazeFlux：面向真实图像去雾的少步生成先验",
+   "cat": "cs.CV",
+   "summary_zh": "借助预训练生成式编辑模型的少步先验，缓解真实去雾中合成数据泛化差的问题。",
+   "direction": "A"
+  },
+  {
    "id": "2611.32631",
    "title": "Generating Schema-Aligned Synthetic Dialogues and Measuring Their Diversity",
    "title_zh": "生成与 Schema 对齐的合成对话并度量其多样性",
@@ -12366,6 +11855,14 @@
    "summary_zh": "通过异常证据校准统一单模态与多模态异常检测，每类仅需一个正常样本且无需梯度更新。"
   },
   {
+   "id": "2611.32549",
+   "title": "MinPair: Measured Minimal Pairs for Fine-Grained Control in Text-to-Motion Generation",
+   "title_zh": "MinPair：用于文本到动作生成细粒度控制的度量最小对",
+   "cat": "cs.CV",
+   "summary_zh": "从真实动作中构造只在单个属性词上不同的最小字幕对，用来训练并评测文本到动作生成对该词的响应。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.32548",
    "title": "SetCon: Setup-Conditioned IMU-Language Learning from 3D Human Motion",
    "title_zh": "SetCon：基于 3D 人体运动的设置条件 IMU-语言学习",
@@ -12406,6 +11903,14 @@
    "title_zh": "Avalon-M1：基于集体奖励的强化学习",
    "cat": "cs.CL",
    "summary_zh": "RLCR 让 CEO 与最多八个专家共享一个策略，在延迟约束下联合训练 120B 模型，IMO-ProofBench-Advanced 从 23.8% 升至 39.0%。"
+  },
+  {
+   "id": "2611.32538",
+   "title": "Advanced Synthetic Image Detection Using Hybrid Feature Extraction",
+   "title_zh": "基于混合特征提取的先进合成图像检测",
+   "cat": "cs.CV",
+   "summary_zh": "通过分析生成模型难以复现的细粒度纹理与复杂目标特征，区分真实图像与 AI 生成图像。",
+   "direction": "G"
   },
   {
    "id": "2611.32536",
@@ -12518,6 +12023,22 @@
    "title_zh": "评估持续深度强化学习在信息物理系统中对灾难性遗忘的鲁棒性",
    "cat": "cs.LG",
    "summary_zh": "在非平稳自动泊车环境中比较三类代表性强化学习算法对灾难性遗忘的鲁棒性。"
+  },
+  {
+   "id": "2611.32491",
+   "title": "X-3DComposer: Feed-Forward 3D Scene Composition with Any Assets from Any Views",
+   "title_zh": "X-3DComposer：用任意来源资产从任意视角前馈式组合 3D 场景",
+   "cat": "cs.CV",
+   "summary_zh": "前馈模型在给定图像、物体掩码和各物体资产后，联合预测每个资产的旋转、平移和逐轴缩放。",
+   "direction": "C"
+  },
+  {
+   "id": "2611.32483",
+   "title": "CodeWAM: A Code World Action Model for End-to-End Autonomous Driving",
+   "title_zh": "CodeWAM：面向端到端自动驾驶的代码世界动作模型",
+   "cat": "cs.RO",
+   "summary_zh": "把可执行代码作为世界表示的一部分，描述自车在计划下的动力学，并与学习的视觉模型共同预测后果。",
+   "direction": "D"
   },
   {
    "id": "2611.32482",
@@ -12646,6 +12167,14 @@
    "summary_zh": "把需要重复编码每个片段的网格探测改为原生注意力模式，使冻结模型处理长上下文时更快且更准。"
   },
   {
+   "id": "2611.33234",
+   "title": "Diagnostically Meaningful, Privacy-aware Synthetic Chest CT via Class-Conditional Latent Sampling in Diffusion Autoencoders",
+   "title_zh": "基于扩散自编码器类条件隐空间采样的诊断有意义且保护隐私的合成胸部 CT",
+   "cat": "eess.IV",
+   "summary_zh": "在 RSNA 肺栓塞数据上训练扩散自编码器，并用隐空间距离过滤降低重现训练样本的可能。",
+   "direction": "A"
+  },
+  {
    "id": "2611.32416",
    "title": "On the Importance of Hidden-State Refinement in Masked Diffusion Language Models",
    "title_zh": "论掩码扩散语言模型中隐状态精炼的重要性",
@@ -12665,6 +12194,14 @@
    "title_zh": "TESS：面向长视频理解的查询引导时序事件结构化帧选择",
    "cat": "cs.CV",
    "summary_zh": "免训练的帧选择框架，选出能同时展示相关事件及其时序关系的帧，用于长视频问答。"
+  },
+  {
+   "id": "2611.32406",
+   "title": "BEACON: Learning Observation-Conditioned Starting Points for Guided Conditional Flow Matching in Microscopy",
+   "title_zh": "BEACON：为显微成像中的引导条件流匹配学习观测条件起点",
+   "cat": "cs.CV",
+   "summary_zh": "不再为每个干净目标配独立高斯噪声，而是学习观测条件的起点，用于荧光显微图像的复原。",
+   "direction": "E"
   },
   {
    "id": "2611.32405",
@@ -12721,6 +12258,14 @@
    "title_zh": "AI 能设计出更好的 nnU-Net 吗？从失败到设计规则的假设驱动架构发现循环",
    "cat": "cs.AI",
    "summary_zh": "让 LLM 智能体诊断错误、提出并检验假设，把有效机制提炼为 3D 医学图像分割的设计规则。"
+  },
+  {
+   "id": "2611.32383",
+   "title": "Improving Character Identity Consistency in Diffusion-Based Visual Story Generation through Identity Memory and Automatic Reranking",
+   "title_zh": "通过身份记忆与自动重排提升扩散模型视觉故事生成中的角色身份一致性",
+   "cat": "cs.CV",
+   "summary_zh": "基于 SDXL 结合 LoRA、ControlNet、身份记忆与自动重排，提升多帧故事中角色的一致性。",
+   "direction": "A"
   },
   {
    "id": "2611.32381",
@@ -12826,6 +12371,14 @@
    "title_zh": "通过轻量转换实现 TESSERA 嵌入的跨版本兼容",
    "cat": "cs.CV",
    "summary_zh": "训练轻量转换器，让基于旧版嵌入训练的土地覆盖分类器可用于新版嵌入。"
+  },
+  {
+   "id": "2611.32327",
+   "title": "FlowVecFont: Scalable Vector Font Generation via Latent Flow Matching",
+   "title_zh": "FlowVecFont：基于潜在流匹配的可扩展矢量字体生成",
+   "cat": "cs.CV",
+   "summary_zh": "通过放大简单模型的规模，不依赖外部预训练即可直接生成高质量矢量字体轮廓。",
+   "direction": "A"
   },
   {
    "id": "2611.32326",
@@ -13031,6 +12584,14 @@
    "summary_zh": "用数据流水线把运行时技能的流程知识微调进模型，使其无需显式加载技能即可使用。"
   },
   {
+   "id": "2611.32242",
+   "title": "Can You Find the Edit When Nothing Looks Wrong? A Paired Benchmark for Text-Driven Image Manipulation Localization Beyond Semantic Abnormality",
+   "title_zh": "当编辑看起来毫无异常时能找到吗？超越语义异常的文本驱动图像篡改定位配对基准",
+   "cat": "cs.CV",
+   "summary_zh": "构建同一目标的合理与异常编辑配对基准，衡量篡改定位性能如何随语义合理性变化。",
+   "direction": "G"
+  },
+  {
    "id": "2611.32241",
    "title": "Motion Chain of Thought: Disentangling Motion Semantics from Visual Appearance for Robotic Manipulation",
    "title_zh": "运动思维链：为机器人操作解耦运动语义与视觉外观",
@@ -13050,6 +12611,14 @@
    "title_zh": "RoboClock：面向时间感知机器人智能的统一基准",
    "cat": "cs.RO",
    "summary_zh": "提出含 60 个任务的基准，考察机器人在时间窗口、响应速度和吞吐等时间约束下的操作。"
+  },
+  {
+   "id": "2611.32232",
+   "title": "MYSTIQUE: Few-Shot Facial Identity Transfer with Performance Preservation",
+   "title_zh": "MYSTIQUE：保留表演的少样本人脸身份迁移",
+   "cat": "cs.CV",
+   "summary_zh": "针对自重建训练造成的身份泄漏，提出少样本身份迁移方法并保留表情、光照与姿态。",
+   "direction": "A"
   },
   {
    "id": "2611.32231",
@@ -13185,6 +12754,14 @@
    "summary_zh": "前馈框架，用成对的世界系与自我中心动态点图统一预测几何与运动。"
   },
   {
+   "id": "2611.32196",
+   "title": "What to Change, What to Keep: Experience-Evolving Agents for Video Recasting",
+   "title_zh": "改什么、留什么：用于视频重塑的经验演化智能体",
+   "cat": "cs.CV",
+   "summary_zh": "RecastAgent 通过经验引导的智能体框架，把已有视频中的实体和环境改造成新场景并保持动作。",
+   "direction": "B"
+  },
+  {
    "id": "2611.32195",
    "title": "When Answering Is Administering: Permission Replies That Rewrite Coding-Agent Policy",
    "title_zh": "回答即管理：改写编码智能体策略的权限回复",
@@ -13297,6 +12874,14 @@
    "summary_zh": "面向整场比赛视频的流式解说模型，用宏窗口偏好对齐改善事件覆盖与同步。"
   },
   {
+   "id": "2611.32152",
+   "title": "RoboProbe: Benchmarking Physical Plausibility of Robot World Models",
+   "title_zh": "RoboProbe：机器人世界模型物理合理性的评测基准",
+   "cat": "cs.CV",
+   "summary_zh": "评测机器人世界模型生成视频的物理合理性，避免错误的动作可行性判断。",
+   "direction": "G"
+  },
+  {
    "id": "2611.32148",
    "title": "RetraQ: Manifold-Constrained Critic Guidance for Flow Policies in RL",
    "title_zh": "RetraQ：强化学习中流策略的流形约束 critic 引导",
@@ -13379,6 +12964,14 @@
    "title_zh": "RISE：基于隐式状态嵌入推理的 GUI 智能体",
    "cat": "cs.CV",
    "summary_zh": "用隐式框架融合与动作相关的推理，避免 GUI 智能体过度依赖显式推理模式。"
+  },
+  {
+   "id": "2611.32099",
+   "title": "PreferenceScene: Personalized Indoor Scene Synthesis from Feedback",
+   "title_zh": "PreferenceScene：基于反馈的个性化室内场景合成",
+   "cat": "cs.CV",
+   "summary_zh": "多轮展示 3D 房间并根据用户反馈推断隐藏偏好，合成个性化室内场景。",
+   "direction": "C"
   },
   {
    "id": "2611.32097",
@@ -13486,6 +13079,14 @@
    "summary_zh": "构建 2728 条图文幻觉可验证性数据集，缓解 MLLM 强化学习中难以验证的幻觉。"
   },
   {
+   "id": "2611.32054",
+   "title": "SurgGenesis: A Generative Surgical World Model for Future-Aware Surgical Understanding",
+   "title_zh": "SurgGenesis：面向未来感知手术理解的生成式手术世界模型",
+   "cat": "cs.CV",
+   "summary_zh": "用生成式世界模型学习手术状态转移并合成数据，缓解手术视频标注稀缺与长尾问题。",
+   "direction": "D"
+  },
+  {
    "id": "2611.32053",
    "title": "EffectWAM: Learning Action-Grounded Effects for Robot Manipulation",
    "title_zh": "EffectWAM：为机器人操作学习动作落地的效果表示",
@@ -13542,6 +13143,14 @@
    "summary_zh": "为 Gated DeltaNet 提出上下文并行执行框架，缓解长上下文小 batch 下块间串行依赖。"
   },
   {
+   "id": "2611.32034",
+   "title": "BodyWeave: Native Body-Conditioned 3D Garment Generation",
+   "title_zh": "BodyWeave：原生身体条件的 3D 服装生成",
+   "cat": "cs.CV",
+   "summary_zh": "在 3D 空间中以身体形状和姿态为条件生成服装，同时保留参考设计细节。",
+   "direction": "C"
+  },
+  {
    "id": "2611.32032",
    "title": "Provenance-Isolated Epistemic Quorums: Execution-Bound Evidence Certification and Plausible-World Safety Gating in Agentic Control Planes",
    "title_zh": "溯源隔离的认知法定人数：Agent 控制平面中的执行绑定证据认证与可信世界安全门控",
@@ -13554,6 +13163,14 @@
    "title_zh": "统一伙伴与环境多样性以改进人机协同",
    "cat": "cs.MA",
    "summary_zh": "同时提升训练中伙伴与环境的多样性，改进零样本协同对新环境和新用户的泛化。"
+  },
+  {
+   "id": "2611.32029",
+   "title": "Do Occupancy World Models Really Follow Actions?",
+   "title_zh": "占用世界模型真的遵循动作吗？",
+   "cat": "cs.CV",
+   "summary_zh": "检验占用世界模型在反事实动作下的预测是否忠实遵循指定轨迹。",
+   "direction": "D"
   },
   {
    "id": "2611.32025",
@@ -13617,6 +13234,14 @@
    "title_zh": "在线调整韧性策略何时有害：Resilience4j 中的安全探索与度量陷阱",
    "cat": "cs.CR",
    "summary_zh": "在 Resilience4j 上用上下文 bandit 在线选择熔断、重试等策略，并分析其度量陷阱。"
+  },
+  {
+   "id": "2611.32014",
+   "title": "DynaCue: Comparing Motion and Timing Between Groups of Videos",
+   "title_zh": "DynaCue：比较视频组之间的运动与时序",
+   "cat": "cs.CV",
+   "summary_zh": "指出时序一致性评分难以反映运动偏好差异，提出比较视频组运动与时序的方法。",
+   "direction": "G"
   },
   {
    "id": "2611.32013",
@@ -13736,6 +13361,14 @@
    "title_zh": "在权重空间中读取、编写与修复博弈论策略",
    "cat": "cs.CL",
    "summary_zh": "检验语言模型能否在 1218 个权重的循环网络权重空间中读写并修复博弈策略。"
+  },
+  {
+   "id": "2611.31976",
+   "title": "CodeHOI: Code with Agents for Physically Plausible 4D Hand-Object Interaction",
+   "title_zh": "CodeHOI：用 Agent 写代码生成物理合理的 4D 手物交互",
+   "cat": "cs.CV",
+   "summary_zh": "让编码 Agent 写物理程序，生成物理合理的 4D 手物交互。",
+   "direction": "C"
   },
   {
    "id": "2611.31975",
@@ -13876,6 +13509,14 @@
    "title_zh": "MIFLOW：用动态近期行为先验校准参考的在线 Flow 策略强化学习",
    "cat": "cs.LG",
    "summary_zh": "用拟合近期行为的 flow matching 先验校准在线 Flow 策略的 actor-critic 学习。"
+  },
+  {
+   "id": "2611.31895",
+   "title": "Loupe: Reinforcing Knowledge-Intensive Video Generation Agents",
+   "title_zh": "Loupe：用强化学习训练知识密集型视频生成 Agent",
+   "cat": "cs.CV",
+   "summary_zh": "用搜索补全事实并以强化学习训练 Agent，提升知识密集型视频生成的准确性。",
+   "direction": "B"
   },
   {
    "id": "2611.31893",
@@ -14193,6 +13834,14 @@
    "summary_zh": "在概念预测不可靠时进行带保证的序贯概念获取，用于可解释诊断。"
   },
   {
+   "id": "2611.31774",
+   "title": "BODYBENCH: Evaluating Adversarial Image Defenses Against AI Nudification Inpainting",
+   "title_zh": "BODYBENCH：评估对抗图像防御对 AI 裸体化修复的有效性",
+   "cat": "cs.CV",
+   "summary_zh": "评测对抗扰动防御在针对 AI 裸体化 inpainting 编辑时的保护效果。",
+   "direction": "G"
+  },
+  {
    "id": "2611.31771",
    "title": "SPARQL-Planned Single-Hop Traversal over a Live Knowledge Graph for Multi-Hop Question Answering",
    "title_zh": "在实时知识图谱上用 SPARQL 规划单跳遍历以做多跳问答",
@@ -14212,6 +13861,14 @@
    "title_zh": "DELTA：通过孪生路径对齐诊断探索谱系",
    "cat": "cs.AR",
    "summary_zh": "对比不同设计路径以解释微架构设计空间探索为何停止改进。"
+  },
+  {
+   "id": "2611.31766",
+   "title": "RoMo Hands: A Large Scale Richly Organized Text to Hand Motion Dataset",
+   "title_zh": "RoMo Hands：大规模丰富组织的文本到手部动作数据集",
+   "cat": "cs.CV",
+   "summary_zh": "发布约 54.2 万条序列、884 小时的野外文本-手部动作配对数据集。",
+   "direction": "C"
   },
   {
    "id": "2611.31765",
@@ -14261,6 +13918,14 @@
    "title_zh": "FN-Prune：基于有限 RMSNorm 扰动的免训练专家剪枝",
    "cat": "cs.AI",
    "summary_zh": "用 RMSNorm 输出前后的变化给 MoE 专家打分，免训练地剪掉低分专家。"
+  },
+  {
+   "id": "2611.31740",
+   "title": "LeanWAM: Learning Latent World Action Models from Frozen Video Models",
+   "title_zh": "LeanWAM：从冻结视频模型中学习潜在世界动作模型",
+   "cat": "cs.CV",
+   "summary_zh": "把冻结视频生成器的先验压缩成少量未来 token，训练轻量策略。",
+   "direction": "D"
   },
   {
    "id": "2611.31739",
@@ -14473,6 +14138,22 @@
    "summary_zh": "读取 250 万篇 arXiv 论文的公式，编译并构造跨学科的物理机制。"
   },
   {
+   "id": "2611.31651",
+   "title": "Anchoring VAE Fine-Tuning to Its Latent Diffusion Prior",
+   "title_zh": "将 VAE 微调锚定到其潜在扩散先验",
+   "cat": "cs.CV",
+   "summary_zh": "提出 Diffusion Prior Anchoring，用分数蒸馏更新约束 VAE 微调时的潜变量。",
+   "direction": "E"
+  },
+  {
+   "id": "2611.31647",
+   "title": "MSW: a Multi-Scale Sliced Wasserstein Distance Between Image Distributions",
+   "title_zh": "MSW：图像分布之间的多尺度切片 Wasserstein 距离",
+   "cat": "cs.CV",
+   "summary_zh": "在像素空间用固定 DCT 滤波器组比较图像分布，无需训练网络并附精确检验。",
+   "direction": "G"
+  },
+  {
    "id": "2611.31645",
    "title": "A Flexible and High-Performance Framework for Distributed Dynamic Graph Processing",
    "title_zh": "面向分布式动态图处理的灵活高性能框架",
@@ -14648,6 +14329,14 @@
    "summary_zh": "借鉴 ACT-R 等认知理论，把桌面界面的用户模拟拆成认知模块。"
   },
   {
+   "id": "2611.31558",
+   "title": "Denoising Diffusion with Progressive Posterior Sampling",
+   "title_zh": "渐进式后验采样的去噪扩散",
+   "cat": "cs.LG",
+   "summary_zh": "提出 PPS，无需 SVD 并自动估计噪声方差，用扩散先验解线性逆问题。",
+   "direction": "E"
+  },
+  {
    "id": "2611.31556",
    "title": "Real-Time AI Acceleration on a 2D Spatial Dataflow Architecture",
    "title_zh": "二维空间数据流架构上的实时 AI 加速",
@@ -14786,6 +14475,14 @@
    "title_zh": "ModernELECTRA：带边界窗口重建的替换词检测，用于既能分类又能嵌入的紧凑编码器",
    "cat": "cs.CL",
    "summary_zh": "在 RTD 预训练上加边界窗口重建辅助任务，使紧凑编码器同时胜任分类与检索嵌入。"
+  },
+  {
+   "id": "2611.31487",
+   "title": "GDD: A Remote Sensing Image Deepfake Detection and Manipulation Localization Dataset",
+   "title_zh": "GDD：遥感图像深度伪造检测与篡改定位数据集",
+   "cat": "cs.CV",
+   "summary_zh": "构建注重真实感与分布外测试协议的遥感深度伪造检测与定位基准。",
+   "direction": "G"
   },
   {
    "id": "2611.31481",
@@ -16391,6 +16088,14 @@
    "summary_zh": "研究 Birkhoff 多面体内残差流的混合方式，指出欠混合与过混合之间的权衡。"
   },
   {
+   "id": "2611.15449",
+   "title": "Reading the Unreadable: Text-Aware Image Super-Resolution Needs Reasoning",
+   "title_zh": "读出不可读之字：含文字图像超分辨率需要推理",
+   "cat": "cs.CV",
+   "summary_zh": "指出严重退化的文字无法仅凭局部视觉证据还原，需结合图像上下文推理。",
+   "direction": "A"
+  },
+  {
    "id": "2611.24025",
    "title": "Intent Contracts: Taking Tools Away from Agents",
    "title_zh": "意图合约：从智能体手中收走工具",
@@ -16452,6 +16157,14 @@
    "title_zh": "AgentRoboCritic：理解前沿智能体直接控制机器人的能力",
    "cat": "cs.RO",
    "summary_zh": "在 12 个操作基准上对前沿智能体做动作级分析，让策略为每个动作声明局部意图以便批评。"
+  },
+  {
+   "id": "2611.27229",
+   "title": "Prune to Expand: Training Prompt Enhancers with Less to Imitate",
+   "title_zh": "以剪枝求扩展：用更少的模仿内容训练提示词增强器",
+   "cat": "cs.CV",
+   "summary_zh": "发现提示增强模型用生成增益大的样本对与增益小的样本对训练效果相当，并据此精简监督数据。",
+   "direction": "A"
   },
   {
    "id": "2611.27398",
@@ -16538,6 +16251,14 @@
    "summary_zh": "研究物理层自编码器通信对频谱变化的敏感性，并用迁移学习完成频谱适配。"
   },
   {
+   "id": "2611.34940",
+   "title": "LuxAvatar: Real-Time Relightable Head Avatars via Causal Neural Shading of 3D Intrinsic Proxies",
+   "title_zh": "LuxAvatar：基于 3D 本征代理因果神经着色的实时可重光照头部虚拟人",
+   "cat": "cs.CV",
+   "summary_zh": "从单张肖像前馈生成可实时驱动并重光照的头部虚拟人。",
+   "direction": "C"
+  },
+  {
    "id": "2611.34939",
    "title": "A Mesh for Every Moment",
    "title_zh": "每一时刻都有网格",
@@ -16571,6 +16292,14 @@
    "title_zh": "DynMF2：基于期望最大化的刚体运动分解，用于单目 4D 重建与运动分割",
    "cat": "cs.CV",
    "summary_zh": "把场景运动建模为少量刚体运动，从单段视频做 4D 重建与运动分割。"
+  },
+  {
+   "id": "2611.34929",
+   "title": "High-Fidelity Image Matting with Pixel-Space Diffusion Transformers",
+   "title_zh": "基于像素空间扩散 Transformer 的高保真图像抠图",
+   "cat": "cs.CV",
+   "summary_zh": "改用像素空间扩散 Transformer，避开潜空间 VAE 重建造成的细节损失。",
+   "direction": "A"
   },
   {
    "id": "2611.34928",
@@ -16741,6 +16470,14 @@
    "summary_zh": "通过问答让知识库自行调整结构，便于 LLM 应用检索并串联信息。"
   },
   {
+   "id": "2611.34839",
+   "title": "Diffusion Steering via Adaptive Reward Estimation and Resampling",
+   "title_zh": "通过自适应奖励估计与重采样引导扩散",
+   "cat": "cs.CV",
+   "summary_zh": "重新分配概率到更成功的样本，使文生图更好地满足提示中的对象与关系。",
+   "direction": "E"
+  },
+  {
    "id": "2611.34832",
    "title": "Proverbs As A Window On Collective Prescriptions",
    "title_zh": "谚语：窥见集体规范的窗口",
@@ -16823,6 +16560,14 @@
    "title_zh": "PersonaFactory：基于合成人设库的风格化用户提示增强",
    "cat": "cs.CL",
    "summary_zh": "用合成人设库生成多语言、风格多样的用户提示，改善合成对话数据。"
+  },
+  {
+   "id": "2611.34783",
+   "title": "SceneDesigner3D: Agentic Evolutionary Search for Principled Rearrangement of 3D Indoor Scenes",
+   "title_zh": "SceneDesigner3D：面向 3D 室内场景原则性重排的 Agent 式进化搜索",
+   "cat": "cs.CV",
+   "summary_zh": "用 Agent 式进化搜索生成多样、美观且合理的 3D 室内场景重排。",
+   "direction": "C"
   },
   {
    "id": "2611.34781",
@@ -16909,6 +16654,14 @@
    "summary_zh": "用可回答性指标衡量场景图记忆，基线仅恢复24.1%的可见物体类别。"
   },
   {
+   "id": "2611.34739",
+   "title": "Was the Model Given the Right Action? Auditing and Repairing Action Interfaces in Navigation World Models",
+   "title_zh": "模型得到了正确的动作吗？导航世界模型中动作接口的审计与修复",
+   "cat": "cs.CV",
+   "summary_zh": "审计导航世界模型NWM的动作接口，发现推理时动作处理与训练不一致会使模型显得不准。",
+   "direction": "D"
+  },
+  {
    "id": "2611.34725",
    "title": "Bigger Model or Bigger Table? How Much Backbone a Chorus N-gram Module Replaces",
    "title_zh": "更大的模型还是更大的表？Chorus N-gram模块能替代多少骨干网络",
@@ -16921,6 +16674,14 @@
    "title_zh": "有限真实数据下的LiDAR强度重建：固定轮数训练下的架构基准",
    "cat": "cs.CV",
    "summary_zh": "在固定轮数下对九种神经网络架构做LiDAR强度重建基准，比较仿真数据补充真实数据的效果。"
+  },
+  {
+   "id": "2611.34719",
+   "title": "Reading, Not Adapting: Unlocking Frozen Visual Knowledge for AI-Generated Image Detection",
+   "title_zh": "读取而非适配：释放冻结视觉知识用于AI生成图像检测",
+   "cat": "cs.CV",
+   "summary_zh": "不适配骨干网络，直接读取冻结视觉基础模型中已有的检测知识来识别AI生成图像。",
+   "direction": "G"
   },
   {
    "id": "2611.34708",
@@ -16963,6 +16724,14 @@
    "title_zh": "视觉-语言-动作模型后训练的失败驱动数据飞轮",
    "cat": "cs.AI",
    "summary_zh": "针对新平台上的失败场景构造数据，对VLA模型做后训练的数据飞轮。"
+  },
+  {
+   "id": "2611.34690",
+   "title": "PoVi: Agentic Poetry-to-Video Generation with Knowledge Grounding and Figurative Understanding",
+   "title_zh": "PoVi：具备知识接地与比喻理解的智能体式诗歌转视频生成",
+   "cat": "cs.CL",
+   "summary_zh": "提出诗歌转视频的基准与智能体框架，处理诗歌中的典故与比喻。",
+   "direction": "B"
   },
   {
    "id": "2611.34687",
@@ -17049,6 +16818,14 @@
    "summary_zh": "研究复合基准中把物体粘贴到困难背景上的配对，发现其可跨分类器和图像迁移。"
   },
   {
+   "id": "2611.34644",
+   "title": "Motion Beyond Pixels: Learning Future Visual Representations for Object-Centric Dynamics",
+   "title_zh": "超越像素的运动：为以物体为中心的动力学学习未来视觉表征",
+   "cat": "cs.CV",
+   "summary_zh": "MotionRep联合生成未来DINO表征与3D物体流，作为面向具身的视觉表征世界模型。",
+   "direction": "D"
+  },
+  {
    "id": "2611.34640",
    "title": "PRAM: Activating Latent Multimodal Knowledge through Partwise Reasoning",
    "title_zh": "PRAM：通过分部件推理激活潜在多模态知识",
@@ -17103,6 +16880,14 @@
    "title_zh": "从模型到服务：模型即服务的安全保障体系化梳理",
    "cat": "cs.CR",
    "summary_zh": "从服务视角系统梳理模型即服务（MaaS）的安全研究。"
+  },
+  {
+   "id": "2611.34622",
+   "title": "Beyond Pose Control: Anatomically Consistent Ultrasound Video Generation",
+   "title_zh": "超越位姿控制：解剖结构一致的超声视频生成",
+   "cat": "cs.CV",
+   "summary_zh": "以解剖先验约束探头位姿控制下的超声视频生成。",
+   "direction": "B"
   },
   {
    "id": "2611.34615",
@@ -17201,6 +16986,22 @@
    "title_zh": "Sage-Med：扩展医学多模态智能",
    "cat": "cs.CV",
    "summary_zh": "研究医学多模态大模型的缩放规律并发布Sage-Med，报告达101页。"
+  },
+  {
+   "id": "2611.34568",
+   "title": "Physics-Guided Generative Modelling of Oxy-Combustion Flame Images: From Conditional LSGANs to Denoising Diffusion Models",
+   "title_zh": "物理引导的富氧燃烧火焰图像生成建模：从条件LSGAN到去噪扩散模型",
+   "cat": "cs.CV",
+   "summary_zh": "用条件LSGAN与扩散模型生成富氧燃烧火焰图像，作为实验的代理。",
+   "direction": "A"
+  },
+  {
+   "id": "2611.34564",
+   "title": "Score-based Black-box Attack via Adversarial Condition Guided Diffusion Model",
+   "title_zh": "基于对抗条件引导扩散模型的得分式黑盒攻击",
+   "cat": "cs.CV",
+   "summary_zh": "用对抗条件引导的扩散模型做不依赖替代模型迁移的黑盒对抗攻击。",
+   "direction": "G"
   },
   {
    "id": "2611.34563",
@@ -17462,11 +17263,27 @@
    "summary_zh": "让多页文档 VLM 在编码时能看到相邻页内容，消除页面边界处的特征不连续。"
   },
   {
+   "id": "2611.34418",
+   "title": "SPGSR: A Small Pixel-Space Generator for One-Step Super-Resolution",
+   "title_zh": "SPGSR：面向单步超分辨率的小型像素空间生成器",
+   "cat": "cs.CV",
+   "summary_zh": "以小型像素空间生成器实现单步超分辨率，对比现有最高 14 亿参数的生成器。",
+   "direction": "A"
+  },
+  {
    "id": "2611.34416",
    "title": "CHASE: Curiosity-Guided Skill Acquisition for Embodied Task Execution",
    "title_zh": "CHASE：面向具身任务执行的好奇心引导技能获取",
    "cat": "cs.RO",
    "summary_zh": "让机器人在部分可观测环境中提出任务相关假设、寻找证据并补齐缺失技能。"
+  },
+  {
+   "id": "2611.34414",
+   "title": "SemProxy: Semantic 3D Proxies for Controllable Agentic 3D Modeling",
+   "title_zh": "SemProxy：面向可控 Agent 式 3D 建模的语义 3D 代理",
+   "cat": "cs.CV",
+   "summary_zh": "以语义 3D 代理让用户精确传达空间意图，从而控制代码 Agent 的 3D 建模过程。",
+   "direction": "C"
   },
   {
    "id": "2611.34407",
@@ -17705,6 +17522,14 @@
    "title_zh": "Analemma ∞：地理空间基础模型的时序基准",
    "cat": "cs.CV",
    "summary_zh": "提出包含六个数据集、保留完整 Sentinel-2 时间序列的评测基准。"
+  },
+  {
+   "id": "2611.34237",
+   "title": "VibeVideoAgent: Closing the Perceptual Loop for Code-Driven Video Generation",
+   "title_zh": "VibeVideoAgent：为代码驱动视频生成闭合感知回路",
+   "cat": "cs.CV",
+   "summary_zh": "让编码 Agent 在渲染视频后做感知反馈，修正重叠标签、音画不同步等问题。",
+   "direction": "B"
   },
   {
    "id": "2611.34232",
@@ -18092,6 +17917,14 @@
    "summary_zh": "只优化 projector 子空间，无需回放即可做多模态持续指令微调并降低参数与路由开销。"
   },
   {
+   "id": "2611.34075",
+   "title": "Hijacking 3D Generation: Targeted Adversarial Attacks against Image-to-3D Models via Prefix Trajectory Alignment",
+   "title_zh": "劫持 3D 生成：基于前缀轨迹对齐的图像到 3D 模型定向对抗攻击",
+   "cat": "cs.CV",
+   "summary_zh": "通过前缀轨迹对齐，对图像到 3D 模型发起能绕过内容审查的定向对抗攻击。",
+   "direction": "G"
+  },
+  {
    "id": "2611.34068",
    "title": "Budget, Readout or Reasoning? Where Small Reasoning Models Lose Value in Auction Bidding",
    "title_zh": "预算、读出还是推理？小型推理模型在拍卖竞价中的价值损失来源",
@@ -18104,6 +17937,14 @@
    "title_zh": "何时响应、何处定位：流式 3D 功能区域定位",
    "cat": "cs.CV",
    "summary_zh": "在 RGB-D 流上依据语言指令，仅凭已有观测决定响应时机并定位功能部件。"
+  },
+  {
+   "id": "2611.34062",
+   "title": "Surf-Style: Surface-Based Scene Stylization",
+   "title_zh": "Surf-Style：基于表面的场景风格化",
+   "cat": "cs.CV",
+   "summary_zh": "在表面表示上做 3D 场景风格化，保证多视角一致且可控。",
+   "direction": "C"
   },
   {
    "id": "2611.34051",
@@ -18148,6 +17989,22 @@
    "summary_zh": "通过后训练策略复制，让策略跟随型多智能体强化学习适用于不同团队规模。"
   },
   {
+   "id": "2611.34032",
+   "title": "Counter-DECEIVR: Counterfactual Explanations for Deepfake Detectors using Detector-Guided Rectified Flow Inversion",
+   "title_zh": "Counter-DECEIVR：基于检测器引导整流流反演的深度伪造检测器反事实解释",
+   "cat": "cs.CV",
+   "summary_zh": "用检测器引导的整流流反演生成反事实图像，解释深度伪造检测器的判断。",
+   "direction": "G"
+  },
+  {
+   "id": "2611.34027",
+   "title": "ContextHands: Completing Hand Motion with Learned Context and Joint-Specific Body Kinematics",
+   "title_zh": "ContextHands：利用学习到的上下文与关节特定身体运动学补全手部动作",
+   "cat": "cs.CV",
+   "summary_zh": "根据身体动作序列与文本描述补全细致的手部运动。",
+   "direction": "C"
+  },
+  {
    "id": "2611.34025",
    "title": "Incorporating the Knowledge Distillation to Improve the EfficientNet Transfer Learning Capability",
    "title_zh": "引入知识蒸馏以提升 EfficientNet 的迁移学习能力",
@@ -18160,6 +18017,14 @@
    "title_zh": "JHealthBench-L：面向日本医疗场景、经临床医生审核的 HealthBench 本地化基准",
    "cat": "cs.CL",
    "summary_zh": "将 HealthBench 按日本医疗制度本地化，并经临床医生审核，用于评测医疗 LLM。"
+  },
+  {
+   "id": "2611.34022",
+   "title": "MoSk: A Unified Motion-Skeleton Foundation Model for Human Motion Understanding and Generation",
+   "title_zh": "MoSk：统一的动作-骨架基础模型，用于人体动作理解与生成",
+   "cat": "cs.CV",
+   "summary_zh": "统一动作与骨架表示的基础模型，同时支持人体动作的理解与生成。",
+   "direction": "C"
   },
   {
    "id": "2611.34021",
@@ -18258,6 +18123,14 @@
    "title_zh": "MolGPAO：带投机解码与亚毫秒缝隙修复的 3D 分子生成式预训练自回归八叉树",
    "cat": "cs.LG",
    "summary_zh": "在自回归八叉树 3D 分子生成中引入投机解码并修复 Morton 缝隙坐标跳变。"
+  },
+  {
+   "id": "2611.33982",
+   "title": "FasterGRN: Reducing the Refinement Redundancy for Accelerating Generative Refinement Networks",
+   "title_zh": "FasterGRN：减少精修冗余以加速生成式精修网络",
+   "cat": "cs.CV",
+   "summary_zh": "削减生成式精修网络中对全部视觉表示的重复计算，加速图像生成。",
+   "direction": "F"
   },
   {
    "id": "2611.33981",
@@ -18421,6 +18294,14 @@
    "summary_zh": "MCP 服务器让通用 AI 智能体在模拟运行时读取、修改或终止离散元模型。"
   },
   {
+   "id": "2611.33925",
+   "title": "Beyond the Happy Path: Generalizing Robot World Models from Simulated Failures",
+   "title_zh": "走出理想路径：从模拟失败中泛化机器人世界模型",
+   "cat": "cs.RO",
+   "summary_zh": "用模拟的失败数据训练，改善机器人世界模型在抓取偏差、滑落等情形下的预测。",
+   "direction": "D"
+  },
+  {
    "id": "2611.33922",
    "title": "iMFPO: Improving Mean Flow Policy Optimization with Drift-Aware Velocity Alignment for Embodied Control",
    "title_zh": "iMFPO：用漂移感知速度对齐改进具身控制中的 Mean Flow 策略优化",
@@ -18512,6 +18393,14 @@
    "summary_zh": "在线选择查询要发往的客户端，兼顾检索开销和查询暴露的隐私。"
   },
   {
+   "id": "2611.33885",
+   "title": "LayoutRecall: Preserving Appearance in Multi-Round 3D Layout-Controlled Image Editing",
+   "title_zh": "LayoutRecall：在多轮 3D 布局控制的图像编辑中保持外观",
+   "cat": "cs.CV",
+   "summary_zh": "多轮编辑中物体被遮挡或移出视野后，仍能恢复其原有外观。",
+   "direction": "A"
+  },
+  {
    "id": "2611.33879",
    "title": "FORK: Co-Evolving Safe Disclosure and Decision Skills Against Attackers Who Read Every Refusal",
    "title_zh": "FORK：对抗读取每次拒绝信息的攻击者，协同进化安全披露与决策技能",
@@ -18531,6 +18420,14 @@
    "title_zh": "随机 Voronoi 网络",
    "cat": "cs.LG",
    "summary_zh": "用结构化三层 MLP 表达最近邻方法，使其可微分且推理开销更低。"
+  },
+  {
+   "id": "2611.33874",
+   "title": "X-Matte: VAE-Free Pixel-Space Flow Matching for Single-Step Image Matting",
+   "title_zh": "X-Matte：无 VAE 的像素空间 Flow Matching 单步图像抠图",
+   "cat": "cs.CV",
+   "summary_zh": "去掉 VAE，在像素空间用 flow matching 单步完成图像抠图，保留精细 alpha 细节。",
+   "direction": "A"
   },
   {
    "id": "2611.33871",
@@ -18673,6 +18570,14 @@
    "summary_zh": "在有限 rollout 预算下，为不同能力分配采样，避免在线策略学习信号的内生偏差。"
   },
   {
+   "id": "2611.33826",
+   "title": "MotionODE: Enhancing Autoregressive Text-to-Motion Generation with Continuous-Depth Modeling",
+   "title_zh": "MotionODE：用连续深度建模增强自回归文本到动作生成",
+   "cat": "cs.CV",
+   "summary_zh": "在自回归文本生成动作中引入连续深度建模，改善条件动作表示的形成。",
+   "direction": "C"
+  },
+  {
    "id": "2611.33824",
    "title": "Revisiting Monocular In-Hand Object Scanning: Dataset, Pose Estimation, and Surface Reconstruction",
    "title_zh": "重访单目手持物体扫描：数据集、位姿估计与表面重建",
@@ -18699,6 +18604,14 @@
    "title_zh": "RadOncGym：基于智能体的放疗剂量模仿优化框架",
    "cat": "cs.AI",
    "summary_zh": "用智能体框架把 AI 预测的剂量分布优化成满足物理约束的放疗计划。"
+  },
+  {
+   "id": "2611.33819",
+   "title": "MMotion: Collaborative Cross-Scale Memory for Text-to-Motion Generation",
+   "title_zh": "MMotion：面向文本到动作生成的协同跨尺度记忆",
+   "cat": "cs.CV",
+   "summary_zh": "用跨尺度记忆同时利用检索的动作样例和长程上下文生成动作。",
+   "direction": "C"
   },
   {
    "id": "2611.33818",
@@ -18762,6 +18675,14 @@
    "title_zh": "Dynamic Forcing：为世界动作模型学习动作相关的稀疏动态表示并以稠密未来引导",
    "cat": "cs.CV",
    "summary_zh": "只保留当前观测作为上下文，学习稀疏动态表示，避免重复编码静态内容。"
+  },
+  {
+   "id": "2611.33797",
+   "title": "DriftWAM: Faster World-Action Models via Action-Aware Video Drifting",
+   "title_zh": "DriftWAM：通过动作感知视频漂移实现更快的世界动作模型",
+   "cat": "cs.CV",
+   "summary_zh": "把世界动作模型蒸馏为少步生成器，并在激进步数压缩下保持任务性能。",
+   "direction": "D"
   },
   {
    "id": "2611.33796",
@@ -19016,6 +18937,14 @@
    "summary_zh": "通过多视角批次与像素采样降低二阶优化开销，加速 3DGS 训练。"
   },
   {
+   "id": "2611.33693",
+   "title": "GeoTex: Geometry-as-Texture Encoding and History-Grounded 4D Occupancy Forecasting",
+   "title_zh": "GeoTex：几何即纹理编码与历史接地的 4D 占用预测",
+   "cat": "cs.CV",
+   "summary_zh": "联合建模柱内高度模式与跨柱关系，用于自动驾驶世界模型的 4D 占用预测。",
+   "direction": "D"
+  },
+  {
    "id": "2611.33692",
    "title": "Rethinking Sequential Locate-Then-Edit: Optimality and Stability",
    "title_zh": "重新思考顺序式 Locate-Then-Edit：最优性与稳定性",
@@ -19049,6 +18978,14 @@
    "title_zh": "从熵源到随机比特流：面向真随机随机计算的低成本转换器",
    "cat": "cs.AR",
    "summary_zh": "提出三种方法，把 TRNG 的无偏输出转换为随机计算所需的随机比特流。"
+  },
+  {
+   "id": "2611.33682",
+   "title": "WorldUAV: Scaling UAV Data Synthesis via World Models",
+   "title_zh": "WorldUAV：通过世界模型扩展无人机数据合成",
+   "cat": "cs.CV",
+   "summary_zh": "把无人机植入真实视频，用世界模型合成高质量无人机检测与跟踪数据。",
+   "direction": "D"
   },
   {
    "id": "2611.33679",
@@ -19210,6 +19147,14 @@
    "title_zh": "Aligned Machine：基于人类比较判断评测多模态嵌入相似度的基准",
    "cat": "cs.AI",
    "summary_zh": "通过公开交互平台收集人类比较判断，构建评测嵌入相似度的 HASB 基准。"
+  },
+  {
+   "id": "2611.33588",
+   "title": "SEEL: Towards End-to-End 3D Sign Generation with Language Models",
+   "title_zh": "SEEL：基于语言模型的端到端 3D 手语生成",
+   "cat": "cs.CV",
+   "summary_zh": "端到端对齐运动 tokenizer 与生成器，在 CSL-Daily、How2Sign 和 Phoenix-2014T 上取得最优。",
+   "direction": "C"
   },
   {
    "id": "2611.33580",
@@ -19457,6 +19402,14 @@
    "summary_zh": "用过程奖励模型让VLM在视觉证据模糊时学会拒答。"
   },
   {
+   "id": "2611.33439",
+   "title": "OnCue: Generating Safety-Critical Driving Scenarios under Occlusion with Temporal Control",
+   "title_zh": "OnCue：生成具时间控制的遮挡下安全关键驾驶场景",
+   "cat": "cs.RO",
+   "summary_zh": "在真实驾驶日志中生成可控制暴露时间的遮挡危险场景。",
+   "direction": "D"
+  },
+  {
    "id": "2611.33437",
    "title": "ViCARD: Visual Credit Assignment with Reward-Gated Distillation for Multimodal Reasoning",
    "title_zh": "ViCARD：面向多模态推理的奖励门控蒸馏视觉信用分配",
@@ -19597,6 +19550,22 @@
    "summary_zh": "从两种关节状态的多视图重建每个刚性部件的水密网格及关节。"
   },
   {
+   "id": "2611.33374",
+   "title": "VersionGS: Compact and Motion-Robust Dynamic Gaussian Splatting via Versioned Gaussians",
+   "title_zh": "VersionGS：基于版本化高斯的紧凑且抗运动的动态高斯溅射",
+   "cat": "cs.CV",
+   "summary_zh": "用版本化高斯改善快速运动下的动态高斯溅射质量。",
+   "direction": "C"
+  },
+  {
+   "id": "2611.33371",
+   "title": "MotifFlow: Training-Free, Self-Contained Style Transfer from Color to Motif in Rectified Flow Transformers",
+   "title_zh": "MotifFlow：整流流Transformer中免训练、自包含的从色彩到图案的风格迁移",
+   "cat": "cs.CV",
+   "summary_zh": "在FLUX上免训练地迁移绘画的色彩、笔触与图案。",
+   "direction": "A"
+  },
+  {
    "id": "2611.33369",
    "title": "Benchmarking Segmentation Models for Scalable Mangrove Mapping with Sentinel-1/2 Imagery",
    "title_zh": "面向大范围红树林制图的分割模型基准评测（Sentinel-1/2）",
@@ -19660,6 +19629,14 @@
    "summary_zh": "在模拟的用户与助手对话中研究用户如何给聊天机器人赋予心智状态，以及人和 AI 因素的影响。"
   },
   {
+   "id": "2611.33323",
+   "title": "StyleID++: Position-Decoupled and Structure-Coherent Style Retrieval across Diffusion Architectures",
+   "title_zh": "StyleID++：跨扩散架构的位置解耦、结构一致的风格检索",
+   "cat": "cs.CV",
+   "summary_zh": "针对注意力注入式免训练风格迁移中位置信号造成的失效，解耦位置并保持结构一致，适配多种扩散架构。",
+   "direction": "A"
+  },
+  {
    "id": "2611.33322",
    "title": "Brand Recall and Category Accuracy in Language Models: An Audit of 1,000 B2B SaaS Brands",
    "title_zh": "语言模型中的品牌召回与类别准确率：对 1000 个 B2B SaaS 品牌的审计",
@@ -19721,6 +19698,14 @@
    "title_zh": "语言模型微调中遗忘的两个时间尺度：快速行为抑制与缓慢表示漂移",
    "cat": "cs.LG",
    "summary_zh": "区分微调中快速的行为层抑制和缓慢的表示层漂移，分析预训练表示被修改的方式。"
+  },
+  {
+   "id": "2611.33296",
+   "title": "CoSMo: A Compact Spectral Space of Body Motion in Video",
+   "title_zh": "CoSMo：视频中人体运动的紧凑谱空间",
+   "cat": "cs.CV",
+   "summary_zh": "把视频中的人体运动编码为一个紧凑谱空间中的单一编码，可无训练地比较、编辑、迁移和重新采样。",
+   "direction": "B"
   },
   {
    "id": "2611.34930",
@@ -21303,6 +21288,14 @@
    "title_zh": "表征学习中的谱幽灵：从成分分析到自监督学习的统一视角",
    "cat": "cs.LG",
    "summary_zh": "用统一的谱框架解释各类自监督学习目标"
+  },
+  {
+   "id": "2611.25595",
+   "title": "LoopedWAM: Looped World Action Models for Elastic Inference",
+   "title_zh": "LoopedWAM：面向弹性推理的循环世界动作模型",
+   "cat": "cs.CV",
+   "summary_zh": "共享 6 层核心循环执行 30 层，压缩世界动作模型参数",
+   "direction": "D"
   },
   {
    "id": "2509.24832",

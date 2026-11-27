@@ -2,7 +2,7 @@
  "id": "embodied",
  "name": "具身智能与 VLA",
  "taxonomy_version": "v1",
- "rules_version": "v1",
+ "rules_version": "v2",
  "categories": [
   "cs.RO",
   "cs.CV",
@@ -67,5 +67,6 @@
   "tongtu_mode": "fast",
   "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
   "files_base": "https://dailypapers-files.awesomedays.workers.dev"
- }
+ },
+ "min_score": 0.45
 }

@@ -23,7 +23,7 @@
 | Diffusion / 生成 | `diffusion` | 周三、周日 | 23:47 | 20 | 3–5 | `daily/diffusion` |
 | 具身智能与 VLA | `embodied` | 周日 | 22:32 | 20 | 3–5 | `daily/embodied` |
 
-配置：`topics/_ingest.json`（入库）、`topics/<topic>.json`（分类、方向、频率 `cadence.run_days`、上限 `issue_cap`、⭐ 数量 `stars`、`start_date`、分支前缀）。范围说明：`prompts/scope/<topic>.md`。
+配置：`topics/_ingest.json`（入库）、`topics/<topic>.json`（分类、方向、频率 `cadence.run_days`、上限 `issue_cap`、相关的最低分 `min_score`（默认 0.45，低于它的算「未收录」）、⭐ 数量 `stars`、`start_date`、分支前缀）。范围说明：`prompts/scope/<topic>.md`。
 
 工作目录 `WORK` 放在会话的 scratchpad 里，不要放进仓库。**每个批次、每一期各用一个新目录**：入库用 `<scratchpad>/ingest-<batch>`，出刊用 `<scratchpad>/<topic>-<key>`，不要复用上一个批次或上一期的目录（`assemble.py` 会读目录里所有的 ⭐ 精读稿）。
 

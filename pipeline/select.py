@@ -8,6 +8,8 @@ Writes WORK/selection.json:
   star_hint    shown papers Sonnet nominated for ⭐ (the main session decides)
 and WORK/abstract_in.json: [{id, title, abstract}] of the shown papers, for the abstract agents.
 
+Related = tagged for the topic with score ≥ `min_score` (topic config, default 0.45); weaker tags
+are listed with the excluded papers.
 Ranking = topic score + a small heat bonus (HF upvotes, HN points from the latest heat snapshot,
 capped at +0.15; only for the batch's own arXiv papers, not for HF / HN extras). Diversity: first the best paper of each direction that scores ≥ 0.45 (at most
 half of the slots), then the remaining slots by ranking.
@@ -18,6 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from heat import latest  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MIN_SCORE = 0.45  # a tagged paper counts as related only from this score on (topic config: `min_score`)
 
 
 def heat_bonus(h):
@@ -31,11 +34,12 @@ def heat_bonus(h):
 def main(topic_path, work, *batches):
     t = json.load(open(os.path.join(ROOT, topic_path)))
     tid, cap = t["id"], t["issue_cap"]
+    min_score = t.get("min_score", MIN_SCORE)
     heat = latest().get("papers", {})
     rel, seen = [], set()
     for b in batches:
         for p in json.load(open(os.path.join(ROOT, "data", "papers", f"{b}.json")))["papers"]:
-            if tid in p["tags"] and p["id"] not in seen:
+            if tid in p["tags"] and p["tags"][tid]["score"] >= min_score and p["id"] not in seen:
                 seen.add(p["id"])
                 tag = p["tags"][tid]
                 rel.append({"id": p["id"], "title": p["title"], "abstract": p["abstract"], "dir": tag["direction"],
