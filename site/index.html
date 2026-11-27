@@ -568,7 +568,7 @@ const emblem=c=>`<svg class="em" viewBox="0 0 48 48" aria-hidden="true"><circle 
 
 /* 论文链接：arXiv 页、英文 PDF、中文 PDF（通途译文，Access 保护）、代码、复制编号 */
 const CP='<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
-const links=p=>`<span class="lk">${[['links',p.links?.abs],['en',p.links?.pdf],['zh',p.translation?.pdf],['code',p.links?.code]].filter(x=>url(x[1])).map(([t,u])=>`<a href="${url(u)}" target="_blank" rel="noopener">${t}</a>`).join('')}<button class="cp" type="button" data-copy="${esc(p.id)}" title="复制 arXiv 编号 ${esc(p.id)}" aria-label="复制 arXiv 编号 ${esc(p.id)}">${CP}</button></span>`;
+const links=p=>`<span class="lk">${[['links',p.links?.abs],['en',p.links?.pdf],['zh',p.translation?.pdf],['code',p.links?.code],['hf',p.heat?.hf>0?`https://huggingface.co/papers/${p.id}`:'']].filter(x=>url(x[1])).map(([t,u])=>`<a href="${url(u)}" target="_blank" rel="noopener">${t}</a>`).join('')}<button class="cp" type="button" data-copy="${esc(p.id)}" title="复制 arXiv 编号 ${esc(p.id)}" aria-label="复制 arXiv 编号 ${esc(p.id)}">${CP}</button></span>`;
 /* 先转义，再转换行内标记 */
 const G=new Map();
 const rich=t=>esc(t).replace(/\[\[@([\w.-]+)\|([^\]]*?)\]\]/g,(m,id,tx)=>`<a class="pref" href="#p-${id}" data-ref="${id}">${tx}</a>`).replace(/\[\[([\w.-]+)(?:\|([^\]]*?))?\]\]/g,(m,id,tx)=>{const g=G.get(id);
