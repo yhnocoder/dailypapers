@@ -98,6 +98,9 @@ details[open]>summary::after{content:" －"}
 summary:hover{color:var(--ink)}
 details .en{font:italic 400 14.5px/1.6 var(--serif);color:var(--mute);text-align:left;hyphens:auto;margin:4px 0 6px}
 .fine{font:400 12.5px/1.6 var(--sans);color:var(--mute);margin-top:10px;padding-top:8px;border-top:1px solid var(--hair);text-align:left}
+.fine .tl{display:flex;gap:14px;margin-bottom:4px}
+.fine .tl a{color:var(--accent);font-weight:600;text-decoration:none}
+.fine .tl a:hover{text-decoration:underline}
 .fine code{font:12px/1.5 var(--mono);overflow-wrap:anywhere;color:var(--body)}
 .fine ul{margin:2px 0 0;padding-left:1.2em}
 
@@ -282,6 +285,8 @@ const rich=t=>esc(t).replace(/\[\[@([\w.-]+)\|([^\]]*?)\]\]/g,(m,id,tx)=>`<a cla
 const en=p=>p.abstract_en?`<details><summary>Abstract</summary><p class="en" lang="en">${esc(p.abstract_en)}</p></details>`:'';
 const title=p=>url(p.links?.abs)?`<a href="${url(p.links.abs)}" rel="noopener" lang="en">${esc(p.title)}</a>`:esc(p.title);
 
+/* tongtu translation, served from Cloudflare (Access-protected): PDF opens in a new tab */
+const tl=p=>url(p.translation?.pdf)?`<span class="tl"><a href="${url(p.translation.pdf)}" target="_blank" rel="noopener">中文全文 PDF</a>${url(p.translation.zip)?`<a href="${url(p.translation.zip)}" rel="noopener">out.zip</a>`:''}</span>`:'';
 function story(p){
   const head=`<div class="head"><h2>${esc(p.title_zh)}</h2><p class="deck">${title(p)}</p>
     <div class="by">${p.star?'<span class="st" aria-label="精读">★</span>':''}${p.affiliation?`<span>${esc(p.affiliation)}</span>`:""}<span>${esc(full(dir(p.direction).name))}</span><span>${esc(p.primary_cat)}</span>${links(p)}</div></div>`;
@@ -290,7 +295,7 @@ function story(p){
   return `<article class="story" id="p-${esc(p.id)}">${head}
     <div class="body">${p.analysis.map(t=>`<p>${rich(t)}</p>`).join('')}</div>
     <div class="abs"><p>${rich(p.abstract_zh)}</p>${en(p)}
-      ${p.translation||p.star_reasons?.length?`<div class="fine">${p.translation?`译稿 <code>${esc(p.translation)}</code>`:''}
+      ${tl(p)||p.star_reasons?.length?`<div class="fine">${tl(p)}
       ${p.star_reasons?.length?`<details><summary>入选理由</summary><ul>${p.star_reasons.map(r=>`<li>${esc(r)}</li>`).join('')}</ul></details>`:''}</div>`:''}
     </div></article>`;
 }

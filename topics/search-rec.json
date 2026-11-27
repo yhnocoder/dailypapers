@@ -63,5 +63,10 @@
  ],
  "classify_prompt": "prompts/classify.md",
  "writing_prompt": "prompts/writing.md",
- "branch_prefix": "daily/search"
+ "branch_prefix": "daily/search",
+ "translations": {
+  "tongtu_mode": "fast",
+  "upload_base": "",
+  "files_base": ""
+ }
 }

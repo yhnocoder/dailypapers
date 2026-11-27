@@ -38,6 +38,7 @@ def main(topic_path, day, work):
     if missing:
         sys.exit(f"{len(missing)} candidates have no classification, e.g. {sorted(missing)[:3]}")
     stars = {s["id"]: s for f in glob.glob(os.path.join(work, "star", "*.out.json")) for s in [load(f)]}
+    translations = load(os.path.join(work, "translations.json"), {})
 
     papers, excluded, new_terms = [], [], []
     for pid, p in cands.items():
@@ -60,6 +61,9 @@ def main(topic_path, day, work):
         }
         if s:
             rec.update(title_zh=s["title_zh"], analysis=s["analysis"], star_reasons=s.get("star_reasons", []))
+            t = translations.get(pid, {})
+            if t.get("pdf"):
+                rec["translation"] = {"pdf": t["pdf"], "zip": t.get("zip")}
             new_terms += s.get("glossary_new", [])
         papers.append(rec)
 
