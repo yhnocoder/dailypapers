@@ -1,0 +1,13 @@
+name = "dailypapers-files"
+main = "read.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "dailypapers-zh"
+
+[vars]
+# Fill in after enabling Cloudflare Access on this Worker (see worker/README.md, step 3).
+ACCESS_TEAM_DOMAIN = ""   # e.g. "yourteam.cloudflareaccess.com"
+ACCESS_AUD = ""           # the Access application's AUD tag
