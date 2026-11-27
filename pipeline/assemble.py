@@ -99,6 +99,10 @@ def main(topic_path, day, work):
     added = [t for t in new_terms if t.get("id") and t["id"] not in have]
     g["terms"] += added
     dump(g, gp)
+    miss_sum = [e["id"] for e in excluded if not e["summary_zh"]] + [r["id"] for r in papers if not r["summary_zh"]]
+    miss_abs = [r["id"] for r in papers if not r["abstract_zh"]]
+    if miss_sum or miss_abs:
+        print(f"WARNING: missing summary_zh {miss_sum}; missing abstract_zh {miss_abs} — fill them in WORK/out and re-run")
     print(f"{day}: {len(cands)} candidates → {len(papers)} relevant → {sum(r['star'] for r in papers)} ⭐; "
           f"{len(excluded)} excluded; +{len(added)} glossary terms")
 

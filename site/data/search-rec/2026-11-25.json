@@ -3435,7 +3435,7 @@
    "title": "LogToPersona: New Benchmark and Efficient Persona Prediction through Semantic Log Filtering",
    "title_zh": "LogToPersona：新基准与基于语义日志过滤的高效画像预测",
    "cat": "cs.CL",
-   "summary_zh": "",
+   "summary_zh": "从一天的手机操作日志推断用户画像，只保留行为上互不重复的日志，端侧内存占用最多降 39%。",
    "reason": "非搜推：用户画像"
   },
   {
