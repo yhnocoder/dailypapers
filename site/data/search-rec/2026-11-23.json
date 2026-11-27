@@ -80,7 +80,11 @@
      "ref": "Figure 5",
      "caption_zh": "换到其他模型和目标上的编辑：PinRec 插值、排序模型专家缩放，以及按新鲜度、商品定向的召回调控。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.29613v1/2611.29613v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.29613v1/2611.29613v1_out.zip"
+   }
   },
   {
    "id": "2611.28645",
@@ -128,7 +132,11 @@
      "ref": "Figure 7",
      "caption_zh": "PROSPER 在淘天工业级搜索引擎里的位置：作为多路召回中新增的一路稀疏通道。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.28645v1/2611.28645v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.28645v1/2611.28645v1_out.zip"
+   }
   },
   {
    "id": "2611.28555",
@@ -173,7 +181,11 @@
      "ref": "Figure 2",
      "caption_zh": "==Block-Max MaxScore== 用的子块上界：每块再切成 8 个子块，各存这个词在子块里的最大权重。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.28555v1/2611.28555v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.28555v1/2611.28555v1_out.zip"
+   }
   },
   {
    "id": "2611.31185",
