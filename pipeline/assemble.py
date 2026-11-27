@@ -13,7 +13,7 @@ Writes site/data/<topic>/<key>.json, records the issue (key → batches) in site
 and merges new glossary terms into site/data/glossary.json.
 
 Issue file: papers (shown, full), others (related but folded: one line each), excluded (pool
-papers of these batches that are not in the topic: one line each), funnel, overview.
+papers of these batches that are not related, i.e. untagged or below `min_score`: one line each), funnel, overview.
 """
 import glob, json, os, sys
 from datetime import date
@@ -99,7 +99,8 @@ def main(topic_path, key, work):
     papers.sort(key=lambda r: (-r["star"], -r["score"]))
     shown = set(sel["shown"])
     others = [line(pool[i]) for i in sel["others"]]
-    excluded = [line(p) for p in pool.values() if tid not in p["tags"]]
+    related = shown | set(sel["others"])  # below the topic's min_score counts as excluded
+    excluded = [line(p) for p in pool.values() if p["id"] not in related]
     n_rel = len(shown) + len(others)
     span = label(batches[0]) if len(batches) == 1 else f"{batches[0]} – {batches[-1]}（{len(batches)} 批）"
     out = {

@@ -7,7 +7,7 @@
   "2026-11-25"
  ],
  "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25（3 批）",
- "rules_version": "v1",
+ "rules_version": "v2",
  "overview": {
   "guide": [
    "[[@2611.28665|Seeing Right, Writing Wrong]] 用孪生图测出开源 VLM 一旦写下空间关系就不再看图：固定思维链后换成左右镜像的图，答案只变 3.4 个点，而中层探针显示模型其实看对了。[[@2611.32316|ASTERISM]] 审了 19 个多图基准，24.2% 的题一张图就能答；22 个 RL 后训练的 Qwen2.5-VL-7B 在新基准上最多只涨 1.6 分。[[@2611.29146|RVLM]] 用无训练分割把图块聚成区域 token，大图上 token 少一半、分数高 5.3，但这部分收益来自推理时的分辨率外推，文字密集任务反而掉分。",
@@ -21,7 +21,7 @@
   ],
   [
    "判定VLM / 多模态相关",
-   300
+   142
   ],
   [
    "入选",
@@ -1203,6 +1203,14 @@
    "direction": "C"
   },
   {
+   "id": "2611.28489",
+   "title": "Open Vision Banana: An Open Framework for Unified Visual Perception through Generation in RGB Space",
+   "title_zh": "Open Vision Banana：在 RGB 空间中通过生成实现统一视觉感知的开放框架",
+   "cat": "cs.CV",
+   "summary_zh": "用单个共享 LoRA 把 Qwen-Image-2.1 的 7B 扩散生成器适配为深度、语义、实例和指代分割的统一模型。",
+   "direction": "E"
+  },
+  {
    "id": "2611.18639",
    "title": "SynthDCB: World Distillation for Scalable Device Control Benchmarking",
    "title_zh": "SynthDCB：通过世界蒸馏实现可扩展的设备控制评测",
@@ -1227,36 +1235,12 @@
    "direction": "D"
   },
   {
-   "id": "2611.29338",
-   "title": "A Glimpse of Training VLMs as Foundation Models for Robotic Manipulation",
-   "title_zh": "训练 VLM 成为机器人操作基础模型的一瞥",
-   "cat": "cs.RO",
-   "summary_zh": "提出 nanoAstra，用语义动作建模和保留能力的监督微调训练可泛化操作的 VLM。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28489",
-   "title": "Open Vision Banana: An Open Framework for Unified Visual Perception through Generation in RGB Space",
-   "title_zh": "Open Vision Banana：在 RGB 空间中通过生成实现统一视觉感知的开放框架",
+   "id": "2611.31358",
+   "title": "Nemotron-Labs-VisualCreation: Pixel as Code for Agentic Visual Creation",
+   "title_zh": "Nemotron-Labs-VisualCreation：以像素即代码实现智能体式视觉创作",
    "cat": "cs.CV",
-   "summary_zh": "用单个共享 LoRA 把 Qwen-Image-2.1 的 7B 扩散生成器适配为深度、语义、实例和指代分割的统一模型。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.30157",
-   "title": "UUBench: Understanding the Unspoken toward Full-Duplex Multimodal Interaction",
-   "title_zh": "UUBench：面向全双工多模态交互的“言外之意”理解",
-   "cat": "cs.CV",
-   "summary_zh": "评测多模态交互系统理解用户隐含需求并给出恰当视听回应的基准。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34347",
-   "title": "AIRIS: Benchmarking Social Embodied Intelligence in Egocentric Streaming Videos",
-   "title_zh": "AIRIS：第一视角流式视频中的社会具身智能评测",
-   "cat": "cs.CV",
-   "summary_zh": "评测具身智能体在流式第一人称视频中判断证据是否充分、是否介入以及如何得体回应。",
-   "direction": "C"
+   "summary_zh": "用离散视觉token表示栅格图、用显式程序表示结构化产物，构建覆盖图像、矢量图、网页和文档的创作智能体框架。",
+   "direction": "G"
   },
   {
    "id": "2611.33020",
@@ -1267,28 +1251,12 @@
    "direction": "H"
   },
   {
-   "id": "2611.29355",
-   "title": "Polytropos: What Do Vision-Language Model Descriptions Make of a Cultural Object?",
-   "title_zh": "Polytropos：视觉语言模型的描述如何看待文化对象？",
-   "cat": "cs.CV",
-   "summary_zh": "把描述重新生成图像并与原照片比较，衡量VLM描述保留了多少文化对象细节。",
-   "direction": "H"
-  },
-  {
    "id": "2611.29361",
    "title": "Beyond Attention Maps: Understanding and Improving Medical MLLMs via Visual Values",
    "title_zh": "超越注意力图：通过视觉Value理解并改进医学多模态大模型",
    "cat": "cs.CV",
    "summary_zh": "配对平扫与增强影像显示，视觉Value比注意力权重更能影响MLLM的回答。",
    "direction": "A"
-  },
-  {
-   "id": "2611.31358",
-   "title": "Nemotron-Labs-VisualCreation: Pixel as Code for Agentic Visual Creation",
-   "title_zh": "Nemotron-Labs-VisualCreation：以像素即代码实现智能体式视觉创作",
-   "cat": "cs.CV",
-   "summary_zh": "用离散视觉token表示栅格图、用显式程序表示结构化产物，构建覆盖图像、矢量图、网页和文档的创作智能体框架。",
-   "direction": "G"
   },
   {
    "id": "2611.31346",
@@ -1595,546 +1563,11 @@
    "direction": "C"
   },
   {
-   "id": "2611.28618",
-   "title": "Distilling Visual Agents from Limited Interaction Experience",
-   "title_zh": "从有限交互经验中蒸馏视觉智能体",
-   "cat": "cs.AI",
-   "summary_zh": "按技能覆盖选出代表轨迹做 on-policy 蒸馏，4 条固定轨迹使 4B 学生在导航任务上从 49.17% 升至 82.08%。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.30075",
-   "title": "Context-Grounded Skill Internalization for Vision-Language Agents",
-   "title_zh": "面向视觉语言 Agent 的上下文接地技能内化",
-   "cat": "cs.AI",
-   "summary_zh": "分析技能内化中的上下文错配问题，并提出方法让 Agent 无需提示即可使用技能。",
-   "direction": "Z"
-  },
-  {
    "id": "2611.32094",
    "title": "Clinical3D-Bench: Evaluating and Improving Spatial Intelligence of Multimodal LLMs in Hospital Environments",
    "title_zh": "Clinical3D-Bench：评测并提升多模态大模型在医院环境中的空间智能",
    "cat": "cs.CV",
    "summary_zh": "含 3368 道题、覆盖 373 个医院房间布局的模拟基准，测试第一视角空间推理。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.32816",
-   "title": "SpatialArena: Where Do Geometric Foundation Models Stand?",
-   "title_zh": "SpatialArena：几何基础模型现在处于什么水平？",
-   "cat": "cs.CV",
-   "summary_zh": "统一帧采样、分辨率和对齐方式，对单目深度、前馈 3D/4D 重建和 VLM 的几何预测做可比评测。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.30771",
-   "title": "GameDojo: Benchmarking Real-Time Interactive Agents in Video Games",
-   "title_zh": "GameDojo：评测视频游戏中的实时交互智能体",
-   "cat": "cs.AI",
-   "summary_zh": "构建覆盖20款游戏、120个Boss战的可控基准，并生成600小时游戏轨迹数据。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.29969",
-   "title": "CARE-3D: Reinforcement Learning for Evidence Grounded Agentic Reasoning in Situated 3D Scenes",
-   "title_zh": "CARE-3D：面向情境 3D 场景证据落地式 Agent 推理的强化学习",
-   "cat": "cs.AI",
-   "summary_zh": "用强化学习优化 Agent 获取证据的工具选择，提升情境 3D 推理。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.28574",
-   "title": "EvoViM: Recursively Self-Evolving Visual Agents for Exploration with Deferred Queries",
-   "title_zh": "EvoViM：面向延迟提问探索的递归自进化视觉智能体",
-   "cat": "cs.AI",
-   "summary_zh": "冻结的多模态模型把交互经验转成保留图像并直接在像素上计算的视觉程序，用作记忆与技能。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.31068",
-   "title": "UMAMI: A Multimodal Benchmark Dataset for Evidence-Grounded Dietary Decisions",
-   "title_zh": "UMAMI：面向循证饮食决策的多模态基准数据集",
-   "cat": "cs.CV",
-   "summary_zh": "构建连接食物图像、营养成分与个人饮食需求的多模态基准。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30673",
-   "title": "Optimising VLM Harnesses to Localise Errors in Generated Videos",
-   "title_zh": "优化VLM框架以定位生成视频中的错误",
-   "cat": "cs.CV",
-   "summary_zh": "研究检查哪些帧、调用哪些工具和如何合并预测的VLM工作流，用于定位生成视频中的细微错误。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30458",
-   "title": "Decompose and Describe: Narrowing the Diagnosis-to-Report Gap in 3D CT Report Generation",
-   "title_zh": "分解与描述：缩小3D CT报告生成中诊断到报告的差距",
-   "cat": "cs.CV",
-   "summary_zh": "发现医学VLM在诊断VQA上优于自由文本报告，并探讨缩小这一差距。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30170",
-   "title": "GUI-Q: Task-Sensitive Granularity and Relation-Preserving Quantization for GUI Agents",
-   "title_zh": "GUI-Q：面向 GUI Agent 的任务敏感粒度与关系保持量化",
-   "cat": "cs.CV",
-   "summary_zh": "对 GUI Agent 做训练后量化，保持指令-视觉关联和局部空间关系。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.30167",
-   "title": "PathStream: Towards Streaming Diagnostic Copilots for Whole-Slide Pathology",
-   "title_zh": "PathStream：面向全切片病理的流式诊断助手",
-   "cat": "cs.CV",
-   "summary_zh": "由病理医生控制浏览、助手流式描述视图并综合诊断的全切片病理系统与数据集。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.30119",
-   "title": "Could This BE Any More Wrong? Teaching VLMs to Know What They Don't Know in Document Extraction",
-   "title_zh": "教 VLM 知道自己不知道：文档抽取中的置信度估计",
-   "cat": "cs.AI",
-   "summary_zh": "用 token 对数概率为 VLM 抽取的每个字段估计置信度，用于检测错误。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30096",
-   "title": "When \"A or B\" Is Less Likely than A: Coherent Probabilities for Vision Decision Models",
-   "title_zh": "当“A 或 B”比 A 更不可能：视觉决策模型的相干概率",
-   "cat": "cs.CV",
-   "summary_zh": "发现 VLM 多选概率随选项分组而变，并提出 CORE 训练使其相干。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30069",
-   "title": "Pixel as the Common Language: Unified Multimodal Embedding via Visual Rendering",
-   "title_zh": "以像素为通用语言：基于视觉渲染的统一多模态嵌入",
-   "cat": "cs.CV",
-   "summary_zh": "RenderEmbed 把文本、图像和组合输入都渲染成图像再编码，统一多模态嵌入。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30040",
-   "title": "Teaching How to Reason, Beyond What to Answer: Evidence-Faithful On-Policy Distillation for streaming video understanding",
-   "title_zh": "教会推理而非仅给答案：面向流式视频理解的证据忠实在线策略蒸馏",
-   "cat": "cs.CV",
-   "summary_zh": "用证据忠实的在线策略蒸馏提升流式视频理解中的推理与时刻定位。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.29977",
-   "title": "Conartist: Adaptive Agentic Red-Teaming of Computer-Using Agents against Multi-Step Prompt Injection",
-   "title_zh": "Conartist：针对多步提示注入的计算机使用 Agent 自适应 Agent 式红队",
-   "cat": "cs.CR",
-   "summary_zh": "发现计算机使用 Agent 的一致性检查和风险审计均可被绕过，并提出自适应红队攻击。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.29934",
-   "title": "Benchmarking VLM Medical Hallucination across 5 Modalities",
-   "title_zh": "跨 5 种模态评测 VLM 医学幻觉",
-   "cat": "cs.CV",
-   "summary_zh": "提出含 1000 个图文问答、覆盖 5 种影像模态的医学幻觉基准 Multi-Med。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.29847",
-   "title": "MobileGrail: Learning Compact Guardrails for On-Device deployable Mobile GUI Agent Safety",
-   "title_zh": "MobileGrail：学习可端侧部署的紧凑护栏以保障移动 GUI Agent 安全",
-   "cat": "cs.AI",
-   "summary_zh": "提出端侧可部署的小模型护栏，在动作执行前评估移动 GUI Agent 的安全性。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.29773",
-   "title": "S1Arena-MM: Which Multimodal Decisions Can Be Left to System 1?",
-   "title_zh": "S1Arena-MM：哪些多模态决策可以交给系统 1？",
-   "cat": "cs.CV",
-   "summary_zh": "比较单次前向的系统 1 模型与 MLLM 在多种离散多模态决策上的表现。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.29551",
-   "title": "Inspect Before You Decide: Evidence-Guided Visual Search for Industrial Anomaly Detection",
-   "title_zh": "先检查再决策：面向工业异常检测的证据引导视觉搜索",
-   "cat": "cs.CV",
-   "summary_zh": "让 MLLM 通过证据引导的视觉搜索获取并验证细粒度证据，检测工业细微异常。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29477",
-   "title": "Separating Action Allocation from Image Matching in Visual Token Routing",
-   "title_zh": "在视觉 token 路由中把动作分配与图像匹配分开",
-   "cat": "cs.CV",
-   "summary_zh": "固定各任务的动作次数，以区分视觉 token 路由器是选得更准还是更常用高分辨率。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.29305",
-   "title": "CT-Navigator: Towards Interpretable and Generalizable CT Understanding through Agentic Perception and Tool-Invocation",
-   "title_zh": "CT-Navigator：通过智能体感知与工具调用实现可解释、可泛化的CT理解",
-   "cat": "cs.CV",
-   "summary_zh": "让通用MLLM像放射科医生一样从整体到切片逐步浏览CT并调用工具。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.28972",
-   "title": "Learning from Another Angle: Rotation-Based Test-Time Training for Multimodal Large Language Models",
-   "title_zh": "换个角度学习：多模态大语言模型的旋转式测试时训练",
-   "cat": "cs.AI",
-   "summary_zh": "用图像旋转构造自监督信号，为 MLLM 提供低开销的测试时训练。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28924",
-   "title": "OmniDecisionBench: Evaluating and Benchmarking the Multimodal Jev-Style System One Decision Models",
-   "title_zh": "OmniDecisionBench：评测多模态 System One 决策模型",
-   "cat": "cs.AI",
-   "summary_zh": "用 45 个数据集、192975 条记录评测多模态 System One 决策模型，并与通用 VLM 对比。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.28753",
-   "title": "From Pairwise to Collective: Encoder Collections Make Unpaired Vision-Language Alignment Reliable",
-   "title_zh": "从成对到集体：编码器集合使无配对视觉语言对齐更可靠",
-   "cat": "cs.CV",
-   "summary_zh": "利用多个编码器的集合，从特征空间几何完成无配对图文对齐。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28673",
-   "title": "ViewAgent3D: A Training-Free Multi-View Pipeline for 3D Scene Understanding",
-   "title_zh": "ViewAgent3D：免训练的多视角 3D 场景理解流程",
-   "cat": "cs.CV",
-   "summary_zh": "按查询选出少量能回答问题的多视角 RGB 图，无需训练即可做 3D 场景理解。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.28612",
-   "title": "Reducing Permutation Sensitivity in Multimodal Large Language Models via Shared Positions and Attention-Only Distillation",
-   "title_zh": "通过共享位置与仅注意力蒸馏降低多模态大模型的排列敏感性",
-   "cat": "cs.CL",
-   "summary_zh": "分析选项排序偏置的成因，用共享位置加分块跨单元注意力提升排列鲁棒性并保持准确率。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.28548",
-   "title": "X-AQA: Unifying Action Quality Assessment with Multimodal Large Language Models and Multi-Domain Learning",
-   "title_zh": "X-AQA：用多模态大模型与多领域学习统一动作质量评估",
-   "cat": "cs.AI",
-   "summary_zh": "构建 4 万样本的 X-AQA-40K 语料，把多数据源标注统一成问答格式训练 MLLM。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33151",
-   "title": "BioLoom: Scaling Biomedical Vision-Language Models by Learning from the Structure of Scientific Articles",
-   "title_zh": "BioLoom：利用科学文章结构扩展生物医学视觉语言模型",
-   "cat": "cs.CV",
-   "summary_zh": "利用文章中图、子图、图注和正文的结构作为额外监督，改进生物医学 CLIP 式预训练。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32996",
-   "title": "PAVE: Preference-Aligned Visual Egocentric Learning for the Blind and Low-Vision Users",
-   "title_zh": "PAVE：面向盲人与低视力用户的偏好对齐第一视角视觉学习",
-   "cat": "cs.CV",
-   "summary_zh": "在第一视角视频问答中，用偏好对齐让回答包含空间方位和可操作细节，而不止事实匹配。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.32951",
-   "title": "OmniHarness-RSI: Modality-Aware Harness Evolution for Omnimodal Understanding",
-   "title_zh": "OmniHarness-RSI：面向全模态理解的模态感知 Harness 演化",
-   "cat": "cs.CV",
-   "summary_zh": "把 Agent 工作流的演化空间按能力维度分解，在不更新模型参数的前提下改进全模态理解。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32566",
-   "title": "Evaluating Latent Knowledge Stability in Multimodal Large Language Models",
-   "title_zh": "评估多模态大语言模型的潜在知识稳定性",
-   "cat": "cs.CL",
-   "summary_zh": "提出 margin retention score，从答案偏好和内部支持两个角度衡量 MLLM 在视角与提问方式变化下的知识稳定性。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.32536",
-   "title": "RSReasoner: Reformulating and Auditing Geospatial Reasoning Segmentation",
-   "title_zh": "RSReasoner：重构并审计地理空间推理分割",
-   "cat": "cs.CV",
-   "summary_zh": "沿类别表达和属性性质重构地理空间推理分割任务，审计现有基准的 90,708 条查询并提出新方法。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32332",
-   "title": "GUI-WEdit and GUI-SkillEvo: Gradient-Free Adaptation of Small GUI Agents",
-   "title_zh": "GUI-WEdit 与 GUI-SkillEvo：小型 GUI 智能体的免梯度适应",
-   "cat": "cs.CV",
-   "summary_zh": "对 GUI-Owl-1.5 做免梯度的权重编辑与技能演化，在 OSWorld 子集上分别得到 48.02% 和 45.47%。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32285",
-   "title": "SofaSpace: A Benchmark for Executable Visual Spatial Reasoning in Continuous Motion and Environment Construction",
-   "title_zh": "SofaSpace：连续运动与环境构建中可执行视觉空间推理的基准",
-   "cat": "cs.CV",
-   "summary_zh": "受移动沙发问题启发，构建含 3000 个场景的平面刚体搬运基准，考察视觉空间推理。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.32281",
-   "title": "StreamCoach: Proactive Sports Coaching via Continuous Visual Reasoning",
-   "title_zh": "StreamCoach：基于持续视觉推理的主动式运动指导",
-   "cat": "cs.CV",
-   "summary_zh": "面向流式视频做动作质量评估，在运动过程中给出带运动专业知识的整体反馈。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.32153",
-   "title": "SoccerNarrate: Event-Grounded Streaming Soccer Commentary with Macro-Window Preference Alignment",
-   "title_zh": "SoccerNarrate：基于事件锚定与宏窗口偏好对齐的流式足球解说",
-   "cat": "cs.CV",
-   "summary_zh": "面向整场比赛视频的流式解说模型，用宏窗口偏好对齐改善事件覆盖与同步。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.32096",
-   "title": "Rethinking Post-Training Quantization for Large Vision-Language Models",
-   "title_zh": "重新思考大型视觉语言模型的训练后量化",
-   "cat": "cs.CV",
-   "summary_zh": "定位 LVLM 低比特权重激活量化的误差集中处，并据此改进校准。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32022",
-   "title": "Beyond Before-and-After Images: Evaluating Temporal Grounding in a Lightweight VLM for Disaster Assessment",
-   "title_zh": "超越前后对比图：评估轻量 VLM 在灾害评估中的时序 Grounding",
-   "cat": "cs.CV",
-   "summary_zh": "用受控诊断检验轻量 VLM 是否真正比较灾前灾后影像，还是只依赖灾后图像或提示。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.31987",
-   "title": "InCue: Making Better Use of What Multimodal LLMs Already See at Test Time",
-   "title_zh": "InCue：更好地利用多模态 LLM 在测试时已见的信息",
-   "cat": "cs.CV",
-   "summary_zh": "发现裁剪放大的增益多源自已见内容，提出更好利用 MLLM 内部线索的方法。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.31973",
-   "title": "Visual Thinking: Training-Free Active Perception for Counting and Localizing Hard-to-Find Objects",
-   "title_zh": "视觉思考：面向难找物体计数与定位的免训练主动感知",
-   "cat": "cs.CV",
-   "summary_zh": "让 VLM 为难找的小物体或遮挡物体生成更丰富描述，免训练地改进分割、计数与定位。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.31956",
-   "title": "TACTUS: Unifying Surgical Action Understanding in Time and Space",
-   "title_zh": "TACTUS：在时间与空间上统一手术动作理解",
-   "cat": "cs.CV",
-   "summary_zh": "统一手术动作语义、器械运动与组织交互，建立时空联合的手术动作理解。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31735",
-   "title": "BEARING: Who Is Talking to Whom? Grounding Acoustic Direction in Vision for Online Multi-Party Conversation",
-   "title_zh": "BEARING：谁在对谁说话？在视觉中锚定声学方向以理解在线多人对话",
-   "cat": "cs.CV",
-   "summary_zh": "用麦克风阵列的声源方向配准到画面，作为视觉提示交给 VLM 判断说话人。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.31475",
-   "title": "SpatialCraft: Evolving Procedural Intelligence from Experience and Skills for Spatial Reasoning Agents",
-   "title_zh": "SpatialCraft：从经验与技能中演化空间推理智能体的过程性智能",
-   "cat": "cs.AI",
-   "summary_zh": "让冻结的工具调用智能体利用自身交互历史改进工具编排，无需更新参数。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.22343",
-   "title": "PURE: A Diagnostic Benchmark for Multi-Granularity Multimodal Identity Matching",
-   "title_zh": "PURE：多粒度多模态身份匹配的诊断基准",
-   "cat": "cs.CV",
-   "summary_zh": "以电商为场景，从感知、理解、推理等四个维度诊断多粒度身份匹配能力。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.21485",
-   "title": "Lost in the Hallway: Benchmarking Persistent Spatial Memory Across Revisits",
-   "title_zh": "迷失在走廊：跨多次重访的持久空间记忆基准",
-   "cat": "cs.CV",
-   "summary_zh": "提出 ReSpaceBench，含 590 个场景、3244 个问题，评测重访场景中的空间记忆。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34862",
-   "title": "BOP-Refer: Benchmark for Monocular 3D and 2D Object Grounding",
-   "title_zh": "BOP-Refer：单目 3D 与 2D 物体指代定位基准",
-   "cat": "cs.CV",
-   "summary_zh": "基于 9 个 BOP 数据集构建带人工校验指代表达的 3D/2D 定位基准。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.34700",
-   "title": "Seeing the Right Context: Grounded On-Policy Distillation for Remote Sensing",
-   "title_zh": "看到正确的上下文：面向遥感的接地式在线策略蒸馏",
-   "cat": "cs.CV",
-   "summary_zh": "用接地的在线策略蒸馏让多模态大模型在遥感理解中利用目标周边上下文。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.34603",
-   "title": "VisualMontage: Manipulating the Beliefs of Vision-Language Agents with Authentic Image Sequences",
-   "title_zh": "VisualMontage：用真实图像序列操纵视觉语言智能体的信念",
-   "cat": "cs.CV",
-   "summary_zh": "研究协同发帖用真实图像与局部忠实的配文误导VLM智能体。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34591",
-   "title": "ADClaw: A Programmable Visual Agent for Industrial Anomaly Detection and Understanding",
-   "title_zh": "ADClaw：用于工业异常检测与理解的可编程视觉智能体",
-   "cat": "cs.CV",
-   "summary_zh": "面向工业异常检测的可编程视觉智能体，支持多步观察而非单次预测。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.34515",
-   "title": "Decoder-as-a-Probe: Verbalizing and Steering Visual Representations in LVLMs",
-   "title_zh": "Decoder-as-a-Probe：对 LVLM 视觉表征进行文字化与操控",
-   "cat": "cs.CV",
-   "summary_zh": "借助解码器而非线性分类器来探测并用语言描述 LVLM 视觉表征中的概念方向，并据此进行操控。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.34292",
-   "title": "WebVibe: Multimodal Interactive Website Generation via Reverse Synthesis and Visual Self-Distillation",
-   "title_zh": "WebVibe：通过逆向合成与视觉自蒸馏实现多模态交互式网站生成",
-   "cat": "cs.CV",
-   "summary_zh": "用逆向数据合成与视觉自蒸馏训练多模态模型，从设计稿生成含多页路由和状态控件的网站。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.34105",
-   "title": "What Makes a Gavagai? Learning Visual Concepts from One Positive and Few Negatives",
-   "title_zh": "什么是 Gavagai？从一个正例和少量反例学习视觉概念",
-   "cat": "cs.CV",
-   "summary_zh": "借鉴 Quine 的 gavagai 问题，评测视觉模型从少量样本学习概念的能力。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34083",
-   "title": "MulCLIP: A Multi-level Alignment Framework for Enhancing Fine-grained Long-context CLIP",
-   "title_zh": "MulCLIP：增强细粒度长文本 CLIP 的多层级对齐框架",
-   "cat": "cs.IR",
-   "summary_zh": "端到端的多层级对齐框架，让 CLIP 更好地处理长而详细的图像描述。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33991",
-   "title": "QK-Bench: Benchmarking Quantitative Kinematic Understanding for Dynamic Spatial Intelligence",
-   "title_zh": "QK-Bench：评测动态空间智能的定量运动学理解",
-   "cat": "cs.RO",
-   "summary_zh": "评测模型对速度、接近与相遇等定量运动学量的理解。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33808",
-   "title": "EvoVAU: Tool Evolution for Video Anomaly Understanding",
-   "title_zh": "EvoVAU：面向视频异常理解的工具进化",
-   "cat": "cs.CV",
-   "summary_zh": "让视频智能体的分析工具随任务进化，应对多样场景下的异常理解。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33791",
-   "title": "ExtractBench Pro: The Long Tail of Document Extraction",
-   "title_zh": "ExtractBench Pro：文档抽取的长尾",
-   "cat": "cs.AI",
-   "summary_zh": "覆盖六种现有数据集少见模式的模式引导文档抽取基准，由确定性生成器合成。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33789",
-   "title": "Multimodal Safety Evaluation of Vision-Language Models in Japanese",
-   "title_zh": "日语视觉语言模型的多模态安全评测",
-   "cat": "cs.CL",
-   "summary_zh": "把 MSTS 扩展到日语，新增 320 个机器翻译并人工校对的用例。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33777",
-   "title": "Agentic Reinforcement Learning with Immediate and Prospective Credit Assignment for Medical Visual Reasoning",
-   "title_zh": "面向医学视觉推理的即时与前瞻信用分配 Agentic 强化学习",
-   "cat": "cs.CV",
-   "summary_zh": "MedPACT 在 GRPO 中结合即时与前瞻两种信用，学习医学 VQA 中的选择性观察策略。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.33751",
-   "title": "VAPOR: Improving Multimodal Reasoning with Sparse Visual Updates",
-   "title_zh": "VAPOR：用稀疏视觉更新改进多模态推理",
-   "cat": "cs.CV",
-   "summary_zh": "免训练地跨解码步复用视觉注意力输出并按需刷新，降低 MLLM 长生成的开销。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33725",
-   "title": "VTK-Bench: A Diagnostic Benchmark for Distinguishing Language Priors and Text Modal Bias in Visual Language Models",
-   "title_zh": "VTK-Bench：区分视觉语言模型中语言先验与文本模态偏置的诊断基准",
-   "cat": "cs.CV",
-   "summary_zh": "区分文本模态偏置与语言先验两类 VLM 幻觉成因的诊断基准。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33687",
-   "title": "Read Before You Use: Improving Visual Memory Utilization in Vision-Language Models",
-   "title_zh": "使用前先读：改进视觉语言模型对视觉记忆的利用",
-   "cat": "cs.CV",
-   "summary_zh": "发现 VLM 即使拿到足够的多模态记忆证据也常答错，并改进其对视觉记忆的利用。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.33339",
-   "title": "Temporal Weight Surgery: Repairing Video Grounding with LLM Editors",
-   "title_zh": "时间权重手术：用 LLM 编辑器修复视频定位",
-   "cat": "cs.CV",
-   "summary_zh": "让通用 LLM 读取视频语言模型的权重与激活，定位并修正时间戳输出错误的位置。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33304",
-   "title": "The Platonic Representation Hypothesis in Jacobian-Space: Language and Vision Models Agree Approximately Up to a Rotation",
-   "title_zh": "雅可比空间中的柏拉图表示假说：语言与视觉模型近似仅相差一个旋转",
-   "cat": "cs.AI",
-   "summary_zh": "检验视觉与语言模型在雅可比空间中是否也趋同，结论是二者近似只差一个旋转。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.31209",
-   "title": "WorldLatent: A Unified 4D Latent Space for World Perception and Generation",
-   "title_zh": "WorldLatent：统一世界感知与生成的4D潜空间",
-   "cat": "cs.CV",
-   "summary_zh": "提出共享的4D潜空间表征，统一深度和相机估计等感知任务与生成任务。"
-  },
-  {
-   "id": "2611.25419",
-   "title": "DiLE: Discrimination-Aware Latent-Space Learning for Universal Multimodal Embeddings",
-   "title_zh": "DiLE：面向通用多模态嵌入的判别感知潜空间学习",
-   "cat": "cs.CV",
-   "summary_zh": "让通用多模态 embedding 保留区分相关项与易混淆项所需的判别证据。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.30488",
-   "title": "Do learned image captioning metrics generalize? Auditing duplicated samples in human-judgment benchmarks",
-   "title_zh": "学习式图像描述指标能泛化吗？审计人工评判基准中的重复样本",
-   "cat": "cs.CV",
-   "summary_zh": "发现Polaris、Nebula、Spica三个评判数据集的测试样本与训练集大量重复。",
    "direction": "H"
   },
   {
@@ -2144,697 +1577,6 @@
    "cat": "cs.CL",
    "summary_zh": "训练 1B VLM 转录手写作文，并保留拼写错误、涂改和换行。",
    "direction": "D"
-  },
-  {
-   "id": "2611.30564",
-   "title": "Seeing Is Locating: Spatial Awareness and Geographic Bias in Decision Language Models",
-   "title_zh": "看见即定位：决策语言模型的空间感知与地理偏差",
-   "cat": "cs.CV",
-   "summary_zh": "提出GeoDecisions基准，评测输出标签概率的决策模型的空间感知与地理偏见。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30538",
-   "title": "Where Compositionality Hides: Shared-Content Interference in Vision-Language Retrieval",
-   "title_zh": "组合性藏在哪里：视觉语言检索中的共享内容干扰",
-   "cat": "cs.CV",
-   "summary_zh": "分离Winoground中的字幕偏好与跨图比较，研究均值擦除对视觉语言检索的影响。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30176",
-   "title": "OmniSenMo: A Unified Multisensory Language Model for Generalizable Human Motion Estimation, Understanding, and Prediction",
-   "title_zh": "OmniSenMo：面向通用人体运动估计、理解与预测的统一多传感语言模型",
-   "cat": "cs.CV",
-   "summary_zh": "以人体骨架为共同参照，统一处理 RGB、深度、雷达、WiFi 等传感器的运动任务。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.30055",
-   "title": "Bi-Refine: Semantic Verification-Guided Progressive Refinement for Moment Retrieval",
-   "title_zh": "Bi-Refine：语义验证引导的渐进式时刻检索精修",
-   "cat": "cs.CV",
-   "summary_zh": "用候选级语义验证信号引导时间边界的渐进精修，改进视频时刻检索。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.29877",
-   "title": "Towards Agentic Video Corpus Moment Retrieval",
-   "title_zh": "迈向智能体式视频语料时刻检索",
-   "cat": "cs.CV",
-   "summary_zh": "RELAY 免训练地跨查询共享记忆，完成视频语料中的时刻检索。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.29735",
-   "title": "Seeing Beyond Names: Image-Grounded Concept Linking for Robust Vision-Language Recognition",
-   "title_zh": "超越名称：面向稳健视觉语言识别的图像落地概念链接",
-   "cat": "cs.CV",
-   "summary_zh": "针对零样本视觉语言分类器对类名同义词的敏感性，提出图像落地的概念链接。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29396",
-   "title": "AgroVG+: Generalized Visual Grounding in Agriculture with Region-Supervised Action Generation",
-   "title_zh": "AgroVG+：基于区域监督动作生成的农业广义视觉定位",
-   "cat": "cs.CV",
-   "summary_zh": "发布农业专家标注的7404张图像数据集，并提出ReSAG框架生成框与终止决策。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29254",
-   "title": "MM-DataLoop: Closing the Data-Side Loop for Recursive Self-Improvement in MLLM Post-Training",
-   "title_zh": "MM-DataLoop：为 MLLM 后训练闭合数据侧的递归自我改进",
-   "cat": "cs.CV",
-   "summary_zh": "用观察-诊断-规划-执行-验证-反思循环迭代调整 MLLM 后训练数据配方，五个基准均值提升 5.32 分。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.29194",
-   "title": "Unleashing the Value of Raw Point Clouds for 3D Understanding with LLMs",
-   "title_zh": "释放原始点云在 LLM 3D 理解中的价值",
-   "cat": "cs.CV",
-   "summary_zh": "提出无编码器、可调用工具的 PointTool 框架，直接处理原始点云做 3D 推理，并发布 PointCloud-TR 基准。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29167",
-   "title": "Decoupling Perception from Generation for Agentic 3D CT Report Generation",
-   "title_zh": "解耦感知与生成的 Agent 式 3D CT 报告生成",
-   "cat": "cs.CV",
-   "summary_zh": "把 CT 报告生成改写为由 LLM Agent 协调的视觉问答，并提出 Rad-VL-JEPA 感知模块。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28853",
-   "title": "CivilCADBench: Benchmarking Multimodal LLMs for Understanding, Reconstructing, and Designing Civil Engineering Drawing Sets",
-   "title_zh": "CivilCADBench：评测多模态大模型理解、重建与设计土木工程图纸集",
-   "cat": "cs.CV",
-   "summary_zh": "基于真实工程实践，评测 MLLM 对土木工程图纸集的理解、重建与设计。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.28800",
-   "title": "HighwayVerse: A Chain-of-Inspection Benchmark for Highway Infrastructure Anomaly Understanding",
-   "title_zh": "HighwayVerse：面向高速公路基础设施异常理解的检查链 Benchmark",
-   "cat": "cs.CV",
-   "summary_zh": "构建覆盖路面、护栏、防眩板和排水系统的逐阶段检查链，评测多模态大模型。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.28535",
-   "title": "Where the Image Sits: Vision-Text Order Bias in Jev",
-   "title_zh": "图像放在哪里：Jev 中的视觉-文本顺序偏置",
-   "cat": "cs.CV",
-   "summary_zh": "检验图文顺序敏感性是否影响单次预填充读出的系统一决策模型。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33153",
-   "title": "DiaCap: Jointly Learning Who Speaks When for Audiovisual Dialogue Captioning",
-   "title_zh": "DiaCap：联合学习“谁在何时说话”的视听对话字幕生成",
-   "cat": "cs.CV",
-   "summary_zh": "视听 LLM 在单一模型中同时生成转写、时间戳和说话人的视觉描述。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.32993",
-   "title": "Decision-Native Multimodal Clinical Modeling via Anatomical Grounding and Confidence Calibration",
-   "title_zh": "通过解剖定位与置信度校准实现决策原生的多模态临床建模",
-   "cat": "cs.CV",
-   "summary_zh": "Radev 结合解剖引导的视觉压缩和直接候选预测，从 3D CT 给出带校准置信度的结构化决策。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32823",
-   "title": "Reliable and grounded reporting of any computed tomography scan with FORA",
-   "title_zh": "用 FORA 实现任意 CT 扫描的可靠且有依据的报告",
-   "cat": "cs.CV",
-   "summary_zh": "在 304,962 例 CT 上训练，能定位 1,028 个放射学概念并生成覆盖 28 种协议的报告。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.32302",
-   "title": "Query-Guided Visual Minimization for Selective Disclosure to Cloud VLMs",
-   "title_zh": "面向云端视觉语言模型选择性披露的查询引导视觉最小化",
-   "cat": "cs.CV",
-   "summary_zh": "QGVM 在本地按查询保留相关视觉内容、抑制无关敏感信息，再上传给云端 VLM。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.32211",
-   "title": "ArEssays: Towards Robust Arabic Handwritten Text Understanding in Educational Settings",
-   "title_zh": "ArEssays：面向教育场景的鲁棒阿拉伯语手写文本理解",
-   "cat": "cs.CL",
-   "summary_zh": "发布埃及学生手写作文数据集，并评测 34 个视觉语言与 OCR 模型。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.31952",
-   "title": "VLG-Drive: Unifying Vision-Language and Geometric Priors for Autonomous Driving",
-   "title_zh": "VLG-Drive：统一视觉语言与几何先验的自动驾驶",
-   "cat": "cs.CV",
-   "summary_zh": "冻结 VLM 与几何基础模型，只训练融合接口和规划器来做驾驶规划。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28123",
-   "title": "Seeing the Invisible: How Vision-Language Models Read, Predict and Trace Radio Fields",
-   "title_zh": "看见不可见之物：视觉语言模型如何读取、预测并追踪无线电场",
-   "cat": "cs.CV",
-   "summary_zh": "构建无标签引擎生成可射线追踪的城市场景，检验 VLM 能否由可见建筑推断无线电场。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34467",
-   "title": "Attacking Hard-Label Large Vision-Language Models with Model-Sensitive Adversarial Patch Designs",
-   "title_zh": "以模型敏感的对抗补丁设计攻击硬标签大型视觉语言模型",
-   "cat": "cs.CV",
-   "summary_zh": "针对只返回硬标签的 LVLM，设计与模型相关的对抗补丁进行黑盒攻击。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34162",
-   "title": "Modality-Shift Contrastive Decoding for Temporally Grounded Audio-Visual Understanding",
-   "title_zh": "面向时序对齐音视频理解的模态偏移对比解码",
-   "cat": "cs.CV",
-   "summary_zh": "通过偏移音频构造对比分支，提升音视频 LLM 对声画时间对齐的敏感度。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.34078",
-   "title": "Projector Subspace Optimization for Multimodal Continual Instruction Tuning",
-   "title_zh": "面向多模态持续指令微调的 Projector 子空间优化",
-   "cat": "cs.CV",
-   "summary_zh": "只优化 projector 子空间，无需回放即可做多模态持续指令微调并降低参数与路由开销。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34036",
-   "title": "Few-Shot Adaptation of Vision-Language Models via Agentic Model Editing",
-   "title_zh": "通过智能体式模型编辑实现视觉语言模型的少样本适配",
-   "cat": "cs.AI",
-   "summary_zh": "让智能体按领域需要自行编辑 VLM，完成少样本领域适配。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34006",
-   "title": "Manga Page Parser: Comprehensive Visual Parsing through Local Story Understanding",
-   "title_zh": "Manga Page Parser：基于局部故事理解的漫画综合视觉解析",
-   "cat": "cs.CV",
-   "summary_zh": "逐个双页跨页解析漫画角色、对白与事件，输出可复用的结构化故事信息。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33761",
-   "title": "ScanAR: Parallel Row-Scan Decoding for Efficient Image Generation in Unified Autoregressive Models",
-   "title_zh": "ScanAR：统一自回归模型中面向高效图像生成的并行逐行扫描解码",
-   "cat": "cs.CV",
-   "summary_zh": "仅改动解码顺序，按行并行解码视觉 token，加速统一自回归模型的图像生成。",
-   "direction": "G"
-  },
-  {
-   "id": "2611.33414",
-   "title": "Beyond Random Starts: Amortized Initialization for Adversarial Attacks on Vision-Language Models",
-   "title_zh": "超越随机初始化：面向视觉语言模型对抗攻击的摊销初始化",
-   "cat": "cs.CV",
-   "summary_zh": "用摊销初始化取代随机起点，减少黑盒VLM迁移攻击的优化步数。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33409",
-   "title": "A Semantics-First Approach to Multimodal Video Captioning with Frozen Encoders and Stabilized Reinforcement Learning",
-   "title_zh": "语义优先的多模态视频字幕：冻结编码器与稳定强化学习",
-   "cat": "cs.CV",
-   "summary_zh": "基于2.7B LLM与稳定化自批评强化学习做音视频字幕生成。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.33388",
-   "title": "Measuring and Predicting Image-Token Repair Boundaries in Vision-Language Models",
-   "title_zh": "度量并预测视觉语言模型中的图像Token修复边界",
-   "cat": "cs.CV",
-   "summary_zh": "追踪退化图像下哪些干净的图像Token能修复VLM的错误回答。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.33898",
-   "title": "MoS: Mixture-of-Modality Streaming for Low-Latency Online Video LLM Analytics over Dynamic Networks",
-   "title_zh": "MoS：面向动态网络下低延迟在线视频LLM分析的混合模态流式传输",
-   "cat": "cs.NI",
-   "summary_zh": "通过混合模态流式传输降低动态网络下在线视频LLM分析的延迟。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.28202",
-   "title": "AutoPILOT: A Visual Agent Harness for Real-Time Gameplay",
-   "title_zh": "AutoPILOT：面向实时游戏的视觉智能体 Harness",
-   "cat": "cs.AI",
-   "summary_zh": "设计让多模态模型在游戏持续运行时仍能决策的 Harness，缩小与等待式游戏之间的差距。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.31198",
-   "title": "ToolSmith: An Automatic Tool-Generation Framework for Multimodal Search Agents",
-   "title_zh": "ToolSmith：面向多模态搜索智能体的自动工具生成框架",
-   "cat": "cs.CL",
-   "summary_zh": "让多模态搜索智能体自动生成并复用新工具，取代人工维护的固定工具库。"
-  },
-  {
-   "id": "2611.27319",
-   "title": "SAVIOR: Sample-efficient Adaptation of Vision-Language Models for OCR Representation",
-   "title_zh": "SAVIOR：面向 OCR 表征的视觉语言模型样本高效适配",
-   "cat": "cs.CV",
-   "summary_zh": "针对金融场景中竖排、旋转文字、含 logo 的供应商名称等难点，样本高效地适配 VLM 的 OCR 能力。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.30989",
-   "title": "WorldLeague: Benchmarking Physical Agency",
-   "title_zh": "WorldLeague：物理能动性基准",
-   "cat": "cs.RO",
-   "summary_zh": "构建基准，测试AI系统在Blender、游戏和机械臂等任务上自主达成物理目标的范围。"
-  },
-  {
-   "id": "2611.32554",
-   "title": "PartAgent: Agentic 3D Part Segmentation via Expert Integration and Closed-Loop Refinement",
-   "title_zh": "PartAgent：通过专家融合与闭环优化实现智能体式 3D 部件分割",
-   "cat": "cs.CV",
-   "summary_zh": "免训练的 Agent 框架，融合 3D 专家的区域提议与多视角 2D 语义线索，并迭代优化 3D 部件分割。"
-  },
-  {
-   "id": "2611.33835",
-   "title": "3D CoCa v3: Contrastive Learners with Scene Graphs for Urban Scene Understanding",
-   "title_zh": "3D CoCa v3：带场景图的对比学习器用于城市场景理解",
-   "cat": "cs.CV",
-   "summary_zh": "引入场景图建模关系，增强大规模 3D 城市场景的视觉语言理解。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.31222",
-   "title": "CTLink: A Text-Prompted Segmentation Model for Linking Radiology Report Findings to 3D Chest CT Scans",
-   "title_zh": "CTLink：把放射学报告中的发现关联到3D胸部CT的文本提示分割模型",
-   "cat": "cs.CV",
-   "summary_zh": "在4123例胸部CT上训练文本提示的3D分割模型，并发布新标注数据集ReXGroundingCTv2。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.30519",
-   "title": "GeoRead3D: Grounding Part Descriptions for 3D Pointing and Reorientation",
-   "title_zh": "GeoRead3D：为3D指向与重定向落地部件描述",
-   "cat": "cs.CV",
-   "summary_zh": "通过预测部件中心方向，让模型按部件描述指向或旋转3D物体。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.30240",
-   "title": "TriSegAgent: Context-Efficient 3D Annotation with MLLMs via Tri-Planes",
-   "title_zh": "TriSegAgent：基于三平面的上下文高效 3D 标注 MLLM",
-   "cat": "cs.CV",
-   "summary_zh": "用三平面表示让多模态大模型以较少上下文辅助 3D 交互式分割标注。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.30161",
-   "title": "OpenViVE: New Benchmark and Dual-Stream Co-Attention Framework for Vietnamese Visual Entailment",
-   "title_zh": "OpenViVE：越南语视觉蕴含新基准与双流协同注意力框架",
-   "cat": "cs.CV",
-   "summary_zh": "构建 62,268 对样本的越南语视觉蕴含基准，并提出双流协同注意力模型。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.29851",
-   "title": "LexiDet-OVD: Benchmarking Lexical Sensitivity in Open-Vocabulary Object Detection",
-   "title_zh": "LexiDet-OVD：开放词表目标检测中的词汇敏感性基准",
-   "cat": "cs.CV",
-   "summary_zh": "提出基准和指标，衡量开放词表检测器对文本提示用词变化的敏感程度。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29783",
-   "title": "Beyond Language Optimization: Enhancing Visual Representations for Radiology Report Generation",
-   "title_zh": "超越语言优化：增强放射学报告生成的视觉表示",
-   "cat": "cs.CV",
-   "summary_zh": "指出 GRPO 对视觉表示改善有限，并提出增强胸片异常识别的方法。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28966",
-   "title": "What the Background Hides: Thresholds, Vocabularies and Collisions in Training-Free Open-Vocabulary Segmentation",
-   "title_zh": "背景隐藏了什么：免训练开放词汇分割中的阈值、词表与冲突",
-   "cat": "cs.CV",
-   "summary_zh": "指出基于 CLIP 的免训练分割方法依赖未统一的逐数据集背景设置，13 个方法中有 11 个如此。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.28960",
-   "title": "EmoRouter: Adaptive Modality Cascading for Multimodal Emotion Recognition",
-   "title_zh": "EmoRouter：多模态情感识别的自适应模态级联",
-   "cat": "cs.CL",
-   "summary_zh": "在 Omni-LLM 上按每句话自适应选择模态组合，用于对话中的多模态情感识别。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.28592",
-   "title": "When Fog Becomes a Weapon: Atmospheric Attacks on Visible-Infrared Vision-Language Models",
-   "title_zh": "当雾成为武器：针对可见光-红外视觉语言模型的大气攻击",
-   "cat": "cs.CV",
-   "summary_zh": "优化共享的 3D 雾状态，用零梯度方式同时干扰可见光与热红外线索。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.28461",
-   "title": "CAMA: Calibrated Anti-Collapse Marginal Alignment for Test-Time Adaptation of Vision-Language Models",
-   "title_zh": "CAMA：视觉语言模型测试时自适应的校准抗坍缩边际对齐",
-   "cat": "cs.CV",
-   "summary_zh": "针对图像损坏造成的特征压缩，改进 VLM 测试时自适应中熵最小化偏向少数类的问题。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.28336",
-   "title": "Alignment under Hard Negative Re-Pairing: Cross-Modal Similarity, Scale and Retrieval",
-   "title_zh": "硬负样本重配对下的对齐：跨模态相似度、规模与检索",
-   "cat": "cs.CV",
-   "summary_zh": "提出硬负样本重配对，检验 CKA 等相似度指标能否反映单个图文对的匹配。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.28291",
-   "title": "Task-Agnostic Incremental Vision-Language Object Detection via Prompt Augmentation and Distribution-Aware Fusion",
-   "title_zh": "基于提示增强与分布感知融合的任务无关增量视觉语言目标检测",
-   "cat": "cs.CV",
-   "summary_zh": "提出推理时无需任务标识的增量开放词汇检测设定及其方法。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32672",
-   "title": "Text Is Just Another Shot in Vision-Language Models: Simple Probes on Frozen Encoders Do It",
-   "title_zh": "视觉语言模型中文本只是另一个样本：冻结编码器上的简单探针即可",
-   "cat": "cs.CV",
-   "summary_zh": "指出 CLIP 少样本方法以文本分类器为锚点只是视觉特征的产物，用简单探针取而代之。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.32321",
-   "title": "FigmaEval: A Benchmark for Evaluating AI Agents in Professional UI Design",
-   "title_zh": "FigmaEval：评估 AI 智能体专业 UI 设计能力的基准",
-   "cat": "cs.AI",
-   "summary_zh": "基于真实 Figma 文件构建 84 个任务、783 个界面的基准，评测智能体的开放式 UI 设计。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.32299",
-   "title": "Towards a Multimodal Aesthetic Agent for Photographic Reference Grading",
-   "title_zh": "面向摄影参考调色的多模态审美智能体",
-   "cat": "cs.CV",
-   "summary_zh": "根据指令选择性借鉴参考照片的色彩与影调，并转化为可编辑的调色参数。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.32227",
-   "title": "Relational Bottleneck Models",
-   "title_zh": "关系瓶颈模型",
-   "cat": "cs.CV",
-   "summary_zh": "以视觉语义关系替代孤立概念，兼顾可解释性与大视觉语言模型的零样本推理能力。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.32172",
-   "title": "MediaStormBench-CameraLog: Can Multimodal Models Identify a Camera's Log Curve?",
-   "title_zh": "MediaStormBench-CameraLog：多模态模型能识别相机的 Log 曲线吗？",
-   "cat": "cs.CV",
-   "summary_zh": "发布影视制作基准的首个子集，测试模型能否在无元数据时识别片段的 Log 曲线。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.31559",
-   "title": "COGENT: A Modular Cognitive Architecture for Agentic User Simulation",
-   "title_zh": "COGENT：面向智能体用户模拟的模块化认知架构",
-   "cat": "cs.AI",
-   "summary_zh": "借鉴 ACT-R 等认知理论，把桌面界面的用户模拟拆成认知模块。",
-   "direction": "F"
-  },
-  {
-   "id": "2611.15449",
-   "title": "Reading the Unreadable: Text-Aware Image Super-Resolution Needs Reasoning",
-   "title_zh": "读出不可读之字：含文字图像超分辨率需要推理",
-   "cat": "cs.CV",
-   "summary_zh": "指出严重退化的文字无法仅凭局部视觉证据还原，需结合图像上下文推理。",
-   "direction": "B"
-  },
-  {
-   "id": "2611.34614",
-   "title": "Commit2Drive: Perception-Grounded Language Decisions as Commitments for Trajectory Planning in Vision-Language-Action Driving Models",
-   "title_zh": "Commit2Drive：以感知接地的语言决策作为承诺用于VLA驾驶模型的轨迹规划",
-   "cat": "cs.CV",
-   "summary_zh": "让VLA驾驶模型的语言决策作为承诺约束轨迹规划。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34491",
-   "title": "Where Does the Asymmetry Enter? Staging a Fairness Audit Across a Fused Multimodal Moderation Pipeline",
-   "title_zh": "不对称从何而来？对融合多模态审核流水线进行分阶段公平性审计",
-   "cat": "cs.CL",
-   "summary_zh": "对融合视频、语音和屏幕文字的短视频审核分类器按阶段拆解各语言社区间的不公平来源。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34181",
-   "title": "Agentic-Level Adversarial Purification: Revisiting Diffusion Purifiers on Native-Resolution Agentic Inputs",
-   "title_zh": "Agent 级对抗净化：重访原生分辨率 Agent 输入上的扩散净化器",
-   "cat": "cs.CR",
-   "summary_zh": "首次研究扩散净化器在视觉语言 Agent 原生分辨率页面输入上的防御效果。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.34091",
-   "title": "From Diagnosing Alignment to Joint Supervision in Multimodal Draft Training",
-   "title_zh": "从诊断对齐到联合监督：多模态草稿模型训练",
-   "cat": "cs.CV",
-   "summary_zh": "诊断多模态草稿模型与目标模型的对齐，并联合使用多模态与纯文本监督训练。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.34067",
-   "title": "When to Respond, Where to Ground: Streaming 3D Affordance Grounding",
-   "title_zh": "何时响应、何处定位：流式 3D 功能区域定位",
-   "cat": "cs.CV",
-   "summary_zh": "在 RGB-D 流上依据语言指令，仅凭已有观测决定响应时机并定位功能部件。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.33878",
-   "title": "Off the Driven Path: Transferable Road Understanding in Driving VLAs",
-   "title_zh": "偏离行驶路径：驾驶 VLA 中可迁移的道路理解",
-   "cat": "cs.CV",
-   "summary_zh": "用 HD 地图生成道路场景图来探测端到端驾驶 VLA 到底内化了多少道路知识。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33836",
-   "title": "Can Its Own Misses Teach an MLLM to Find Small Brain Metastases?",
-   "title_zh": "MLLM 自己的漏检能教会它发现小脑转移瘤吗？",
-   "cat": "cs.AI",
-   "summary_zh": "用 MLLM 自身漏检的病灶构造训练信号，提升对小脑转移瘤的定位能力。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.33775",
-   "title": "CHD-Bench: Diagnosing Congenital Heart Disease through Interactive Examination",
-   "title_zh": "CHD-Bench：通过交互式检查诊断先天性心脏病",
-   "cat": "cs.AI",
-   "summary_zh": "提出面向先天性心脏病的交互式诊断基准，覆盖 247 例 CT 与 MRI 的多标签任务。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33649",
-   "title": "Structure-Aware Multimodal Retrieval Under Data Scarcity, Privacy Constraints and Out-of-Domain Content",
-   "title_zh": "数据稀缺、隐私约束与域外内容下的结构感知多模态检索",
-   "cat": "cs.IR",
-   "summary_zh": "借助版面几何与本地 8B VLM 恢复页面结构，无需标签即可从专业图集中检索图像。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33643",
-   "title": "CariesBench: A Hierarchical Multi-view Benchmark for Dental Caries Screening and Diagnostic Reasoning from 3D Intraoral Scans",
-   "title_zh": "CariesBench：基于 3D 口内扫描的龋齿筛查与诊断推理分层多视角基准",
-   "cat": "cs.CV",
-   "summary_zh": "面向 3D 口内扫描的龋齿筛查与诊断推理多视角基准。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.33621",
-   "title": "Greedy Decoding Hides Good Plans: Sample-and-Verify Planning for Vision-Language Driving Models",
-   "title_zh": "贪心解码掩盖了好计划：面向视觉语言驾驶模型的采样验证规划",
-   "cat": "cs.RO",
-   "summary_zh": "发现贪心解码轨迹与最优采样候选间存在差距，用采样加验证改进规划。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.33615",
-   "title": "Learning from Natural Images Untangles Number Sense",
-   "title_zh": "从自然图像中学习理清数感",
-   "cat": "cs.AI",
-   "summary_zh": "研究自然图像学习是否让视觉模型获得超出自发涌现之外的数感。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.33393",
-   "title": "Can a Short Video Clip Verify a Model Fix?",
-   "title_zh": "一段短视频片段能验证模型修复吗？",
-   "cat": "cs.MM",
-   "summary_zh": "在 CG-Bench 上发现，旧模型报错的短片段在新模型上通过，只有 44.0% 对应原题真正通过。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.30287",
-   "title": "MMMem: Self-Improving Agents with Task-Aware Multimodal Experience Consolidation",
-   "title_zh": "MMMem：基于任务感知多模态经验固化的自改进 Agent",
-   "cat": "cs.AI",
-   "summary_zh": "把交互中积累的多模态记录按任务固化为经验，让 Agent 避免重复犯错。"
-  },
-  {
-   "id": "2611.29150",
-   "title": "Can an Agent Trust Its Own Zoom? Cross-Magnification Provenance Verification for Whole-Slide Images",
-   "title_zh": "Agent 能信任自己的缩放吗？全切片图像的跨倍率出处验证",
-   "cat": "cs.CV",
-   "summary_zh": "提出 PyraFault 基准和 ZoomTrace 验证器，验证放大观察是否真的来自声称的位置。"
-  },
-  {
-   "id": "2611.29919",
-   "title": "SpectralRoute: Adaptive Spectral Routing for Training-Free Open-Vocabulary Hyperspectral Segmentation",
-   "title_zh": "SpectralRoute：免训练开放词汇高光谱分割的自适应谱路由",
-   "cat": "cs.CV",
-   "summary_zh": "用自适应谱路由让视觉语言模型免训练处理高光谱开放词汇分割。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29658",
-   "title": "How Reliable is AI-Generated Audio Description? A Multilingual Expert Evaluation",
-   "title_zh": "AI 生成的音频描述有多可靠？一项多语言专家评估",
-   "cat": "cs.CL",
-   "summary_zh": "请专家评估多种语言下自动生成的视频音频描述的可靠性。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.29545",
-   "title": "SCRA-CLIP: Spherical-Contextual Representation Adaptation for Zero-Shot Anomaly Detection",
-   "title_zh": "SCRA-CLIP：面向零样本异常检测的球面上下文表征适配",
-   "cat": "cs.CV",
-   "summary_zh": "在 CLIP 上做球面与空间上下文适配，提升零样本细粒度异常检测。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.29336",
-   "title": "Probe Before You Learn: Allocating Prompts from Initial Gradients under Label Noise",
-   "title_zh": "先探测再学习：在标签噪声下根据初始梯度分配提示",
-   "cat": "cs.CV",
-   "summary_zh": "用初始梯度确定文本与视觉提示的参数预算分配，提升噪声标签下的提示学习鲁棒性。",
-   "direction": "A"
-  },
-  {
-   "id": "2611.28997",
-   "title": "Elicitation format changes zero-shot classification accuracy in a medical vision-language model: a two-center evaluation on colorectal histopathology",
-   "title_zh": "提问格式改变医学视觉语言模型的零样本分类准确率：结直肠组织病理学的双中心评估",
-   "cat": "cs.CV",
-   "summary_zh": "在 PathMNIST 内外部数据上，固定提示仅改变回答格式，评估 MedGemma-27b-it 的零样本分类准确率变化。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.28993",
-   "title": "Diagnosing Verbalized Confidence in a Medical Vision-Language Model for Selective Prediction on Colorectal Histopathology Patches",
-   "title_zh": "诊断医学视觉语言模型的口述置信度：用于结直肠组织病理切片的选择性预测",
-   "cat": "cs.CV",
-   "summary_zh": "检验 MedGemma-27b-it 及其基座模型口述的置信度是否能区分预测对错。",
-   "direction": "H"
-  },
-  {
-   "id": "2611.28986",
-   "title": "CLASP: Complementary Layer Selection and Profiling for Zero-Shot OOD Detection using Vision-Language Models",
-   "title_zh": "CLASP：利用视觉语言模型进行零样本 OOD 检测的互补层选择与剖析",
-   "cat": "cs.CV",
-   "summary_zh": "仅用分布内数据联合建模多层信息，用于医学影像的零样本分布外检测。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.28576",
-   "title": "CLASP: Deciding Structure and Claims Before Decoding for Whole-Slide Pathology Report Generation",
-   "title_zh": "CLASP：解码前先确定结构与论断的全切片病理报告生成",
-   "cat": "cs.CV",
-   "summary_zh": "先显式决定报告长度、结构和要陈述的发现，再解码生成病理报告。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.28573",
-   "title": "MACE: Memory-Augmented Crop-Disease Evaluation of Frozen Vision-Language Models",
-   "title_zh": "MACE：冻结视觉语言模型的记忆增强作物病害评测",
-   "cat": "cs.MA",
-   "summary_zh": "免训练地为知识库补充症状描述与病害标签的记忆，用于作物病害诊断。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.28332",
-   "title": "GlaucomaMarker - Biomarker-Grounded Glaucoma Vision-Language Model",
-   "title_zh": "GlaucomaMarker：以生物标志物为基础的青光眼视觉语言模型",
-   "cat": "cs.CV",
-   "summary_zh": "把公开分割掩码转成视网膜结构生物标志物文本，用来训练青光眼 VLM。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.32625",
-   "title": "On the Capabilities and Limitations of Zero-Shot Open-Vocabulary Cloud Segmentation",
-   "title_zh": "零样本开放词汇云分割的能力与局限",
-   "cat": "cs.CV",
-   "summary_zh": "评测十二种开放词汇语义分割方法在遥感云检测上的表现与不足。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32518",
-   "title": "HS-OVSeg: Multi-Granularity Open-Vocabulary Semantic Segmentation in Remote Sensing via Heterogeneous Supervision",
-   "title_zh": "HS-OVSeg：基于异构监督的遥感多粒度开放词汇语义分割",
-   "cat": "cs.CV",
-   "summary_zh": "统一训练框架，融合场景级、目标级和像素级监督，缓解遥感开放词汇分割缺少像素标注数据的问题。",
-   "direction": "E"
-  },
-  {
-   "id": "2611.32138",
-   "title": "VIDE : Training-Free Video Anomaly Detection via Visual Intrinsic Distribution Estimation",
-   "title_zh": "VIDE：基于视觉内在分布估计的免训练视频异常检测",
-   "cat": "cs.CV",
-   "summary_zh": "从视频自身估计正常分布，缓解基于嵌入的异常检测中的异常偏置。",
-   "direction": "C"
-  },
-  {
-   "id": "2611.31787",
-   "title": "SciFig2Data: A Workflow for Recovering Structured Data from Scientific Figures",
-   "title_zh": "SciFig2Data：从科学图表中恢复结构化数据的工作流",
-   "cat": "cs.AI",
-   "summary_zh": "自动化流程完成复合图定位、分面、图表识别与数值重建。",
-   "direction": "D"
-  },
-  {
-   "id": "2611.33935",
-   "title": "BayesPath: Reliability-Aware Bayesian Reasoning for Whole-Slide Pathology Agents",
-   "title_zh": "BayesPath：面向全切片病理智能体的可靠性感知贝叶斯推理",
-   "cat": "cs.CV",
-   "summary_zh": "为免训练的全切片病理智能体加入显式的鉴别诊断与证据可靠性贝叶斯推理。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.28711",
-   "title": "When Local Semantics Disagree: Learning to Detect Fake News through Weakly Supervised Cross-Modal Reasoning",
-   "title_zh": "当局部语义不一致：基于弱监督跨模态推理的假新闻检测",
-   "cat": "cs.CV",
-   "summary_zh": "通过弱监督建模图文局部语义不一致，检测多模态社交媒体假新闻。",
-   "direction": "Z"
-  },
-  {
-   "id": "2611.28281",
-   "title": "Learning a Rule Bank to Revise 3D CT Reports with Independent Evidence",
-   "title_zh": "学习规则库，以独立证据修订 3D CT 报告",
-   "cat": "cs.CV",
-   "summary_zh": "Agent 为每个报告模型学习可执行的规则库，用独立图像分析的证据修订胸部 CT 报告。",
-   "direction": "Z"
   }
  ],
  "excluded": [
@@ -2879,6 +1621,14 @@
    "title_zh": "基于互信息最大化的自监督数据集蒸馏",
    "cat": "cs.CV",
    "summary_zh": "提出MIPA，通过最大化增广不变信息来为自监督学习蒸馏合成数据集。"
+  },
+  {
+   "id": "2611.31222",
+   "title": "CTLink: A Text-Prompted Segmentation Model for Linking Radiology Report Findings to 3D Chest CT Scans",
+   "title_zh": "CTLink：把放射学报告中的发现关联到3D胸部CT的文本提示分割模型",
+   "cat": "cs.CV",
+   "summary_zh": "在4123例胸部CT上训练文本提示的3D分割模型，并发布新标注数据集ReXGroundingCTv2。",
+   "direction": "E"
   },
   {
    "id": "2611.31216",
@@ -3208,6 +1958,14 @@
    "title_zh": "AlphaDefect：《杀戮尖塔2》专家级AI",
    "cat": "cs.AI",
    "summary_zh": "用PPO为每个角色训练单一网络，在最高难度Ascension 10下六个角色胜率达62%至77%。"
+  },
+  {
+   "id": "2611.31068",
+   "title": "UMAMI: A Multimodal Benchmark Dataset for Evidence-Grounded Dietary Decisions",
+   "title_zh": "UMAMI：面向循证饮食决策的多模态基准数据集",
+   "cat": "cs.CV",
+   "summary_zh": "构建连接食物图像、营养成分与个人饮食需求的多模态基准。",
+   "direction": "H"
   },
   {
    "id": "2611.31338",
@@ -3770,6 +2528,14 @@
    "summary_zh": "开源的LLM信息抽取框架，支持有或无用户引导的零样本文本到结构化数据转换。"
   },
   {
+   "id": "2611.30771",
+   "title": "GameDojo: Benchmarking Real-Time Interactive Agents in Video Games",
+   "title_zh": "GameDojo：评测视频游戏中的实时交互智能体",
+   "cat": "cs.AI",
+   "summary_zh": "构建覆盖20款游戏、120个Boss战的可控基准，并生成600小时游戏轨迹数据。",
+   "direction": "H"
+  },
+  {
    "id": "2611.30770",
    "title": "GRAIN: Shared-Budget Complementary Re-observation for Object Detection",
    "title_zh": "GRAIN：面向目标检测的共享预算互补重观察",
@@ -3950,6 +2716,14 @@
    "title_zh": "经验边际敏感度：对后训练医疗LLM的神经元级干预式探针",
    "cat": "cs.CL",
    "summary_zh": "在MLP下投影的单列粒度上做干预，测量后训练医疗LLM的决策依赖哪些内部组件。"
+  },
+  {
+   "id": "2611.30673",
+   "title": "Optimising VLM Harnesses to Localise Errors in Generated Videos",
+   "title_zh": "优化VLM框架以定位生成视频中的错误",
+   "cat": "cs.CV",
+   "summary_zh": "研究检查哪些帧、调用哪些工具和如何合并预测的VLM工作流，用于定位生成视频中的细微错误。",
+   "direction": "H"
   },
   {
    "id": "2611.30672",
@@ -4204,6 +2978,14 @@
    "summary_zh": "用递归记忆替代整帧历史，降低视频息肉分割的历史存储开销。"
   },
   {
+   "id": "2611.30564",
+   "title": "Seeing Is Locating: Spatial Awareness and Geographic Bias in Decision Language Models",
+   "title_zh": "看见即定位：决策语言模型的空间感知与地理偏差",
+   "cat": "cs.CV",
+   "summary_zh": "提出GeoDecisions基准，评测输出标签概率的决策模型的空间感知与地理偏见。",
+   "direction": "H"
+  },
+  {
    "id": "2611.30559",
    "title": "Learning What to Change: State-Verified Reinforcement Learning for Educational Agents",
    "title_zh": "学习改什么：面向教育智能体的状态验证强化学习",
@@ -4253,6 +3035,14 @@
    "summary_zh": "在Blackwell数据中心GPU上为Kimi K3的隐式MoE前馈解码设计角色图调度实现。"
   },
   {
+   "id": "2611.30538",
+   "title": "Where Compositionality Hides: Shared-Content Interference in Vision-Language Retrieval",
+   "title_zh": "组合性藏在哪里：视觉语言检索中的共享内容干扰",
+   "cat": "cs.CV",
+   "summary_zh": "分离Winoground中的字幕偏好与跨图比较，研究均值擦除对视觉语言检索的影响。",
+   "direction": "H"
+  },
+  {
    "id": "2611.30534",
    "title": "DelayOPSD: On-Policy Self-Distillation from a Synchronous Teacher for Real-time Asynchronous Policies",
    "title_zh": "DelayOPSD：面向实时异步策略的同步教师在线自蒸馏",
@@ -4293,6 +3083,14 @@
    "title_zh": "VeriOrigin：面向溯源、篡改定位与无损恢复的主动图像保护框架",
    "cat": "cs.CV",
    "summary_zh": "统一实现图像溯源、篡改精确定位和载体无损恢复的多功能水印框架。"
+  },
+  {
+   "id": "2611.30519",
+   "title": "GeoRead3D: Grounding Part Descriptions for 3D Pointing and Reorientation",
+   "title_zh": "GeoRead3D：为3D指向与重定向落地部件描述",
+   "cat": "cs.CV",
+   "summary_zh": "通过预测部件中心方向，让模型按部件描述指向或旋转3D物体。",
+   "direction": "E"
   },
   {
    "id": "2611.30517",
@@ -4365,6 +3163,14 @@
    "summary_zh": "固定机器人数据，系统性改变第一视角人类数据的规模与多样性，研究其对VLA预训练的作用。"
   },
   {
+   "id": "2611.30488",
+   "title": "Do learned image captioning metrics generalize? Auditing duplicated samples in human-judgment benchmarks",
+   "title_zh": "学习式图像描述指标能泛化吗？审计人工评判基准中的重复样本",
+   "cat": "cs.CV",
+   "summary_zh": "发现Polaris、Nebula、Spica三个评判数据集的测试样本与训练集大量重复。",
+   "direction": "H"
+  },
+  {
    "id": "2611.30483",
    "title": "When an AI agent makes a mistake in a database, what decides the damage?",
    "title_zh": "AI智能体在数据库中出错时，什么决定损失大小？",
@@ -4419,6 +3225,14 @@
    "title_zh": "LiveMirror：消费级GPU上的实时扩散虚拟试穿及其对印度民族服饰的自监督适配",
    "cat": "cs.CV",
    "summary_zh": "在一块16 GB消费级GPU上用扩散模型实现实时摄像头虚拟试穿。"
+  },
+  {
+   "id": "2611.30458",
+   "title": "Decompose and Describe: Narrowing the Diagnosis-to-Report Gap in 3D CT Report Generation",
+   "title_zh": "分解与描述：缩小3D CT报告生成中诊断到报告的差距",
+   "cat": "cs.CV",
+   "summary_zh": "发现医学VLM在诊断VQA上优于自由文本报告，并探讨缩小这一差距。",
+   "direction": "H"
   },
   {
    "id": "2611.30455",
@@ -4827,6 +3641,14 @@
    "summary_zh": "拆解中间层优于末层的原因，研究 EEG 基础模型的读出方式与迁移。"
   },
   {
+   "id": "2611.30240",
+   "title": "TriSegAgent: Context-Efficient 3D Annotation with MLLMs via Tri-Planes",
+   "title_zh": "TriSegAgent：基于三平面的上下文高效 3D 标注 MLLM",
+   "cat": "cs.CV",
+   "summary_zh": "用三平面表示让多模态大模型以较少上下文辅助 3D 交互式分割标注。",
+   "direction": "E"
+  },
+  {
    "id": "2611.31319",
    "title": "Conformalized Tree-Based Gradient Ensembles for Out-of-Distribution Detection and Plausible Recourse",
    "title_zh": "用于分布外检测与合理补救的保形树梯度集成",
@@ -4995,6 +3817,14 @@
    "summary_zh": "Dubot 在单块移动 GPU 上调度 VLA 推理与 MPC，减少控制截止期错过。"
   },
   {
+   "id": "2611.30176",
+   "title": "OmniSenMo: A Unified Multisensory Language Model for Generalizable Human Motion Estimation, Understanding, and Prediction",
+   "title_zh": "OmniSenMo：面向通用人体运动估计、理解与预测的统一多传感语言模型",
+   "cat": "cs.CV",
+   "summary_zh": "以人体骨架为共同参照，统一处理 RGB、深度、雷达、WiFi 等传感器的运动任务。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.30173",
    "title": "Confidently Lost: Silent Failure and Edge Deployment of Dense Visual SLAM under Photon Starvation",
    "title_zh": "自信地迷失：光子匮乏下稠密视觉 SLAM 的静默失效与边缘部署",
@@ -5009,11 +3839,27 @@
    "summary_zh": "提出让 Agent 听取口头请求、取物并送达说话人的视听重排任务与数据集。"
   },
   {
+   "id": "2611.30170",
+   "title": "GUI-Q: Task-Sensitive Granularity and Relation-Preserving Quantization for GUI Agents",
+   "title_zh": "GUI-Q：面向 GUI Agent 的任务敏感粒度与关系保持量化",
+   "cat": "cs.CV",
+   "summary_zh": "对 GUI Agent 做训练后量化，保持指令-视觉关联和局部空间关系。",
+   "direction": "F"
+  },
+  {
    "id": "2611.30168",
    "title": "FiRE: Fine-grained Ranking Evaluation for Machine Translation",
    "title_zh": "FiRE：机器翻译的细粒度排序评测",
    "cat": "cs.CL",
    "summary_zh": "用 LLM 在忠实度、流畅度和风格一致性三个维度上做成对比较，评估机器翻译。"
+  },
+  {
+   "id": "2611.30167",
+   "title": "PathStream: Towards Streaming Diagnostic Copilots for Whole-Slide Pathology",
+   "title_zh": "PathStream：面向全切片病理的流式诊断助手",
+   "cat": "cs.CV",
+   "summary_zh": "由病理医生控制浏览、助手流式描述视图并综合诊断的全切片病理系统与数据集。",
+   "direction": "Z"
   },
   {
    "id": "2611.30164",
@@ -5030,11 +3876,27 @@
    "summary_zh": "多智能体先解题再生成关键帧和讲解视频，并检查渲染结果以修正。"
   },
   {
+   "id": "2611.30161",
+   "title": "OpenViVE: New Benchmark and Dual-Stream Co-Attention Framework for Vietnamese Visual Entailment",
+   "title_zh": "OpenViVE：越南语视觉蕴含新基准与双流协同注意力框架",
+   "cat": "cs.CV",
+   "summary_zh": "构建 62,268 对样本的越南语视觉蕴含基准，并提出双流协同注意力模型。",
+   "direction": "H"
+  },
+  {
    "id": "2611.30159",
    "title": "One Structure Is Enough: Record-Native Tiles for Evolving Sparse Matrices on GPUs",
    "title_zh": "一种结构就够了：面向 GPU 上演化稀疏矩阵的记录原生分块",
    "cat": "cs.DC",
    "summary_zh": "RecTile 用单一排序记录数组存储演化稀疏矩阵的分块，免去格式切换。"
+  },
+  {
+   "id": "2611.30157",
+   "title": "UUBench: Understanding the Unspoken toward Full-Duplex Multimodal Interaction",
+   "title_zh": "UUBench：面向全双工多模态交互的“言外之意”理解",
+   "cat": "cs.CV",
+   "summary_zh": "评测多模态交互系统理解用户隐含需求并给出恰当视听回应的基准。",
+   "direction": "H"
   },
   {
    "id": "2611.30154",
@@ -5114,6 +3976,14 @@
    "summary_zh": "提出 AxE 基准，评测视频世界模型在新的 Agent 与环境组合下的泛化。"
   },
   {
+   "id": "2611.30119",
+   "title": "Could This BE Any More Wrong? Teaching VLMs to Know What They Don't Know in Document Extraction",
+   "title_zh": "教 VLM 知道自己不知道：文档抽取中的置信度估计",
+   "cat": "cs.AI",
+   "summary_zh": "用 token 对数概率为 VLM 抽取的每个字段估计置信度，用于检测错误。",
+   "direction": "D"
+  },
+  {
    "id": "2611.30118",
    "title": "Small data machine learning: the trilemma of low-sample tabular regimes",
    "title_zh": "小数据机器学习：低样本表格场景的三难困境",
@@ -5177,6 +4047,14 @@
    "summary_zh": "用策略自身信息筛选其他任务的示范数据，为新任务微调机器人策略。"
   },
   {
+   "id": "2611.30096",
+   "title": "When \"A or B\" Is Less Likely than A: Coherent Probabilities for Vision Decision Models",
+   "title_zh": "当“A 或 B”比 A 更不可能：视觉决策模型的相干概率",
+   "cat": "cs.CV",
+   "summary_zh": "发现 VLM 多选概率随选项分组而变，并提出 CORE 训练使其相干。",
+   "direction": "H"
+  },
+  {
    "id": "2611.30094",
    "title": "Character Information in Language Models: A Prompt-Independent Word Store and a Late, Question-Driven Signal That Grows With Scale",
    "title_zh": "语言模型中的字符信息：与提示无关的词存储及随规模增长的后期问题驱动信号",
@@ -5212,6 +4090,14 @@
    "summary_zh": "仅用毫米波雷达在统一体素中联合预测占据、语义和速度。"
   },
   {
+   "id": "2611.30075",
+   "title": "Context-Grounded Skill Internalization for Vision-Language Agents",
+   "title_zh": "面向视觉语言 Agent 的上下文接地技能内化",
+   "cat": "cs.AI",
+   "summary_zh": "分析技能内化中的上下文错配问题，并提出方法让 Agent 无需提示即可使用技能。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.30073",
    "title": "SF-Flow: Spectral Flow Matching with High Structural Fidelity for Hallucination-Suppressed Scientific Image Generation",
    "title_zh": "SF-Flow：面向抑制幻觉的科学图像生成的高结构保真谱流匹配",
@@ -5224,6 +4110,14 @@
    "title_zh": "SalivaryHSI-Seg：离体涎腺高光谱组织分割的新挑战性基准",
    "cat": "cs.CV",
    "summary_zh": "提出涎腺肿瘤离体高光谱组织分割基准数据集。"
+  },
+  {
+   "id": "2611.30069",
+   "title": "Pixel as the Common Language: Unified Multimodal Embedding via Visual Rendering",
+   "title_zh": "以像素为通用语言：基于视觉渲染的统一多模态嵌入",
+   "cat": "cs.CV",
+   "summary_zh": "RenderEmbed 把文本、图像和组合输入都渲染成图像再编码，统一多模态嵌入。",
+   "direction": "A"
   },
   {
    "id": "2611.30067",
@@ -5261,6 +4155,14 @@
    "summary_zh": "利用烟雾的空间局部性，通过真实烟雾迁移和语义校正去除火灾烟雾。"
   },
   {
+   "id": "2611.30055",
+   "title": "Bi-Refine: Semantic Verification-Guided Progressive Refinement for Moment Retrieval",
+   "title_zh": "Bi-Refine：语义验证引导的渐进式时刻检索精修",
+   "cat": "cs.CV",
+   "summary_zh": "用候选级语义验证信号引导时间边界的渐进精修，改进视频时刻检索。",
+   "direction": "C"
+  },
+  {
    "id": "2611.30052",
    "title": "ESGPT: A Data-Centric ESG Language Model with Unified Instruction and Benchmark Resources",
    "title_zh": "ESGPT：以数据为中心的 ESG 语言模型及统一指令与评测资源",
@@ -5294,6 +4196,14 @@
    "title_zh": "面向机器人操作的脉冲世界动作模型",
    "cat": "cs.RO",
    "summary_zh": "用脉冲神经网络构建稀疏、低功耗的世界动作模型，便于部署到机器人。"
+  },
+  {
+   "id": "2611.30040",
+   "title": "Teaching How to Reason, Beyond What to Answer: Evidence-Faithful On-Policy Distillation for streaming video understanding",
+   "title_zh": "教会推理而非仅给答案：面向流式视频理解的证据忠实在线策略蒸馏",
+   "cat": "cs.CV",
+   "summary_zh": "用证据忠实的在线策略蒸馏提升流式视频理解中的推理与时刻定位。",
+   "direction": "C"
   },
   {
    "id": "2611.30034",
@@ -5429,6 +4339,14 @@
    "summary_zh": "把遗传与蛋白证据分通道打分，重排序阿尔茨海默病与帕金森病靶点。"
   },
   {
+   "id": "2611.29977",
+   "title": "Conartist: Adaptive Agentic Red-Teaming of Computer-Using Agents against Multi-Step Prompt Injection",
+   "title_zh": "Conartist：针对多步提示注入的计算机使用 Agent 自适应 Agent 式红队",
+   "cat": "cs.CR",
+   "summary_zh": "发现计算机使用 Agent 的一致性检查和风险审计均可被绕过，并提出自适应红队攻击。",
+   "direction": "F"
+  },
+  {
    "id": "2611.29975",
    "title": "Aligning Judge Models to Be Logically Consistent Multi-Rule Interpreters",
    "title_zh": "对齐裁判模型，使其成为逻辑一致的多规则解释者",
@@ -5448,6 +4366,14 @@
    "title_zh": "FASCIA：任意姿态下可查询、个性化的体表下解剖结构",
    "cat": "cs.CV",
    "summary_zh": "根据体型和骨骼比例预测并摆姿个人的内部解剖结构。"
+  },
+  {
+   "id": "2611.29969",
+   "title": "CARE-3D: Reinforcement Learning for Evidence Grounded Agentic Reasoning in Situated 3D Scenes",
+   "title_zh": "CARE-3D：面向情境 3D 场景证据落地式 Agent 推理的强化学习",
+   "cat": "cs.AI",
+   "summary_zh": "用强化学习优化 Agent 获取证据的工具选择，提升情境 3D 推理。",
+   "direction": "E"
   },
   {
    "id": "2611.29968",
@@ -5513,6 +4439,14 @@
    "summary_zh": "用稀疏自编码器特征为 RLVR 提供 token 级信用分配信号。"
   },
   {
+   "id": "2611.29934",
+   "title": "Benchmarking VLM Medical Hallucination across 5 Modalities",
+   "title_zh": "跨 5 种模态评测 VLM 医学幻觉",
+   "cat": "cs.CV",
+   "summary_zh": "提出含 1000 个图文问答、覆盖 5 种影像模态的医学幻觉基准 Multi-Med。",
+   "direction": "H"
+  },
+  {
    "id": "2611.29930",
    "title": "Reward Blindness: A Theoretical Framework for Diagnosing Reinforcement Learning Reward Limitations in Text-to-SQL",
    "title_zh": "奖励盲区：诊断 Text-to-SQL 中强化学习奖励局限的理论框架",
@@ -5525,6 +4459,14 @@
    "title_zh": "融合事件与结构先验的动态高斯场景重建",
    "cat": "cs.CV",
    "summary_zh": "结合事件相机与结构先验改进快速运动下的动态高斯重建。"
+  },
+  {
+   "id": "2611.29919",
+   "title": "SpectralRoute: Adaptive Spectral Routing for Training-Free Open-Vocabulary Hyperspectral Segmentation",
+   "title_zh": "SpectralRoute：免训练开放词汇高光谱分割的自适应谱路由",
+   "cat": "cs.CV",
+   "summary_zh": "用自适应谱路由让视觉语言模型免训练处理高光谱开放词汇分割。",
+   "direction": "E"
   },
   {
    "id": "2611.29915",
@@ -5618,6 +4560,14 @@
    "summary_zh": "提出 IR-ODWSP，使无需反向传播地编辑已收敛的目标检测器权重成为可能。"
   },
   {
+   "id": "2611.29877",
+   "title": "Towards Agentic Video Corpus Moment Retrieval",
+   "title_zh": "迈向智能体式视频语料时刻检索",
+   "cat": "cs.CV",
+   "summary_zh": "RELAY 免训练地跨查询共享记忆，完成视频语料中的时刻检索。",
+   "direction": "C"
+  },
+  {
    "id": "2611.29876",
    "title": "Weight Averaging at Small Budgets Confounds Formula-Labeled Pretraining in Microstructure-Property Regression: A Pre-Specified Study with Post Hoc Rechecks",
    "title_zh": "小预算下权重平均混淆了微结构性质回归中的公式标注预训练",
@@ -5653,11 +4603,27 @@
    "summary_zh": "构建覆盖八个法域、八种语言的 240 道劳动法题，检验语言是否影响答案准确率。"
   },
   {
+   "id": "2611.29851",
+   "title": "LexiDet-OVD: Benchmarking Lexical Sensitivity in Open-Vocabulary Object Detection",
+   "title_zh": "LexiDet-OVD：开放词表目标检测中的词汇敏感性基准",
+   "cat": "cs.CV",
+   "summary_zh": "提出基准和指标，衡量开放词表检测器对文本提示用词变化的敏感程度。",
+   "direction": "E"
+  },
+  {
    "id": "2611.29850",
    "title": "Ego2Wrist: Bootstrapping Wrist-View Synthesis from Egocentric Video",
    "title_zh": "Ego2Wrist：从第一人称视频引导合成腕部视角",
    "cat": "cs.CV",
    "summary_zh": "从头戴第一人称视频合成同步的腕部相机视角，用于机器人操作数据。"
+  },
+  {
+   "id": "2611.29847",
+   "title": "MobileGrail: Learning Compact Guardrails for On-Device deployable Mobile GUI Agent Safety",
+   "title_zh": "MobileGrail：学习可端侧部署的紧凑护栏以保障移动 GUI Agent 安全",
+   "cat": "cs.AI",
+   "summary_zh": "提出端侧可部署的小模型护栏，在动作执行前评估移动 GUI Agent 的安全性。",
+   "direction": "F"
   },
   {
    "id": "2611.29843",
@@ -5786,11 +4752,27 @@
    "summary_zh": "提出级联的 Mamba-CNN 模型做治疗前后胶质瘤分割。"
   },
   {
+   "id": "2611.29783",
+   "title": "Beyond Language Optimization: Enhancing Visual Representations for Radiology Report Generation",
+   "title_zh": "超越语言优化：增强放射学报告生成的视觉表示",
+   "cat": "cs.CV",
+   "summary_zh": "指出 GRPO 对视觉表示改善有限，并提出增强胸片异常识别的方法。",
+   "direction": "A"
+  },
+  {
    "id": "2611.29775",
    "title": "ComplexIF: A Challenging Multi-Turn, Multi-Constraint Instruction-Following Benchmark",
    "title_zh": "ComplexIF：具有挑战性的多轮多约束指令遵循基准",
    "cat": "cs.CL",
    "summary_zh": "构建多轮对话中逐轮叠加多个约束的指令遵循基准。"
+  },
+  {
+   "id": "2611.29773",
+   "title": "S1Arena-MM: Which Multimodal Decisions Can Be Left to System 1?",
+   "title_zh": "S1Arena-MM：哪些多模态决策可以交给系统 1？",
+   "cat": "cs.CV",
+   "summary_zh": "比较单次前向的系统 1 模型与 MLLM 在多种离散多模态决策上的表现。",
+   "direction": "H"
   },
   {
    "id": "2611.29771",
@@ -5875,6 +4857,14 @@
    "title_zh": "MISeg-Agent：用于 3D 医学图像分割错误诊断与可执行提示审查的人在回路 Agent 框架",
    "cat": "cs.CV",
    "summary_zh": "用人在回路的 Agent 框架诊断 3D 医学图像分割错误并给出可执行提示。"
+  },
+  {
+   "id": "2611.29735",
+   "title": "Seeing Beyond Names: Image-Grounded Concept Linking for Robust Vision-Language Recognition",
+   "title_zh": "超越名称：面向稳健视觉语言识别的图像落地概念链接",
+   "cat": "cs.CV",
+   "summary_zh": "针对零样本视觉语言分类器对类名同义词的敏感性，提出图像落地的概念链接。",
+   "direction": "E"
   },
   {
    "id": "2611.29734",
@@ -6015,6 +5005,14 @@
    "title_zh": "稀疏注意力索引器的位置跳跃蒸馏：短序列训练，长序列服务",
    "cat": "cs.CL",
    "summary_zh": "用位置跳跃在短序列上蒸馏 top-k 稀疏注意力索引器，训练成本低且可用于长上下文。"
+  },
+  {
+   "id": "2611.29658",
+   "title": "How Reliable is AI-Generated Audio Description? A Multilingual Expert Evaluation",
+   "title_zh": "AI 生成的音频描述有多可靠？一项多语言专家评估",
+   "cat": "cs.CL",
+   "summary_zh": "请专家评估多种语言下自动生成的视频音频描述的可靠性。",
+   "direction": "C"
   },
   {
    "id": "2611.29651",
@@ -6192,6 +5190,14 @@
    "summary_zh": "分析用世界模型从多个候选动作块中筛选安全动作时，模型需要具备哪些能力。"
   },
   {
+   "id": "2611.29551",
+   "title": "Inspect Before You Decide: Evidence-Guided Visual Search for Industrial Anomaly Detection",
+   "title_zh": "先检查再决策：面向工业异常检测的证据引导视觉搜索",
+   "cat": "cs.CV",
+   "summary_zh": "让 MLLM 通过证据引导的视觉搜索获取并验证细粒度证据，检测工业细微异常。",
+   "direction": "E"
+  },
+  {
    "id": "2611.29549",
    "title": "CompareDR: Benchmarking Deep Research Reports from Individual Quality to Comparative Merit",
    "title_zh": "CompareDR：从单篇质量到比较优劣的深度研究报告基准",
@@ -6204,6 +5210,14 @@
    "title_zh": "对齐配对而非样本：更快更好的单步生成器表征对齐",
    "cat": "cs.CV",
    "summary_zh": "区分单步生成器的两类输入，将表征对齐损失用在配对目标上以加速训练。"
+  },
+  {
+   "id": "2611.29545",
+   "title": "SCRA-CLIP: Spherical-Contextual Representation Adaptation for Zero-Shot Anomaly Detection",
+   "title_zh": "SCRA-CLIP：面向零样本异常检测的球面上下文表征适配",
+   "cat": "cs.CV",
+   "summary_zh": "在 CLIP 上做球面与空间上下文适配，提升零样本细粒度异常检测。",
+   "direction": "E"
   },
   {
    "id": "2611.29542",
@@ -6302,6 +5316,14 @@
    "title_zh": "基于 Swin-Transformer 与图像融合的锂电池中子成像增强",
    "cat": "cs.CV",
    "summary_zh": "用 Swin-Transformer 与图像融合增强锂电池中子图像的噪声、对比度和边缘。"
+  },
+  {
+   "id": "2611.29477",
+   "title": "Separating Action Allocation from Image Matching in Visual Token Routing",
+   "title_zh": "在视觉 token 路由中把动作分配与图像匹配分开",
+   "cat": "cs.CV",
+   "summary_zh": "固定各任务的动作次数，以区分视觉 token 路由器是选得更准还是更常用高分辨率。",
+   "direction": "A"
   },
   {
    "id": "2611.29475",
@@ -6458,6 +5480,14 @@
    "summary_zh": "为查询权重未知的多分量加权距离构建联合图索引，减少漏检最近邻。"
   },
   {
+   "id": "2611.29396",
+   "title": "AgroVG+: Generalized Visual Grounding in Agriculture with Region-Supervised Action Generation",
+   "title_zh": "AgroVG+：基于区域监督动作生成的农业广义视觉定位",
+   "cat": "cs.CV",
+   "summary_zh": "发布农业专家标注的7404张图像数据集，并提出ReSAG框架生成框与终止决策。",
+   "direction": "E"
+  },
+  {
    "id": "2611.29395",
    "title": "BQDNA: Multi-Head Binary Spherical Quantization for Genomic Sequence Modeling",
    "title_zh": "BQDNA：面向基因组序列建模的多头二值球面量化",
@@ -6549,6 +5579,14 @@
    "summary_zh": "基于Digikala商品目录和RPB得分自动构建并发布波斯语对话式商品搜索数据集。"
   },
   {
+   "id": "2611.29355",
+   "title": "Polytropos: What Do Vision-Language Model Descriptions Make of a Cultural Object?",
+   "title_zh": "Polytropos：视觉语言模型的描述如何看待文化对象？",
+   "cat": "cs.CV",
+   "summary_zh": "把描述重新生成图像并与原照片比较，衡量VLM描述保留了多少文化对象细节。",
+   "direction": "H"
+  },
+  {
    "id": "2611.29354",
    "title": "Endpoint-Conditioned Process Value: What an Endpoint-Blind Process Score Adds Once Terminal Status and Cost Are Known",
    "title_zh": "终点条件化的过程价值：已知终态与成本后，与终点无关的过程评分还能增加什么",
@@ -6598,6 +5636,14 @@
    "summary_zh": "让VLA的视觉隐变量刻画场景如何朝目标演化，而非未来帧的外观。"
   },
   {
+   "id": "2611.29336",
+   "title": "Probe Before You Learn: Allocating Prompts from Initial Gradients under Label Noise",
+   "title_zh": "先探测再学习：在标签噪声下根据初始梯度分配提示",
+   "cat": "cs.CV",
+   "summary_zh": "用初始梯度确定文本与视觉提示的参数预算分配，提升噪声标签下的提示学习鲁棒性。",
+   "direction": "A"
+  },
+  {
    "id": "2611.29335",
    "title": "CXL Coherence Writes Back What Surviving Hosts See, Leaving Flushes Only for Ordering",
    "title_zh": "CXL一致性写回幸存主机所见内容，刷写仅用于排序",
@@ -6645,6 +5691,14 @@
    "title_zh": "DoppelVet：自进化智能体的比较式安全验证",
    "cat": "cs.AI",
    "summary_zh": "在更新写入持久状态前，构造证据相同的替代更新并回放比较行为。"
+  },
+  {
+   "id": "2611.29305",
+   "title": "CT-Navigator: Towards Interpretable and Generalizable CT Understanding through Agentic Perception and Tool-Invocation",
+   "title_zh": "CT-Navigator：通过智能体感知与工具调用实现可解释、可泛化的CT理解",
+   "cat": "cs.CV",
+   "summary_zh": "让通用MLLM像放射科医生一样从整体到切片逐步浏览CT并调用工具。",
+   "direction": "B"
   },
   {
    "id": "2611.29303",
@@ -6815,6 +5869,14 @@
    "summary_zh": "构建带出处的知识库与模拟器联动的 Agent，用约 6-7 次模拟调用搜出接近最优的 LLM 服务配置。"
   },
   {
+   "id": "2611.29254",
+   "title": "MM-DataLoop: Closing the Data-Side Loop for Recursive Self-Improvement in MLLM Post-Training",
+   "title_zh": "MM-DataLoop：为 MLLM 后训练闭合数据侧的递归自我改进",
+   "cat": "cs.CV",
+   "summary_zh": "用观察-诊断-规划-执行-验证-反思循环迭代调整 MLLM 后训练数据配方，五个基准均值提升 5.32 分。",
+   "direction": "A"
+  },
+  {
    "id": "2611.29252",
    "title": "Zarc: Exact Nearest Neighbors over a Billion Vectors in Seconds",
    "title_zh": "Zarc：数秒内完成十亿向量的精确最近邻搜索",
@@ -6899,6 +5961,14 @@
    "summary_zh": "无需训练，在原始提案附近搜索并验证轨迹，使 Navtest 上的零分率从 1.63% 降到 1.13%。"
   },
   {
+   "id": "2611.29194",
+   "title": "Unleashing the Value of Raw Point Clouds for 3D Understanding with LLMs",
+   "title_zh": "释放原始点云在 LLM 3D 理解中的价值",
+   "cat": "cs.CV",
+   "summary_zh": "提出无编码器、可调用工具的 PointTool 框架，直接处理原始点云做 3D 推理，并发布 PointCloud-TR 基准。",
+   "direction": "E"
+  },
+  {
    "id": "2611.29193",
    "title": "Direct Feedback Policy Optimization for AI Coding Agents",
    "title_zh": "面向 AI 编码 Agent 的直接反馈策略优化",
@@ -6939,6 +6009,14 @@
    "title_zh": "是什么让循环结构在不同长度上泛化？",
    "cat": "cs.LG",
    "summary_zh": "在受控状态跟踪任务中研究循环 Transformer 的长度外推，发现操作表示与位置编码影响很大。"
+  },
+  {
+   "id": "2611.29167",
+   "title": "Decoupling Perception from Generation for Agentic 3D CT Report Generation",
+   "title_zh": "解耦感知与生成的 Agent 式 3D CT 报告生成",
+   "cat": "cs.CV",
+   "summary_zh": "把 CT 报告生成改写为由 LLM Agent 协调的视觉问答，并提出 Rad-VL-JEPA 感知模块。",
+   "direction": "A"
   },
   {
    "id": "2611.29165",
@@ -7256,6 +6334,30 @@
    "summary_zh": "通过实证与理论分析 CFG 在自回归图像模型中的作用机制。"
   },
   {
+   "id": "2611.28997",
+   "title": "Elicitation format changes zero-shot classification accuracy in a medical vision-language model: a two-center evaluation on colorectal histopathology",
+   "title_zh": "提问格式改变医学视觉语言模型的零样本分类准确率：结直肠组织病理学的双中心评估",
+   "cat": "cs.CV",
+   "summary_zh": "在 PathMNIST 内外部数据上，固定提示仅改变回答格式，评估 MedGemma-27b-it 的零样本分类准确率变化。",
+   "direction": "H"
+  },
+  {
+   "id": "2611.28993",
+   "title": "Diagnosing Verbalized Confidence in a Medical Vision-Language Model for Selective Prediction on Colorectal Histopathology Patches",
+   "title_zh": "诊断医学视觉语言模型的口述置信度：用于结直肠组织病理切片的选择性预测",
+   "cat": "cs.CV",
+   "summary_zh": "检验 MedGemma-27b-it 及其基座模型口述的置信度是否能区分预测对错。",
+   "direction": "H"
+  },
+  {
+   "id": "2611.28986",
+   "title": "CLASP: Complementary Layer Selection and Profiling for Zero-Shot OOD Detection using Vision-Language Models",
+   "title_zh": "CLASP：利用视觉语言模型进行零样本 OOD 检测的互补层选择与剖析",
+   "cat": "cs.CV",
+   "summary_zh": "仅用分布内数据联合建模多层信息，用于医学影像的零样本分布外检测。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.28979",
    "title": "AlignHand: Multi-View Hand Reconstruction from a Frozen Monocular Prior",
    "title_zh": "AlignHand：基于冻结单目先验的多视角手部重建",
@@ -7268,6 +6370,14 @@
    "title_zh": "海洋工程中的世界模型：海事自主、自适应潜变量预测、数字孪生与生物多样性监测的批判性综述",
    "cat": "cs.RO",
    "summary_zh": "梳理海洋机器人世界模型的功能分类，聚焦 JEPA 及其测试时适应。"
+  },
+  {
+   "id": "2611.28972",
+   "title": "Learning from Another Angle: Rotation-Based Test-Time Training for Multimodal Large Language Models",
+   "title_zh": "换个角度学习：多模态大语言模型的旋转式测试时训练",
+   "cat": "cs.AI",
+   "summary_zh": "用图像旋转构造自监督信号，为 MLLM 提供低开销的测试时训练。",
+   "direction": "A"
   },
   {
    "id": "2611.28971",
@@ -7291,6 +6401,14 @@
    "summary_zh": "按数据可得性拆分排序兼容性，研究风险模型更新对缺少新数据患者排名的影响。"
   },
   {
+   "id": "2611.28966",
+   "title": "What the Background Hides: Thresholds, Vocabularies and Collisions in Training-Free Open-Vocabulary Segmentation",
+   "title_zh": "背景隐藏了什么：免训练开放词汇分割中的阈值、词表与冲突",
+   "cat": "cs.CV",
+   "summary_zh": "指出基于 CLIP 的免训练分割方法依赖未统一的逐数据集背景设置，13 个方法中有 11 个如此。",
+   "direction": "E"
+  },
+  {
    "id": "2611.28965",
    "title": "MolReJev: Decision Models Are In-Context Molecular Predictors",
    "title_zh": "MolReJev：决策模型是上下文分子预测器",
@@ -7310,6 +6428,14 @@
    "title_zh": "从卫星观测学习陆表水文世界模型",
    "cat": "cs.CV",
    "summary_zh": "用七年 SMAP 与 CYGNSS 观测训练以降雨为动作的陆表水世界模型 LandWM。"
+  },
+  {
+   "id": "2611.28960",
+   "title": "EmoRouter: Adaptive Modality Cascading for Multimodal Emotion Recognition",
+   "title_zh": "EmoRouter：多模态情感识别的自适应模态级联",
+   "cat": "cs.CL",
+   "summary_zh": "在 Omni-LLM 上按每句话自适应选择模态组合，用于对话中的多模态情感识别。",
+   "direction": "Z"
   },
   {
    "id": "2611.28957",
@@ -7359,6 +6485,14 @@
    "title_zh": "CANDOR：面向构音障碍语音研究的多语言来源可追溯语料库",
    "cat": "cs.CL",
    "summary_zh": "汇集 17 种语言 61 个语料库，含 2057 名构音障碍说话人和 4469.7 小时音频。"
+  },
+  {
+   "id": "2611.28924",
+   "title": "OmniDecisionBench: Evaluating and Benchmarking the Multimodal Jev-Style System One Decision Models",
+   "title_zh": "OmniDecisionBench：评测多模态 System One 决策模型",
+   "cat": "cs.AI",
+   "summary_zh": "用 45 个数据集、192975 条记录评测多模态 System One 决策模型，并与通用 VLM 对比。",
+   "direction": "H"
   },
   {
    "id": "2611.28922",
@@ -7494,6 +6628,14 @@
    "summary_zh": "指出个体层面对齐不等于能复现社会干预的集体效应，并称之为偏差级联。"
   },
   {
+   "id": "2611.28853",
+   "title": "CivilCADBench: Benchmarking Multimodal LLMs for Understanding, Reconstructing, and Designing Civil Engineering Drawing Sets",
+   "title_zh": "CivilCADBench：评测多模态大模型理解、重建与设计土木工程图纸集",
+   "cat": "cs.CV",
+   "summary_zh": "基于真实工程实践，评测 MLLM 对土木工程图纸集的理解、重建与设计。",
+   "direction": "H"
+  },
+  {
    "id": "2611.28850",
    "title": "MQCODet: Modality Quality-Guided Collaborative Optimization for UAV-Based RGB-T Tiny Pedestrian Detection",
    "title_zh": "MQCODet：模态质量引导的无人机 RGB-T 微小行人检测协同优化",
@@ -7620,6 +6762,14 @@
    "summary_zh": "按与其他训练视角的关系分解扰动方向，改进稀疏视角 3DGS 的平坦极小值优化。"
   },
   {
+   "id": "2611.28800",
+   "title": "HighwayVerse: A Chain-of-Inspection Benchmark for Highway Infrastructure Anomaly Understanding",
+   "title_zh": "HighwayVerse：面向高速公路基础设施异常理解的检查链 Benchmark",
+   "cat": "cs.CV",
+   "summary_zh": "构建覆盖路面、护栏、防眩板和排水系统的逐阶段检查链，评测多模态大模型。",
+   "direction": "H"
+  },
+  {
    "id": "2611.28796",
    "title": "NavDecision: Parallel Multi-Step Action Prediction with Persistent Self-Referential Learning for Vision-and-Language Navigation",
    "title_zh": "NavDecision：面向视觉语言导航的并行多步动作预测与持续自参照学习",
@@ -7725,6 +6875,14 @@
    "summary_zh": "用智能体视觉规划给出显式物理序列条件，使视频生成更符合物理规律。"
   },
   {
+   "id": "2611.28753",
+   "title": "From Pairwise to Collective: Encoder Collections Make Unpaired Vision-Language Alignment Reliable",
+   "title_zh": "从成对到集体：编码器集合使无配对视觉语言对齐更可靠",
+   "cat": "cs.CV",
+   "summary_zh": "利用多个编码器的集合，从特征空间几何完成无配对图文对齐。",
+   "direction": "A"
+  },
+  {
    "id": "2611.28748",
    "title": "Beyond Single-Turn Privacy: Training-Data Leakage in Conversational RAG",
    "title_zh": "超越单轮隐私：对话式 RAG 中的训练数据泄露",
@@ -7809,6 +6967,14 @@
    "summary_zh": "在 90 万楔形文字符号裁剪图上预训练 CuneiMAE，对比 ImageNet MAE、CLIP 与 DINOv2。"
   },
   {
+   "id": "2611.28711",
+   "title": "When Local Semantics Disagree: Learning to Detect Fake News through Weakly Supervised Cross-Modal Reasoning",
+   "title_zh": "当局部语义不一致：基于弱监督跨模态推理的假新闻检测",
+   "cat": "cs.CV",
+   "summary_zh": "通过弱监督建模图文局部语义不一致，检测多模态社交媒体假新闻。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.28710",
    "title": "CoopOcc: Cooperative 3D Semantic Occupancy Perception via Multi-Agent and Cross-Modal Fusion",
    "title_zh": "CoopOcc：基于多智能体与跨模态融合的协同 3D 语义占据感知",
@@ -7877,6 +7043,14 @@
    "title_zh": "改进改进者：用于医疗智能体自我改进的语义 PID 控制",
    "cat": "cs.AI",
    "summary_zh": "在术后病理分期与生存预测任务上，用语义 PID 控制让医疗智能体自我改进。"
+  },
+  {
+   "id": "2611.28673",
+   "title": "ViewAgent3D: A Training-Free Multi-View Pipeline for 3D Scene Understanding",
+   "title_zh": "ViewAgent3D：免训练的多视角 3D 场景理解流程",
+   "cat": "cs.CV",
+   "summary_zh": "按查询选出少量能回答问题的多视角 RGB 图，无需训练即可做 3D 场景理解。",
+   "direction": "E"
   },
   {
    "id": "2611.28671",
@@ -7998,6 +7172,14 @@
    "summary_zh": "保留原生 GPU 内核，把 DeepSeek 稀疏注意力的 Indexer-K 状态外置并分页调入执行缓冲区。"
   },
   {
+   "id": "2611.28618",
+   "title": "Distilling Visual Agents from Limited Interaction Experience",
+   "title_zh": "从有限交互经验中蒸馏视觉智能体",
+   "cat": "cs.AI",
+   "summary_zh": "按技能覆盖选出代表轨迹做 on-policy 蒸馏，4 条固定轨迹使 4B 学生在导航任务上从 49.17% 升至 82.08%。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.28617",
    "title": "VeriLadder: A Multi-Agent Specification Refinement System for Tool-Verified Verilog Datasets",
    "title_zh": "VeriLadder：用于工具验证 Verilog 数据集的多智能体规格精炼系统",
@@ -8017,6 +7199,14 @@
    "title_zh": "内化的经验：训练数据如何塑造 LLM 的记忆形成",
    "cat": "cs.AI",
    "summary_zh": "提出 FSMem 状态转移框架，研究数据内容与组织方式如何影响参数化记忆对任务规则的内化。"
+  },
+  {
+   "id": "2611.28612",
+   "title": "Reducing Permutation Sensitivity in Multimodal Large Language Models via Shared Positions and Attention-Only Distillation",
+   "title_zh": "通过共享位置与仅注意力蒸馏降低多模态大模型的排列敏感性",
+   "cat": "cs.CL",
+   "summary_zh": "分析选项排序偏置的成因，用共享位置加分块跨单元注意力提升排列鲁棒性并保持准确率。",
+   "direction": "H"
   },
   {
    "id": "2611.28611",
@@ -8068,6 +7258,14 @@
    "summary_zh": "用观测键检索加条件流匹配，从稀疏 cine MR 标注补全稠密心脏形状。"
   },
   {
+   "id": "2611.28592",
+   "title": "When Fog Becomes a Weapon: Atmospheric Attacks on Visible-Infrared Vision-Language Models",
+   "title_zh": "当雾成为武器：针对可见光-红外视觉语言模型的大气攻击",
+   "cat": "cs.CV",
+   "summary_zh": "优化共享的 3D 雾状态，用零梯度方式同时干扰可见光与热红外线索。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.28591",
    "title": "CAR3T: Generalizable Calibration-Guided Reference-View Attention Reuse for Multi-View 3D Transformers",
    "title_zh": "CAR3T：面向多视角 3D Transformer 的标定引导参考视图注意力复用",
@@ -8103,11 +7301,35 @@
    "summary_zh": "用重排序和前缀两种提示级攻击证明自奖励优化易因偏好信号被破坏而迭代崩溃。"
   },
   {
+   "id": "2611.28576",
+   "title": "CLASP: Deciding Structure and Claims Before Decoding for Whole-Slide Pathology Report Generation",
+   "title_zh": "CLASP：解码前先确定结构与论断的全切片病理报告生成",
+   "cat": "cs.CV",
+   "summary_zh": "先显式决定报告长度、结构和要陈述的发现，再解码生成病理报告。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.28575",
    "title": "LoopSight: Looped Vision Transformers with Gated Prediction Memory",
    "title_zh": "LoopSight：带门控预测记忆的循环视觉 Transformer",
    "cat": "cs.CV",
    "summary_zh": "用门控预测记忆把预测状态与计算状态分离，让循环 ViT 在迭代间保留预测信息。"
+  },
+  {
+   "id": "2611.28574",
+   "title": "EvoViM: Recursively Self-Evolving Visual Agents for Exploration with Deferred Queries",
+   "title_zh": "EvoViM：面向延迟提问探索的递归自进化视觉智能体",
+   "cat": "cs.AI",
+   "summary_zh": "冻结的多模态模型把交互经验转成保留图像并直接在像素上计算的视觉程序，用作记忆与技能。",
+   "direction": "Z"
+  },
+  {
+   "id": "2611.28573",
+   "title": "MACE: Memory-Augmented Crop-Disease Evaluation of Frozen Vision-Language Models",
+   "title_zh": "MACE：冻结视觉语言模型的记忆增强作物病害评测",
+   "cat": "cs.MA",
+   "summary_zh": "免训练地为知识库补充症状描述与病害标签的记忆，用于作物病害诊断。",
+   "direction": "Z"
   },
   {
    "id": "2611.28571",
@@ -8173,6 +7395,14 @@
    "summary_zh": "排除某区域图像后微调生成模型，再对该区域掩码修复，以衡量局部特征的非典型程度。"
   },
   {
+   "id": "2611.28548",
+   "title": "X-AQA: Unifying Action Quality Assessment with Multimodal Large Language Models and Multi-Domain Learning",
+   "title_zh": "X-AQA：用多模态大模型与多领域学习统一动作质量评估",
+   "cat": "cs.AI",
+   "summary_zh": "构建 4 万样本的 X-AQA-40K 语料，把多数据源标注统一成问答格式训练 MLLM。",
+   "direction": "C"
+  },
+  {
    "id": "2611.28545",
    "title": "Reconstruction-Guided Dual-Branch Learning for LiDAR Anomalous Object Detection",
    "title_zh": "面向 LiDAR 异常物体检测的重建引导双分支学习",
@@ -8192,6 +7422,14 @@
    "title_zh": "BIRD-Persona：面向 SQL 与 pandas 分析代码生成的画像感知基准",
    "cat": "cs.CL",
    "summary_zh": "在 1534 个任务上评测 9 个模型，发现 9 个系统中有 8 个 SQL 表现优于 pandas。"
+  },
+  {
+   "id": "2611.28535",
+   "title": "Where the Image Sits: Vision-Text Order Bias in Jev",
+   "title_zh": "图像放在哪里：Jev 中的视觉-文本顺序偏置",
+   "cat": "cs.CV",
+   "summary_zh": "检验图文顺序敏感性是否影响单次预填充读出的系统一决策模型。",
+   "direction": "H"
   },
   {
    "id": "2611.28532",
@@ -8353,6 +7591,14 @@
    "title_zh": "HiPPO 函数记忆：面向不规则时间序列的坐标可查询注意力",
    "cat": "cs.LG",
    "summary_zh": "提出把不规则历史写入带显式时间坐标的函数空间的注意力算子，可在任意时间点查询。"
+  },
+  {
+   "id": "2611.28461",
+   "title": "CAMA: Calibrated Anti-Collapse Marginal Alignment for Test-Time Adaptation of Vision-Language Models",
+   "title_zh": "CAMA：视觉语言模型测试时自适应的校准抗坍缩边际对齐",
+   "cat": "cs.CV",
+   "summary_zh": "针对图像损坏造成的特征压缩，改进 VLM 测试时自适应中熵最小化偏向少数类的问题。",
+   "direction": "E"
   },
   {
    "id": "2611.28451",
@@ -8558,6 +7804,22 @@
    "summary_zh": "构建带故障注入的 RetryRealistic 测试平台，研究工具出错时 Agent 如何失败。"
   },
   {
+   "id": "2611.28336",
+   "title": "Alignment under Hard Negative Re-Pairing: Cross-Modal Similarity, Scale and Retrieval",
+   "title_zh": "硬负样本重配对下的对齐：跨模态相似度、规模与检索",
+   "cat": "cs.CV",
+   "summary_zh": "提出硬负样本重配对，检验 CKA 等相似度指标能否反映单个图文对的匹配。",
+   "direction": "H"
+  },
+  {
+   "id": "2611.28332",
+   "title": "GlaucomaMarker - Biomarker-Grounded Glaucoma Vision-Language Model",
+   "title_zh": "GlaucomaMarker：以生物标志物为基础的青光眼视觉语言模型",
+   "cat": "cs.CV",
+   "summary_zh": "把公开分割掩码转成视网膜结构生物标志物文本，用来训练青光眼 VLM。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.28331",
    "title": "Decision models for UAVBench and the viability of edge deployment",
    "title_zh": "UAVBench 的决策模型与边缘部署可行性",
@@ -8635,6 +7897,14 @@
    "summary_zh": "用情感与认知反馈信号迭代改进提示词，在不更新模型参数下提升分类一致性。"
   },
   {
+   "id": "2611.28291",
+   "title": "Task-Agnostic Incremental Vision-Language Object Detection via Prompt Augmentation and Distribution-Aware Fusion",
+   "title_zh": "基于提示增强与分布感知融合的任务无关增量视觉语言目标检测",
+   "cat": "cs.CV",
+   "summary_zh": "提出推理时无需任务标识的增量开放词汇检测设定及其方法。",
+   "direction": "E"
+  },
+  {
    "id": "2611.28290",
    "title": "Preserving Prosody in Speaker Anonymization",
    "title_zh": "在说话人匿名化中保留韵律",
@@ -8654,6 +7924,14 @@
    "title_zh": "HandXFM：手部 X 光基础模型的语义-结构蒸馏",
    "cat": "cs.CV",
    "summary_zh": "从 BiomedCLIP 和胸部 X 光 ViT 蒸馏语义与结构先验，构建手部 X 光基础模型。"
+  },
+  {
+   "id": "2611.28281",
+   "title": "Learning a Rule Bank to Revise 3D CT Reports with Independent Evidence",
+   "title_zh": "学习规则库，以独立证据修订 3D CT 报告",
+   "cat": "cs.CV",
+   "summary_zh": "Agent 为每个报告模型学习可执行的规则库，用独立图像分析的证据修订胸部 CT 报告。",
+   "direction": "Z"
   },
   {
    "id": "2611.28277",
@@ -10980,6 +10258,14 @@
    "summary_zh": "直接由 STL 语法给出雅可比和海森矩阵的稀疏结构，降低 STL 约束最优控制的求解开销。"
   },
   {
+   "id": "2611.29338",
+   "title": "A Glimpse of Training VLMs as Foundation Models for Robotic Manipulation",
+   "title_zh": "训练 VLM 成为机器人操作基础模型的一瞥",
+   "cat": "cs.RO",
+   "summary_zh": "提出 nanoAstra，用语义动作建模和保留能力的监督微调训练可泛化操作的 VLM。",
+   "direction": "A"
+  },
+  {
    "id": "2611.29279",
    "title": "A2I-VLA: A Two-Stage Vision-Language-Action model with Semantic-Physical Alignment and Integration",
    "title_zh": "A2I-VLA：语义与物理对齐并融合的两阶段视觉语言动作模型",
@@ -11265,6 +10551,22 @@
    "title_zh": "PointX：通过查询表面点实现多视角一致的本征分解",
    "cat": "cs.CV",
    "summary_zh": "前馈模型在 3D 表面点上预测本征属性，使同一表面点在不同视角下分解一致。"
+  },
+  {
+   "id": "2611.33153",
+   "title": "DiaCap: Jointly Learning Who Speaks When for Audiovisual Dialogue Captioning",
+   "title_zh": "DiaCap：联合学习“谁在何时说话”的视听对话字幕生成",
+   "cat": "cs.CV",
+   "summary_zh": "视听 LLM 在单一模型中同时生成转写、时间戳和说话人的视觉描述。",
+   "direction": "C"
+  },
+  {
+   "id": "2611.33151",
+   "title": "BioLoom: Scaling Biomedical Vision-Language Models by Learning from the Structure of Scientific Articles",
+   "title_zh": "BioLoom：利用科学文章结构扩展生物医学视觉语言模型",
+   "cat": "cs.CV",
+   "summary_zh": "利用文章中图、子图、图注和正文的结构作为额外监督，改进生物医学 CLIP 式预训练。",
+   "direction": "A"
   },
   {
    "id": "2611.33148",
@@ -11645,6 +10947,22 @@
    "summary_zh": "用两层 GPT-2 先训练英语再训练德语，从内部表示考察二语习得的关键期效应。"
   },
   {
+   "id": "2611.32996",
+   "title": "PAVE: Preference-Aligned Visual Egocentric Learning for the Blind and Low-Vision Users",
+   "title_zh": "PAVE：面向盲人与低视力用户的偏好对齐第一视角视觉学习",
+   "cat": "cs.CV",
+   "summary_zh": "在第一视角视频问答中，用偏好对齐让回答包含空间方位和可操作细节，而不止事实匹配。",
+   "direction": "H"
+  },
+  {
+   "id": "2611.32993",
+   "title": "Decision-Native Multimodal Clinical Modeling via Anatomical Grounding and Confidence Calibration",
+   "title_zh": "通过解剖定位与置信度校准实现决策原生的多模态临床建模",
+   "cat": "cs.CV",
+   "summary_zh": "Radev 结合解剖引导的视觉压缩和直接候选预测，从 3D CT 给出带校准置信度的结构化决策。",
+   "direction": "A"
+  },
+  {
    "id": "2611.32991",
    "title": "On Potentiality and Actuality Of Foundation Models",
    "title_zh": "论基础模型的潜能与现实",
@@ -11734,6 +11052,14 @@
    "title_zh": "FedTumor-IoMT：资源受限边缘设备上联邦学习辅助的脑肿瘤诊断",
    "cat": "cs.CV",
    "summary_zh": "在边缘医疗设备上用轻量多任务联邦框架联合完成脑肿瘤分割与分类。"
+  },
+  {
+   "id": "2611.32951",
+   "title": "OmniHarness-RSI: Modality-Aware Harness Evolution for Omnimodal Understanding",
+   "title_zh": "OmniHarness-RSI：面向全模态理解的模态感知 Harness 演化",
+   "cat": "cs.CV",
+   "summary_zh": "把 Agent 工作流的演化空间按能力维度分解，在不更新模型参数的前提下改进全模态理解。",
+   "direction": "A"
   },
   {
    "id": "2611.32948",
@@ -11974,6 +11300,14 @@
    "summary_zh": "用 78 人共 2,584 小时 EEG 预训练循环世界模型，根据前 6 秒 EEG 和后续视听刺激预测 10 秒脑电功率。"
   },
   {
+   "id": "2611.32823",
+   "title": "Reliable and grounded reporting of any computed tomography scan with FORA",
+   "title_zh": "用 FORA 实现任意 CT 扫描的可靠且有依据的报告",
+   "cat": "cs.CV",
+   "summary_zh": "在 304,962 例 CT 上训练，能定位 1,028 个放射学概念并生成覆盖 28 种协议的报告。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.32821",
    "title": "PhysMend: Verification-Guided Program Refinement for Physics-Aware Video Generation",
    "title_zh": "PhysMend：验证引导的程序精炼，用于物理感知的视频生成",
@@ -11986,6 +11320,14 @@
    "title_zh": "面向实时交互视频生成的残差引导",
    "cat": "cs.MM",
    "summary_zh": "针对切换提示词后模型仍沿用旧提示的上下文惯性，提出无需编辑缓存的 Residual Guidance。"
+  },
+  {
+   "id": "2611.32816",
+   "title": "SpatialArena: Where Do Geometric Foundation Models Stand?",
+   "title_zh": "SpatialArena：几何基础模型现在处于什么水平？",
+   "cat": "cs.CV",
+   "summary_zh": "统一帧采样、分辨率和对齐方式，对单目深度、前馈 3D/4D 重建和 VLM 的几何预测做可比评测。",
+   "direction": "E"
   },
   {
    "id": "2611.32811",
@@ -12254,6 +11596,14 @@
    "summary_zh": "利用预训练文生视频 DiT 的时空先验，恢复发丝与运动模糊等细节的连续 alpha。"
   },
   {
+   "id": "2611.32672",
+   "title": "Text Is Just Another Shot in Vision-Language Models: Simple Probes on Frozen Encoders Do It",
+   "title_zh": "视觉语言模型中文本只是另一个样本：冻结编码器上的简单探针即可",
+   "cat": "cs.CV",
+   "summary_zh": "指出 CLIP 少样本方法以文本分类器为锚点只是视觉特征的产物，用简单探针取而代之。",
+   "direction": "A"
+  },
+  {
    "id": "2611.32663",
    "title": "Economic World Model",
    "title_zh": "经济世界模型",
@@ -12380,6 +11730,14 @@
    "summary_zh": "让压缩后的 3DGS 在传输中途就能给出可用重建，实现渐进式传输。"
   },
   {
+   "id": "2611.32625",
+   "title": "On the Capabilities and Limitations of Zero-Shot Open-Vocabulary Cloud Segmentation",
+   "title_zh": "零样本开放词汇云分割的能力与局限",
+   "cat": "cs.CV",
+   "summary_zh": "评测十二种开放词汇语义分割方法在遥感云检测上的表现与不足。",
+   "direction": "E"
+  },
+  {
    "id": "2611.32623",
    "title": "REBEAL: Human References Are No Longer the Best Translation, and Metrics Do Not Notice",
    "title_zh": "REBEAL：人工参考译文不再是最好的译文，指标也没有察觉",
@@ -12448,6 +11806,14 @@
    "title_zh": "打破混合专家模型中的路由与跨设备依赖",
    "cat": "cs.DC",
    "summary_zh": "BRAID-MoE 用阶梯残差和提前路由放松 MoE 的顺序依赖，使专家并行的通信与计算可以重叠。"
+  },
+  {
+   "id": "2611.32566",
+   "title": "Evaluating Latent Knowledge Stability in Multimodal Large Language Models",
+   "title_zh": "评估多模态大语言模型的潜在知识稳定性",
+   "cat": "cs.CL",
+   "summary_zh": "提出 margin retention score，从答案偏好和内部支持两个角度衡量 MLLM 在视角与提问方式变化下的知识稳定性。",
+   "direction": "H"
   },
   {
    "id": "2611.32564",
@@ -12534,6 +11900,14 @@
    "summary_zh": "通过分析生成模型难以复现的细粒度纹理与复杂目标特征，区分真实图像与 AI 生成图像。"
   },
   {
+   "id": "2611.32536",
+   "title": "RSReasoner: Reformulating and Auditing Geospatial Reasoning Segmentation",
+   "title_zh": "RSReasoner：重构并审计地理空间推理分割",
+   "cat": "cs.CV",
+   "summary_zh": "沿类别表达和属性性质重构地理空间推理分割任务，审计现有基准的 90,708 条查询并提出新方法。",
+   "direction": "E"
+  },
+  {
    "id": "2611.32533",
    "title": "Next-Manip: On-Demand Agent-Policy Collaboration for Robotic Manipulation",
    "title_zh": "Next-Manip：面向机器人操作的按需 Agent-策略协作",
@@ -12567,6 +11941,14 @@
    "title_zh": "协同边缘计算中的可靠性感知 AI Agent 执行：一种世界模型方法",
    "cat": "cs.DC",
    "summary_zh": "针对节点故障与无线中断，在线联合选择资源分配和状态保护动作，以提高 Agent 请求在截止时间内的完成率。"
+  },
+  {
+   "id": "2611.32518",
+   "title": "HS-OVSeg: Multi-Granularity Open-Vocabulary Semantic Segmentation in Remote Sensing via Heterogeneous Supervision",
+   "title_zh": "HS-OVSeg：基于异构监督的遥感多粒度开放词汇语义分割",
+   "cat": "cs.CV",
+   "summary_zh": "统一训练框架，融合场景级、目标级和像素级监督，缓解遥感开放词汇分割缺少像素标注数据的问题。",
+   "direction": "E"
   },
   {
    "id": "2611.32517",
@@ -12975,6 +12357,14 @@
    "summary_zh": "在球面域做跟踪与建图，并用视觉特征补足激光雷达覆盖不到的区域，改善全景高斯 SLAM。"
   },
   {
+   "id": "2611.32332",
+   "title": "GUI-WEdit and GUI-SkillEvo: Gradient-Free Adaptation of Small GUI Agents",
+   "title_zh": "GUI-WEdit 与 GUI-SkillEvo：小型 GUI 智能体的免梯度适应",
+   "cat": "cs.CV",
+   "summary_zh": "对 GUI-Owl-1.5 做免梯度的权重编辑与技能演化，在 OSWorld 子集上分别得到 48.02% 和 45.47%。",
+   "direction": "F"
+  },
+  {
    "id": "2611.32329",
    "title": "Cross-Version Compatibility of TESSERA Embeddings Through Lightweight Translation",
    "title_zh": "通过轻量转换实现 TESSERA 嵌入的跨版本兼容",
@@ -13008,6 +12398,14 @@
    "title_zh": "当精确的 token 重要性仍不够：LLM 注意力中 Top-K 选择的局限",
    "cat": "cs.LG",
    "summary_zh": "证明即使单个位置的重要性精确，独立排序取 Top-K 也可能远差于最优的位置组合。"
+  },
+  {
+   "id": "2611.32321",
+   "title": "FigmaEval: A Benchmark for Evaluating AI Agents in Professional UI Design",
+   "title_zh": "FigmaEval：评估 AI 智能体专业 UI 设计能力的基准",
+   "cat": "cs.AI",
+   "summary_zh": "基于真实 Figma 文件构建 84 个任务、783 个界面的基准，评测智能体的开放式 UI 设计。",
+   "direction": "F"
   },
   {
    "id": "2611.32320",
@@ -13052,6 +12450,22 @@
    "summary_zh": "基于 MARBERTv2 同时完成阿拉伯语假新闻检测、内容分类和风险预测。"
   },
   {
+   "id": "2611.32302",
+   "title": "Query-Guided Visual Minimization for Selective Disclosure to Cloud VLMs",
+   "title_zh": "面向云端视觉语言模型选择性披露的查询引导视觉最小化",
+   "cat": "cs.CV",
+   "summary_zh": "QGVM 在本地按查询保留相关视觉内容、抑制无关敏感信息，再上传给云端 VLM。",
+   "direction": "Z"
+  },
+  {
+   "id": "2611.32299",
+   "title": "Towards a Multimodal Aesthetic Agent for Photographic Reference Grading",
+   "title_zh": "面向摄影参考调色的多模态审美智能体",
+   "cat": "cs.CV",
+   "summary_zh": "根据指令选择性借鉴参考照片的色彩与影调，并转化为可编辑的调色参数。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.32297",
    "title": "MaskedVGGT: Masked Multi-View Transformers Are Scalable 3D Learners",
    "title_zh": "MaskedVGGT：掩码多视图 Transformer 是可扩展的 3D 学习器",
@@ -13092,6 +12506,22 @@
    "title_zh": "复现 Qwen3-Omni Talker 的语音标签：bf16 的 Mimi 与末帧陷阱",
    "cat": "cs.SD",
    "summary_zh": "通过逐层对比确认 Talker 的训练标签编码器对应 kyutai 的 Mimi 前 16 个码本。"
+  },
+  {
+   "id": "2611.32285",
+   "title": "SofaSpace: A Benchmark for Executable Visual Spatial Reasoning in Continuous Motion and Environment Construction",
+   "title_zh": "SofaSpace：连续运动与环境构建中可执行视觉空间推理的基准",
+   "cat": "cs.CV",
+   "summary_zh": "受移动沙发问题启发，构建含 3000 个场景的平面刚体搬运基准，考察视觉空间推理。",
+   "direction": "H"
+  },
+  {
+   "id": "2611.32281",
+   "title": "StreamCoach: Proactive Sports Coaching via Continuous Visual Reasoning",
+   "title_zh": "StreamCoach：基于持续视觉推理的主动式运动指导",
+   "cat": "cs.CV",
+   "summary_zh": "面向流式视频做动作质量评估，在运动过程中给出带运动专业知识的整体反馈。",
+   "direction": "C"
   },
   {
    "id": "2611.32275",
@@ -13178,6 +12608,14 @@
    "summary_zh": "对同步多相机视频分别检测静态结构与运动，为动态高斯泼溅提供带运动信息的初始化。"
   },
   {
+   "id": "2611.32227",
+   "title": "Relational Bottleneck Models",
+   "title_zh": "关系瓶颈模型",
+   "cat": "cs.CV",
+   "summary_zh": "以视觉语义关系替代孤立概念，兼顾可解释性与大视觉语言模型的零样本推理能力。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.32226",
    "title": "Relation Before Action: Explicit Relation Modeling for Latent Action Pretraining",
    "title_zh": "先关系后动作：面向潜在动作预训练的显式关系建模",
@@ -13225,6 +12663,14 @@
    "title_zh": "EvoSearch：面向大范围地理空间搜索的自进化主动感知",
    "cat": "cs.CV",
    "summary_zh": "让主动感知方法在大范围地理区域搜索时通过自进化缩短搜索轨迹。"
+  },
+  {
+   "id": "2611.32211",
+   "title": "ArEssays: Towards Robust Arabic Handwritten Text Understanding in Educational Settings",
+   "title_zh": "ArEssays：面向教育场景的鲁棒阿拉伯语手写文本理解",
+   "cat": "cs.CL",
+   "summary_zh": "发布埃及学生手写作文数据集，并评测 34 个视觉语言与 OCR 模型。",
+   "direction": "D"
   },
   {
    "id": "2611.32209",
@@ -13353,6 +12799,14 @@
    "summary_zh": "把现有梯度扰动防御统一为受控动力学框架，缓解隐私与效用的冲突。"
   },
   {
+   "id": "2611.32172",
+   "title": "MediaStormBench-CameraLog: Can Multimodal Models Identify a Camera's Log Curve?",
+   "title_zh": "MediaStormBench-CameraLog：多模态模型能识别相机的 Log 曲线吗？",
+   "cat": "cs.CV",
+   "summary_zh": "发布影视制作基准的首个子集，测试模型能否在无元数据时识别片段的 Log 曲线。",
+   "direction": "H"
+  },
+  {
    "id": "2611.32171",
    "title": "Mind the Band: The Hidden Frequency Variable in Geometric RoPE",
    "title_zh": "留意频带：几何 RoPE 中隐藏的频率变量",
@@ -13395,6 +12849,14 @@
    "summary_zh": "对原生 4 元序做精确优化，超过只优化二值序再提升的 GreedyMini 与 OptMini。"
   },
   {
+   "id": "2611.32153",
+   "title": "SoccerNarrate: Event-Grounded Streaming Soccer Commentary with Macro-Window Preference Alignment",
+   "title_zh": "SoccerNarrate：基于事件锚定与宏窗口偏好对齐的流式足球解说",
+   "cat": "cs.CV",
+   "summary_zh": "面向整场比赛视频的流式解说模型，用宏窗口偏好对齐改善事件覆盖与同步。",
+   "direction": "C"
+  },
+  {
    "id": "2611.32152",
    "title": "RoboProbe: Benchmarking Physical Plausibility of Robot World Models",
    "title_zh": "RoboProbe：机器人世界模型物理合理性的评测基准",
@@ -13435,6 +12897,14 @@
    "title_zh": "LiteSTAR：用低秩通道调制实现时序一致的色觉缺陷视频补偿",
    "cat": "cs.CV",
    "summary_zh": "利用通道响应的低秩子空间抑制色觉缺陷视频重着色中的闪烁。"
+  },
+  {
+   "id": "2611.32138",
+   "title": "VIDE : Training-Free Video Anomaly Detection via Visual Intrinsic Distribution Estimation",
+   "title_zh": "VIDE：基于视觉内在分布估计的免训练视频异常检测",
+   "cat": "cs.CV",
+   "summary_zh": "从视频自身估计正常分布，缓解基于嵌入的异常检测中的异常偏置。",
+   "direction": "C"
   },
   {
    "id": "2611.32135",
@@ -13491,6 +12961,14 @@
    "title_zh": "PreferenceScene：基于反馈的个性化室内场景合成",
    "cat": "cs.CV",
    "summary_zh": "多轮展示 3D 房间并根据用户反馈推断隐藏偏好，合成个性化室内场景。"
+  },
+  {
+   "id": "2611.32096",
+   "title": "Rethinking Post-Training Quantization for Large Vision-Language Models",
+   "title_zh": "重新思考大型视觉语言模型的训练后量化",
+   "cat": "cs.CV",
+   "summary_zh": "定位 LVLM 低比特权重激活量化的误差集中处，并据此改进校准。",
+   "direction": "A"
   },
   {
    "id": "2611.32093",
@@ -13696,6 +13174,14 @@
    "summary_zh": "通过注册新生成器持续更新检测器，应对未见生成器的 AI 音乐检测。"
   },
   {
+   "id": "2611.32022",
+   "title": "Beyond Before-and-After Images: Evaluating Temporal Grounding in a Lightweight VLM for Disaster Assessment",
+   "title_zh": "超越前后对比图：评估轻量 VLM 在灾害评估中的时序 Grounding",
+   "cat": "cs.CV",
+   "summary_zh": "用受控诊断检验轻量 VLM 是否真正比较灾前灾后影像，还是只依赖灾后图像或提示。",
+   "direction": "H"
+  },
+  {
    "id": "2611.32018",
    "title": "Structure-Aware Transformers for Hierarchical Authorization in Personal AI Agents",
    "title_zh": "面向个人 AI Agent 分层授权的结构感知 Transformer",
@@ -13808,6 +13294,14 @@
    "summary_zh": "利用大脑对自然场景的先验，从脑活动中重建自然图像。"
   },
   {
+   "id": "2611.31987",
+   "title": "InCue: Making Better Use of What Multimodal LLMs Already See at Test Time",
+   "title_zh": "InCue：更好地利用多模态 LLM 在测试时已见的信息",
+   "cat": "cs.CV",
+   "summary_zh": "发现裁剪放大的增益多源自已见内容，提出更好利用 MLLM 内部线索的方法。",
+   "direction": "E"
+  },
+  {
    "id": "2611.31986",
    "title": "Network-Guided Automated Synthesis of MAC Units for Neural Network Inference",
    "title_zh": "面向神经网络推理的网络引导 MAC 单元自动综合",
@@ -13864,6 +13358,14 @@
    "summary_zh": "构建基准，评测编码 Agent 通过写代码而非逐步调用模型来玩现代 3A 游戏。"
   },
   {
+   "id": "2611.31973",
+   "title": "Visual Thinking: Training-Free Active Perception for Counting and Localizing Hard-to-Find Objects",
+   "title_zh": "视觉思考：面向难找物体计数与定位的免训练主动感知",
+   "cat": "cs.CV",
+   "summary_zh": "让 VLM 为难找的小物体或遮挡物体生成更丰富描述，免训练地改进分割、计数与定位。",
+   "direction": "E"
+  },
+  {
    "id": "2611.31969",
    "title": "DexOPD: Dual-Extrapolation On-Policy Distillation for Diffusion Models",
    "title_zh": "DexOPD：面向扩散模型的双外推在线策略蒸馏",
@@ -13885,11 +13387,27 @@
    "summary_zh": "用自参照的世界模型奖励评估物理合理性，改进视频生成的物理对齐。"
   },
   {
+   "id": "2611.31956",
+   "title": "TACTUS: Unifying Surgical Action Understanding in Time and Space",
+   "title_zh": "TACTUS：在时间与空间上统一手术动作理解",
+   "cat": "cs.CV",
+   "summary_zh": "统一手术动作语义、器械运动与组织交互，建立时空联合的手术动作理解。",
+   "direction": "C"
+  },
+  {
    "id": "2611.31954",
    "title": "Perception Is Enough, at the Right Scale: Scale-Adaptive Token Pruning for Vision-Language-Action Models",
    "title_zh": "感知足矣，只要尺度合适：面向 VLA 模型的尺度自适应 Token 剪枝",
    "cat": "cs.AI",
    "summary_zh": "按操作阶段自适应选择感知语义尺度，对 VLA 视觉 token 做剪枝以降低计算。"
+  },
+  {
+   "id": "2611.31952",
+   "title": "VLG-Drive: Unifying Vision-Language and Geometric Priors for Autonomous Driving",
+   "title_zh": "VLG-Drive：统一视觉语言与几何先验的自动驾驶",
+   "cat": "cs.CV",
+   "summary_zh": "冻结 VLM 与几何基础模型，只训练融合接口和规划器来做驾驶规划。",
+   "direction": "A"
   },
   {
    "id": "2611.31950",
@@ -14277,6 +13795,14 @@
    "summary_zh": "用物理信息傅里叶神经算子重建漂浮式风机三维尾流并跨尺度迁移。"
   },
   {
+   "id": "2611.31787",
+   "title": "SciFig2Data: A Workflow for Recovering Structured Data from Scientific Figures",
+   "title_zh": "SciFig2Data：从科学图表中恢复结构化数据的工作流",
+   "cat": "cs.AI",
+   "summary_zh": "自动化流程完成复合图定位、分面、图表识别与数值重建。",
+   "direction": "D"
+  },
+  {
    "id": "2611.31780",
    "title": "VISOR: A Vision-Language Selector for Multimodal Time-Series Forecasting",
    "title_zh": "VISOR：面向多模态时间序列预测的视觉-语言选择器",
@@ -14394,6 +13920,14 @@
    "title_zh": "复现历史还不够：面向 LLM 生成模拟器的干预级保证",
    "cat": "cs.AI",
    "summary_zh": "提出 Vouch 库，逐个判断生成模拟器的 what-if 答案是否可信。"
+  },
+  {
+   "id": "2611.31735",
+   "title": "BEARING: Who Is Talking to Whom? Grounding Acoustic Direction in Vision for Online Multi-Party Conversation",
+   "title_zh": "BEARING：谁在对谁说话？在视觉中锚定声学方向以理解在线多人对话",
+   "cat": "cs.CV",
+   "summary_zh": "用麦克风阵列的声源方向配准到画面，作为视觉提示交给 VLM 判断说话人。",
+   "direction": "E"
   },
   {
    "id": "2611.31733",
@@ -14739,6 +14273,14 @@
    "summary_zh": "端侧助手检测口述声明并检索官方规则，用 4-bit 7B 模型标注是否被支持。"
   },
   {
+   "id": "2611.31559",
+   "title": "COGENT: A Modular Cognitive Architecture for Agentic User Simulation",
+   "title_zh": "COGENT：面向智能体用户模拟的模块化认知架构",
+   "cat": "cs.AI",
+   "summary_zh": "借鉴 ACT-R 等认知理论，把桌面界面的用户模拟拆成认知模块。",
+   "direction": "F"
+  },
+  {
    "id": "2611.31558",
    "title": "Denoising Diffusion with Progressive Posterior Sampling",
    "title_zh": "渐进式后验采样的去噪扩散",
@@ -14905,6 +14447,14 @@
    "title_zh": "哪边是上？旋转照片悄悄损害多视角三维基础模型",
    "cat": "cs.CV",
    "summary_zh": "测得少量旋转照片就会降低五个多视角三维基础模型的位姿精度，且置信度无法预警。"
+  },
+  {
+   "id": "2611.31475",
+   "title": "SpatialCraft: Evolving Procedural Intelligence from Experience and Skills for Spatial Reasoning Agents",
+   "title_zh": "SpatialCraft：从经验与技能中演化空间推理智能体的过程性智能",
+   "cat": "cs.AI",
+   "summary_zh": "让冻结的工具调用智能体利用自身交互历史改进工具编排，无需更新参数。",
+   "direction": "E"
   },
   {
    "id": "2611.31471",
@@ -16503,6 +16053,14 @@
    "summary_zh": "研究 Birkhoff 多面体内残差流的混合方式，指出欠混合与过混合之间的权衡。"
   },
   {
+   "id": "2611.15449",
+   "title": "Reading the Unreadable: Text-Aware Image Super-Resolution Needs Reasoning",
+   "title_zh": "读出不可读之字：含文字图像超分辨率需要推理",
+   "cat": "cs.CV",
+   "summary_zh": "指出严重退化的文字无法仅凭局部视觉证据还原，需结合图像上下文推理。",
+   "direction": "B"
+  },
+  {
    "id": "2611.24025",
    "title": "Intent Contracts: Taking Tools Away from Agents",
    "title_zh": "意图合约：从智能体手中收走工具",
@@ -16515,6 +16073,14 @@
    "title_zh": "面向指令引导视频编辑的运动感知奖励建模",
    "cat": "cs.CV",
    "summary_zh": "揭示视频编辑奖励模型偏好时序一致而抑制运动的“运动坍缩”，并研究应对方法。"
+  },
+  {
+   "id": "2611.22343",
+   "title": "PURE: A Diagnostic Benchmark for Multi-Granularity Multimodal Identity Matching",
+   "title_zh": "PURE：多粒度多模态身份匹配的诊断基准",
+   "cat": "cs.CV",
+   "summary_zh": "以电商为场景，从感知、理解、推理等四个维度诊断多粒度身份匹配能力。",
+   "direction": "H"
   },
   {
    "id": "2611.25534",
@@ -16550,6 +16116,14 @@
    "title_zh": "AeroRSI：面向空中视觉语言导航的递归自我改进",
    "cat": "cs.CV",
    "summary_zh": "让空中导航 VLA 策略从自身失败中迭代学习，由策略自己判断修复动作的好坏。"
+  },
+  {
+   "id": "2611.28123",
+   "title": "Seeing the Invisible: How Vision-Language Models Read, Predict and Trace Radio Fields",
+   "title_zh": "看见不可见之物：视觉语言模型如何读取、预测并追踪无线电场",
+   "cat": "cs.CV",
+   "summary_zh": "构建无标签引擎生成可射线追踪的城市场景，检验 VLM 能否由可见建筑推断无线电场。",
+   "direction": "H"
   },
   {
    "id": "2611.26613",
@@ -16592,6 +16166,14 @@
    "title_zh": "没有架构师的架构：AI 编程智能体如何塑造软件架构",
    "cat": "cs.SE",
    "summary_zh": "归纳编程智能体隐式做出架构决策的五种机制，并提出六种提示词与架构的耦合模式。"
+  },
+  {
+   "id": "2611.21485",
+   "title": "Lost in the Hallway: Benchmarking Persistent Spatial Memory Across Revisits",
+   "title_zh": "迷失在走廊：跨多次重访的持久空间记忆基准",
+   "cat": "cs.CV",
+   "summary_zh": "提出 ReSpaceBench，含 590 个场景、3244 个问题，评测重访场景中的空间记忆。",
+   "direction": "H"
   },
   {
    "id": "2611.25252",
@@ -16823,6 +16405,14 @@
    "title_zh": "只关注重要部分：用于长视频目标分割的免训练冻结 ViT 聚焦图",
    "cat": "cs.CV",
    "summary_zh": "为冻结的 DINOv3 生成免训练聚焦图，在目标区域保留全分辨率以降低计算。"
+  },
+  {
+   "id": "2611.34862",
+   "title": "BOP-Refer: Benchmark for Monocular 3D and 2D Object Grounding",
+   "title_zh": "BOP-Refer：单目 3D 与 2D 物体指代定位基准",
+   "cat": "cs.CV",
+   "summary_zh": "基于 9 个 BOP 数据集构建带人工校验指代表达的 3D/2D 定位基准。",
+   "direction": "E"
   },
   {
    "id": "2611.34860",
@@ -17133,6 +16723,14 @@
    "summary_zh": "在CIFAR-10上测量输出层损失Hessian迹，区分类别重加权与模型本身的变化。"
   },
   {
+   "id": "2611.34700",
+   "title": "Seeing the Right Context: Grounded On-Policy Distillation for Remote Sensing",
+   "title_zh": "看到正确的上下文：面向遥感的接地式在线策略蒸馏",
+   "cat": "cs.CV",
+   "summary_zh": "用接地的在线策略蒸馏让多模态大模型在遥感理解中利用目标周边上下文。",
+   "direction": "E"
+  },
+  {
    "id": "2611.34698",
    "title": "A Failure-Driven Data Flywheel for Post-Training Vision-Language-Action Models",
    "title_zh": "视觉-语言-动作模型后训练的失败驱动数据飞轮",
@@ -17308,6 +16906,14 @@
    "summary_zh": "在PCIe服务器和异构GPU集群上，把流水线并行服务中的计算粒度与通信粒度解耦。"
   },
   {
+   "id": "2611.34614",
+   "title": "Commit2Drive: Perception-Grounded Language Decisions as Commitments for Trajectory Planning in Vision-Language-Action Driving Models",
+   "title_zh": "Commit2Drive：以感知接地的语言决策作为承诺用于VLA驾驶模型的轨迹规划",
+   "cat": "cs.CV",
+   "summary_zh": "让VLA驾驶模型的语言决策作为承诺约束轨迹规划。",
+   "direction": "A"
+  },
+  {
    "id": "2611.34612",
    "title": "Do We Really Need an LLM for Weight-Space Programming? A Deterministic Forward-Only Paradigm and Its Capability Boundaries",
    "title_zh": "权重空间编程真的需要LLM吗？确定性前向专用范式及其能力边界",
@@ -17329,11 +16935,27 @@
    "summary_zh": "DeepBlur从单幅生物结构图像直接估计空间变化的二维PSF。"
   },
   {
+   "id": "2611.34603",
+   "title": "VisualMontage: Manipulating the Beliefs of Vision-Language Agents with Authentic Image Sequences",
+   "title_zh": "VisualMontage：用真实图像序列操纵视觉语言智能体的信念",
+   "cat": "cs.CV",
+   "summary_zh": "研究协同发帖用真实图像与局部忠实的配文误导VLM智能体。",
+   "direction": "H"
+  },
+  {
    "id": "2611.34597",
    "title": "$μ$MPC: Microsecond-Scale Nonlinear and World Model Control from Edge to GPU via Koopman-Linearized Precompilation",
    "title_zh": "μMPC：基于Koopman线性化预编译的微秒级非线性与世界模型控制",
    "cat": "cs.RO",
    "summary_zh": "用Koopman线性化预编译得到动作维度的QP，实现微秒级MPC。"
+  },
+  {
+   "id": "2611.34591",
+   "title": "ADClaw: A Programmable Visual Agent for Industrial Anomaly Detection and Understanding",
+   "title_zh": "ADClaw：用于工业异常检测与理解的可编程视觉智能体",
+   "cat": "cs.CV",
+   "summary_zh": "面向工业异常检测的可编程视觉智能体，支持多步观察而非单次预测。",
+   "direction": "E"
   },
   {
    "id": "2611.34581",
@@ -17434,6 +17056,14 @@
    "summary_zh": "用无需重训的方式先对切片图块排序，只编码少量图块即可完成全切片病理图像分类，降低推理成本。"
   },
   {
+   "id": "2611.34515",
+   "title": "Decoder-as-a-Probe: Verbalizing and Steering Visual Representations in LVLMs",
+   "title_zh": "Decoder-as-a-Probe：对 LVLM 视觉表征进行文字化与操控",
+   "cat": "cs.CV",
+   "summary_zh": "借助解码器而非线性分类器来探测并用语言描述 LVLM 视觉表征中的概念方向，并据此进行操控。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.34509",
    "title": "Long-Horizon Planning with Latent World Models via Graph Anchors",
    "title_zh": "基于图锚点的隐式世界模型长程规划",
@@ -17460,6 +17090,14 @@
    "title_zh": "FlyingStart：循环深度语言模型定点解码的学习式跨 token 热启动",
    "cat": "cs.CL",
    "summary_zh": "为循环深度语言模型学习跨 token 的迭代初始状态，替代随机噪声起点以减少收敛所需迭代。"
+  },
+  {
+   "id": "2611.34491",
+   "title": "Where Does the Asymmetry Enter? Staging a Fairness Audit Across a Fused Multimodal Moderation Pipeline",
+   "title_zh": "不对称从何而来？对融合多模态审核流水线进行分阶段公平性审计",
+   "cat": "cs.CL",
+   "summary_zh": "对融合视频、语音和屏幕文字的短视频审核分类器按阶段拆解各语言社区间的不公平来源。",
+   "direction": "H"
   },
   {
    "id": "2611.34489",
@@ -17516,6 +17154,14 @@
    "title_zh": "DiversePlace：面向宏单元布局的多样性探索课程强化学习",
    "cat": "cs.LG",
    "summary_zh": "用多样性探索与课程式强化学习训练宏单元布局策略，缓解代理奖励不准的问题。"
+  },
+  {
+   "id": "2611.34467",
+   "title": "Attacking Hard-Label Large Vision-Language Models with Model-Sensitive Adversarial Patch Designs",
+   "title_zh": "以模型敏感的对抗补丁设计攻击硬标签大型视觉语言模型",
+   "cat": "cs.CV",
+   "summary_zh": "针对只返回硬标签的 LVLM，设计与模型相关的对抗补丁进行黑盒攻击。",
+   "direction": "H"
   },
   {
    "id": "2611.34462",
@@ -17693,6 +17339,14 @@
    "summary_zh": "用状态相关的远见参数刻画人类在自然任务中的决策并做逆强化学习推断。"
   },
   {
+   "id": "2611.34347",
+   "title": "AIRIS: Benchmarking Social Embodied Intelligence in Egocentric Streaming Videos",
+   "title_zh": "AIRIS：第一视角流式视频中的社会具身智能评测",
+   "cat": "cs.CV",
+   "summary_zh": "评测具身智能体在流式第一人称视频中判断证据是否充分、是否介入以及如何得体回应。",
+   "direction": "C"
+  },
+  {
    "id": "2611.34344",
    "title": "SPARC: Semantic Calibration with Latent Multimodal Knowledge for Robust Image-Text Retrieval",
    "title_zh": "SPARC：借助潜在多模态知识进行语义校准的鲁棒图文检索",
@@ -17754,6 +17408,14 @@
    "title_zh": "RAP：面向双曲表征的径向角度随机投影",
    "cat": "cs.LG",
    "summary_zh": "为双曲表征设计类似 Johnson-Lindenstrauss 的径向角度随机投影压缩方法。"
+  },
+  {
+   "id": "2611.34292",
+   "title": "WebVibe: Multimodal Interactive Website Generation via Reverse Synthesis and Visual Self-Distillation",
+   "title_zh": "WebVibe：通过逆向合成与视觉自蒸馏实现多模态交互式网站生成",
+   "cat": "cs.CV",
+   "summary_zh": "用逆向数据合成与视觉自蒸馏训练多模态模型，从设计稿生成含多页路由和状态控件的网站。",
+   "direction": "Z"
   },
   {
    "id": "2611.34290",
@@ -17973,6 +17635,14 @@
    "summary_zh": "冻结师生模型，用线性投影器把教师的 CoT 向量映射到学生残差空间。"
   },
   {
+   "id": "2611.34181",
+   "title": "Agentic-Level Adversarial Purification: Revisiting Diffusion Purifiers on Native-Resolution Agentic Inputs",
+   "title_zh": "Agent 级对抗净化：重访原生分辨率 Agent 输入上的扩散净化器",
+   "cat": "cs.CR",
+   "summary_zh": "首次研究扩散净化器在视觉语言 Agent 原生分辨率页面输入上的防御效果。",
+   "direction": "H"
+  },
+  {
    "id": "2611.34179",
    "title": "Familiar Words, Unfamiliar Minds: Conventionalization without Calibration in the Vocabulary of Mind",
    "title_zh": "熟悉的词，陌生的心智：心智词汇中的约定化而无校准",
@@ -17992,6 +17662,14 @@
    "title_zh": "Admoab-DETR：面向缺失模态红外—可见光目标检测的分辨率分层融合",
    "cat": "cs.CV",
    "summary_zh": "单一权重同时支持红外、可见光及配对输入的实时检测器。"
+  },
+  {
+   "id": "2611.34162",
+   "title": "Modality-Shift Contrastive Decoding for Temporally Grounded Audio-Visual Understanding",
+   "title_zh": "面向时序对齐音视频理解的模态偏移对比解码",
+   "cat": "cs.CV",
+   "summary_zh": "通过偏移音频构造对比分支，提升音视频 LLM 对声画时间对齐的敏感度。",
+   "direction": "C"
   },
   {
    "id": "2611.34161",
@@ -18148,6 +17826,14 @@
    "summary_zh": "包含 198 个文献模型的基准，评估恢复的反应是否符合参考机制。"
   },
   {
+   "id": "2611.34105",
+   "title": "What Makes a Gavagai? Learning Visual Concepts from One Positive and Few Negatives",
+   "title_zh": "什么是 Gavagai？从一个正例和少量反例学习视觉概念",
+   "cat": "cs.CV",
+   "summary_zh": "借鉴 Quine 的 gavagai 问题，评测视觉模型从少量样本学习概念的能力。",
+   "direction": "H"
+  },
+  {
    "id": "2611.34104",
    "title": "Do Machine Learning Ensembles Beat Published Quotas? Target Parameterization, Censored Baselines, and Conformal Intervals Under Admissions Reform",
    "title_zh": "机器学习集成能否超越已公布的招生名额？",
@@ -18204,6 +17890,14 @@
    "summary_zh": "针对 MTP/EAGLE 草稿模型训练与推理不一致的问题，提出隐状态混合与梯度截断。"
   },
   {
+   "id": "2611.34091",
+   "title": "From Diagnosing Alignment to Joint Supervision in Multimodal Draft Training",
+   "title_zh": "从诊断对齐到联合监督：多模态草稿模型训练",
+   "cat": "cs.CV",
+   "summary_zh": "诊断多模态草稿模型与目标模型的对齐，并联合使用多模态与纯文本监督训练。",
+   "direction": "A"
+  },
+  {
    "id": "2611.34090",
    "title": "Disciplined Anthropomorphism: How to Extend Cognitive Language to Artificial Intelligence",
    "title_zh": "有纪律的拟人化：如何将认知语言扩展到人工智能",
@@ -18218,11 +17912,27 @@
    "summary_zh": "针对边缘 NPU 上注意力算子开销大的问题，用相关性替代注意力做轻量跟踪。"
   },
   {
+   "id": "2611.34083",
+   "title": "MulCLIP: A Multi-level Alignment Framework for Enhancing Fine-grained Long-context CLIP",
+   "title_zh": "MulCLIP：增强细粒度长文本 CLIP 的多层级对齐框架",
+   "cat": "cs.IR",
+   "summary_zh": "端到端的多层级对齐框架，让 CLIP 更好地处理长而详细的图像描述。",
+   "direction": "A"
+  },
+  {
    "id": "2611.34079",
    "title": "WorldBridge: Bridging Scattered Views for Coherent 3D World Generation",
    "title_zh": "WorldBridge：桥接分散视角以生成连贯的 3D 世界",
    "cat": "cs.CV",
    "summary_zh": "从几乎无重叠的零散图像出发，生成几何一致且可探索的 3D 世界。"
+  },
+  {
+   "id": "2611.34078",
+   "title": "Projector Subspace Optimization for Multimodal Continual Instruction Tuning",
+   "title_zh": "面向多模态持续指令微调的 Projector 子空间优化",
+   "cat": "cs.CV",
+   "summary_zh": "只优化 projector 子空间，无需回放即可做多模态持续指令微调并降低参数与路由开销。",
+   "direction": "A"
   },
   {
    "id": "2611.34075",
@@ -18237,6 +17947,14 @@
    "title_zh": "预算、读出还是推理？小型推理模型在拍卖竞价中的价值损失来源",
    "cat": "cs.AI",
    "summary_zh": "用 4B 到 14B 的开源推理模型在竞价场景中测试，拆解价值损失的来源。"
+  },
+  {
+   "id": "2611.34067",
+   "title": "When to Respond, Where to Ground: Streaming 3D Affordance Grounding",
+   "title_zh": "何时响应、何处定位：流式 3D 功能区域定位",
+   "cat": "cs.CV",
+   "summary_zh": "在 RGB-D 流上依据语言指令，仅凭已有观测决定响应时机并定位功能部件。",
+   "direction": "E"
   },
   {
    "id": "2611.34064",
@@ -18286,6 +18004,14 @@
    "title_zh": "太聪明反而不好？LLM 模拟低龄学习者的认知保真度与能力泄漏",
    "cat": "cs.CL",
    "summary_zh": "评估 LLM 模拟低龄学习者时能否保持既定知识与误解，发现存在能力泄漏。"
+  },
+  {
+   "id": "2611.34036",
+   "title": "Few-Shot Adaptation of Vision-Language Models via Agentic Model Editing",
+   "title_zh": "通过智能体式模型编辑实现视觉语言模型的少样本适配",
+   "cat": "cs.AI",
+   "summary_zh": "让智能体按领域需要自行编辑 VLM，完成少样本领域适配。",
+   "direction": "A"
   },
   {
    "id": "2611.34035",
@@ -18386,6 +18112,14 @@
    "summary_zh": "发布含 2100 例患者特异性吸收剂量图的开源 PET/CT 数据集。"
   },
   {
+   "id": "2611.34006",
+   "title": "Manga Page Parser: Comprehensive Visual Parsing through Local Story Understanding",
+   "title_zh": "Manga Page Parser：基于局部故事理解的漫画综合视觉解析",
+   "cat": "cs.CV",
+   "summary_zh": "逐个双页跨页解析漫画角色、对白与事件，输出可复用的结构化故事信息。",
+   "direction": "D"
+  },
+  {
    "id": "2611.34005",
    "title": "ScaleCurve: From Constant Scale to Consistent Motion for World-Space Human Mesh Recovery",
    "title_zh": "ScaleCurve：从恒定尺度到一致运动的世界坐标人体网格恢复",
@@ -18398,6 +18132,14 @@
    "title_zh": "Aegis-VLA：基于轨迹世界模型的可靠性门控动作精修，用于动态物体操作",
    "cat": "cs.RO",
    "summary_zh": "用轨迹世界模型预测并按可靠性门控修正动作，处理移动目标的操作。"
+  },
+  {
+   "id": "2611.33991",
+   "title": "QK-Bench: Benchmarking Quantitative Kinematic Understanding for Dynamic Spatial Intelligence",
+   "title_zh": "QK-Bench：评测动态空间智能的定量运动学理解",
+   "cat": "cs.RO",
+   "summary_zh": "评测模型对速度、接近与相遇等定量运动学量的理解。",
+   "direction": "H"
   },
   {
    "id": "2611.33990",
@@ -18568,6 +18310,14 @@
    "summary_zh": "用在线策略蒸馏同时优化指令遵循、发音正确与自然度三个目标。"
   },
   {
+   "id": "2611.33935",
+   "title": "BayesPath: Reliability-Aware Bayesian Reasoning for Whole-Slide Pathology Agents",
+   "title_zh": "BayesPath：面向全切片病理智能体的可靠性感知贝叶斯推理",
+   "cat": "cs.CV",
+   "summary_zh": "为免训练的全切片病理智能体加入显式的鉴别诊断与证据可靠性贝叶斯推理。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.33934",
    "title": "Towards 360$^\\circ$ Embodied UAV Tracking Without Turning",
    "title_zh": "迈向无需转向的 360° 具身无人机跟踪",
@@ -18708,6 +18458,14 @@
    "summary_zh": "研究护栏拒绝时如何解释原因，使授权任务可恢复而不给攻击者提供线索。"
   },
   {
+   "id": "2611.33878",
+   "title": "Off the Driven Path: Transferable Road Understanding in Driving VLAs",
+   "title_zh": "偏离行驶路径：驾驶 VLA 中可迁移的道路理解",
+   "cat": "cs.CV",
+   "summary_zh": "用 HD 地图生成道路场景图来探测端到端驾驶 VLA 到底内化了多少道路知识。",
+   "direction": "H"
+  },
+  {
    "id": "2611.33875",
    "title": "Random Voronoi Networks",
    "title_zh": "随机 Voronoi 网络",
@@ -18813,6 +18571,22 @@
    "summary_zh": "用视觉状态空间模型实现单模型多码率、细节生成量可控的极低码率图像压缩。"
   },
   {
+   "id": "2611.33836",
+   "title": "Can Its Own Misses Teach an MLLM to Find Small Brain Metastases?",
+   "title_zh": "MLLM 自己的漏检能教会它发现小脑转移瘤吗？",
+   "cat": "cs.AI",
+   "summary_zh": "用 MLLM 自身漏检的病灶构造训练信号，提升对小脑转移瘤的定位能力。",
+   "direction": "E"
+  },
+  {
+   "id": "2611.33835",
+   "title": "3D CoCa v3: Contrastive Learners with Scene Graphs for Urban Scene Understanding",
+   "title_zh": "3D CoCa v3：带场景图的对比学习器用于城市场景理解",
+   "cat": "cs.CV",
+   "summary_zh": "引入场景图建模关系，增强大规模 3D 城市场景的视觉语言理解。",
+   "direction": "E"
+  },
+  {
    "id": "2611.33831",
    "title": "Teaching a Multilingual Translation Model Regional Varieties: Castilian and Latin American Spanish, Asturian, Aragonese and Aranese with MADLAD-400-3B-MT",
    "title_zh": "教多语种翻译模型区域变体：用 MADLAD-400-3B-MT 处理卡斯蒂利亚与拉美西语、阿斯图里亚斯语、阿拉贡语和阿兰语",
@@ -18911,6 +18685,14 @@
    "summary_zh": "用 flow matching 先验从单段视频重建带不确定性的三维关节运动学。"
   },
   {
+   "id": "2611.33808",
+   "title": "EvoVAU: Tool Evolution for Video Anomaly Understanding",
+   "title_zh": "EvoVAU：面向视频异常理解的工具进化",
+   "cat": "cs.CV",
+   "summary_zh": "让视频智能体的分析工具随任务进化，应对多样场景下的异常理解。",
+   "direction": "C"
+  },
+  {
    "id": "2611.33806",
    "title": "QPAT: A Universal Quantum Machine Learning Framework for Quantum-Assisted Training and Classical Inference",
    "title_zh": "QPAT：量子辅助训练、经典推理的通用量子机器学习框架",
@@ -18967,11 +18749,27 @@
    "summary_zh": "结合拓扑图注意力和基因语义条件，从 H&E 图像预测空间转录组表达。"
   },
   {
+   "id": "2611.33791",
+   "title": "ExtractBench Pro: The Long Tail of Document Extraction",
+   "title_zh": "ExtractBench Pro：文档抽取的长尾",
+   "cat": "cs.AI",
+   "summary_zh": "覆盖六种现有数据集少见模式的模式引导文档抽取基准，由确定性生成器合成。",
+   "direction": "D"
+  },
+  {
    "id": "2611.33790",
    "title": "Bridging Transferability and Discriminability via Positive-Unlabeled Domain Adaptation for Building Damage Mapping Across Disaster Events",
    "title_zh": "通过正例-无标签域适应衔接可迁移性与判别性，用于跨灾害事件的建筑损毁制图",
    "cat": "cs.CV",
    "summary_zh": "用正例-无标签域适应缓解跨灾害事件的分布偏移，改进建筑损毁制图。"
+  },
+  {
+   "id": "2611.33789",
+   "title": "Multimodal Safety Evaluation of Vision-Language Models in Japanese",
+   "title_zh": "日语视觉语言模型的多模态安全评测",
+   "cat": "cs.CL",
+   "summary_zh": "把 MSTS 扩展到日语，新增 320 个机器翻译并人工校对的用例。",
+   "direction": "H"
   },
   {
    "id": "2611.33788",
@@ -18986,6 +18784,22 @@
    "title_zh": "DuoWM：将双 6-DoF 视觉流融入动作条件的无人机世界模型",
    "cat": "cs.CV",
    "summary_zh": "用相机动作流和物体 6-DoF 变换流作为条件，生成与指令对齐的第一人称无人机视频。"
+  },
+  {
+   "id": "2611.33777",
+   "title": "Agentic Reinforcement Learning with Immediate and Prospective Credit Assignment for Medical Visual Reasoning",
+   "title_zh": "面向医学视觉推理的即时与前瞻信用分配 Agentic 强化学习",
+   "cat": "cs.CV",
+   "summary_zh": "MedPACT 在 GRPO 中结合即时与前瞻两种信用，学习医学 VQA 中的选择性观察策略。",
+   "direction": "B"
+  },
+  {
+   "id": "2611.33775",
+   "title": "CHD-Bench: Diagnosing Congenital Heart Disease through Interactive Examination",
+   "title_zh": "CHD-Bench：通过交互式检查诊断先天性心脏病",
+   "cat": "cs.AI",
+   "summary_zh": "提出面向先天性心脏病的交互式诊断基准，覆盖 247 例 CT 与 MRI 的多标签任务。",
+   "direction": "H"
   },
   {
    "id": "2611.33772",
@@ -19016,6 +18830,14 @@
    "summary_zh": "主张把数据 Agent 反复重新推导的列语义、上下文和数据集组合关系持久化为可演化的知识。"
   },
   {
+   "id": "2611.33761",
+   "title": "ScanAR: Parallel Row-Scan Decoding for Efficient Image Generation in Unified Autoregressive Models",
+   "title_zh": "ScanAR：统一自回归模型中面向高效图像生成的并行逐行扫描解码",
+   "cat": "cs.CV",
+   "summary_zh": "仅改动解码顺序，按行并行解码视觉 token，加速统一自回归模型的图像生成。",
+   "direction": "G"
+  },
+  {
    "id": "2611.33757",
    "title": "TransHarness: From Benchmark Overfitting to Transferable Harness Evolution",
    "title_zh": "TransHarness：从基准过拟合到可迁移的 Harness 演化",
@@ -19028,6 +18850,14 @@
    "title_zh": "展示你想要的变化：视觉示例引导的变化检测",
    "cat": "cs.CV",
    "summary_zh": "用一对未标注的前后图像作为示例，引导在另一对图像中定位同类变化。"
+  },
+  {
+   "id": "2611.33751",
+   "title": "VAPOR: Improving Multimodal Reasoning with Sparse Visual Updates",
+   "title_zh": "VAPOR：用稀疏视觉更新改进多模态推理",
+   "cat": "cs.CV",
+   "summary_zh": "免训练地跨解码步复用视觉注意力输出并按需刷新，降低 MLLM 长生成的开销。",
+   "direction": "A"
   },
   {
    "id": "2611.33750",
@@ -19098,6 +18928,14 @@
    "title_zh": "NORMCRAFT：面向上下文感知语言模型对齐的文化规范生成",
    "cat": "cs.CL",
    "summary_zh": "训练 LLM 作为规范生成器，把推断出的文化规范用于指导响应生成。"
+  },
+  {
+   "id": "2611.33725",
+   "title": "VTK-Bench: A Diagnostic Benchmark for Distinguishing Language Priors and Text Modal Bias in Visual Language Models",
+   "title_zh": "VTK-Bench：区分视觉语言模型中语言先验与文本模态偏置的诊断基准",
+   "cat": "cs.CV",
+   "summary_zh": "区分文本模态偏置与语言先验两类 VLM 幻觉成因的诊断基准。",
+   "direction": "H"
   },
   {
    "id": "2611.33722",
@@ -19175,6 +19013,14 @@
    "title_zh": "拒答不被评分：基于内容的偏见评测中的覆盖局限",
    "cat": "cs.CL",
    "summary_zh": "发现偏见审计过滤拒答时会剔除带人口统计偏斜的子集，并用七种评测工具检验。"
+  },
+  {
+   "id": "2611.33687",
+   "title": "Read Before You Use: Improving Visual Memory Utilization in Vision-Language Models",
+   "title_zh": "使用前先读：改进视觉语言模型对视觉记忆的利用",
+   "cat": "cs.CV",
+   "summary_zh": "发现 VLM 即使拿到足够的多模态记忆证据也常答错，并改进其对视觉记忆的利用。",
+   "direction": "A"
   },
   {
    "id": "2611.33686",
@@ -19261,6 +19107,22 @@
    "summary_zh": "LinearVGGT 从 StreamVGGT 蒸馏而来，用 Mamba2 层替换部分全局层，使在线重建计算线性增长。"
   },
   {
+   "id": "2611.33649",
+   "title": "Structure-Aware Multimodal Retrieval Under Data Scarcity, Privacy Constraints and Out-of-Domain Content",
+   "title_zh": "数据稀缺、隐私约束与域外内容下的结构感知多模态检索",
+   "cat": "cs.IR",
+   "summary_zh": "借助版面几何与本地 8B VLM 恢复页面结构，无需标签即可从专业图集中检索图像。",
+   "direction": "D"
+  },
+  {
+   "id": "2611.33643",
+   "title": "CariesBench: A Hierarchical Multi-view Benchmark for Dental Caries Screening and Diagnostic Reasoning from 3D Intraoral Scans",
+   "title_zh": "CariesBench：基于 3D 口内扫描的龋齿筛查与诊断推理分层多视角基准",
+   "cat": "cs.CV",
+   "summary_zh": "面向 3D 口内扫描的龋齿筛查与诊断推理多视角基准。",
+   "direction": "H"
+  },
+  {
    "id": "2611.33640",
    "title": "Sparse-to-Sparse Feature Learning for Cross-Layer Analysis and Steering",
    "title_zh": "面向跨层分析与调控的稀疏到稀疏特征学习",
@@ -19296,11 +19158,27 @@
    "summary_zh": "学习式评分器决定保留哪些过去表示，以有界 KV 缓存支持长上下文推理。"
   },
   {
+   "id": "2611.33621",
+   "title": "Greedy Decoding Hides Good Plans: Sample-and-Verify Planning for Vision-Language Driving Models",
+   "title_zh": "贪心解码掩盖了好计划：面向视觉语言驾驶模型的采样验证规划",
+   "cat": "cs.RO",
+   "summary_zh": "发现贪心解码轨迹与最优采样候选间存在差距，用采样加验证改进规划。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.33617",
    "title": "Controllable CAD Generation and Interactive Editing of Fluid Rotors",
    "title_zh": "流体转子的可控 CAD 生成与交互式编辑",
    "cat": "cs.AI",
    "summary_zh": "VaneCraft 用统一解析表示，由 Agent 完成转子的生成、逆向恢复与编辑。"
+  },
+  {
+   "id": "2611.33615",
+   "title": "Learning from Natural Images Untangles Number Sense",
+   "title_zh": "从自然图像中学习理清数感",
+   "cat": "cs.AI",
+   "summary_zh": "研究自然图像学习是否让视觉模型获得超出自发涌现之外的数感。",
+   "direction": "Z"
   },
   {
    "id": "2611.33612",
@@ -19597,11 +19475,27 @@
    "summary_zh": "为连续–离散混合流匹配的RL优化设计时间选择性探索。"
   },
   {
+   "id": "2611.33414",
+   "title": "Beyond Random Starts: Amortized Initialization for Adversarial Attacks on Vision-Language Models",
+   "title_zh": "超越随机初始化：面向视觉语言模型对抗攻击的摊销初始化",
+   "cat": "cs.CV",
+   "summary_zh": "用摊销初始化取代随机起点，减少黑盒VLM迁移攻击的优化步数。",
+   "direction": "H"
+  },
+  {
    "id": "2611.33411",
    "title": "Collaborative Language Models for Semantic IoT Data Processing: Validation through Zero-Shot Human Activity Recognition",
    "title_zh": "用于语义IoT数据处理的协作语言模型：零样本人体活动识别验证",
    "cat": "cs.AI",
    "summary_zh": "用协作语言模型把低层传感器观测零样本抽象为高层语义事件。"
+  },
+  {
+   "id": "2611.33409",
+   "title": "A Semantics-First Approach to Multimodal Video Captioning with Frozen Encoders and Stabilized Reinforcement Learning",
+   "title_zh": "语义优先的多模态视频字幕：冻结编码器与稳定强化学习",
+   "cat": "cs.CV",
+   "summary_zh": "基于2.7B LLM与稳定化自批评强化学习做音视频字幕生成。",
+   "direction": "C"
   },
   {
    "id": "2611.33406",
@@ -19658,6 +19552,14 @@
    "title_zh": "RoboARC：空间约束下机器人操作的物理谜题",
    "cat": "cs.RO",
    "summary_zh": "构建需满足严格空间约束的机器人操作任务基准。"
+  },
+  {
+   "id": "2611.33388",
+   "title": "Measuring and Predicting Image-Token Repair Boundaries in Vision-Language Models",
+   "title_zh": "度量并预测视觉语言模型中的图像Token修复边界",
+   "cat": "cs.CV",
+   "summary_zh": "追踪退化图像下哪些干净的图像Token能修复VLM的错误回答。",
+   "direction": "E"
   },
   {
    "id": "2611.33387",
@@ -19728,6 +19630,14 @@
    "title_zh": "LGCount：用于零样本目标计数的布局引导扩散模型",
    "cat": "cs.CV",
    "summary_zh": "用结构化布局描述计数目标、所在区域和干扰物，并改造图像编辑扩散模型做类别无关计数。"
+  },
+  {
+   "id": "2611.33339",
+   "title": "Temporal Weight Surgery: Repairing Video Grounding with LLM Editors",
+   "title_zh": "时间权重手术：用 LLM 编辑器修复视频定位",
+   "cat": "cs.CV",
+   "summary_zh": "让通用 LLM 读取视频语言模型的权重与激活，定位并修正时间戳输出错误的位置。",
+   "direction": "C"
   },
   {
    "id": "2611.33333",
@@ -19805,6 +19715,14 @@
    "title_zh": "迷失在翻译中而非置信度中：多语言决策模型的评测与校准",
    "cat": "cs.CL",
    "summary_zh": "在 14 种语言、17 个任务上评测 25 个开源决策模型，并对其输出概率做校准。"
+  },
+  {
+   "id": "2611.33304",
+   "title": "The Platonic Representation Hypothesis in Jacobian-Space: Language and Vision Models Agree Approximately Up to a Rotation",
+   "title_zh": "雅可比空间中的柏拉图表示假说：语言与视觉模型近似仅相差一个旋转",
+   "cat": "cs.AI",
+   "summary_zh": "检验视觉与语言模型在雅可比空间中是否也趋同，结论是二者近似只差一个旋转。",
+   "direction": "Z"
   },
   {
    "id": "2611.33303",
@@ -20332,6 +20250,14 @@
    "summary_zh": "在莫比乌斯带上优化母线，使线绘艺术的整体结构可控。"
   },
   {
+   "id": "2611.33898",
+   "title": "MoS: Mixture-of-Modality Streaming for Low-Latency Online Video LLM Analytics over Dynamic Networks",
+   "title_zh": "MoS：面向动态网络下低延迟在线视频LLM分析的混合模态流式传输",
+   "cat": "cs.NI",
+   "summary_zh": "通过混合模态流式传输降低动态网络下在线视频LLM分析的延迟。",
+   "direction": "C"
+  },
+  {
    "id": "2611.33889",
    "title": "On the Learnability of Model Reprogramming: A Reachability and Relabeling Perspective",
    "title_zh": "论模型重编程的可学习性：可达性与重标注视角",
@@ -20687,6 +20613,14 @@
    "title_zh": "基于伪标签交换并带不确定性量化的联邦学习",
    "cat": "cs.LG",
    "summary_zh": "提出 FedSON，通过交换神经算子生成伪标签辅助数据，在异构客户端下学习随机偏微分方程算子。"
+  },
+  {
+   "id": "2611.33393",
+   "title": "Can a Short Video Clip Verify a Model Fix?",
+   "title_zh": "一段短视频片段能验证模型修复吗？",
+   "cat": "cs.MM",
+   "summary_zh": "在 CG-Bench 上发现，旧模型报错的短片段在新模型上通过，只有 44.0% 对应原题真正通过。",
+   "direction": "H"
   },
   {
    "id": "2611.33379",
@@ -21151,6 +21085,14 @@
    "summary_zh": "用可执行程序直接读取、构造或修改网络权重，在已训练网络中安装新能力。"
   },
   {
+   "id": "2611.28202",
+   "title": "AutoPILOT: A Visual Agent Harness for Real-Time Gameplay",
+   "title_zh": "AutoPILOT：面向实时游戏的视觉智能体 Harness",
+   "cat": "cs.AI",
+   "summary_zh": "设计让多模态模型在游戏持续运行时仍能决策的 Harness，缩小与等待式游戏之间的差距。",
+   "direction": "Z"
+  },
+  {
    "id": "2611.26745",
    "title": "MomentMem: Memorizing Key Moments for Robot Manipulation",
    "title_zh": "MomentMem：为机器人操作记住关键时刻",
@@ -21186,6 +21128,14 @@
    "summary_zh": "改变传统视频训练范式，让视频扩散模型在多步推理与规划中更少违反物理和逻辑约束。"
   },
   {
+   "id": "2611.27319",
+   "title": "SAVIOR: Sample-efficient Adaptation of Vision-Language Models for OCR Representation",
+   "title_zh": "SAVIOR：面向 OCR 表征的视觉语言模型样本高效适配",
+   "cat": "cs.CV",
+   "summary_zh": "针对金融场景中竖排、旋转文字、含 logo 的供应商名称等难点，样本高效地适配 VLM 的 OCR 能力。",
+   "direction": "D"
+  },
+  {
    "id": "2611.26863",
    "title": "LLMs Memorize Their Own Hallucinations During Post-Training",
    "title_zh": "LLM 在后训练中记住了自己的幻觉",
@@ -21198,6 +21148,14 @@
    "title_zh": "让修复器来决定：基于修复器似然训练代码定位器",
    "cat": "cs.AI",
    "summary_zh": "用冻结修复器对多个候选定位的补丁似然打分来训练代码定位器，而非仅预测参考补丁改动的文件。"
+  },
+  {
+   "id": "2611.25419",
+   "title": "DiLE: Discrimination-Aware Latent-Space Learning for Universal Multimodal Embeddings",
+   "title_zh": "DiLE：面向通用多模态嵌入的判别感知潜空间学习",
+   "cat": "cs.CV",
+   "summary_zh": "让通用多模态 embedding 保留区分相关项与易混淆项所需的判别证据。",
+   "direction": "A"
   },
   {
    "id": "2611.27376",
