@@ -20,6 +20,7 @@ Weigh: closeness to core search/rec problems; industrial / real-scale validation
 `star_candidate`: true only if score ≥0.75 AND it's worth a full read; give `star_why` (≤40 Chinese chars, concrete).
 
 ## Chinese writing (all Chinese fields)
+- Chinese text uses full-width Chinese punctuation（，。：；！？（）“”）; numbers, English words and formulas keep half-width characters. Never write a half-width comma or period between Chinese characters.
 - Natural, plain Chinese as a domain expert would write; keep established English terms (RAG, reranker, embedding, query, Recall@10, BM25…) in English.
 - NO filler: never use 值得注意的是 / 综上所述 / 总而言之 / 具有重要意义 / 奠定基础 / 开辟新方向 / 令人振奋 / 显著提升(without a number) / 三连排比. No preamble sentences; start with the substance.
 - Don't invent facts or numbers not in the abstract.
