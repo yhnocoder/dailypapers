@@ -22,7 +22,7 @@
    **只要某篇翻译失败过（包括重跑后成功的），都要把它的 tongtu 工作目录打包发给用户调试**：工作目录用 `tongtu status <id> --json` 的 `workdir` 字段取得（形如 `/root/.tongtu/papers/2611.34366v1/`，里面有 `logs/`、`build/manifests/`、`last_run.json` 等），打成 `tongtu_<idv>_<date>.zip` 放在 scratchpad，用发文件的工具（SendUserFile）在会话里发出来，并在汇报里注明。译文只存在 R2，不进仓库，说明见 `worker/README.md`。
 6. **导读**：主会话按 `prompts/writing.md` 写 `WORK/overview.json`，格式为 `{"guide": ["⭐ 段落", "非 ⭐ 段落"]}`，最多 2 段、约 600 字以内。
 7. **组装**：`python3 pipeline/assemble.py topics/search-rec.json <date> WORK`。这一步会更新 `site/data/<topic>/<date>.json`、`site/data/topics.json`、`site/data/glossary.json`。
-8. **本地检查**：`cd site && python3 -m http.server 8766`，用 Playwright 在 1280 和 400 宽度下打开页面，确认没有 pageerror、`scrollWidth` 等于视口宽度、每个 `.term` 都能对应到术语表。
+8. **本地检查**：`cd site && python3 -m http.server 8766`，用 Playwright 在 1280 和 400 宽度下打开页面（两个主题都要看：默认的「报纸」`index.html` 和「纸墨」`ink.html`，它们读同一份 `data/`），确认没有 pageerror、`scrollWidth` 等于视口宽度、每个 `.term` 都能对应到术语表。
 
 ## 提交约定
 
