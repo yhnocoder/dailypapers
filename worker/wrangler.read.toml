@@ -8,6 +8,6 @@ binding = "BUCKET"
 bucket_name = "dailypapers-zh"
 
 [vars]
-# Fill in after enabling Cloudflare Access on this Worker (see worker/README.md, step 3).
-ACCESS_TEAM_DOMAIN = ""   # e.g. "yourteam.cloudflareaccess.com"
-ACCESS_AUD = ""           # the Access application's AUD tag
+# Cloudflare Access (team domain + application AUD tag). Not secrets.
+ACCESS_TEAM_DOMAIN = "awesomedays.cloudflareaccess.com"
+ACCESS_AUD = "f31a58493bb451e3edb45b303c6c13091d979ee01cdf622c163963fbf35a8ff4"

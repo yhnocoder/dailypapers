@@ -32,10 +32,13 @@ tongtu 生成的中文 PDF 和 out 目录不放进 git，存在 Cloudflare R2，
    ```
 
 3. 给读取 Worker 开启 Cloudflare Access
-   - Cloudflare 后台 → Workers & Pages → `dailypapers-files` → Settings → Domains & Routes → `workers.dev` 那一行 → 开启 Cloudflare Access。
-   - 打开 Zero Trust → Access → Applications，找到自动生成的应用，把策略改成只允许你的邮箱。
-   - 在这个应用的 Overview 里复制 **Application Audience (AUD) Tag**；在 Zero Trust → Settings 里找到团队域名（形如 `xxx.cloudflareaccess.com`）。
-   - 把两个值填进 `wrangler.read.toml` 的 `ACCESS_AUD` 和 `ACCESS_TEAM_DOMAIN`，重新部署：
+   - 第一次使用时，先在 Worker 的 **Access** 标签页点 **Set up Zero Trust**：填团队名（决定登录域名 `<团队名>.cloudflareaccess.com`），套餐选 Free。
+   - 回到 `dailypapers-files` → **Access** 标签页 → Manage Worker access：
+     - **Scope 选 All traffic**。选 Previews only 时，正式地址不经过 Access，Worker 拿不到 Access 凭证，会一直返回 403。
+     - **Authentication policy**：默认的 Cloudflare account（这个 Cloudflare 账号的成员可以访问），或者按邮箱放行（One-time PIN，必须能收到邮箱里的验证码）。
+     - Session duration 按需要调，比如 1 周。
+   - 在 Zero Trust → Access → Applications 里打开这个 Worker 对应的应用，复制 **Application Audience (AUD) Tag**。
+   - 把团队域名和 AUD 填进 `wrangler.read.toml` 的 `ACCESS_TEAM_DOMAIN` 和 `ACCESS_AUD`，重新部署（之后每次 `wrangler deploy` 都会用 toml 里的值覆盖后台的变量）：
 
      ```bash
      npx wrangler deploy -c wrangler.read.toml
