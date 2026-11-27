@@ -1,6 +1,9 @@
 {
  "date": "2026-11-27",
  "since": "2026-11-26",
+ "picked": {
+  "hf": "2611.34051"
+ },
  "hf": [
   {
    "id": "2611.34051",
@@ -12,7 +15,12 @@
     "llm"
    ],
    "title": "Stable Gated DeltaNet-2: Understanding and Mitigating Recurrent State Instability",
-   "title_zh": "Stable Gated DeltaNet-2：理解并缓解循环状态不稳定"
+   "title_zh": "Stable Gated DeltaNet-2：理解并缓解循环状态不稳定",
+   "home": {
+    "topic": "llm",
+    "key": "2026-11-25"
+   },
+   "star": true
   },
   {
    "id": "2611.34232",
@@ -51,7 +59,12 @@
     "diffusion"
    ],
    "title": "ProxyGenBench: Benchmarking Proxy-Guided Video Generation",
-   "title_zh": "ProxyGenBench：代理引导视频生成基准"
+   "title_zh": "ProxyGenBench：代理引导视频生成基准",
+   "home": {
+    "topic": "diffusion",
+    "key": "2026-11-25"
+   },
+   "star": false
   },
   {
    "id": "2611.34813",
@@ -63,7 +76,12 @@
     "vlm"
    ],
    "title": "Solve Vision with Code: Coding Agents Are Stronger Visual Reasoners Than Video Models",
-   "title_zh": "用代码解决视觉：编码 Agent 比视频模型更擅长视觉推理"
+   "title_zh": "用代码解决视觉：编码 Agent 比视频模型更擅长视觉推理",
+   "home": {
+    "topic": "vlm",
+    "key": "2026-11-25"
+   },
+   "star": false
   },
   {
    "id": "2611.34290",
@@ -75,7 +93,12 @@
     "diffusion"
    ],
    "title": "StateWeaver: Multi-Agent Coordination of Story-State Transitions for Long-Horizon Video Generation",
-   "title_zh": "StateWeaver：面向长程视频生成的故事状态转移多 Agent 协同"
+   "title_zh": "StateWeaver：面向长程视频生成的故事状态转移多 Agent 协同",
+   "home": {
+    "topic": "diffusion",
+    "key": "2026-11-25"
+   },
+   "star": false
   },
   {
    "id": "2611.34693",
@@ -140,7 +163,12 @@
     "embodied"
    ],
    "title": "Boundary-Aware Policy Learning for Agent-Orchestrated Robot Manipulation",
-   "title_zh": "面向智能体编排机器人操作的边界感知策略学习"
+   "title_zh": "面向智能体编排机器人操作的边界感知策略学习",
+   "home": {
+    "topic": "embodied",
+    "key": "2026-11-25"
+   },
+   "star": false
   },
   {
    "id": "2611.34923",
