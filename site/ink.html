@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..600&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
+@property --sh{syntax:'<number>';inherits:true;initial-value:0}
 /* 纸、墨、朱砂印。
    一份手工印出来的日报：暖色的纸，松烟墨，一方朱砂印，再加九种矿物颜料给九个方向上色。
    版式沿用报纸的骨架：报头、头条配侧栏导读、其余精读、各版三栏。
@@ -329,16 +330,46 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 .xg .t a:hover{color:var(--ink)}
 .xg .x{font:400 14px/1.75 var(--serif);color:var(--body)}
 
-/* ── 翻页：像翻报纸一样，当前这一页沿着一侧立起来掀过去，底下就是新的一期。
-   往新的一期翻，页面绕左边掀走；往旧的一期翻，绕右边掀走。掀起的那页渐暗，底下那页由暗转亮，像被它的影子扫过。 ── */
+/* ── 翻页（换期）：三种试看，在「设置」里挑。选定后只留一种。
+   卷页：旧页从一边卷起来收走，卷边有一道纸背的高光和投在新页上的影子。
+   折页：旧页先对折，再整叠掀走。
+   抽页：旧页像最上面那张纸，略微一歪被抽走。 ── */
 .vt-turn::view-transition-group(root){animation:none}
 .vt-turn::view-transition-image-pair(root){isolation:auto}
-.vt-turn::view-transition-old(root){z-index:2;mix-blend-mode:normal;transform-origin:0 50%;backface-visibility:hidden;animation:turn-f .78s cubic-bezier(.55,.06,.3,1) both}
-.vt-turn.back::view-transition-old(root){transform-origin:100% 50%;animation-name:turn-b}
-.vt-turn::view-transition-new(root){mix-blend-mode:normal;animation:under .78s cubic-bezier(.4,0,.2,1) both}
-@keyframes turn-f{from{transform:perspective(4200px) rotateY(0);filter:brightness(1)}to{transform:perspective(4200px) rotateY(-96deg);filter:brightness(.62)}}
-@keyframes turn-b{from{transform:perspective(4200px) rotateY(0);filter:brightness(1)}to{transform:perspective(4200px) rotateY(96deg);filter:brightness(.62)}}
-@keyframes under{from{filter:brightness(.8)}to{filter:brightness(1)}}
+.vt-turn::view-transition-old(root),.vt-turn::view-transition-new(root){mix-blend-mode:normal}
+.vt-turn::view-transition-old(root){z-index:2}
+.vt-turn::view-transition-new(root){animation:under .9s cubic-bezier(.4,0,.2,1) both}
+@keyframes under{from{filter:brightness(.86)}to{filter:brightness(1)}}
+/* 卷页：旧页用 clip-path 从一边收走；卷边是一条单独的纸卷（#curl），跟着裁切线走：左边是压在旧页上的影子，中间是纸背的高光，右边是投在新页上的影子 */
+#curl{display:none;position:fixed;left:0;top:0;width:150px;height:100vh;pointer-events:none;z-index:84;view-transition-name:curl;
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.14) 30%,var(--paper2) 31%,var(--paper) 47%,var(--paper2) 62%,color-mix(in srgb,var(--paper2) 72%,#000) 71%,rgba(0,0,0,.34) 72%,rgba(0,0,0,.1) 86%,transparent)}
+.vt-roll #curl{display:block}
+.vt-roll::view-transition-old(root){animation:roll-f .95s cubic-bezier(.62,.02,.3,1) both}
+.vt-roll.back::view-transition-old(root){animation-name:roll-b}
+@keyframes roll-f{from{clip-path:inset(0 -100px 0 0)}to{clip-path:inset(0 calc(100% + 60px) 0 0)}}
+@keyframes roll-b{from{clip-path:inset(0 0 0 -100px)}to{clip-path:inset(0 0 0 calc(100% + 60px))}}
+.vt-roll::view-transition-group(curl){animation:curl-f .95s cubic-bezier(.62,.02,.3,1) both}
+.vt-roll.back::view-transition-group(curl){animation-name:curl-b}
+.vt-roll::view-transition-old(curl){display:none}
+.vt-roll::view-transition-new(curl){animation:none;opacity:1}
+@keyframes curl-f{from{transform:translateX(calc(100vw + 100px - 106px))}to{transform:translateX(calc(-60px - 106px))}}
+@keyframes curl-b{from{transform:translateX(calc(-100px - 44px)) scaleX(-1)}to{transform:translateX(calc(100vw + 60px - 44px)) scaleX(-1)}}
+/* 抽页 */
+.vt-pull::view-transition-old(root){transform-origin:0 100%;filter:drop-shadow(0 24px 44px rgba(0,0,0,.4));animation:pull-f .85s cubic-bezier(.6,.02,.25,1) both}
+.vt-pull.back::view-transition-old(root){transform-origin:100% 100%;animation-name:pull-b}
+@keyframes pull-f{0%{transform:none}22%{transform:translate(-1.5%,-1.2%) rotate(-1.2deg)}100%{transform:translate(-112%,-3%) rotate(-7deg)}}
+@keyframes pull-b{0%{transform:none}22%{transform:translate(1.5%,-1.2%) rotate(1.2deg)}100%{transform:translate(112%,-3%) rotate(7deg)}}
+/* 折页：两份旧页的副本，各裁一半 */
+#fold{position:fixed;inset:0;z-index:85;perspective:2600px;overflow:hidden}
+.fh{position:absolute;top:0;bottom:0;width:50%;transform-style:preserve-3d}
+.fh.l{left:0}.fh.r{left:50%}
+.ff,.fb{position:absolute;inset:0;overflow:hidden;background:var(--paper) var(--grain);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.fb{transform:rotateY(180deg);background:var(--paper2) var(--grain)}
+.fb::after,.ff::after{content:"";position:absolute;inset:0;pointer-events:none}
+.fh.l .fb::after{background:linear-gradient(90deg,rgba(0,0,0,.2),transparent 26%)}
+.fh.r .fb::after{background:linear-gradient(270deg,rgba(0,0,0,.2),transparent 26%)}
+.ff::after{background:#000;opacity:var(--sh,0)}
+.fh.cov .ff>.fi{visibility:hidden}.fh.cov .ff{background:var(--paper2) var(--grain)}
 
 /* 看图 */
 #lb{position:fixed;inset:0;z-index:70;background:rgba(18,17,14,.93);display:grid;grid-template-rows:minmax(0,1fr) auto;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));animation:fade .3s}
@@ -478,6 +509,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter></svg>
 <div id="prog"></div>
+<div id="curl" aria-hidden="true"></div>
 
 <div class="page">
   <header class="cover" id="cover">
@@ -506,6 +538,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
         <h2>设置</h2>
         <div class="srow" id="set-skin"><span>版面</span><p><button data-skin="paper">报纸</button><button data-skin="ink" class="on">纸墨</button></p></div>
         <div class="srow"><span>纸色</span><p><button data-paper="y"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="x"><i style="background:#faf9f5"></i>宣白</button><button data-paper="w"><i style="background:#fff"></i>纯白</button></p><small>只在日间生效</small></div>
+        <div class="srow"><span>翻页</span><p><button data-turn="roll">卷页</button><button data-turn="fold">折页</button><button data-turn="pull">抽页</button></p><small>试看：按 ← → 换期比较</small></div>
         <div class="srow"><span>明暗</span><p><button data-mode="auto">跟随系统</button><button data-mode="light">日间</button><button data-mode="dark">夜间</button></p></div>
       </div>
     </div>
@@ -530,11 +563,13 @@ const RM=matchMedia('(prefers-reduced-motion:reduce)');
 const WK='日一二三四五六',CD='〇一二三四五六七八九',ORD='壹贰叁肆伍陆柒捌玖拾';
 const S={topics:[],topic:null,date:null,day:null,q:''};
 /* 设置：纸色（y 暖黄 / x 宣白 / w 纯白）和明暗（auto / light / dark），都记在 localStorage */
+let TURN='roll';try{const v=localStorage.getItem('turn');if(/^(roll|fold|pull)$/.test(v||''))TURN=v}catch(e){}
 let PAPER='y';try{const v=localStorage.getItem('paper');if(v==='w'||v==='x')PAPER=v}catch(e){}
 function syncSet(){
   if(PAPER==='y')delete root.dataset.paper;else root.dataset.paper=PAPER;
   const mode=root.dataset.theme||'auto';
   document.querySelectorAll('#set [data-paper]').forEach(b=>b.classList.toggle('on',b.dataset.paper===PAPER));
+  document.querySelectorAll('#set [data-turn]').forEach(b=>b.classList.toggle('on',b.dataset.turn===TURN));
   document.querySelectorAll('#set [data-mode]').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
 }
 function closeSet(){$('set').hidden=true;$('gear').setAttribute('aria-expanded','false')}
@@ -777,19 +812,41 @@ function drawCal(){
 }
 function toggleCal(){if($('cal')){closeCal();return}const t=ymd(S.date);calM=[t.y,t.m];drawCal();$('date').setAttribute('aria-expanded','true')}
 
-/* ── 翻页（换期）：新一期的数据先取好，再用 View Transitions 把旧页掀走 ── */
+/* ── 翻页（换期）：新一期的数据先取好，再把旧页收走 ── */
 let busy=false;
+/* 折页：把当前页面复制两份盖在上面，各裁一半；底下换成新的一期，再把两半依次折走 */
+async function foldTurn(older,swap){
+  const y=scrollY,W=root.clientWidth,pg=document.querySelector('.page'),stuck=root.classList.contains('stuck'),barY=$('stick').getBoundingClientRect().top+y;
+  const ov=document.createElement('div');ov.id='fold';ov.setAttribute('aria-hidden','true');ov.inert=true;
+  const mk=side=>{const h=document.createElement('div');h.className='fh '+side;
+    const f=document.createElement('div');f.className='ff';const fi=document.createElement('div');fi.className='fi';fi.style.cssText=`width:${W}px;transform:translate(${side==='r'?-W/2:0}px,${-y}px)`;
+    const c=pg.cloneNode(true);c.style.margin='0 auto';const bar=c.querySelector('.bar');if(stuck&&bar){bar.style.position='relative';bar.style.top=(y-barY)+'px'}
+    fi.append(c);f.append(fi);const bk=document.createElement('div');bk.className='fb';h.append(f,bk);ov.append(h);return h};
+  const first=mk(older?'l':'r'),second=mk(older?'r':'l'),sg=older?1:-1;
+  first.style.transformOrigin=older?'100% 50%':'0 50%';second.style.transformOrigin=older?'100% 50%':'0 50%';first.style.zIndex=2;
+  document.body.append(ov);
+  await swap();
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  const E='cubic-bezier(.6,.04,.3,1)';
+  first.querySelector('.ff').animate([{'--sh':0},{'--sh':.4}],{duration:300,fill:'forwards'});
+  second.querySelector('.ff').animate([{filter:'brightness(1)'},{filter:'brightness(.84)'}],{duration:560,easing:'ease-in',fill:'forwards'});
+  await first.animate([{transform:'rotateY(0)'},{transform:`rotateY(${sg*180}deg)`}],{duration:580,easing:E,fill:'forwards'}).finished;
+  first.remove();second.classList.add('cov');second.style.transformOrigin=older?'100% 50%':'0 50%';
+  await second.animate([{transform:'rotateY(0)',opacity:1},{transform:`rotateY(${-sg*-1*0}deg)`,opacity:1,offset:0},{transform:`rotateY(${older?104:-104}deg)`,opacity:1,offset:.85},{transform:`rotateY(${older?110:-110}deg)`,opacity:0}],{duration:520,easing:'cubic-bezier(.5,0,.8,.4)',fill:'forwards'}).finished;
+  ov.remove();
+}
 async function go(date,pid){
   if(busy||!S.topic.dates.includes(date))return;
   if(date===S.date&&S.day){if(pid)jump(pid);return}
   const ds=S.topic.dates,older=ds.indexOf(date)>ds.indexOf(S.date);S.date=date;
-  if(RM.matches||!S.day||!document.startViewTransition){await loadDay();scrollTo(0,0);if(pid)jump(pid);return}
+  const swap=async()=>{await loadDay();scrollTo(0,0)};
+  if(RM.matches||!S.day||(TURN!=='fold'&&!document.startViewTransition)){await swap();if(pid)jump(pid);return}
   busy=true;
   try{
     await getDay(S.topic.id,date).catch(()=>null);
-    root.classList.add('vt-turn');root.classList.toggle('back',older);
-    await document.startViewTransition(async()=>{await loadDay();scrollTo(0,0)}).finished;
-  }catch(e){}finally{busy=false;root.classList.remove('vt-turn','back')}
+    if(TURN==='fold')await foldTurn(older,swap);
+    else{root.classList.add('vt-turn','vt-'+TURN);root.classList.toggle('back',older);await document.startViewTransition(swap).finished}
+  }catch(e){$('fold')?.remove()}finally{busy=false;root.classList.remove('vt-turn','vt-roll','vt-pull','back')}
   if(pid)jump(pid);
 }
 async function loadDay(){
@@ -835,6 +892,7 @@ document.addEventListener('click',e=>{
   if(sb){
     if(sb.dataset.skin){if(sb.dataset.skin==='paper'){try{localStorage.setItem('skin','paper')}catch(_){}location.href='index.html'+location.hash}return}
     if(sb.classList.contains('on'))return;
+    if(sb.dataset.turn){TURN=sb.dataset.turn;try{localStorage.setItem('turn',TURN)}catch(_){}syncSet();return}
     bloom(sb,()=>{
       if(sb.dataset.paper){PAPER=sb.dataset.paper;try{localStorage.setItem('paper',PAPER)}catch(_){}}
       else if(sb.dataset.mode==='auto'){delete root.dataset.theme;try{localStorage.removeItem('theme')}catch(_){}}
