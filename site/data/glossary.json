@@ -287,6 +287,54 @@
    "term": "表征对齐（REPA）",
    "en": "Representation Alignment",
    "def": "训练时额外加一个损失，把模型某一层的特征（经过一个小投影头）拉向冻结的预训练编码器（如 DINOv2）对同一输入的特征，推理时去掉这个编码器。最早用于扩散 Transformer 加速收敛，后来被搬到 VLA 微调上，想借教师注入 3D、语义等先验。"
+  },
+  {
+   "id": "forced-readout",
+   "term": "强制读出",
+   "en": "Forced readout",
+   "def": "在模型输出的任意位置后面接上「Answer: (」，直接读出各选项字母的概率，看模型此刻倾向哪个答案。逐句做一遍，就能看到推理写到哪一句时答案发生了翻转。"
+  },
+  {
+   "id": "answer-step-regrounding",
+   "term": "答案步重新看图",
+   "en": "Answer-step re-grounding",
+   "def": "模型写完推理、给出最终答案时，再对照一次图像，图与自己写的内容矛盾时以图为准。论文发现开源 VLM 缺这一步，只会照抄自己写下的关系。"
+  },
+  {
+   "id": "lora",
+   "term": "LoRA",
+   "en": "Low-Rank Adaptation",
+   "def": "一种参数高效微调方法：冻结原模型权重，只在部分矩阵旁边加一对低秩小矩阵来训练。训练量和显存开销小，常用来做小规模的行为纠正实验。"
+  },
+  {
+   "id": "fh-segmentation",
+   "term": "FH 分割",
+   "en": "Felzenszwalb-Huttenlocher segmentation",
+   "def": "2004 年提出的基于图的图像分割：把像素当作图的节点，按颜色差从小到大合并相邻区域，只要两块之间的差异小于各自内部的差异就合并。不需要训练、在 CPU 上就很快，结果一定覆盖每个像素、每块都是连通的。"
+  },
+  {
+   "id": "coarse-to-fine-pointing",
+   "term": "由粗到细指点解码",
+   "en": "coarse-to-fine pointing",
+   "def": "VLM 不直接用文字写出坐标，而是生成几个特殊 token，用它们的隐藏状态逐级检索：先选一个视觉 token（区域），再选它里面的一个 patch，最后在 patch 的 4×4 小格里选一格，再映射回图像坐标。每个点只要 3 个输出 token，比写文字坐标更准。"
+  },
+  {
+   "id": "post-hoc-token-compression",
+   "term": "事后 token 压缩",
+   "en": "post-hoc token compression",
+   "def": "在已经切好的视觉 token 序列上再删掉（剪枝，如 FastV）或合并（如 ToMe）一部分，以缩短 LLM 的输入。对整图问答影响小，但会丢掉 token 和图像位置的对应关系，指点、分割这类要输出位置的任务掉分明显。"
+  },
+  {
+   "id": "rlvr",
+   "term": "RLVR",
+   "en": "Reinforcement Learning with Verifiable Rewards",
+   "def": "可验证奖励强化学习：奖励由规则自动判定（答案对不对、代码能不能跑通），不需要奖励模型。GRPO、DAPO 都属于这一类，缺点是只看最终结果，不知道是哪一步推理挣到了奖励。"
+  },
+  {
+   "id": "single-image-shortcut",
+   "term": "单图捷径",
+   "en": "single-image shortcut",
+   "def": "多图题本该综合几张图作答，模型却只靠其中一张图给出答案。和“只看题干就答”的语言先验不同，它确实用了图像，所以把图全部去掉测不出来，要一次只露一张图才能发现。"
   }
  ]
 }
