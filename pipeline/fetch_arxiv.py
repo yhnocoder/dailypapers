@@ -6,7 +6,7 @@ arXiv announces on Sun–Thu evenings (US/Eastern); the batch shown on weekday D
 contains submissions from the previous announcement cutoff (14:00 ET) up to D 14:00 ET.
 Monday's batch therefore covers Fri 14:00 → Mon 14:00. Holidays are not handled.
 """
-import json, re, sys, time, urllib.parse, urllib.request
+import json, re, sys, time, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
@@ -24,8 +24,16 @@ def window(d: date):
 
 def query(q: str):
     url = API + "?" + urllib.parse.urlencode({"search_query": q, "max_results": 2000, "sortBy": "submittedDate"})
-    with urllib.request.urlopen(url, timeout=120) as r:
-        root = ET.fromstring(r.read())
+    for attempt, wait in enumerate((15, 45, 90, 180, None)):
+        try:
+            with urllib.request.urlopen(url, timeout=120) as r:
+                root = ET.fromstring(r.read())
+            break
+        except urllib.error.HTTPError as e:  # arXiv rate-limits bursts (429) and sometimes 503s
+            if e.code not in (429, 503) or wait is None:
+                raise
+            print(f"arXiv API {e.code}, retrying in {wait}s", file=sys.stderr)
+            time.sleep(wait)
     time.sleep(3)  # arXiv API etiquette
     clean = lambda s: re.sub(r"\s+", " ", s or "").strip()
     for e in root.findall("a:entry", NS):

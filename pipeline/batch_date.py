@@ -34,9 +34,11 @@ def latest_batch(now_et: datetime) -> date:
         d -= timedelta(days=1)  # Fri/Sat evening: nothing new, step back
 
 
-def pending(now_et: datetime, done: set) -> list:
+def pending(now_et: datetime, done: set, start: date | None = None) -> list:
     last = latest_batch(now_et)
     out, d = [], last - timedelta(days=LOOKBACK_DAYS)
+    if start and d < start:
+        d = start  # a new topic does not backfill batches before it started
     newest_done = max((date.fromisoformat(x) for x in done), default=None)
     while d <= last:
         if d.weekday() < 5 and d.isoformat() not in done and (newest_done is None or d > newest_done):
@@ -57,7 +59,9 @@ def main():
         return
     topics = json.load(open(os.path.join(ROOT, "site", "data", "topics.json")))
     t = next((t for t in topics["topics"] if t["id"] == a.topic), {"dates": []})
-    for d in pending(now, set(t["dates"])):
+    cfg = json.load(open(os.path.join(ROOT, "topics", f"{a.topic}.json")))
+    start = date.fromisoformat(cfg["start_date"]) if cfg.get("start_date") else None
+    for d in pending(now, set(t["dates"]), start):
         print(d.isoformat())
 
 

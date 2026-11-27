@@ -68,5 +68,8 @@
   "tongtu_mode": "fast",
   "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
   "files_base": "https://dailypapers-files.awesomedays.workers.dev"
- }
+ },
+ "scope_prompt": "prompts/scope/search-rec.md",
+ "min_candidates": 150,
+ "start_date": "2026-11-23"
 }
