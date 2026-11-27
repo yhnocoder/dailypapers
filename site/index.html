@@ -1,6 +1,8 @@
 <meta charset="utf-8">
 <title>论文日报</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script>/* 主题：这一页是「报纸」（默认）；选过「纸墨」就转到 ink.html，期号留在 # 里带过去 */
+try{if(localStorage.getItem('skin')==='ink')location.replace('ink.html'+location.hash)}catch(e){}</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,6 +47,7 @@ h1,h2,h3,p{margin:0}
   letter-spacing:.14em;margin-right:-.14em;white-space:nowrap}
 .ear{font:400 13px/1.4 var(--sans);color:var(--mute);padding-bottom:.9em;letter-spacing:.04em}
 .ear.r{text-align:right}
+#skin{font:400 12.5px/1.4 var(--sans);color:var(--mute);letter-spacing:.04em}#skin:hover{color:var(--accent);text-decoration:none}
 .ear select{font:600 16px/1.4 var(--serif);color:var(--ink);appearance:none;-webkit-appearance:none;text-align:right;text-align-last:right;letter-spacing:.06em;max-width:100%}
 .folio{display:flex;align-items:center;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;
   border-top:3px solid var(--rule);box-shadow:inset 0 1px 0 var(--paper),inset 0 2px 0 var(--rule);padding:9px 0 7px}
@@ -281,7 +284,7 @@ a.pref:hover,a.pref:focus-visible{text-decoration:underline;text-underline-offse
   <header class="mast">
     <div class="ear" id="issue"></div>
     <h1>论文日报</h1>
-    <div class="ear r"><select id="topic" aria-label="主题"></select></div>
+    <div class="ear r"><select id="topic" aria-label="主题"></select><br><a href="ink.html" id="skin" title="换成「纸墨」版面">版面：报纸 ⇄ 纸墨</a></div>
   </header>
   <div class="folio">
     <div class="when">
@@ -436,6 +439,7 @@ function render(){
     ${d.excluded?.length?`<details class="xl"><summary>未收录 ${d.excluded.length} 篇</summary><div class="xg">${d.excluded.map(e=>`<article><h4>${esc(e.title_zh||e.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(e.id)}" rel="noopener" lang="en">${esc(e.title)}</a> · ${esc(e.cat)}</p>${e.summary_zh?`<p class="x">${rich(e.summary_zh)}</p>`:''}</article>`).join('')}</div></details>`:''}`;
 }
 
+$('skin').onclick=e=>{e.preventDefault();try{localStorage.setItem('skin','ink')}catch(_){}location.href='ink.html'+location.hash};
 const tst=document.createElement('div');tst.id='toast';tst.setAttribute('role','status');tst.setAttribute('aria-live','polite');document.body.append(tst);
 let tstT=0;function toast(msg){tst.textContent=msg;tst.classList.add('on');clearTimeout(tstT);tstT=setTimeout(()=>tst.classList.remove('on'),1800)}
 const lb=document.createElement('div');lb.id='lb';lb.hidden=true;lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','图片查看');
