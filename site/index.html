@@ -79,6 +79,9 @@ h1,h2,h3,p{margin:0}
 .by{font:400 12.5px/1.6 var(--sans);color:var(--mute);margin:14px 0 22px;padding:7px 0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);display:flex;flex-wrap:wrap;gap:2px 18px;letter-spacing:.02em}
 .by .lk{margin-left:auto;display:flex;gap:14px}
 .lk a{color:var(--accent);font-weight:500;letter-spacing:.04em}
+.lk .cp{display:inline-flex;align-items:center;padding:0 2px;border:0;background:none;color:var(--mute);cursor:pointer;line-height:1}
+.lk .cp:hover,.lk .cp:focus-visible{color:var(--accent)}
+.lk .cp.ok{color:var(--accent)}
 .st{color:var(--accent)}
 
 .body{font-size:16.5px;line-height:1.85;columns:2;column-gap:30px;column-rule:1px solid var(--hair);text-align:left;hyphens:auto;orphans:2;widows:2}
@@ -99,7 +102,7 @@ summary:hover{color:var(--ink)}
 details .en{font:italic 400 14.5px/1.6 var(--serif);color:var(--mute);text-align:left;hyphens:auto;margin:4px 0 6px}
 .fine{font:400 12.5px/1.6 var(--sans);color:var(--mute);margin-top:10px;padding-top:8px;border-top:1px solid var(--hair);text-align:left}
 .fine .tl{display:flex;gap:14px;margin-bottom:4px}
-.fine .tl a{color:var(--accent);font-weight:600;text-decoration:none}
+.fine .tl a{color:var(--ink);font-weight:600;text-decoration:none}
 .fine .tl a:hover{text-decoration:underline}
 .fine code{font:12px/1.5 var(--mono);overflow-wrap:anywhere;color:var(--body)}
 .fine ul{margin:2px 0 0;padding-left:1.2em}
@@ -276,7 +279,9 @@ const full=n=>n.replace(/（.*?）/,'');
 const short=n=>full(n).split(' / ')[0];
 const cn=d=>{const [y,m,dd]=d.split('-').map(Number),w=new Date(Date.UTC(y,m-1,dd)).getUTCDay();return `${y}年${m}月${dd}日 星期${WK[w]}`};
 const url=u=>/^https?:\/\//i.test(u||'')?esc(u):'';
-const links=p=>`<span class="lk">${[['arXiv',p.links?.abs],['PDF',p.links?.pdf],['Code',p.links?.code]].filter(x=>url(x[1])).map(([t,u])=>`<a href="${url(u)}" rel="noopener">${t}</a>`).join('')}</span>`;
+/* byline links: arXiv page, English PDF, Chinese PDF (tongtu, Access-protected), code, copy id */
+const CP='<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
+const links=p=>`<span class="lk">${[['links',p.links?.abs],['en',p.links?.pdf],['zh',p.translation?.pdf,1],['code',p.links?.code]].filter(x=>url(x[1])).map(([t,u,nw])=>`<a href="${url(u)}" rel="noopener"${nw?' target="_blank"':''}>${t}</a>`).join('')}<button class="cp" type="button" data-copy="${esc(p.id)}" title="复制 arXiv 编号 ${esc(p.id)}" aria-label="复制 arXiv 编号 ${esc(p.id)}">${CP}</button></span>`;
 /* escape first, then convert the two inline marks */
 const G=new Map();
 const rich=t=>esc(t).replace(/\[\[@([\w.-]+)\|([^\]]*?)\]\]/g,(m,id,tx)=>`<a class="pref" href="#p-${id}" data-ref="${id}">${tx}</a>`).replace(/\[\[([\w.-]+)(?:\|([^\]]*?))?\]\]/g,(m,id,tx)=>{const g=G.get(id);
@@ -286,7 +291,7 @@ const en=p=>p.abstract_en?`<details><summary>Abstract</summary><p class="en" lan
 const title=p=>url(p.links?.abs)?`<a href="${url(p.links.abs)}" rel="noopener" lang="en">${esc(p.title)}</a>`:esc(p.title);
 
 /* tongtu translation, served from Cloudflare (Access-protected): PDF opens in a new tab */
-const tl=p=>url(p.translation?.pdf)?`<span class="tl"><a href="${url(p.translation.pdf)}" target="_blank" rel="noopener">中文全文 PDF</a>${url(p.translation.zip)?`<a href="${url(p.translation.zip)}" rel="noopener">out.zip</a>`:''}</span>`:'';
+const tl=p=>url(p.translation?.zip)?`<span class="tl"><a href="${url(p.translation.zip)}" rel="noopener" title="tongtu 输出目录（out.zip）">通途</a></span>`:'';
 function story(p){
   const head=`<div class="head"><h2>${esc(p.title_zh)}</h2><p class="deck">${title(p)}</p>
     <div class="by">${p.star?'<span class="st" aria-label="精读">★</span>':''}${p.affiliation?`<span>${esc(p.affiliation)}</span>`:""}<span>${esc(full(dir(p.direction).name))}</span><span>${esc(p.primary_cat)}</span>${links(p)}</div></div>`;
@@ -375,6 +380,11 @@ function render(){
 }
 
 document.addEventListener('click',e=>{
+  const cp=e.target.closest('button[data-copy]');
+  if(cp){const id=cp.dataset.copy,done=()=>{cp.classList.add('ok');cp.title='已复制 '+id;setTimeout(()=>{cp.classList.remove('ok');cp.title='复制 arXiv 编号 '+id},1500)};
+    const fb=()=>{try{const t=document.createElement('textarea');t.value=id;t.style.position='fixed';t.style.opacity='0';document.body.append(t);t.select();document.execCommand('copy');t.remove();done()}catch(_){}};
+    try{navigator.clipboard.writeText(id).then(done,fb)}catch(_){fb()}
+    return}
   const go=e.target.closest('a[data-go]');
   if(go){e.preventDefault();S.q='';$('q').value='';S.date=go.dataset.go;const pid=go.dataset.p;loadDay().then(()=>{const el=pid&&document.getElementById('p-'+pid);if(el){el.scrollIntoView({block:'start'});el.classList.add('flash')}else scrollTo(0,0)});return}
   const ga=e.target.closest('a[data-ref]');
