@@ -79,7 +79,8 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .c-top select{font:500 13px/1.6 var(--sans);color:var(--ink);letter-spacing:.1em;appearance:none;-webkit-appearance:none;text-align:right;text-align-last:right;padding:0 16px 0 4px;line-height:1;max-width:100%;
   background:no-repeat right 2px center/8px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5' fill='none' stroke='%23888' stroke-width='1.2'%3E%3Cpath d='m1 1 3 3 3-3'/%3E%3C/svg%3E")}
 .c-top>h1,.c-top>select{flex:none}
-.rail{flex:1;display:flex;align-items:flex-end;gap:0;overflow-x:auto;scrollbar-width:none;letter-spacing:0;padding:6px 10px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent);mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent)}
+.c-top{letter-spacing:0}
+.rail{flex:0 1 auto;display:flex;align-items:flex-end;gap:0;overflow-x:auto;scrollbar-width:none;letter-spacing:0;padding:6px 10px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent);mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent)}
 .rail::-webkit-scrollbar{display:none}
 .rail .mo{flex:none;font:600 12px/1 var(--song);color:var(--mute);letter-spacing:.2em;padding:0 8px 0 18px;white-space:nowrap}
 .rail .mo:first-child{margin-left:auto}
@@ -97,17 +98,18 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .c-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(46vw,76vh,640px));grid-template-areas:"day disc" "info disc";grid-template-rows:auto 1fr;
   gap:0 clamp(28px,4.6vw,76px);align-items:start;align-content:center;padding:clamp(20px,4vh,44px) 0 clamp(28px,5vh,56px)}
 .c-day{grid-area:day}
-.lock{display:flex;align-items:stretch;gap:clamp(12px,1.4vw,22px)}
-.dv{display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:14px;padding:1.5em 0 1.2em}
-.dv>span:first-child{display:flex;flex-direction:row-reverse;gap:clamp(8px,.9vw,14px)}
-.num{font:500 clamp(112px,min(13.5vw,25vh),208px)/1 var(--serif);color:var(--ink);letter-spacing:-.045em;font-variant-numeric:lining-nums;margin:-.03em .04em -.1em -.04em}
-.num .m{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .06em 0 0}
-.num .m>i{display:inline-block;font-style:normal;transform:translateY(112%);transition:transform 1.15s var(--ease)}
+.lock{--ns:clamp(112px,min(13.5vw,25vh),208px);display:flex;align-items:stretch;gap:clamp(14px,1.6vw,26px)}
+/* 数字的盒子正好等于字形的高度（顶到数字顶、底到基线），旁边两列竖排字两端对齐撑满同样的高度，重心才会一致 */
+.num{display:flex;font:500 var(--ns)/1 var(--serif);color:var(--ink);letter-spacing:-.045em;font-variant-numeric:lining-nums;margin-left:-.04em}
+.num .m{display:block;overflow:hidden;height:.8em;padding:.03em .06em 0 0}
+.num .m>i{display:block;font-style:normal;transform:translateY(112%);transition:transform 1.15s var(--ease)}
 .num .m:nth-child(2)>i{transition-delay:.09s}
 .ready .num .m>i{transform:none}
-.lock .v{writing-mode:vertical-rl;text-orientation:upright;font:700 clamp(16px,1.5vw,21px)/1 var(--song);color:var(--ink);letter-spacing:.34em;white-space:nowrap}
+.dv{display:flex;flex-direction:row-reverse;gap:calc(var(--ns)*.07);padding:calc(var(--ns)*.036) 0 0;margin-bottom:calc(var(--ns)*-.012)}
+.lock .v{writing-mode:vertical-rl;text-orientation:upright;font:700 calc(var(--ns)*.205)/1 var(--song);color:var(--ink);white-space:nowrap;text-align:justify;text-align-last:justify}
 .lock .v.w{font-weight:400;color:var(--mute)}
-.c-day .tally{margin-top:clamp(8px,1.6vh,18px)}
+.np+.seal{writing-mode:horizontal-tb;font-size:12.5px;letter-spacing:.16em;padding:.42em .34em .42em .5em;margin:0 auto 0 -4px;flex:none}
+.c-day .tally{margin-top:clamp(14px,2.4vh,24px)}
 .c-info{grid-area:info;padding-top:clamp(16px,3vh,34px);max-width:35em}
 .c-info .kick{margin-bottom:12px}
 .c-info .g{font-size:clamp(17px,1.42vw,20px);line-height:2;color:var(--body);text-wrap:pretty}
@@ -418,7 +420,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   .cover{min-height:0}
   .c-top{flex-wrap:wrap;row-gap:10px}.rail{order:5;flex:1 0 100%;margin:0 -10px}
   .c-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"day" "disc" "info";padding-top:22px}
-  .num{font-size:clamp(104px,30vw,180px)}
+  .lock{--ns:clamp(104px,30vw,180px)}
   .c-disc{margin:14px auto 0;width:min(100%,520px)}
   .c-info{max-width:none}
   .c-hint{display:none}
@@ -453,7 +455,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 
 <div class="page">
   <header class="cover" id="cover">
-    <div class="c-top c-fade"><h1 class="np" lang="en">arXiv Daily</h1><nav class="rail" id="rail" aria-label="各期"></nav><select id="topic" aria-label="主题"></select></div>
+    <div class="c-top c-fade"><h1 class="np" lang="en">arXiv Daily</h1><span class="seal" id="issue"></span><nav class="rail" id="rail" aria-label="各期"></nav><select id="topic" aria-label="主题"></select></div>
     <div class="c-grid" id="cgrid">
       <div class="c-day" id="cday"></div>
       <figure class="c-disc c-fade">
@@ -714,7 +716,8 @@ function render(fresh){
   /* 封面 */
   const gd=d.overview?.guide||[];
   const tally=`<p class="tally">${tot!=null?`<span><b data-n="${+tot||0}">${esc(tot)}</b>篇新论文</span><span><i>→</i>`:'<span>'}<b data-n="${ps.length}">${ps.length}</b>篇入选</span>${nStar?`<span><i>→</i><b class="st" data-n="${nStar}">${nStar}</b>篇精读</span>`:''}</p>`;
-  $('cday').innerHTML=`<div class="lock" aria-label="${esc(cn(S.date))}"><span class="num" aria-hidden="true">${[...String(t.d)].map(c=>`<span class="m"><i>${c}</i></span>`).join('')}</span><span class="dv" aria-hidden="true"><span><span class="v">${cnN(t.m)}月</span><span class="v w">星期${WK[t.w]}</span></span><span class="seal">第${cnN(issueNo())}期</span></span></div>`+tally;
+  $('cday').innerHTML=`<div class="lock" aria-label="${esc(cn(S.date))}"><span class="num" aria-hidden="true">${[...String(t.d)].map(c=>`<span class="m"><i>${c}</i></span>`).join('')}</span><span class="dv" aria-hidden="true"><span class="v">${cnN(t.m)}月</span><span class="v w">星期${WK[t.w]}</span></span></div>`+tally;
+  $('issue').textContent=`第${cnN(issueNo())}期`;
   /* 封面的正文是导读第一段；没有导读的日子退回精读标题列表 */
   $('cinfo').innerHTML=gd.length?`<h2 class="kick">今日导读</h2><p class="g">${rich(gd[0])}</p>`
     :`<ol class="c-stars">${allStars.map((p,i)=>`<li><a href="#p-${esc(p.id)}" data-ref="${esc(p.id)}"><b>${ORD[i]||i+1}</b><span>${esc(p.title_zh)}</span><u>→</u></a></li>`).join('')||'<li class="no">今天没有精读</li>'}</ol>`;
