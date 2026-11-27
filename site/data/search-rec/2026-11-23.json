@@ -223,7 +223,11 @@
      "after": 2,
      "caption_zh": "CO-GRAFT 框架：(a) 一条轨迹按推理、决策、写 query、写答案四个角色切开；(b) RL 前后两个模型分角色接力生成；(c) 16 种分配下的 EM 和各角色的 Shapley 份额。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.31185v1/2611.31185v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.31185v1/2611.31185v1_out.zip"
+   }
   },
   {
    "id": "2611.30727",

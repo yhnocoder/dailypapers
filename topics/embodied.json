@@ -1,0 +1,71 @@
+{
+ "id": "embodied",
+ "name": "具身智能与 VLA",
+ "taxonomy_version": "v1",
+ "rules_version": "v1",
+ "categories": [
+  "cs.RO",
+  "cs.CV",
+  "cs.AI",
+  "cs.LG"
+ ],
+ "directions": [
+  {
+   "code": "A",
+   "name": "VLA 模型"
+  },
+  {
+   "code": "B",
+   "name": "操作"
+  },
+  {
+   "code": "C",
+   "name": "导航与移动"
+  },
+  {
+   "code": "D",
+   "name": "世界模型与仿真"
+  },
+  {
+   "code": "E",
+   "name": "数据与遥操作"
+  },
+  {
+   "code": "F",
+   "name": "强化学习与控制"
+  },
+  {
+   "code": "G",
+   "name": "人形与全身控制"
+  },
+  {
+   "code": "H",
+   "name": "评测与 Benchmark"
+  },
+  {
+   "code": "Z",
+   "name": "其他"
+  }
+ ],
+ "cadence": {
+  "run_days": [
+   "Sun"
+  ],
+  "_note": "weekdays (America/New_York) the editor task runs; daily topics publish one issue per batch, others one issue covering every batch since the previous issue"
+ },
+ "issue_cap": 20,
+ "stars": [
+  3,
+  5
+ ],
+ "classify_prompt": "prompts/classify.md",
+ "scope_prompt": "prompts/scope/embodied.md",
+ "writing_prompt": "prompts/writing.md",
+ "branch_prefix": "daily/embodied",
+ "start_date": "2026-11-26",
+ "translations": {
+  "tongtu_mode": "fast",
+  "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
+  "files_base": "https://dailypapers-files.awesomedays.workers.dev"
+ }
+}

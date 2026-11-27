@@ -1,0 +1,68 @@
+{
+ "id": "diffusion",
+ "name": "Diffusion / 生成",
+ "taxonomy_version": "v1",
+ "rules_version": "v1",
+ "categories": [
+  "cs.CV",
+  "cs.LG",
+  "cs.GR",
+  "cs.AI"
+ ],
+ "directions": [
+  {
+   "code": "A",
+   "name": "图像生成"
+  },
+  {
+   "code": "B",
+   "name": "视频生成"
+  },
+  {
+   "code": "C",
+   "name": "3D / 4D 生成"
+  },
+  {
+   "code": "D",
+   "name": "世界模型"
+  },
+  {
+   "code": "E",
+   "name": "理论与训练方法"
+  },
+  {
+   "code": "F",
+   "name": "采样加速"
+  },
+  {
+   "code": "G",
+   "name": "评测与安全"
+  },
+  {
+   "code": "Z",
+   "name": "其他"
+  }
+ ],
+ "cadence": {
+  "run_days": [
+   "Wed",
+   "Sun"
+  ],
+  "_note": "weekdays (America/New_York) the editor task runs; daily topics publish one issue per batch, others one issue covering every batch since the previous issue"
+ },
+ "issue_cap": 20,
+ "stars": [
+  3,
+  5
+ ],
+ "classify_prompt": "prompts/classify.md",
+ "scope_prompt": "prompts/scope/diffusion.md",
+ "writing_prompt": "prompts/writing.md",
+ "branch_prefix": "daily/diffusion",
+ "start_date": "2026-11-26",
+ "translations": {
+  "tongtu_mode": "fast",
+  "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
+  "files_base": "https://dailypapers-files.awesomedays.workers.dev"
+ }
+}

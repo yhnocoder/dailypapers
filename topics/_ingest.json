@@ -1,0 +1,19 @@
+{
+ "_note": "Shared daily ingest (paper pool). arXiv categories = union of every topic's `categories`.",
+ "branch_prefix": "daily/ingest",
+ "start_date": "2026-11-25",
+ "min_candidates": 150,
+ "lookback_days": 7,
+ "heat": {
+  "window_days": 14,
+  "sources": [
+   "hf",
+   "hn"
+  ]
+ },
+ "batch_size": 64,
+ "no_announce": [
+  "2026-11-26"
+ ],
+ "_no_announce_note": "arXiv 不公布的日子（https://info.arxiv.org/help/availability.html）。这些日期不算批次，投稿并入下一个批次。年底假期公布后补上。"
+}

@@ -155,6 +155,234 @@
    "term": "梯度反转层",
    "en": "gradient reversal layer (GRL)",
    "def": "前向时原样传递、反向时把梯度乘以负数的一层。把它放在表示和一个领域分类器之间，分类器努力认出样本来自哪个域，表示却被推向让分类器认不出，从而学到与领域无关的特征。"
+  },
+  {
+   "id": "speculative-decoding",
+   "term": "投机解码",
+   "en": "speculative decoding",
+   "def": "先用一个小的草稿模型一次猜出几个后续 token，再让大模型一次前向并行验证，接受与它自己分布一致的最长前缀。输出分布与大模型单独生成完全一样（无损），省下的是大模型逐 token 前向的次数。"
+  },
+  {
+   "id": "acceptance-length",
+   "term": "接受长度 τ",
+   "en": "acceptance length",
+   "def": "投机解码中每一轮平均被大模型接受的 token 数（含大模型自己补的那一个）。τ 越大，大模型前向次数越少；实际加速还要扣掉草稿模型自己花的时间。"
+  },
+  {
+   "id": "pd-disaggregation",
+   "term": "PD 分离",
+   "en": "prefill–decode disaggregation",
+   "def": "把处理整段提示的 prefill 和逐 token 生成的 decode 放到不同的 GPU 实例上，各自按负载配置和扩缩容，prefill 算完后把 KV 缓存传给 decode 实例。"
+  },
+  {
+   "id": "chunked-prefill",
+   "term": "分块 prefill",
+   "en": "chunked prefill",
+   "def": "把长 prompt 的 prefill 切成固定大小的 token 块，每步只算一块，和正在生成的 decode 请求拼在一起跑，避免一个长 prompt 长时间独占 GPU。块越小 decode 等得越短，但模型权重要按块重复读取，计算效率下降。vLLM、Sarathi-Serve 都用这种做法。"
+  },
+  {
+   "id": "slo-goodput",
+   "term": "SLO goodput",
+   "en": "SLO goodput",
+   "def": "每秒有多少请求同时满足所有延迟目标（例如首 token 时间、每 token 时间、尾部 token 间隔）。和单纯的 token 吞吐不同，超时的请求一个都不算，所以更接近线上服务真正能接的量。"
+  },
+  {
+   "id": "hadamard-rotation",
+   "term": "Hadamard 旋转",
+   "en": "Hadamard rotation",
+   "def": "量化前先用正交的 Hadamard 矩阵把一组通道“搅匀”：向量长度不变，但个别特别大的离群值被摊到所有通道上，低比特量化的误差就小很多。QuaRot 等 4-bit 推理方法都用这个技巧，反量化时再乘一次转置即可还原。"
+  },
+  {
+   "id": "expert-parallelism",
+   "term": "专家并行（EP）",
+   "en": "Expert Parallelism",
+   "def": "把 MoE 模型同一层的不同专家放到不同 GPU（rank）上，token 通过 all-to-all 通信发给持有目标专家的 GPU 计算后再收回。每层的发送和收回都是同步点，所以整层的耗时由最忙的那张卡决定。"
+  },
+  {
+   "id": "eplb",
+   "term": "EPLB",
+   "en": "Expert Parallelism Load Balancer",
+   "def": "DeepSeek 开源的专家负载均衡工具：根据统计到的各专家负载，复制热门专家、重新安排专家到 GPU 的映射，让各卡负载接近。它不改路由结果，代价是冗余副本占显存，而且只能跟上较慢的负载变化。"
+  },
+  {
+   "id": "mopd",
+   "term": "多教师在线蒸馏",
+   "en": "Multi-teacher On-Policy Distillation (MOPD)",
+   "def": "让学生模型自己生成回答，再按任务类型挑一位教师模型，在学生走过的每个位置上让学生的 token 分布去贴近教师的分布。常用来把分别训练的几个专家模型（比如擅长推理的和擅长对话安全的）合成一个模型，训练信号全部来自教师，不需要额外的 reward。"
+  },
+  {
+   "id": "routing-replay",
+   "term": "路由回放",
+   "en": "Routing replay",
+   "def": "MoE 模型做 RL 时，推理引擎和训练框架的数值差异可能让同一个 token 选到不同的专家。路由回放让推理时记下每个 token 选了哪几个专家，训练时直接沿用这组选择，减少训练和推理之间的不一致。"
+  },
+  {
+   "id": "kimi-delta-attention",
+   "term": "KDA（Kimi Delta Attention）",
+   "en": "Kimi Delta Attention",
+   "def": "Kimi 提出的一种线性注意力：把历史压进一个固定大小的状态矩阵，每来一个新 token 只把“预测值与真实值之差”写回状态，并按行设置衰减系数决定忘掉多少。显存不随上下文变长而增长，通常和少量全注意力层交替使用。"
+  },
+  {
+   "id": "muon",
+   "term": "Muon 优化器",
+   "en": "Muon (MomentUm Orthogonalized by Newton–Schulz)",
+   "def": "针对矩阵参数的优化器：先算动量，再用 Newton–Schulz 迭代把动量矩阵近似正交化后作为更新方向，而不是像 AdamW 那样逐元素缩放。已有报告称同等效果下计算量约为 AdamW 的一半，代价是分布式训练时要把分片的矩阵拼回完整再算。"
+  },
+  {
+   "id": "z-loss",
+   "term": "Z-loss",
+   "en": "Z-loss",
+   "def": "一种辅助损失：对一组激活取 log-sum-exp 再平方，加到总 loss 上。log-sum-exp 近似最大值，所以它主要压制个别特别大的正值，防止激活一路变大导致 loss 尖峰。原本用在 router logits 上，这篇把它用在 MoE 层输出上。"
+  },
+  {
+   "id": "catastrophic-forgetting",
+   "term": "灾难性遗忘",
+   "en": "catastrophic forgetting",
+   "def": "模型在新数据上微调后，原本会的能力（代码、数学、安全拒答等）大幅下降。持续微调里最常被担心的问题。"
+  },
+  {
+   "id": "on-policy",
+   "term": "on-policy / off-policy",
+   "en": "on-policy / off-policy",
+   "def": "on-policy 指用模型自己当前生成的输出来训练（如 RL），off-policy 指用外部给定的数据训练（如 SFT 用的人工或强模型示范）。前者训练数据随模型变化，后者是固定的。"
+  },
+  {
+   "id": "sdft",
+   "term": "SDFT",
+   "en": "Self-Distillation Fine-Tuning",
+   "def": "自蒸馏微调：让学生模型自己生成答案，再用「看过示范答案的同一个模型」（参数取学生的滑动平均）当老师，逐 token 纠正学生。只需要示范数据就能做 on-policy 训练，原本用来减少遗忘。"
+  },
+  {
+   "id": "progress-score",
+   "term": "进度分",
+   "en": "progress score",
+   "def": "真机评测常用的打分方式：把一个任务拆成若干可观察的里程碑（抓起、放到位、合上盖子等），每完成一步拿对应的分，最后归一化到 0–100%。比只看成功与否更细，但做到一半也有分，所以数值通常比成功率高。"
+  },
+  {
+   "id": "action-chunk",
+   "term": "动作块",
+   "en": "action chunk",
+   "def": "策略一次预测未来一段连续的动作（例如 64 帧），而不是每一步只出一个动作。这样动作更平滑、推理次数更少，是 ACT、π0 等 VLA 模型的标准做法。"
+  },
+  {
+   "id": "fsq",
+   "term": "有限标量量化（FSQ）",
+   "en": "finite scalar quantization",
+   "def": "把连续向量的每一维直接四舍五入到少数几个固定档位，各维档位的组合就是离散码，不需要像 VQ-VAE 那样学习码本。残差 FSQ 再对剩下的误差逐级量化，前几级给粗略轮廓、后几级补细节。"
+  },
+  {
+   "id": "world-action-model",
+   "term": "世界-动作模型（WAM）",
+   "en": "world-action model",
+   "def": "以视频生成模型为骨干的机器人策略：同时预测接下来的画面和要执行的动作，动作从对未来的“想象”里读出来。和 VLA 相比，它继承的是视频模型对物体如何运动的先验，而不是图文模型的语义先验。"
+  },
+  {
+   "id": "vla",
+   "term": "VLA",
+   "en": "Vision-Language-Action model",
+   "def": "视觉-语言-动作模型：在视觉语言模型（VLM）基础上加动作输出，看图像、读指令，直接输出机器人的关节或末端动作。π0、π0.5、OpenVLA、SmolVLA 都属于这一类，通常先大规模预训练，再用少量示范做行为克隆微调。"
+  },
+  {
+   "id": "repa",
+   "term": "表征对齐（REPA）",
+   "en": "Representation Alignment",
+   "def": "训练时额外加一个损失，把模型某一层的特征（经过一个小投影头）拉向冻结的预训练编码器（如 DINOv2）对同一输入的特征，推理时去掉这个编码器。最早用于扩散 Transformer 加速收敛，后来被搬到 VLA 微调上，想借教师注入 3D、语义等先验。"
+  },
+  {
+   "id": "forced-readout",
+   "term": "强制读出",
+   "en": "Forced readout",
+   "def": "在模型输出的任意位置后面接上「Answer: (」，直接读出各选项字母的概率，看模型此刻倾向哪个答案。逐句做一遍，就能看到推理写到哪一句时答案发生了翻转。"
+  },
+  {
+   "id": "answer-step-regrounding",
+   "term": "答案步重新看图",
+   "en": "Answer-step re-grounding",
+   "def": "模型写完推理、给出最终答案时，再对照一次图像，图与自己写的内容矛盾时以图为准。论文发现开源 VLM 缺这一步，只会照抄自己写下的关系。"
+  },
+  {
+   "id": "lora",
+   "term": "LoRA",
+   "en": "Low-Rank Adaptation",
+   "def": "一种参数高效微调方法：冻结原模型权重，只在部分矩阵旁边加一对低秩小矩阵来训练。训练量和显存开销小，常用来做小规模的行为纠正实验。"
+  },
+  {
+   "id": "fh-segmentation",
+   "term": "FH 分割",
+   "en": "Felzenszwalb-Huttenlocher segmentation",
+   "def": "2004 年提出的基于图的图像分割：把像素当作图的节点，按颜色差从小到大合并相邻区域，只要两块之间的差异小于各自内部的差异就合并。不需要训练、在 CPU 上就很快，结果一定覆盖每个像素、每块都是连通的。"
+  },
+  {
+   "id": "coarse-to-fine-pointing",
+   "term": "由粗到细指点解码",
+   "en": "coarse-to-fine pointing",
+   "def": "VLM 不直接用文字写出坐标，而是生成几个特殊 token，用它们的隐藏状态逐级检索：先选一个视觉 token（区域），再选它里面的一个 patch，最后在 patch 的 4×4 小格里选一格，再映射回图像坐标。每个点只要 3 个输出 token，比写文字坐标更准。"
+  },
+  {
+   "id": "post-hoc-token-compression",
+   "term": "事后 token 压缩",
+   "en": "post-hoc token compression",
+   "def": "在已经切好的视觉 token 序列上再删掉（剪枝，如 FastV）或合并（如 ToMe）一部分，以缩短 LLM 的输入。对整图问答影响小，但会丢掉 token 和图像位置的对应关系，指点、分割这类要输出位置的任务掉分明显。"
+  },
+  {
+   "id": "rlvr",
+   "term": "RLVR",
+   "en": "Reinforcement Learning with Verifiable Rewards",
+   "def": "可验证奖励强化学习：奖励由规则自动判定（答案对不对、代码能不能跑通），不需要奖励模型。GRPO、DAPO 都属于这一类，缺点是只看最终结果，不知道是哪一步推理挣到了奖励。"
+  },
+  {
+   "id": "single-image-shortcut",
+   "term": "单图捷径",
+   "en": "single-image shortcut",
+   "def": "多图题本该综合几张图作答，模型却只靠其中一张图给出答案。和“只看题干就答”的语言先验不同，它确实用了图像，所以把图全部去掉测不出来，要一次只露一张图才能发现。"
+  },
+  {
+   "id": "gfid-rfid",
+   "term": "gFID / rFID",
+   "en": "generation FID / reconstruction FID",
+   "def": "FID 衡量一批图像和真实图像在 Inception 特征上的分布距离，越低越好。gFID 评的是模型从噪声生成的图，rFID 评的是把真实图编码再解码回来的重建图；前者看生成质量，后者看 tokenizer 丢了多少信息。"
+  },
+  {
+   "id": "flow-matching",
+   "term": "flow matching（流匹配）",
+   "en": "flow matching",
+   "def": "扩散模型的一种训练目标：在噪声和数据之间连一条插值路径（常用直线，即 rectified flow），让网络学习沿路径从噪声走向数据的速度场，采样时解这条常微分方程即可。"
+  },
+  {
+   "id": "cka",
+   "term": "CKA（中心化核对齐）",
+   "en": "Centered Kernel Alignment",
+   "def": "比较两组神经网络激活是否「在表示同一种结构」的相似度指标，取值 0 到 1。常用来逐层对比两个网络或同一网络两次前向的中间表示，看它们从哪一层开始分道扬镳。"
+  },
+  {
+   "id": "nvfp4",
+   "term": "NVFP4",
+   "en": "NVIDIA FP4 (NVFP4)",
+   "def": "NVIDIA Blackwell 显卡原生支持的 4 比特浮点格式：每 16 个数共用一个 FP8 缩放系数，再加一个整张量的 FP32 系数。矩阵乘法吞吐比 FP8 再翻倍，但能表示的数值很少，误差比 8 比特大得多，通常要靠训练来补。"
+  },
+  {
+   "id": "dmd",
+   "term": "DMD（分布匹配蒸馏）",
+   "en": "Distribution Matching Distillation",
+   "def": "把多步扩散模型蒸馏成几步生成器的方法：不逐条对齐老师的输出，而是让学生生成结果的整体分布去贴近老师的分布（最小化反向 KL），梯度由老师和一个跟踪学生分布的“评论家”网络的打分之差给出。它对初始化敏感，起点离老师太远时训练容易不稳。"
+  },
+  {
+   "id": "layerwise-reconstruction",
+   "term": "逐层重建",
+   "en": "layer-wise reconstruction",
+   "def": "量化模型的一种校正方式：给量化层和原始层喂同一份老师的输入，要求两者的输出尽量一致。它只纠正每层自己引入的误差，不让前面层累积的偏差干扰，因此比只看最终输出的 QAT/QAD 更能保住模型原来的行为。"
+  },
+  {
+   "id": "best-of-n",
+   "term": "Best-of-N",
+   "en": "best-of-N sampling",
+   "def": "同一个提示让模型生成 N 个结果，再用一个打分器（选择器、verifier 或奖励模型）挑出最好的一个。不用训练，但每次请求的推理成本约为 N 倍；效果上限取决于打分器能不能认出正确结果。"
+  },
+  {
+   "id": "pass-at-k",
+   "term": "pass@k",
+   "en": "pass@k",
+   "def": "生成 k 个结果里至少有一个正确的概率，相当于有一个完美选择器时 best-of-k 的准确率。常用来区分“模型画不出来”和“画得出但挑不出来”。"
   }
  ]
 }

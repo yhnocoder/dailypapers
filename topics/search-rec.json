@@ -2,27 +2,15 @@
  "id": "search-rec",
  "name": "搜索与推荐",
  "taxonomy_version": "v1",
- "rules_version": "v2",
- "full_categories": [
+ "rules_version": "v3",
+ "categories": [
   "cs.IR",
   "cs.CL",
   "cs.AI",
   "cs.LG",
-  "cs.DB"
+  "cs.DB",
+  "cs.CV"
  ],
- "phrase_categories": {
-  "cs.CV": [
-   "retrieval",
-   "reranking",
-   "re-ranking",
-   "learning to rank",
-   "image retrieval",
-   "composed image retrieval",
-   "cross-modal retrieval",
-   "video retrieval",
-   "visual place recognition"
-  ]
- },
  "directions": [
   {
    "code": "A",
@@ -61,9 +49,23 @@
    "name": "其他"
   }
  ],
+ "cadence": {
+  "run_days": [
+   "Wed",
+   "Sun"
+  ],
+  "_note": "weekdays (America/New_York) the editor task runs; daily topics publish one issue per batch, others one issue covering every batch since the previous issue"
+ },
+ "issue_cap": 20,
+ "stars": [
+  3,
+  5
+ ],
  "classify_prompt": "prompts/classify.md",
+ "scope_prompt": "prompts/scope/search-rec.md",
  "writing_prompt": "prompts/writing.md",
  "branch_prefix": "daily/search",
+ "start_date": "2026-11-23",
  "translations": {
   "tongtu_mode": "fast",
   "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
