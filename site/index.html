@@ -76,14 +76,14 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 /* ── 封面 ─────────────────────────────────────────────── */
 .cover{position:relative;display:grid;grid-template-rows:auto 1fr;min-height:min(100vh,940px);min-height:min(100svh,940px);padding-top:max(18px,env(safe-area-inset-top,0px))}
 .c-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;font:400 12.5px/1.6 var(--sans);color:var(--mute);letter-spacing:.14em}
-.c-top select{font:500 13px/1.6 var(--sans);color:var(--ink);letter-spacing:.1em;appearance:none;-webkit-appearance:none;text-align:right;text-align-last:right;padding:4px 16px 4px 4px;max-width:100%;
+.c-top select{font:500 13px/1.6 var(--sans);color:var(--ink);letter-spacing:.1em;appearance:none;-webkit-appearance:none;text-align:right;text-align-last:right;padding:0 16px 0 4px;line-height:1;max-width:100%;
   background:no-repeat right 2px center/8px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5' fill='none' stroke='%23888' stroke-width='1.2'%3E%3Cpath d='m1 1 3 3 3-3'/%3E%3C/svg%3E")}
-.c-top>span,.c-top>select{flex:none}
+.c-top>h1,.c-top>select{flex:none}
 .rail{flex:1;display:flex;align-items:flex-end;gap:0;overflow-x:auto;scrollbar-width:none;letter-spacing:0;padding:6px 10px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent);mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent)}
 .rail::-webkit-scrollbar{display:none}
-.rail .mo{flex:none;font:600 12px/1 var(--song);color:var(--mute);letter-spacing:.2em;padding:0 8px 9px 18px;white-space:nowrap}
+.rail .mo{flex:none;font:600 12px/1 var(--song);color:var(--mute);letter-spacing:.2em;padding:0 8px 0 18px;white-space:nowrap}
 .rail .mo:first-child{margin-left:auto}
-.rail button{flex:none;position:relative;width:46px;padding:9px 0 6px;display:grid;justify-items:center;gap:3px;border-top:1px solid var(--hair);color:var(--ink);transition:color .2s,transform .4s var(--ease)}
+.rail button{flex:none;position:relative;width:46px;padding:9px 0 0;display:grid;justify-items:center;gap:3px;border-top:1px solid var(--hair);color:var(--ink);transition:color .2s,transform .4s var(--ease)}
 .rail button::before{content:"";position:absolute;top:0;left:50%;width:1px;height:5px;background:var(--faint);transition:height .4s var(--ease),background .2s}
 .rail button b{font:500 19px/1 var(--serif);font-variant-numeric:lining-nums}
 .rail button small{font:400 10.5px/1 var(--sans);color:var(--faint);letter-spacing:.06em}
@@ -93,27 +93,25 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .rail button.on b{font-weight:800}
 .rail button.on::before{width:7px;height:7px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%)}
 .rail button.on small{color:var(--accent)}
-.np{font:900 17px/1 var(--song);color:var(--ink);letter-spacing:.2em;margin-right:14px;white-space:nowrap}
+.np{font:600 19px/1 var(--serif);color:var(--ink);letter-spacing:.01em;margin-right:14px;white-space:nowrap}
 .c-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(46vw,76vh,640px));grid-template-areas:"day disc" "info disc";grid-template-rows:auto 1fr;
   gap:0 clamp(28px,4.6vw,76px);align-items:start;align-content:center;padding:clamp(20px,4vh,44px) 0 clamp(28px,5vh,56px)}
 .c-day{grid-area:day}
-.lock{display:flex;align-items:flex-start;gap:clamp(10px,1.2vw,18px)}
-.num{font:500 clamp(112px,min(13.5vw,25vh),208px)/.84 var(--serif);color:var(--ink);letter-spacing:-.045em;font-variant-numeric:lining-nums;margin:0 .04em 0 -.04em}
-.num .m{display:inline-block;overflow:hidden;vertical-align:top;padding:.03em .05em .09em 0}
+.lock{display:flex;align-items:stretch;gap:clamp(12px,1.4vw,22px)}
+.dv{display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:14px;padding:1.5em 0 1.2em}
+.dv>span:first-child{display:flex;flex-direction:row-reverse;gap:clamp(8px,.9vw,14px)}
+.num{font:500 clamp(112px,min(13.5vw,25vh),208px)/1 var(--serif);color:var(--ink);letter-spacing:-.045em;font-variant-numeric:lining-nums;margin:-.03em .04em -.1em -.04em}
+.num .m{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .06em 0 0}
 .num .m>i{display:inline-block;font-style:normal;transform:translateY(112%);transition:transform 1.15s var(--ease)}
 .num .m:nth-child(2)>i{transition-delay:.09s}
 .ready .num .m>i{transform:none}
-.lock .v{writing-mode:vertical-rl;text-orientation:upright;font:700 clamp(16px,1.5vw,21px)/1 var(--song);color:var(--ink);letter-spacing:.34em;white-space:nowrap;padding-top:.5em}
+.lock .v{writing-mode:vertical-rl;text-orientation:upright;font:700 clamp(16px,1.5vw,21px)/1 var(--song);color:var(--ink);letter-spacing:.34em;white-space:nowrap}
 .lock .v.w{font-weight:400;color:var(--mute)}
-.lock .seal{align-self:flex-end;margin:0 0 .9em 6px}
 .c-day .tally{margin-top:clamp(8px,1.6vh,18px)}
 .c-info{grid-area:info;padding-top:clamp(16px,3vh,34px);max-width:35em}
 .c-info .kick{margin-bottom:12px}
 .c-info .g{font-size:clamp(17px,1.42vw,20px);line-height:2;color:var(--body);text-wrap:pretty}
-#lead{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:3}
-#lead path{fill:none;stroke:var(--ink);stroke-width:1.2;stroke-dasharray:1;stroke-dashoffset:1;animation:draw .5s var(--ease) forwards}
-#lead circle{fill:var(--ink)}
-@keyframes draw{to{stroke-dashoffset:0}}
+
 .tally{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .4em;font:400 14px/1.5 var(--sans);color:var(--mute);letter-spacing:.04em}
 .tally span{white-space:nowrap}
 .tally b{font:500 clamp(28px,2.6vw,38px)/1.15 var(--serif);color:var(--ink);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em;margin-right:.08em}
@@ -143,9 +141,9 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 #dtip small i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
 
 .seal{display:block;writing-mode:vertical-rl;text-orientation:upright;background:var(--seal);color:var(--sealink);font:900 clamp(15px,1.25vw,18px)/1 var(--song);letter-spacing:.2em;
-  padding:.62em .46em .44em;border-radius:3px;filter:url(#rough);transform:rotate(-2.5deg) scale(1.5);opacity:0}
+  padding:.62em .46em .44em;border-radius:3px;filter:url(#rough);transform:rotate(-1.5deg) scale(1.5);opacity:0}
 .ready .seal{animation:stamp .5s 1.15s cubic-bezier(.3,1.5,.5,1) both}
-@keyframes stamp{0%{opacity:0;transform:rotate(-9deg) scale(1.7)}55%{opacity:1}100%{opacity:.94;transform:rotate(-2.5deg) scale(1)}}
+@keyframes stamp{0%{opacity:0;transform:rotate(-9deg) scale(1.7)}55%{opacity:1}100%{opacity:.94;transform:rotate(-1.5deg) scale(1)}}
 .c-fade{opacity:0;transform:translateY(14px);transition:opacity .9s .5s var(--ease),transform .9s .5s var(--ease)}
 .ready .c-fade{opacity:1;transform:none}
 .c-hint{position:absolute;left:50%;bottom:12px;width:1px;height:34px;background:linear-gradient(var(--ink),transparent);transform-origin:50% 0;animation:drip 2.6s 2s var(--ease) infinite;opacity:0}
@@ -156,8 +154,8 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:flex;align-items:center;gap:6px clamp(12px,1.8vw,26px);background:var(--paper) var(--grain);margin:0 calc(-1*var(--pad));padding:7px var(--pad)}
 .bar::before{content:"";position:absolute;left:var(--pad);right:var(--pad);top:0;border-top:1px solid var(--ink)}
 .bar::after{content:"";position:absolute;left:var(--pad);right:var(--pad);bottom:0;border-bottom:1px solid var(--hair)}
-.brand{font:900 17px/1 var(--song);color:var(--ink);letter-spacing:.14em;white-space:nowrap;max-width:0;opacity:0;overflow:hidden;transition:max-width .6s var(--ease),opacity .4s,margin .6s var(--ease);margin-right:calc(-1*clamp(12px,1.8vw,26px))}
-.stuck .brand{max-width:6em;opacity:1;margin-right:0}
+.brand{font:600 18px/1 var(--serif);color:var(--ink);letter-spacing:.01em;white-space:nowrap;max-width:0;opacity:0;overflow:hidden;transition:max-width .6s var(--ease),opacity .4s,margin .6s var(--ease);margin-right:calc(-1*clamp(12px,1.8vw,26px))}
+.stuck .brand{max-width:7em;opacity:1;margin-right:0}
 .when{position:relative;display:flex;align-items:center;gap:2px;flex:none}
 .when>button{height:36px;color:var(--ink);transition:color .2s,transform .35s var(--ease)}
 .when .ar{width:30px;font:400 18px/1 var(--serif)}
@@ -209,7 +207,7 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .guide p{font-size:clamp(16px,1.25vw,17.5px);line-height:1.95;break-inside:avoid;text-wrap:pretty;margin-bottom:1em}
 .guide .cols.one p{break-inside:auto}
 /* 导读里的论文名：前面一粒和葵花盘里同色的珠子，底下一道同色的线；
-   指上去整块填满，封面上还会牵一根线到盘里对应的那一粒。 */
+   指上去整块填满，封面上盘里对应的那一粒也会亮起来。 */
 a.pref{--c:var(--accent);font-weight:700;color:var(--ink);margin:0 .12em;padding:.06em .22em .04em .16em;-webkit-box-decoration-break:clone;box-decoration-break:clone;
   background:linear-gradient(var(--c),var(--c)) no-repeat 0 100%/100% 1.5px;transition:background-size .42s var(--ease),color .25s}
 a.pref::before{content:"";display:inline-block;width:.46em;height:.46em;border-radius:50%;background:var(--c);margin-right:.34em;vertical-align:.1em;transition:background .25s,box-shadow .25s,transform .5s var(--ease)}
@@ -422,7 +420,6 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   .c-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"day" "disc" "info";padding-top:22px}
   .num{font-size:clamp(104px,30vw,180px)}
   .c-disc{margin:14px auto 0;width:min(100%,520px)}
-  #lead{display:none}
   .c-info{max-width:none}
   .c-hint{display:none}
   .bar{flex-wrap:wrap}
@@ -456,7 +453,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 
 <div class="page">
   <header class="cover" id="cover">
-    <div class="c-top c-fade"><h1 class="np">论文日报</h1><span id="issue"></span><nav class="rail" id="rail" aria-label="各期"></nav><select id="topic" aria-label="主题"></select></div>
+    <div class="c-top c-fade"><h1 class="np" lang="en">arXiv Daily</h1><nav class="rail" id="rail" aria-label="各期"></nav><select id="topic" aria-label="主题"></select></div>
     <div class="c-grid" id="cgrid">
       <div class="c-day" id="cday"></div>
       <figure class="c-disc c-fade">
@@ -464,14 +461,13 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
         <figcaption><span class="k0"><i></i>每一粒是今天公布的一篇论文</span><span class="k1"><i></i>入选，按方向着色</span><span class="k2"><i></i>精读</span></figcaption>
       </figure>
       <div class="c-info c-fade" id="cinfo"></div>
-      <svg id="lead" aria-hidden="true"></svg>
     </div>
     <span class="c-hint" aria-hidden="true"></span>
   </header>
 
   <div id="stick"></div>
   <div class="bar" id="bar">
-    <a class="brand" href="#" id="brand" aria-label="回到封面">论文日报</a>
+    <a class="brand" href="#" id="brand" aria-label="回到封面" lang="en">arXiv Daily</a>
     <div class="when">
       <button class="ar" id="prev" aria-label="前一期" title="前一期（←）">←</button>
       <button id="date" aria-haspopup="dialog" aria-expanded="false" aria-label="选择日期"></button>
@@ -664,25 +660,19 @@ const disc=(()=>{
   return {set,colors:()=>{colors();kick(100)},dim:()=>kick(900),hide,focus,blur};
 })();
 
-/* ── 导读 ↔ 葵花盘：指着论文名，牵一根线到盘里那一粒；指着那一粒，文中的名字亮起来 ── */
-function drawLead(a,p){
-  const L=$('lead');if(!a||!p||innerWidth<=900){L.innerHTML='';return}
-  const g=$('cgrid').getBoundingClientRect(),info=$('cinfo').getBoundingClientRect(),rs=a.getClientRects(),r=rs[rs.length-1];
-  const x0=info.right-g.left+10,y0=r.top+r.height/2-g.top,x1=p.x-g.left-p.r-7,y1=p.y-g.top,dx=Math.max(30,(x1-x0)*.5);
-  L.innerHTML=`<circle cx="${x0}" cy="${y0}" r="2.4"/><path pathLength="1" d="M${x0} ${y0}C${x0+dx} ${y0} ${x1-dx} ${y1} ${x1} ${y1}"/>`;
-}
+/* ── 导读 ↔ 葵花盘：指着论文名，盘里那一粒亮起来；指着那一粒，文中的名字亮起来 ── */
 const coverRefs=id=>[...$('cinfo').querySelectorAll('a.pref')].filter(a=>a.dataset.ref===id);
-function fromDisc(n,p){document.querySelectorAll('a.pref.hot').forEach(a=>a.classList.remove('hot'));const as=n?coverRefs(n.p.id):[];as.forEach(a=>a.classList.add('hot'));drawLead(as[0],p)}
+function fromDisc(n,p){document.querySelectorAll('a.pref.hot').forEach(a=>a.classList.remove('hot'));const as=n?coverRefs(n.p.id):[];as.forEach(a=>a.classList.add('hot'))}
 const pc=document.createElement('div');pc.id='pcard';pc.hidden=true;document.body.append(pc);
 function refOn(a){
-  if(a.closest('#cinfo')){drawLead(a,disc.focus(a.dataset.ref));return}
+  if(a.closest('#cinfo')&&innerWidth>900){disc.focus(a.dataset.ref);return}
   const p=(S.day?.papers||[]).find(v=>v.id===a.dataset.ref);if(!p)return;
   pc.textContent='';const sm=document.createElement('small'),i=document.createElement('i');i.style.background=p.star?'var(--accent)':`var(--d${dc(p.direction)})`;
   sm.append(i,(p.star?'★ 精读 · ':'')+short(dir(p.direction).name)+(p.affiliation?' · '+p.affiliation:''));pc.append(sm,p.title_zh||p.title);
   pc.hidden=true;pc.hidden=false;const r=a.getClientRects()[0],w=pc.offsetWidth,h=pc.offsetHeight,vw=root.clientWidth;
   pc.style.left=Math.max(16,Math.min(r.left,vw-16-w))+scrollX+'px';pc.style.top=(r.top-8-h>0?r.top-8-h:r.bottom+8)+scrollY+'px';
 }
-function refOff(){pc.hidden=true;$('lead').innerHTML='';disc.blur()}
+function refOff(){pc.hidden=true;disc.blur()}
 const prefOf=e=>e.target.closest?.('a.pref');
 document.addEventListener('mouseover',e=>{const a=prefOf(e);if(a&&!a.contains(e.relatedTarget))refOn(a)});
 document.addEventListener('mouseout',e=>{const a=prefOf(e);if(a&&!a.contains(e.relatedTarget))refOff()});
@@ -722,14 +712,12 @@ function render(fresh){
   const tot=d.funnel?.[0]?.[1];
 
   /* 封面 */
-  $('issue').textContent=`第 ${issueNo()} 期 · arXiv 每日`;
   const gd=d.overview?.guide||[];
   const tally=`<p class="tally">${tot!=null?`<span><b data-n="${+tot||0}">${esc(tot)}</b>篇新论文</span><span><i>→</i>`:'<span>'}<b data-n="${ps.length}">${ps.length}</b>篇入选</span>${nStar?`<span><i>→</i><b class="st" data-n="${nStar}">${nStar}</b>篇精读</span>`:''}</p>`;
-  $('cday').innerHTML=`<div class="lock" aria-label="${esc(cn(S.date))}"><span class="num" aria-hidden="true">${[...String(t.d)].map(c=>`<span class="m"><i>${c}</i></span>`).join('')}</span><span class="v" aria-hidden="true">${cnN(t.m)}月</span><span class="v w" aria-hidden="true">星期${WK[t.w]}</span><span class="seal" aria-hidden="true">第${cnN(issueNo())}期</span></div>`+tally;
+  $('cday').innerHTML=`<div class="lock" aria-label="${esc(cn(S.date))}"><span class="num" aria-hidden="true">${[...String(t.d)].map(c=>`<span class="m"><i>${c}</i></span>`).join('')}</span><span class="dv" aria-hidden="true"><span><span class="v">${cnN(t.m)}月</span><span class="v w">星期${WK[t.w]}</span></span><span class="seal">第${cnN(issueNo())}期</span></span></div>`+tally;
   /* 封面的正文是导读第一段；没有导读的日子退回精读标题列表 */
   $('cinfo').innerHTML=gd.length?`<h2 class="kick">今日导读</h2><p class="g">${rich(gd[0])}</p>`
     :`<ol class="c-stars">${allStars.map((p,i)=>`<li><a href="#p-${esc(p.id)}" data-ref="${esc(p.id)}"><b>${ORD[i]||i+1}</b><span>${esc(p.title_zh)}</span><u>→</u></a></li>`).join('')||'<li class="no">今天没有精读</li>'}</ol>`;
-  $('lead').innerHTML='';
   if(fresh)countUp($('cday'));
   disc.set(d,fresh);
 
