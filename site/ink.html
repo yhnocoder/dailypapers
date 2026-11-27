@@ -429,6 +429,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 /* ── 试看：纸色。选定之后把那一组值写进 :root，删掉这一段和页面底部的色条。只在日间生效。 ── */
 #try{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:2px;background:#1b1916;color:#f4f0e6;padding:5px 6px 5px 14px;font:500 12.5px/1 var(--sans);letter-spacing:.06em;box-shadow:0 14px 30px -12px rgba(0,0,0,.55);white-space:nowrap;max-width:calc(100vw - 16px);overflow-x:auto}
 #try span{opacity:.6;margin-right:6px}
+#try b{width:1px;height:16px;background:#f4f0e6;opacity:.25;margin:0 8px;flex:none}
 #try button{display:flex;align-items:center;gap:7px;padding:7px 9px;color:#f4f0e6;opacity:.75;transition:opacity .2s,background .2s}
 #try button i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.35)}
 #try button:hover{opacity:1}
@@ -439,7 +440,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 :root[data-paper="2"]{--paper:#faf9f5;--paper2:#f1efe9;--hair:#dcd8ce;--plate:#fdfcf9}
 :root[data-paper="3"]{--paper:#f1f3f0;--paper2:#e6e9e5;--hair:#cfd4cd;--plate:#f7f8f5;--grain:var(--grain-n)}
 :root[data-paper="4"]{--paper:#f2f1ef;--paper2:#e8e7e4;--hair:#d3d1cc;--plate:#f8f7f5;--grain:var(--grain-n)}
-:root[data-paper="5"]{--paper:#ffffff;--paper2:#f3f3f1;--hair:#dddcd8;--plate:#ffffff;--grain:none}
+:root[data-paper="5"]{--paper:#ffffff;--paper2:#f3f3f1;--hair:#dddcd8;--plate:#ffffff;--grain:var(--grain-n)}
 
 /* ── 窄屏 ─────────────────────────────────────────────── */
 @media(max-width:1100px){
@@ -514,7 +515,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
-<div id="try" role="group" aria-label="试看纸色"><span>纸色</span><button data-paper="0"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="1"><i style="background:#f6f4ee"></i>米白</button><button data-paper="2"><i style="background:#faf9f5"></i>宣白</button><button data-paper="3"><i style="background:#f1f3f0"></i>月白</button><button data-paper="4"><i style="background:#f2f1ef"></i>灰白</button><button data-paper="5"><i style="background:#ffffff"></i>纯白</button></div>
+<div id="try" role="group" aria-label="试看纸色"><span>纸色</span><button data-paper="0"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="1"><i style="background:#f6f4ee"></i>米白</button><button data-paper="2"><i style="background:#faf9f5"></i>宣白</button><button data-paper="3"><i style="background:#f1f3f0"></i>月白</button><button data-paper="4"><i style="background:#f2f1ef"></i>灰白</button><button data-paper="5"><i style="background:#ffffff"></i>纯白</button><b></b><span>颗粒</span><button data-grain="0">无</button><button data-grain="0.5">淡</button><button data-grain="1">中</button><button data-grain="1.8">重</button><b></b><button data-size="0.85">细</button><button data-size="0.45">粗</button></div>
 <div id="turn" aria-hidden="true"><div class="td"></div></div>
 
 <script>
@@ -527,7 +528,16 @@ const WK='日一二三四五六',CD='〇一二三四五六七八九',ORD='壹贰
 const S={topics:[],topic:null,date:null,day:null,dir:null,star:false,q:''};
 /* 试看用的纸色开关 */
 let PAPER='0';try{const v=localStorage.getItem('paper');if(/^[0-5]$/.test(v||''))PAPER=v}catch(e){}
-function applyPaper(){if(PAPER==='0')delete root.dataset.paper;else root.dataset.paper=PAPER;document.querySelectorAll('#try [data-paper]').forEach(b=>b.classList.toggle('on',b.dataset.paper===PAPER))}
+let GRAIN=1,GSIZE=.85;try{const g=parseFloat(localStorage.getItem('grain')),z=parseFloat(localStorage.getItem('gsize'));if(g>=0&&g<=3)GRAIN=g;if(z>.2&&z<1.2)GSIZE=z}catch(e){}
+/* 纸纹是一张 feTurbulence 噪点的 SVG：强弱改透明度的斜率，粗细改噪点频率。按当前的日夜和纸色配颜色。 */
+function applyGrain(){
+  const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches,cool=/^[345]$/.test(PAPER);
+  const [rgb,k,o]=dark?['1 0 0 0 0 .95 0 0 0 0 .85',.2,-.08]:cool?['.12 0 0 0 0 .12 0 0 0 0 .11',.3,-.115]:['.16 0 0 0 0 .12 0 0 0 0 .06',.34,-.13],c=rgb.split(' ');
+  const m=`0 0 0 0 ${c[0]} 0 0 0 0 ${c[5]} 0 0 0 0 ${c[10]} 0 0 0 ${(k*GRAIN).toFixed(3)} ${(o*GRAIN).toFixed(3)}`;
+  root.style.setProperty('--grain',GRAIN?`url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='${GSIZE}' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='${m}'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`)}")`:'none');
+  document.querySelectorAll('#try [data-grain]').forEach(b=>b.classList.toggle('on',+b.dataset.grain===GRAIN));document.querySelectorAll('#try [data-size]').forEach(b=>b.classList.toggle('on',+b.dataset.size===GSIZE));
+}
+function applyPaper(){if(PAPER==='0')delete root.dataset.paper;else root.dataset.paper=PAPER;document.querySelectorAll('#try [data-paper]').forEach(b=>b.classList.toggle('on',b.dataset.paper===PAPER));applyGrain()}
 const dir=c=>S.topic.directions.find(d=>d.code===c)||{code:c,name:c};
 const full=n=>n.replace(/（.*?）/,'');
 const short=n=>full(n).split(' / ')[0];
@@ -819,7 +829,7 @@ const step=d=>{const ds=S.topic.dates,v=ds[ds.indexOf(S.date)+d];if(v)go(v)};
 /* ── 主题：从按钮处一圈墨晕开 ─────────────────────────── */
 function setTheme(e){
   const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches,next=dark?'light':'dark';
-  const apply=()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}};
+  const apply=()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}applyGrain()};
   if(!document.startViewTransition||RM.matches){apply();return}
   const b=$('theme').getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,r=Math.hypot(Math.max(cx,innerWidth-cx),Math.max(cy,innerHeight-cy));
   root.classList.add('vt-theme');
@@ -827,6 +837,8 @@ function setTheme(e){
   vt.ready.then(()=>root.animate({clipPath:[`circle(0 at ${cx}px ${cy}px)`,`circle(${r}px at ${cx}px ${cy}px)`]},{duration:700,easing:'cubic-bezier(.5,0,.2,1)',pseudoElement:'::view-transition-new(root)'})).catch(()=>{});
   vt.finished.finally(()=>root.classList.remove('vt-theme'));
 }
+
+matchMedia('(prefers-color-scheme:dark)').addEventListener?.('change',applyGrain);
 
 /* ── 事件 ─────────────────────────────────────────────── */
 document.addEventListener('click',e=>{
@@ -838,7 +850,7 @@ document.addEventListener('click',e=>{
   if($('cal')&&!e.target.closest('#cal'))closeCal();
   if(e.target.closest('#brand')){e.preventDefault();scrollTo({top:0,behavior:RM.matches?'auto':'smooth'});return}
   if(e.target.closest('#theme')){setTheme(e);return}
-  const tb=e.target.closest('#try button');if(tb){PAPER=tb.dataset.paper;try{localStorage.setItem('paper',PAPER)}catch(_){}applyPaper();return}
+  const tb=e.target.closest('#try button');if(tb){if(tb.dataset.paper)PAPER=tb.dataset.paper;else if(tb.dataset.grain)GRAIN=+tb.dataset.grain;else GSIZE=+tb.dataset.size;try{localStorage.setItem('paper',PAPER);localStorage.setItem('grain',GRAIN);localStorage.setItem('gsize',GSIZE)}catch(_){}applyPaper();return}
   if(e.target.closest('#skin')){e.preventDefault();try{localStorage.setItem('skin','paper')}catch(_){}location.href='index.html'+location.hash;return}
   const mt=e.target.closest('button.more-th');if(mt){mt.parentElement.querySelectorAll('.th[hidden]').forEach(v=>v.hidden=false);mt.remove();return}
   const zb=e.target.closest('button.zoom');if(zb){lbOpen(zb.dataset.pid,+zb.dataset.i,zb);return}
