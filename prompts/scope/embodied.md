@@ -1,4 +1,4 @@
-# Scope: 具身智能与 VLA (embodied)
+# Scope: Embodied AI (embodied)
 
 ## Is it relevant? (`relevant`)
 TRUE when the research object is learning-based embodied agents and robots:
