@@ -151,7 +151,11 @@
      "ref": "Figure 41",
      "caption_zh": "base 模型的 RULER 分数随输入长度变化。中训最长只到 512K，Beam 在 1M 上依然领先 MiMo-V2.5-Pro 和 Nemotron 3 Ultra。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.26358v1/2611.26358v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.26358v1/2611.26358v1_out.zip"
+   }
   },
   {
    "id": "2611.34579",
@@ -210,7 +214,11 @@
      "ref": "Figure 1",
      "caption_zh": "Science 微调：SFT 和 SDFT 都存在涨幅相近、遗忘程度从灾难性到几乎为零的不同配置。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.34579v1/2611.34579v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.34579v1/2611.34579v1_out.zip"
+   }
   },
   {
    "id": "2611.33314",
