@@ -833,15 +833,18 @@ async function loadDay(){
 const step=d=>{const ds=S.topic.dates,v=ds[ds.indexOf(S.date)+d];if(v)go(v)};
 
 /* ── 主题：从按钮处一圈墨晕开 ─────────────────────────── */
-function setTheme(e){
-  const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches,next=dark?'light':'dark';
-  const apply=()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}syncSet()};
+/* 从 el 的位置一圈晕开，换到 apply 之后的样子；明暗和纸色都用它 */
+function bloom(el,apply){
   if(!document.startViewTransition||RM.matches){apply();return}
-  const b=$('theme').getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,r=Math.hypot(Math.max(cx,innerWidth-cx),Math.max(cy,innerHeight-cy));
+  const b=el.getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,r=Math.hypot(Math.max(cx,innerWidth-cx),Math.max(cy,innerHeight-cy));
   root.classList.add('vt-theme');
   const vt=document.startViewTransition(apply);
   vt.ready.then(()=>root.animate({clipPath:[`circle(0 at ${cx}px ${cy}px)`,`circle(${r}px at ${cx}px ${cy}px)`]},{duration:700,easing:'cubic-bezier(.5,0,.2,1)',pseudoElement:'::view-transition-new(root)'})).catch(()=>{});
   vt.finished.finally(()=>root.classList.remove('vt-theme'));
+}
+function setTheme(){
+  const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches,next=dark?'light':'dark';
+  bloom($('theme'),()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}syncSet()});
 }
 
 /* ── 事件 ─────────────────────────────────────────────── */
@@ -858,10 +861,13 @@ document.addEventListener('click',e=>{
   const sb=e.target.closest('#set button');
   if(sb){
     if(sb.dataset.skin){if(sb.dataset.skin==='paper'){try{localStorage.setItem('skin','paper')}catch(_){}location.href='index.html'+location.hash}return}
-    if(sb.dataset.paper){PAPER=sb.dataset.paper;try{localStorage.setItem('paper',PAPER)}catch(_){}}
-    else if(sb.dataset.mode==='auto'){delete root.dataset.theme;try{localStorage.removeItem('theme')}catch(_){}}
-    else{root.dataset.theme=sb.dataset.mode;try{localStorage.setItem('theme',sb.dataset.mode)}catch(_){}}
-    syncSet();return}
+    if(sb.classList.contains('on'))return;
+    bloom(sb,()=>{
+      if(sb.dataset.paper){PAPER=sb.dataset.paper;try{localStorage.setItem('paper',PAPER)}catch(_){}}
+      else if(sb.dataset.mode==='auto'){delete root.dataset.theme;try{localStorage.removeItem('theme')}catch(_){}}
+      else{root.dataset.theme=sb.dataset.mode;try{localStorage.setItem('theme',sb.dataset.mode)}catch(_){}}
+      syncSet()});
+    return}
   if(!$('set').hidden&&!e.target.closest('#set'))closeSet();
   const mt=e.target.closest('button.more-th');if(mt){mt.parentElement.querySelectorAll('.th[hidden]').forEach(v=>v.hidden=false);mt.remove();return}
   const zb=e.target.closest('button.zoom');if(zb){lbOpen(zb.dataset.pid,+zb.dataset.i,zb);return}
