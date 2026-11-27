@@ -6,12 +6,12 @@
   "2026-11-24",
   "2026-11-25"
  ],
- "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25（3 批）",
+ "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25",
  "rules_version": "v2",
  "overview": {
   "guide": [
-   "[[@2611.34449|HoloBrain-0.5]] 把 15 类本体的关节坐标统一后混训，跨臂零样本迁移得分是 π0.5 的 3.6 倍；论文真正推荐的配方是用离散动作头初始化、再换上扩散头。[[@2611.29483|行为结构对齐]]发现给 π0.5 加现成视觉编码器做表征对齐，扰动下成功率反掉 10–39 个点，有没有用取决于教师的行为结构指标是否高于学生。[[@2611.30490|EgoStudy]] 把人类第一视角数据扩到 100 倍，误差下降几乎全在手腕平移，手指和接触仍得靠机器人数据。",
-   "[[@2611.34778|Harness 设计研究]]跑了超过 47 万次 rollout，结论是 VLM 和 VLA 的分工要随两边的能力调整，参考方案 X-Harness 不改权重最多提升 42.8 个点。[[@2611.33010|镜子测试]]在场景里放一面镜子，五个策略的成功率就下降 10.8–56.7 个点，其中 50–88% 的失败根本没碰到镜子，是被倒影骗了。[[@2611.28873|NAT]]在 4.9 万小时动作数据上训练动作分词器，只用人手动作训练的版本表现接近用机器人数据训练的。[[@2611.30813|HIVE-Bench]]比较了 20 个视觉编码器，把每个视角平均成一个 token 会丢掉大部分成功率。"
+   "怎样用人类数据和多种机器人的数据做预训练，本期有三篇可以对照着读。[[@2611.34449|HoloBrain-0.5]] 把各家机器人描述文件里随手定的关节坐标系统一成同一套约定，再把机器人结构作为输入，让 15 类机器人共用一个动作空间。只用 Piper 机械臂示范后训练、直接换到结构不同的 Piper-X 上，平均进度分（按任务里程碑累加，0–100）是 63，π0.5 只有 17；但论文没有消融，这个差距里结构输入和 1 万小时预训练各占多少分不开。[[@2611.30490|EgoStudy]] 固定机器人数据，只改人类第一人称视频的用量：从 1% 加到 100%，手腕平移的预测误差降 10%–20%，手腕旋转和手指动作却没有一致改善，闭环只在仿真里测过。[[@2611.28873|NAT]] 是把连续动作编成离散 token 的通用分词器，**只用人手动作训练的版本，表现接近用机器人数据训练的版本**。",
+   "另一条线是视觉表征和鲁棒性。[[@2611.29483|一项关于 VLA 表征对齐的研究]]让 π0.5 微调时的视觉 token 贴近冻结视觉编码器的特征，试了 11 个现成编码器：干净环境里没有一个涨超过 1 个点，加干扰物和光照扰动后**全部掉 10 到 39 个点**。作者提出==行为结构指标==，看教师特征认为相近的画面，后续专家动作是否也相近（1 为完全一致，0 与随机无异），现成编码器都低于 π0.5 自己的 0.497。按论文附录的数据重算（见精读），这个指标更适合筛掉很差的教师，排不准中间档。[[@2611.30813|HIVE-Bench]] 在 24 个双臂任务上比较 20 个视觉编码器，发现把每个视角平均成一个 token 会丢掉大部分成功率，识别、深度这类能力分数也预测不了下游效果，可以和上一篇对照着读。[[@2611.33010|RoboDojo-Mirror]] 只在场景里放一面镜子，五个策略成功率平均降 10.8 到 56.7 个点，比同形状的不反光板多出的失败里，50%–88% 机器人根本没碰到它，问题出在把倒影当成了目标。"
   ]
  },
  "funnel": [
@@ -36,7 +36,7 @@
   {
    "id": "2611.34449",
    "title": "HoloBrain-0.5 Technical Report",
-   "title_zh": "统一机器人关节坐标后，跨臂零样本迁移得分是 π0.5 的 3.6 倍",
+   "title_zh": "把标准化的机器人结构喂给 VLA，技能能零样本搬到另一款机械臂",
    "affiliation": "Horizon Robotics（地平线）",
    "primary_cat": "cs.RO",
    "direction": "A",
@@ -52,10 +52,12 @@
    "abstract_en": "We present HoloBrain-0.5, a family of vision-language-action (VLA) models for manipulation across robot embodiments. The policies plan in a shared action space using robot state, kinematic structure, and calibrated camera observations. We standardize joint axes, coordinate frames, and tool-center points in robot descriptions (URDFs) and encode their kinematic graphs in a shared 3D representation. HoloBrain-0.5-Continuous generates action chunks by diffusion, while HoloBrain-0.5-Discrete uses residual finite scalar quantization (FSQ) and delayed autoregression. We pretrain both policies on over 10,000 hours of real-robot, simulation, and human-manipulation data spanning 15 embodiment categories. Across six closed-loop simulation settings, the discrete policy converges faster and reaches a higher mean success rate than the continuous policy (56.77% vs. 49.71%). On seven real-robot tasks, it achieves a mean progress score of 87.76% without task-specific post-training. After post-training, the continuous policy outperforms $π_{0.5}$ on the seven-task benchmark (94.52% vs. 86.25%) and an 11-task dual-arm benchmark (79.07% vs. 69.41%). The discrete-initialized continuous policy transfers five tasks zero-shot from Piper to Piper-X, scoring 63.28% on average. With target-robot demonstrations, the continuous policy scores 89.2% on Franka Panda and 92.94% on a mobile dual-arm platform. Although pretraining includes no Unitree G1 data, post-training with limited G1 demonstrations yields a mean progress score of 70.24% across three humanoid tasks, compared with 11.00% for $π_{0.5}$.",
    "batch": "2026-11-25",
    "analysis": [
-    "地平线的 HoloBrain-0.5 追问的是：关节数、坐标约定各不相同的机器人数据，能不能放进同一个动作空间一起训练。结果偏正面：只用 Piper 示范学的 5 个任务直接搬到 Piper-X（传感器相同、运动学结构不同），平均[[progress-score|进度分]] 63.28%，π0.5 只有 17.44%；预训练里完全没有的 Unitree G1 人形，用少量示范微调后 **70.24% 对 11.00%**。",
-    "做法分三块。==URDF 标准化==：把每个关节的转轴统一改成局部 +z，工具中心点（TCP，夹爪两指中点）朝外为 +z，同时补偿子连杆坐标，保证物理运动和已录轨迹不变，15 类本体都按此处理并做数值校验。模型把关节图（8 到 54 个节点）和相机标定一起当输入。动作头有两种：连续版用扩散生成[[action-chunk|动作块]]；离散版先用==虚拟关节==压缩轨迹，再用残差 [[fsq|FSQ]] 编码，按“虚拟关节、时间片、残差层”三个下标之和分组做==延迟自回归==，192 个码 21 轮生成完。预训练共 10,006.5 小时，真机 57%、仿真 35%、人手视频 8%。",
-    "全文最值得记住的是两种动作头的取舍。离散版收敛快、开箱即用更强（7 个真机任务不微调就有 87.76%），**但用每任务 200 条示范微调后反而跌到 69.74%**，作者承认它不适合少样本后训练。于是后面所有跨本体实验用的都是“用离散版初始化、再换上扩散头”的连续版（D-Init），它在 11 个双臂任务上 79.07%，比 π0.5 高 9.66 个点，这才是论文实际推荐的配方。",
-    "保留意见：所有真机分数都是带部分得分的里程碑进度分，没有报告每个任务的试验次数和方差；G1 实验还叠加了自家的 HoloMotion-1 全身跟踪器，人形上 59 个点的差距有多少来自控制栈而非 VLA 本身说不清。对做多本体数据混训的团队，可以直接拿走的是开源的 UniURDF 工具和权重：先统一坐标约定再混数据，并试试用离散预训练给扩散策略做初始化。"
+    "把多种机器人的数据混在一起训练 [[vla]]，有个隐蔽的障碍：[[urdf|URDF]] 文件里的坐标系是随手定的，同样一个转动关节，有的写成绕局部 x 轴转，有的写成绕 z 轴转，同一个动作数值在两台机器人上对应的物理运动并不相同。地平线的 HoloBrain-0.5 先把所有 URDF 改写成同一套约定，再把机器人结构和标定好的相机参数作为输入，让 15 类机器人在同一个 3D 动作空间里规划。**最能说明这样做有用的是零样本换臂**：技能只在 Piper 机械臂上教过，直接拿到结构不同、输入维度却完全相同的 Piper-X 上执行，平均[[progress-score|进度分]]（任务拆成几个里程碑按权重累加，0–100）是 63，π0.5 只有 17。",
+    "==URDF 标准化==的规则是：转动关节一律改成绕自己的局部 z 轴转，末端工具点的坐标系统一成 +z 朝外的右手系。关节坐标系转过去后，下游几何和关节做反向补偿，物理运动和录好的轨迹都不变。标准化之后，每台机器人表示成一张 3D ==关节图==：节点是选定连杆在机器人基座坐标系下的位姿，节点间按运动学图上的跳数编码距离，Franka 单臂 8 个节点，Unitree G1 人形 31 个。相机外参也对齐到这个基座坐标系。预训练数据共 10,006 小时，真机、仿真、人手分别约 5,700、3,500、800 小时。",
+    "零样本换臂的设置是：Piper-X 在别的任务上出现过，但被测的 5 个任务在 Piper-X 上的数据不在预训练也不在后训练里，所有模型只用 Piper 示范后训练，直接上 Piper-X 测。两款机械臂传感器配置相同，只看输入分不出是哪台；对比的 π0、π0.5 用标准配置，不接收结构信息。结果 HoloBrain-0.5 平均 63.28，π0 为 27.64，π0.5 为 17.44。有目标机器人示范时差距仍在：单臂 Franka 上 89.2 对 85.0，移动双臂平台上 92.94 对 73.83，预训练里没有一条数据的 Unitree G1 人形上 70.24 对 11.00。我注意到差距随目标机器人离预训练数据变远而拉大（Franka 在预训练里有 DROID、RoboCasa 数据，G1 没有），但每种机器人只测了三到五个任务，只能算趋势。",
+    "动作生成有两个版本。连续版用扩散直接生成[[action-chunk|动作块]]；离散版先训一个分词器，在关节图上插入几个==虚拟关节==汇总附近关节的运动，每个虚拟关节每 4 帧用三级残差 [[fsq|FSQ]] 编成码，再用==延迟自回归==生成：下标之和相同的码同一轮预测，默认设置下 192 个码 21 轮生成完。两者的强弱在后训练前后反转。预训练时，在六个仿真设置上离散版平均成功率 56.77%，连续版 49.71%；七个真机任务直接测，离散版进度分 87.76，连续版 79.65。但每个任务给 200 条示范后训练后，连续版升到 94.52（π0.5 为 86.25），**离散版反而掉到 69.74**，作者称原因还未查明。折中办法是用离散版参数初始化连续版，它在仿真里几乎追平离散版（56.65%），后面的跨机器人实验都用这个版本。",
+    "保留意见落在归因上。论文没有消融，所以 63 对 17 的差距里，多少来自结构输入，多少来自 1 万小时预训练（其中 1,653 小时是地平线自己在 Piper 和 Piper-X 上采的）以及换掉的骨干网络，现在分不开。真机实验没有报告每个任务跑了几次，Franka 上 4.2 个点的差距无法判断是否超出波动。另外，按表 2，七个真机任务上离散初始化的连续版不后训练时比直接训的高（83.62 对 79.65），后训练后反而低（90.53 对 94.52），「离散预训练是更好的初始化」只在后训练前成立。",
+    "对混合多种机器人数据训练的团队，URDF 标准化是训练前就能做完的数据工程，作者开源了工具 UniURDF 和权重。我觉得它最可能派上用场的是同一产品线的不同型号：输入维度一样、结构不同，没有结构信息模型只能从图像里猜。离散版「预训练好、后训练差」也说明，只看预训练曲线挑动作头可能挑错。"
    ],
    "star_reasons": [
     "跨本体 VLA 的核心问题：用标准化 URDF 关节图统一 15 类本体的动作空间",
@@ -74,7 +76,7 @@
      "src": "https://arxiv.org/html/2611.34449v1/pretraining_curve.svg",
      "ref": "Figure 11",
      "caption_zh": "预训练过程中六个仿真设置的平均成功率：离散版（56.77%）始终在连续版（49.71%）之上，用离散版初始化的连续版 D-Init 几乎追平离散版（56.65%）。",
-     "after": 3
+     "after": 4
     },
     {
      "src": "https://arxiv.org/html/2611.34449v1/urdf_standardization.svg",
@@ -105,7 +107,7 @@
   {
    "id": "2611.30490",
    "title": "EgoStudy: How Does Scaling Egocentric Data Affect VLA and WAM Pretraining?",
-   "title_zh": "人类第一视角数据扩 100 倍，只教会机器人挪手腕，没教会动手指",
+   "title_zh": "人类第一人称视频越多，机器人手腕移动预测越准，手指动作却不跟着变好",
    "affiliation": "清华大学；上海期智研究院；上海交通大学；香港科技大学（广州）",
    "primary_cat": "cs.RO",
    "direction": "E",
@@ -121,10 +123,10 @@
    "abstract_en": "Egocentric human manipulation data offer a scalable resource for training dexterous robot policies. However, how effectively robots can learn and benefit from these data remains unclear due to the embodiment gap between humans and robots. We present EgoStudy, a systematic, controlled study of egocentric data for robot learning. Holding the robot dataset fixed, we vary the scale and diversity of egocentric data, data processing strategies, and co-training configurations. We investigate three questions: (1) Which data processing and pretraining choices most effectively exploit egocentric data? (2) Which components of robot action prediction benefit most from scaling these data? (3) How do scaling effects differ between vision-language-action models (VLAs) and world-action models (WAMs)? Our experiments yield three main findings. First, data diversity, alignment between trajectories, and detailed language annotations are key factors in effective transfer. Second, scaling egocentric data yields larger gains in predicting end-effector translation than in predicting fine-grained finger movements. Third, WAMs perform better when egocentric data are limited, whereas VLAs exhibit greater gains as the amount of egocentric data increases. Together, these findings provide practical guidance on processing and using egocentric data to train VLAs and WAMs, while clarifying the benefits and limitations of scaling these data.",
    "batch": "2026-11-23",
    "analysis": [
-    "**人类视频有用，但几乎只用在手腕平移上。**这篇做的是控制变量实验：机器人数据（真机双臂灵巧手 XHand 约 273 小时、仿真 RoboCasa-GR1 约 81 小时）和训练步数固定，只把第一视角人类数据从 1% 加到 100%（过滤后约 1,850 小时，原始视频约 18,000 小时）。VLA（视觉-语言-动作模型）在 XHand 留出集上的手腕平移误差降了 20.2%，[[world-action-model|WAM]]（世界-动作模型）降了 18.8%；手腕旋转和指尖位姿的误差没有一致下降。",
-    "两类模型共用一个 ==共享灵巧动作空间==：每只手 1 个手腕位姿加 5 个指尖位姿，共 108 维，一次预测 32 步的[[action-chunk|动作块]]，人手位姿来自标注或追踪，机器人手来自正运动学。VLA 是 Qwen3-VL-4B 加 GR00T 式动作专家，WAM 是 Fast-WAM，用 Wan2.1 14B 视频模型同时预测未来画面和动作。数据处理的消融里，切成 ==语义完整片段==、用详细字幕（对照组只有“动词 + 物体”两个词）、多来源混合都更好：只用 EgoDex 一个来源时误差是混合数据的 2.8–5.7 倍。",
-    "更值得记住的是两类模型吃数据的方式不同。WAM 在每个规模上验证 loss 都更低，RoboCasa 闭环成功率从 39.6% 升到 45.4%，VLA 从 38.3% 升到 43.8%；摘要说 WAM 只在数据少时更好，正文里其实是 VLA 的斜率更大、WAM 的绝对值一直更低。随数据增加，VLA 里人和机器人画面的 ==特征分离度== 持续缩小，WAM 各层都不收敛。换骨干后，VLA 用 4B 和 8B 降幅相当；**WAM 换成 Wan2.2 5B 后误差几乎不随人类数据下降**，作者据此认为 WAM 吸收人类数据要靠大视频骨干。",
-    "**闭环评测只有仿真**：RoboCasa 24 个任务各跑 10 次，真机 XHand 只报离线 MSE，没有真机成功率，也没有和同样时长的机器人数据比较；只用 EgoDex 那组的差距里还混着机器人监督的变化，作者自己也承认。对正在采人类视频做预训练的团队：先做切段、详细字幕和多来源混合，别指望它解决手指和接触这类精细动作，那部分仍要靠机器人数据；走 WAM 路线的要配足够大的视频骨干。"
+    "用人戴相机录下的第一人称操作视频（配上估计出的手部轨迹）预训练灵巧手机器人策略，是绕开遥操作数据瓶颈的常见做法。但已有工作的机器人数据、动作表示和模型各不相同，说不清收益来自人类数据本身还是别的设置，也很少有人拆开看到底是哪部分动作变好了。==EgoStudy== 固定机器人数据和训练预算，只改人类数据的量和处理方式，让 [[vla|VLA]] 和 [[world-action-model|WAM]] 在同一个动作空间（每只手一个手腕位姿加五个指尖位姿）里学。它的主要答案是：**人类数据越多，模型预测手腕往哪移得越准，但手腕怎么转、手指怎么动基本不受益。**",
+    "实验从约 18,000 小时原始视频里筛出约 1,850 小时人类数据，按 1%、3%、10%、30%、100% 五档放进预训练；两份机器人数据（自采的双臂 XHand 灵巧手真机数据和 RoboCasa-GR1 仿真数据）始终占 25% 的样本，批大小和更新步数不变。然后在两份机器人数据的留出轨迹上，分别算手腕平移、手腕旋转、指尖位姿三项预测误差。从 1% 到 100%，手腕平移误差在 XHand 上 VLA 降 20.2%、WAM 降 18.8%，在 RoboCasa-GR1 上分别降 14.6% 和 9.6%；另外两项在两个模型、两份数据上都没有一致下降。作者猜测是从视频估出的手部标签误差盖住了小幅的转腕和手指变化，加上人手和机械手接触物体的方式不同，但没有单独验证。两类模型之间，VLA 随数据降得更多，WAM 误差绝对值更低。",
+    "保留意见有两点。第一，结论几乎都来自离线误差，闭环只在 RoboCasa-GR1 仿真里测了 24 个任务、每个 10 次：人类数据从 1% 到 100%，VLA 成功率 38.3%→43.8%，WAM 39.6%→45.4%。按 240 次算，5 个多点约等于多成功 13–14 次，我觉得还不足以单独支撑结论，而且没有真机闭环，也没有按动作分量看闭环失败出在哪。第二，VLA 和 WAM 各只测了一种架构，两者的差别能否推广到别的模型还不清楚。",
+    "对用人类视频预训练灵巧手策略的团队来说，这篇给的预期是：堆人类数据能解决手往哪伸，精细的手指动作还得靠机器人数据或更准的手部估计。数据处理上，切成有明确起止的完整动作片段、配详细的语言描述，比整段不切、或只用两个词的简短描述误差都低，可以直接照做。"
    ],
    "star_reasons": [
     "控制变量回答了具身数据的核心问题：人类视频加到多少、对哪部分动作有用",
@@ -135,14 +137,13 @@
     {
      "src": "https://arxiv.org/html/2611.30490v1/EgoStudy_teaser_v4.png",
      "ref": "Figure 1",
-     "caption_zh": "研究设计总览：左上是固定机器人数据、只扩人类数据的设定；右上是手腕平移误差随人类数据比例（约 180 到 18,000 小时原始视频）的对数拟合，**VLA 斜率更大，WAM 绝对值更低**；下排是三个问题各自的结论。",
-     "after": 1
+     "caption_zh": "研究设计总览：左上是固定机器人数据、只扩人类数据的设定；右上是手腕平移误差随人类数据比例（约 180 到 18,000 小时原始视频）的对数拟合，**VLA 斜率更大，WAM 绝对值更低**；下排是三个问题各自的结论。"
     },
     {
      "src": "https://arxiv.org/html/2611.30490v1/component_scaling.svg",
      "ref": "Figure 7",
      "caption_zh": "按动作分量拆开看误差：左列手腕平移随数据增加一路下降，中列手腕旋转和右列指尖位姿基本是平的。**人类数据帮的是大范围移动，不是手指精细动作。**",
-     "after": 3
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.30490v1/backbone_scaling.svg",
@@ -173,7 +174,7 @@
   {
    "id": "2611.29483",
    "title": "Representation Alignment Is Only as Good as the Teacher's Behavioral Structure",
-   "title_zh": "给 VLA 做表征对齐要看行为结构：现成编码器反让扰动成功率掉 39 点",
+   "title_zh": "给 VLA 做表征对齐，教师特征里相近的画面要对应相近的动作才有用",
    "affiliation": "东京大学、中国科学院大学、新加坡国立大学、香港科技大学等",
    "primary_cat": "cs.RO",
    "direction": "A",
@@ -189,10 +190,10 @@
    "abstract_en": "Recent works align the intermediate features of vision-language-action (VLA) models with frozen vision encoders during fine-tuning, hoping to inject additional priors such as 3D awareness or affordances. Unlike in image generation, where teachers for representation alignment (REPA) are assessed with encoder-intrinsic metrics, teachers for VLAs are still chosen largely by heuristics. We show that this practice is unreliable: across 14 teachers and 16 manipulation tasks, under matched training budgets, no off-the-shelf vision encoder improves the clean success rate of $π_{0.5}$ by more than 1 point, and all of them reduce its success rate under perturbations by 10 to 39 points. Neither global semantics nor spatial structure, the criteria used in image generation, predicts which teachers help. We therefore propose the behavioral structure metric (BSM), which measures whether states that are close in a teacher's feature space are followed by similar expert actions within the same task. BSM correlates strongly with success rate under perturbations ($r=0.87$), and every off-the-shelf vision encoder scores below $π_{0.5}$ itself. Based on it, we introduce Behavior-Aware VLA Alignment (BAVA), a general VLA alignment protocol that favors vision encoders whose BSM exceeds the student's and stops alignment early according to the student's BSM during training. On SmolVLA, BAVA matches continuous alignment with one third of the alignment budget, and improves the average success rate by 4.6 points over unaligned fine-tuning. Our results suggest that representation alignment benefits VLAs only when the teacher encodes rich behaviorally relevant structure.",
    "batch": "2026-11-23",
    "analysis": [
-    "**以 π0.5 为学生时，11 个现成视觉编码器做对齐教师，没有一个让干净环境成功率涨过 1 个点，加入干扰物、随机纹理和光照后反而掉 10–39 个点。**这里的对齐指 [[repa|表征对齐]]：[[vla]] 微调时把中间层视觉 token 拉向冻结编码器的特征，推理时去掉教师。作者在 RoboTwin 16 个操作任务上测了 14 个教师，图像生成里挑教师的两个指标——ImageNet 线性探测准确率和 ==LDS==（近处 patch 比远处 patch 更相似的程度）——与扰动下成功率的相关系数只有 0.17 和 −0.52，都不显著。",
-    "作者提出 ==行为结构指标（BSM）==：用教师特征在同一任务的示范里检索 10 个最近邻状态，算它们接下来 50 步专家动作与当前状态的距离，除以随机状态的期望距离，再用 1 减去。BSM 与扰动下成功率的相关系数 r=0.87，换邻居数、动作长度和动作表示后仍在 0.80–0.89。**关键是和学生自己比**：π0.5 自身 BSM 为 0.497，所有现成编码器都更低；唯一帮到它的是用扰动环境示范训练过的 π0.5 oracle（BSM 0.669，扰动成功率 +25 个点）。据此得到 ==BAVA==：选 BSM 高于学生的教师，学生 BSM 超过教师并不再上升时关掉对齐损失。",
-    "最有说服力的是附录表 8：同一个 DINOv2 教师（BSM 0.509）对四个学生，OpenVLA-OFT（0.314）+8.25 个点，SmolVLA +4.31，π0 −4.69，π0.5 −11.94，随学生 BSM 升高单调变差。SmolVLA 上 BAVA 把平均成功率从 31.56% 提到 36.19%；AlohaMini2 真机 3 个任务各 20 次，成功 22 次，无对齐 18 次，Spatial Forcing 12 次。",
-    "保留意见：**正收益只出现在弱学生上**，早停版和全程对齐是 36.19% 对 35.88%，早停省的是计算而不是精度；真机每个设置只有 10 次试验。我怀疑 r=0.87 很大程度靠 Random ViT（7%）和 oracle（83%）两个极端点撑起，论文没报去掉它们后的相关性。对用 π0.5、π0 这类强基座微调的团队：加 VGGT、DINOv2 对齐之前，先在自己的示范上算一遍 BSM（只要前向和最近邻检索），学生更高就别加。"
+    "微调 [[vla|VLA]] 时加[[repa|表征对齐]]，即让中间层视觉 token 贴近一个冻结视觉编码器（如 3D 模型 VGGT）的特征，是最近的流行做法，但教师基本凭直觉挑。论文用 π0.5 当学生、在 RoboTwin 的 16 个操作任务上试了 11 个现成编码器：在和训练一致的环境里没有一个让成功率涨超过 1 个点，在加了干扰物、随机纹理和光照的扰动环境里**全部让成功率掉了 10 到 39 个点**。如对齐 VGGT 训练到 50k 步，扰动环境成功率低 12.88 个点，失败多是抓取时夹爪没对准，而 3D 教师本来是为了让操作更准。图像生成里挑教师用的线性探测准确率、图块空间结构，都预测不了谁有用。",
+    "作者提出 ==行为结构指标（BSM）==：用教师特征给每个状态在同一任务里找 10 个最近邻，比较它们接下来 50 步的专家动作和查询状态的差距，再用随机状态归一化；1 表示近邻动作完全一致，0 表示和随机挑的状态没区别。如按闹钟任务里，DINOv2 找到的近邻都会像查询一样合上左夹爪，DA3 找到的近邻夹爪一直张开。在 14 个教师上，BSM 和扰动环境成功率的相关系数是 0.87。关键是 π0.5 自己的 BSM 是 0.497，**所有现成编码器都比它低**，对齐等于把学生往更差的结构上拉；唯一涨分的教师是在扰动数据上训练过的 π0.5（BSM 0.669）。同一个 DINOv2 让 BSM 更低的 OpenVLA-OFT 涨 8.25 个点，让 BSM 略高的 π0 掉 4.69 个点。",
+    "据此提出的 ==BAVA== 只有两条：挑 BSM 高于学生的教师；学生的 BSM 超过教师且不再上涨时关掉对齐。SmolVLA 用 DINOv2 做教师，两种环境的平均成功率从 31.56% 升到 36.19%；但全程对齐已经到 35.88%，所以涨分主要来自对齐 DINOv2 本身，提前停止只是省下三分之二的对齐步数。",
+    "保留意见：0.87 包含两个极端点，在扰动数据上训练过的 π0.5（成功率 83%）和随机初始化的 ViT（7%）。我按附录表 7 算，只看 11 个现成编码器相关系数是 0.74，再去掉最差的 VC-1 和 MAE，剩下 9 个几乎不相关，**所以我觉得 BSM 能筛掉很差的教师，但排不准中间档**。「教师高于学生」的规则只在两个较弱的学生上见到正收益。对用 π0.5 这类强 VLA 的团队，实用的做法是加对齐前先在自己的演示数据上比较教师和学生的 BSM；评测一定要带扰动环境，干净环境下各教师成功率只在 78%–87% 之间，看不出伤害。"
    ],
    "star_reasons": [
     "14 个教师 × 4 个学生 × 4 种对齐方式的对照实验，直接否定了“给 VLA 对齐 3D/语义编码器就能补先验”的常见做法",
@@ -203,8 +204,7 @@
     {
      "src": "https://arxiv.org/html/2611.29483v1/figure1.png",
      "ref": "Figure 1",
-     "caption_zh": "三种挑教师的指标：上排示意各自在问什么，下排是 14 个教师对齐 π0.5 后的扰动下成功率。看右下：只有 ==BSM== 与成功率强相关（r=0.87），线性探测（r=0.17）和 LDS（r=−0.52）都不显著。",
-     "after": 1
+     "caption_zh": "三种挑教师的指标：上排示意各自在问什么，下排是 14 个教师对齐 π0.5 后的扰动下成功率。看右下：只有 ==BSM== 与成功率强相关（r=0.87），线性探测（r=0.17）和 LDS（r=−0.52）都不显著。"
     },
     {
      "src": "https://arxiv.org/html/2611.29483v1/bsm_retrieval_preview.png",

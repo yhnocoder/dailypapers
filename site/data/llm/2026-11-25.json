@@ -8,8 +8,9 @@
  "rules_version": "v2",
  "overview": {
   "guide": [
-   "[[@2611.26358|Beam]] 的看点在后训练：1 亿条 rollout 的全异步 RL，两个专家用 [[mopd|MOPD]] 合并后学生反超教师；「省 3–4 倍算力」主要来自激活参数少，同表里 16B 激活的 DeepSeek V4.1 Flash 在 DeepSWE 上仍领先 30 个点。[[@2611.34529|AliceAI-Foundation]] 强项集中在俄语，可复用的是缩放律那一节：拟合超参前先确认验证集 loss 和下游排序一致，否则学习率会差出 60%。[[@2611.34579|Tune for Retention]] 提醒做领域 SFT 的人：别人报告遗忘 33 个点的设置，只调小学习率和 batch 遗忘就没了。",
-   "[[@2611.33893|并行 subagent 研究]]测出委派只多通过 1–5 个百分点的隐藏测试，成本最高到 3.8 倍，让单 agent 先探测参考程序就能拿回大部分收益。[[@2611.34147|模型自管上下文]]让模型自己决定何时压缩历史，GPT 6.1 在 32K 预算下得分接近原来的三倍。[[@2611.26863|幻觉记忆研究]]发现在知识任务上照搬推理式 RL，被奖励强化过的幻觉复述率上升 4.83%，未被强化的只有 0.17%。本期还有五篇循环（looped）模型，[[@2611.34821|LoopTitan]] 用匹配的非复用对照说明，参数复用本身几乎没带来收益，收益来自用专家数换层数。"
+   "两份技术报告值得看训练细节，而不只是榜单。[[@2611.34529|AliceAI-Foundation-80B-A3B-Base]] 是 Yandex 从头训的 MoE 基座（总参数 80B、每个 token 激活约 3B），在自建的两个俄语事实题基准上胜过激活参数约为它 4 倍的 DeepSeek-V4-Flash-Base。可复用的是两条经验：把没抓到或被过滤器丢掉的有用网页找回来；换验证集，因为按训练语料留出部分的 loss 给训练配置排序，与按下游平均分排序的一致率只有 42%。读时注意，基准题和找语料缺口用的都是 Yandex 自家的搜索数据。[[@2611.26358|Beam]] 是 Reflection AI 的 MoE（总参数 501.3B、激活 23.4B），在 10.5K 张 GB300 上跑了四周 RL；中途有两段刻意只练数学或只练软件工程，没练的一侧没有掉分，没练过搜索任务的 BrowseComp 也从 50.1% 涨到 57.9%。不过这是单次训练，没有对照曲线。",
+   "遗忘问题可以和 [[@2611.34579|Tune for Retention, Not Just Gain]] 对照着读。它重跑了前人认为 SFT 遗忘最严重的设定：Llama-3.1-8B 以 MMLU 为新任务微调，原超参下 MMLU 涨 9.3 个点、另外五项旧能力平均掉 33 个点；把学习率从 5e-5 降到 1e-5、batch 从 128 降到 16，MMLU 涨 12.1 个点，旧能力反升 0.55 个点，与 GRPO 相当。**换 on-policy 方法之前，先在选超参时把旧能力算进去。**后训练的另一种副作用见 [[@2611.26863|LLMs Memorize Their Own Hallucinations]]：在知识任务上用结果奖励做 RL，被奖励强化的自生成幻觉，复述率平均上升 4.83%，没得到训练信号的只升 0.17%。",
+   "本期有五篇讲 ==looped 模型==（反复使用同一组层来加深计算）。[[@2611.34821|LoopTitan]] 在参数、FLOPs 和 KV cache 都匹配的条件下拆解此前 looped MoE 的收益，发现参数复用本身几乎没有贡献，收益主要来自网络形状和 residual scale；用 Muon 训练时，不复用、更深的标准 MoE 能拿到多循环一次所得收益的 90.2%。另两篇各找到循环的用处：[[@2611.33896|Floodgates]] 让浅循环一次起草多个后续 token、深循环验证，作为无损解码最高加速 7.5 倍；[[@2611.31094|LoopRes]] 把现成的预训练 LLM 微调成循环结构，在 2 倍算力下让 Qwen3-1.7B-Base 比 SFT 高 29.1%。"
   ]
  },
  "funnel": [
@@ -34,7 +35,7 @@
   {
    "id": "2611.34529",
    "title": "AliceAI-Foundation-80B-A3B-Base",
-   "title_zh": "Yandex 开源 MoE 基座：训练集留出 loss 与下游排序只有 42% 一致",
+   "title_zh": "Yandex 开源 80B MoE 基座：补上语料缺的网页、加大改写比例，俄语事实题胜过更大模型",
    "affiliation": "Yandex",
    "primary_cat": "cs.CL",
    "direction": "A",
@@ -50,10 +51,12 @@
    "abstract_en": "We present AliceAI-Foundation-80B-A3B-Base, a mixture-of-experts language model with 80 billion total parameters and approximately 3 billion active parameters per token, trained from scratch at Yandex and released under the Apache 2.0 license. The model combines Kimi Delta Attention with full attention, uses Attention Residuals, and is trained with Muon. Training comprises general pretraining on 17.5 trillion tokens, two context-extension stages, and a dedicated stage for reasoning and agentic interaction. We describe the data collection and augmentation pipelines, evaluation protocols, architectural ablations, and scaling-law experiments. We identify the limitations of held-out training loss as a proxy for downstream performance and introduce an auxiliary loss on mixture-of-experts outputs to stabilize training at the predicted learning rate. Domain-specific data selection and augmentation improve factual knowledge, mathematics, and programming skills, while agent trajectories introduced during pretraining improve performance on agentic benchmarks after supervised fine-tuning. In zero-shot reasoning evaluation, the model achieves leading results among open base models of comparable size, with 88.7% pass@8 on IMO-AnswerBench and 82.9% pass@8 on LiveCodeBench v5-v6. To evaluate Russian-language factual knowledge, we introduce and release two benchmarks with their evaluation protocols: WikiWebFacts, which tests short factual questions drawn from encyclopedic sources and search queries, and HardMultiQA, which tests more demanding factual questions inspired by user interactions. Our model scores 86.5% on WikiWebFacts and 67.9% on HardMultiQA, compared with 83.2% and 65.4% for DeepSeek-V4-Flash-Base (284B total and 13B active parameters) and 72.8% and 54.5% for Nemotron-3-Super-120B-A12B-Base (120B total and 12B active parameters), outperforming both larger models on these benchmarks.",
    "batch": "2026-11-25",
    "analysis": [
-    "Yandex 从零训练并以 Apache 2.0 开源了 80B 总参数、约 3B 激活参数的 MoE 基座。俄语事实问答 HardMultiQA 上它拿到 67.9%，高于激活参数多 4 倍的 DeepSeek-V4-Flash-Base（65.4%）；但英文 TriviaQA 只有 79.0%，落后后者 10 个点，**强项集中在俄语知识**。报告更有用的部分是一份逐项拆开的配方：从 Qwen3-Next 基线出发，依次换数据、架构、超参，每个配置都在 2T token 上从零训，宏平均从 63.0 依次升到 66.9、68.6、69.1，数据贡献最大。",
-    "模型 48 层里 36 层用 [[kimi-delta-attention|KDA]]、12 层用全注意力（3:1 交替），残差求和换成 ==Attention Residuals==（每个 token 用 softmax 对前面各层输出加权），优化器是 [[muon|Muon]]。训练分四段：8K 上下文通用预训练 17.5T token，32K、256K 两段扩上下文，最后 280B token 的 ==推理阶段==（长推理轨迹加工具调用轨迹）。按缩放律预测的学习率会让 MoE down-projection 输出持续变大、随后 loss 尖峰；router 的 Z-loss、截断 SwiGLU 都没解决，最后对 MoE 输出本身加 [[z-loss|Z-loss]]，没有额外训练开销。",
-    "最值得记住的是缩放律那一节：用训练分布的留出集算 loss 时，候选配置按 loss 的排序和按下游均分的排序只有 42% 一致；换成挑过的代码集、benchmark 集后升到 93–94%，预测学习率也从 5.1e-4 变成 8.2e-4。**超参缩放律的结论取决于拿什么数据量 loss**。另外两条：推理数据混进通用语料不如集中放在最后单独一段，HMMT pass@32 由此从 24.3% 升到 96.9%；在短跑续训里有效的事实增强，放进 17.5T 的长训练后收益消失，作者归因于有用事实的出现频率被稀释，于是把增强扩大到约 30% 的事实网页才拿回约 5 个点。",
-    "保留意见：推理成绩是 base 模型 zero-shot 的 pass@32、pass@8，而它的推理阶段已经喂过大量长轨迹，和没有这一阶段的对手不在同一起跑线（DeepSeek-V4-Flash 在这个设置下接近 0 分，被直接剔除），报告也没给 RL 之后的 pass@1 对比。对做预训练和中训练的团队，可以直接照搬两件事：拟合超参缩放律前，先检验验证集 loss 和下游排序是否一致；推理和 Agent 数据集中放到最后一段。"
+    "Yandex 上一代助手模型是在 Qwen3-235B 上续训的；这次他们从头训了一个总参数 80B、每个 token 激活约 3B 的 MoE 基座，以 Apache 2.0 开源。最突出的结果在俄语事实知识上。作者自建并公开了两个俄语基准：==WikiWebFacts== 是从百科和搜索词里出的短事实题，==HardMultiQA== 从 Alice 用户提问里提炼，更难，含多选、列举、找错等题型。它在两者上拿到 86.5% 和 67.9%，高于激活参数约为它 4 倍的 DeepSeek-V4-Flash-Base（284B 总参数，83.2% / 65.4%）和 Nemotron-3-Super-120B-A12B-Base（72.8% / 54.5%）。报告把提升主要归功于两件事：**把有用网页找回语料，再把它们改写成多种形式让事实反复出现**。",
+    "起点是一个对照：能用搜索的小模型在短事实题上明显胜过不能搜索的大模型，说明答案在网上有。作者为基准题检索出有用网页，先用训练实验确认它们能提分，再查它们在不在训练语料里：前五条检索结果中的有用网页，只有 35% 留到最终语料，24% 抓到了却被过滤器丢掉，41% 根本不在原始语料里。这些网页只用于诊断，不放回语料。于是他们把原始语料扩大一倍，事实类网页单独挑选，并换用 8B 分类器（它打高分、0.5B 分类器却丢掉的文档，加回来后提分最稳定）。8B 跑全量太贵，所以做成==级联过滤==，前几级用便宜模型保召回，8B 只看约 5% 的语料，仍保留约 95% 的相关文档。",
+    "光找回网页还不够。给 235B 续训时，作者把事实网页改写成情景重述、换文体、问答对等版本，占训练 token 的 5–10%，短实验里让 HardMultiQA 涨了约 6 个点。搬到从头训的长训练里，**这份收益没有出现，有时还不如短续训**。作者的解释是语料大了很多，每条有用事实出现的相对频率被稀释了，多跑几个 epoch 也没用。修法是把改写扩到约 30% 的事实网页：短实验涨约 3 个点，结合全部语料改进的长训练涨约 5 个点。",
+    "训练侧最有用的发现是验证集。缩放律按惯例用训练语料留出部分上的 loss 拟合学习率和 batch size；但按这种 loss 给一组训练配置排序，和按下游基准平均分排序，**一致率只有 42%**，换成挑选过的代码、基准题、网页验证集后是 87–94%。改用后者，预测的最优学习率从 5.1e-4 变成 8.2e-4。在这个学习率下，MoE 下投影层的输出持续变大并引发 loss 尖峰；Gated RMSNorm 配合残差结构改动能稳住，但训练慢约 5%。最后把 [[z-loss|Z-loss]] 加在 MoE 输出激活上（对每个 token 的 log-sum-exp 取平方作惩罚，主要压大的正值），训练稳住，作者称基准没有下降。在各训 2T token 的逐项消融里，依次换语料、换架构（3:1 混用 [[kimi-delta-attention|KDA]] 和全注意力）、换超参，13 项指标宏平均从 63.0 升到 67.0、68.6、69.1，语料贡献最大。",
+    "保留意见有三点。第一，两个俄语基准用 Yandex 自家搜索词和 Alice 提问构建，找语料缺口用的又是这些题的 Yandex 搜索结果，事实改写也用了为搜索建的知识库，我觉得主场优势排除不了；英文 TriviaQA 上它只有 79.0%，低于 DeepSeek 的 89.4%。第二，IMO-AnswerBench 88.7%（8 次采样至少对一次）这类推理分数来自最后 280B token 的推理数据训练，这一段把 AIME 2026 的 [[pass-at-k|pass@32]] 从 33.3% 拉到 96.7%，我认为这个「基座」和普通预训练基座比要打折扣。第三，不少结论来自单次实验：换验证集的起因是把缩放律预测的 batch 减半、重算学习率后训 2T token，下游平均分只高 0.46 分，59 个基准中 10 个在未校正的 p<0.05 下变好。我按 59 次检验算，纯随机约有 3 个显著，10 个多于此，但只跑一次、基准间不独立，证据不算硬。",
+    "对做预训练数据的人，可复用的是诊断方法：拿「带搜索能答对、不带搜索答错」的题，追查有用网页是没抓到还是被过滤掉；改写比例要随语料规模放大。训 MoE 遇到输出激活失控，可以先试 MoE 输出上的 Z-loss，它没有 Gated RMSNorm 那样的额外开销。"
    ],
    "star_reasons": [
     "大厂从零训练的开源 MoE 基座技术报告，Apache 2.0 权重加两个俄语事实 benchmark",
@@ -66,7 +69,7 @@
      "src": "https://arxiv.org/html/2611.34529v1/figures/figure-07.png",
      "ref": "Figure 7",
      "caption_zh": "MoE down-projection 输出范数随训练的变化：不加 [[z-loss|Z-loss]] 的曲线持续上升，随后会出现 loss 尖峰；加在 MoE 输出上的 Z-loss 把它压平，且**没有观察到 benchmark 下降**。",
-     "after": 2
+     "after": 4
     },
     {
      "src": "https://arxiv.org/html/2611.34529v1/figures/figure-14.png",
@@ -76,7 +79,8 @@
     {
      "src": "https://arxiv.org/html/2611.34529v1/figures/figure-17.png",
      "ref": "Figure 17",
-     "caption_zh": "带搜索的小模型能答对的事实，其有用网页在训练语料里的去向：只有 35% 留到最终语料，24% 被过滤器丢掉，41% 根本没抓到。这是作者把事实网页单独做成一类语料的起点。"
+     "caption_zh": "带搜索的小模型能答对的事实，其有用网页在训练语料里的去向：只有 35% 留到最终语料，24% 被过滤器丢掉，41% 根本没抓到。这是作者把事实网页单独做成一类语料的起点。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.34529v1/figures/figure-19.png",
@@ -92,7 +96,7 @@
   {
    "id": "2611.26358",
    "title": "Beam Model Technical Report",
-   "title_zh": "Reflection 开源 Beam：RL 跑了 1 亿条 rollout 仍未见顶",
+   "title_zh": "Beam 的四周大规模 RL：只练单一领域时别的能力没退，没练搜索，搜索分也涨了",
    "affiliation": "Reflection AI",
    "primary_cat": "cs.CL",
    "direction": "A",
@@ -112,10 +116,10 @@
     "hn": 0
    },
    "analysis": [
-    "Beam 是 Reflection 的第一个开源权重模型：501B 总参数、23.4B 激活的 MoE（Mixture-of-Experts，每个 token 只走 256 个专家里的 8 个），SWE-bench Verified 81.6、Terminal-Bench v2.1 80.1，和激活 40B 的 GLM 5.2 基本打平。报告最重的主张在后训练：10.5K 张 GB300 上跑了 4 周、超过 1 亿条 rollout 的全异步 RL，held-out 指标一路上涨，**作者称没有出现平台期**。",
-    "预训练 23.8T token，代码和 STEM 合计约六成；每项改动都要在 300M 到 6B 的 ==scaling ladder==（一组逐级放大的小模型）上测算力效率，提升超过 5% 才采纳。中训分两段：先用 850B token 在 32K 长度上灌入可验证的推理、代码和终端数据，再用 100B token 扩到 512K。后训练分别训一个 agentic 专家和一个 alignment 专家，再用 [[mopd|多教师在线蒸馏（MOPD）]] 合成一个模型：学生自己采样，按任务类型抽一位教师给出全词表逆 KL，==不用任何外部 reward==。RL 采用 [[grpo|GRPO]] 式目标，配合 [[routing-replay|路由回放]]，并让 judge 复查通过测试的 SWE 补丁，判为 reward hacking 就记 0 分。",
-    "正文里比摘要更有信息量的是三组观察。RL 中途有两段只训单一领域（26%–52% 只练数学和竞赛编程，52%–65% 只练 SWE），另一侧的指标都没退化；从没训过搜索任务时，BrowseComp 也从 50.1 涨到 57.9。合并后的学生在 SWE-Bench Pro 上拿到 67.1，**反超 agentic 教师的 62.2**，但 DeepSWE 掉了 3.2 分。把 alignment 教师从 100B 换成 501B、数据和配方不变，过度拒绝相对减少 48.7%，代价是对有害请求的拦截率下降 3.1%。",
-    "**「推理算力省 3–4 倍」主要是激活参数少带来的**：同一张表里激活只有 16B 的 DeepSeek V4.1 Flash，在 DeepSWE（74.2 对 43.3）和 Terminal-Bench（90.6 对 80.1）上都领先，所以 Beam 并不是同等算力下最强的。base 模型 AIME 2026 拿到 63.7、DeepSeek V4 Pro Base 只有 1.9，这也是中训灌了推理数据造成的，两边并不对等。「没有平台期」只有一次 run 的曲线，没给算力和分数的拟合。做后训练的团队可以直接参考「专家分开训、再用 MOPD 合并」的做法，以及全词表逆 KL 的分块实现；部署方可以用 NVFP4 版本（保留 98.98% 中位分数）加 DFlash 2 drafter，解码速度提高 1.9–3.0 倍。"
+    "Beam 是 Reflection AI 的第一个开放权重模型，总参数 501.3B、每个 token 激活 23.4B 的稀疏 MoE，主打编程和 Agent 任务。报告里最有信息量的是后训练的强化学习：在 10.5K 张 GB300 上跑了四周，生成超过 1 亿条 rollout。RL 做到这个规模，训练者最关心两件事：数据阶段性地只偏向一类任务时，其他能力会不会[[catastrophic-forgetting|遗忘]]；分数会不会很快饱和。报告的回答是，在一组不参与训练的基准上，分数整个过程都在稳步上升，作者认为**还看不到平台期**。",
+    "证据来自训练中途的定期评测：一组任务已从 RL 数据中剔除的基准，每个 checkpoint 都用同样的采样设置测。训练里有两段刻意只用单一领域：进度 26%–52% 只练数学、STEM 和竞赛编程，52%–65% 只练软件工程。如果有遗忘，没在训练的那一侧应该掉分；实际上软件工程基准在前一段持平，数学和代码基准在后一段也没退。更意外的是跨领域迁移：83% 之前没有任何搜索或浏览任务，网页检索基准 BrowseComp 的准确率却从 27% 处的 50.1% 涨到 83% 处的 57.9%。这种规模靠完全异步的训练撑住：rollout 有 2% 超过一小时，推理端每个优化步都换新权重，不等长任务跑完。",
+    "这些证据要打折扣。这是单次训练，没有混合数据的对照曲线，只能说没看到掉分。BrowseComp 的涨幅，我怀疑来自软件工程任务里同样要练的多步工具调用，而非纯推理迁移；而且 SFT 的轨迹覆盖了全部训练领域，模型在 RL 前已经学过搜索工具的格式。数据配比在训练中换了 5 次，更难的软件工程任务在 83% 才加入，后段上涨有多少来自换数据，报告没有拆开，所以我认为「没有平台期」只是看图的判断。摘要说 Beam 比同级模型少用 3–4 倍推理算力，我在正文里没找到和其他模型对比 token 用量的数据，相关的图只比较 Beam 自己的 checkpoint。最终成绩也不算领先：DeepSWE v1.1 上 Beam 为 43.3%，规模大得多的 Kimi K3 为 68.0%。",
+    "对做大规模 Agent RL 的团队，这说明在这个规模上分阶段切换单一领域的数据，至少没造成看得见的遗忘；异步更新配合 MoE 的[[routing-replay|路由回放]]，采样与训练两侧策略的每 token KL 中位数只有 2.2×10⁻⁴。对部署方，权重以 Apache 2.0 发布，带 FP8 和 [[nvfp4|NVFP4]] 量化版（NVFP4 保留了 BF16 版 98.98% 的基准中位分）和一个 1.93B 的[[speculative-decoding|投机解码]]草稿模型，单请求解码提速 1.96–3.03 倍。"
    ],
    "star_reasons": [
     "西方实验室的 500B 级开源权重技术报告，预训练、中训、RL、蒸馏合并、量化和投机解码全链路都有细节",
@@ -127,8 +131,8 @@
     {
      "src": "https://arxiv.org/html/2611.26358v1/rl_evals_by_step_pct.svg",
      "ref": "Figure 17",
-     "after": 3,
-     "caption_zh": "RL 过程中 8 个 held-out 基准随训练进度的变化。浅色阴影段只训数学、STEM 和竞赛编程，深色段只训 SWE，两段里另一侧指标都没掉；BrowseComp 在 83% 之前没有训过搜索任务，也从 50.1 涨到 57.9。"
+     "caption_zh": "RL 过程中 8 个 held-out 基准随训练进度的变化。浅色阴影段只训数学、STEM 和竞赛编程，深色段只训 SWE，两段里另一侧指标都没掉；BrowseComp 在 83% 之前没有训过搜索任务，也从 50.1 涨到 57.9。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.26358v1/token_efficiency.svg",
@@ -160,7 +164,7 @@
   {
    "id": "2611.34579",
    "title": "Tune for Retention, Not Just Gain: SFT Forgets Far Less than You Think",
-   "title_zh": "SFT 遗忘多半怪超参：调小学习率和 batch，掉分从 33 点变 0",
+   "title_zh": "SFT 的灾难性遗忘多半来自学习率和 batch 过大，调小后涨幅相近、几乎不忘",
    "affiliation": "Toyota Technological Institute at Chicago、Apple",
    "primary_cat": "cs.LG",
    "direction": "E",
@@ -176,10 +180,10 @@
    "abstract_en": "Catastrophic forgetting, the drastic loss of previously acquired capabilities when learning new ones, is a central challenge in language model fine-tuning. Supervised fine-tuning (SFT) is widely believed to be prone to such forgetting. Recent works have attributed this to the off-policy nature of SFT, arguing that on-policy learning is key to continual learning. In this paper, we challenge this premise. We show that while maximizing new-task performance can induce catastrophic forgetting, alternative hyperparameter choices (lower learning rate and batch size) can yield similar gains with little to no forgetting. With hyperparameters selected jointly for gain and retention, vanilla SFT retains prior capabilities far better than previously suggested and can be competitive with Self-Distillation Fine-Tuning (SDFT), an on-policy approach designed to mitigate forgetting. While SDFT can be more robust to hyperparameter choices, it also requires a retention-aware criterion to identify hyperparameter configurations that avoid catastrophic forgetting. Our results challenge the view that on-policy training is what enables learning with retention and raise broader questions about what drives catastrophic forgetting during fine-tuning.",
    "batch": "2026-11-25",
    "analysis": [
-    "SFT（监督微调）真的会[[catastrophic-forgetting|灾难性遗忘]]吗？近期工作把原因归到 SFT 是[[on-policy|off-policy]]训练，主张 on-policy 方法才能边学边不忘。这篇的回答是：**大部分遗忘来自超参数，不是 SFT 本身**。在 Chen 等人遗忘最严重的设置里（Llama-3.1-8B 在 MMLU 上微调），原配置（学习率 5e-5、batch 128）让旧能力平均掉 33.00 个点；只把学习率降到 1e-5、batch 降到 16，旧能力反而升了 0.55 个点，新任务涨幅也从 9.34 升到 12.13 个点，和 [[grpo|GRPO]] 的 11.95 持平。",
-    "做法是在 Qwen2.5-7B 上用三个新任务（化学选择题 Science、工具调用 ToolUse、美国律师考试题 MBE）做完整扫参：学习率 5e-6 到 1e-4、batch 16/32/64，固定训 2 个 epoch，旧能力用代码、指令遵循、数学、安全等 9 类评测的平均分衡量。选 checkpoint 时用==联合效用==：新任务涨幅加上旧能力变化量，在验证集上取最大。对照组是 [[sdft|SDFT]]，一种用示范答案做条件的自蒸馏 on-policy 方法。",
-    "按联合效用选出的 SFT 在 Science（33.2 对 33.8）和 ToolUse（25.8 对 26.4）上与 SDFT 打平，只在 MBE 上明显落后（13.4 对 21.3）。如果只看新任务分数选参，SFT 在 Science 上多涨 2.2 个点，却多忘 7.1 个点；SDFT 对超参更稳，但**同样需要把保留算进选参标准**，否则在 MBE 上也会白丢 3.1 个点。掉分主要集中在生成类评测（IFEval、代码、数学、越狱防御），选择题类基本不动。成本方面，用 MMLU、MATH、WildGuardTest 三项代替全部 9 类做验证，能选出和全套评测完全相同的配置；再按「掉分超过 2 个点就降学习率」做二分搜索，评测的配置数减少 81%。",
-    "保留意见：实验只覆盖 Qwen2.5 7B/14B 和 Llama 1B/8B 的全参数微调，新任务训练集都很小（ToolUse 只有 97 道评测题，同时用于选参和报告），没有测 LoRA 和更大规模的领域数据。作者也没找到不依赖旧能力评测的预警信号，参数漂移、训练 loss 都区分不出会遗忘的配置。对做领域 SFT 的人，实际含义是：先从小学习率、小 batch 扫起，并在验证时固定跑几项旧能力评测；想换 on-policy 方法来解决遗忘之前，先把 SFT 基线按保留重新调一遍。"
+    "近来几篇工作认为 SFT 容易[[catastrophic-forgetting|灾难性遗忘]]，并把原因归到它是 off-policy 的：模型学的是外部示范而非自己的输出；要边学边不忘，就得换成 GRPO 或 [[sdft|SDFT]] 这类在模型自己生成的内容上训练的方法。这篇论文认为结论下早了：**SFT 忘多少主要取决于学习率和 batch size**。只按新任务分数挑超参，挑中的往往是学习率大、batch 大的那组，在新任务上只多涨一两个点，却多忘掉很多旧能力。",
+    "证据先来自重跑前人实验。Chen 等人（2026）里 SFT 遗忘最严重的设定是 Llama-3.1-8B 以 MMLU 为新任务微调，旧能力看另外五项评测（IFEval、Countdown、MATH 和两个安全测试）的平均分。按原脚本的学习率 5e-5、batch 128 跑 SFT，MMLU 涨 9.3 个点，旧能力掉 33 个点；只把学习率改成 1e-5、batch 改成 16，MMLU 涨 12.1 个点，旧能力反升 0.55 个点，与 [[grpo|GRPO]] 的涨 12.0、掉 1.2 相当。作者又在 Qwen2.5-7B 上用化学选择题、工具调用、美国律师考试题三个新任务扫描超参，按「新任务涨幅 + 九类旧能力的平均变化」在验证集上选超参：化学题上 SFT 涨 34.6、掉 1.4，SDFT 涨 37.0、掉 3.2。只看新任务选参，化学题上 SFT 多涨 2.2 个点，旧能力却多掉 7.1 个点。",
+    "SDFT 对学习率更不敏感，律师考试题上联合选参后也好于 SFT（涨 26.7、掉 5.4，SFT 是涨 23.3、掉 9.9）；但它同样要看旧能力选参，否则这个任务上新任务只多涨 0.1 个点，旧能力多掉 3.1 个点。保留意见有三条：实验只有 Qwen2.5 7B/14B 和 Llama 的全参数微调，没测 [[lora|LoRA]]。作者照 Shenfeld 等人的设定复现时，即使只按新任务选参，也没跑出对方报告的那么严重的 SFT 遗忘，原因不明；我觉得这样一来，与前人的差距有多少来自超参、多少来自复现差异就拆不开。工具调用的评测只有 97 条，选参和报告共用这一份，我估计这个任务上的数字偏乐观。",
+    "做领域微调时，可以先试小学习率、小 batch（论文三个任务按联合标准选中的 SFT 配置都是 batch 16、学习率 2e-5 到 5e-5），并在选参时加一小组旧能力评测：论文发现用 MMLU、MATH、WildGuardTest 三项代替全部九项，在另外两个任务上选出的配置和全量一致；SFT 从 batch 16 起二分搜索学习率，每个任务只评 4 组配置（全量 21 组）。换 [[on-policy]] 方法之前，先按这个标准把 SFT 重调一遍，SDFT 端到端算力约是 SFT 的 1.3 倍。"
    ],
    "star_reasons": [
     "直接挑战「SFT 因 off-policy 而遗忘、on-policy 才能不忘」的流行结论",
@@ -191,13 +195,12 @@
      "src": "https://arxiv.org/html/2611.34579v1/rbd_revisit_8b_mmlu.png",
      "ref": "Figure 2b",
      "caption_zh": "Llama-3.1-8B 在 MMLU 上微调：横轴是新任务涨幅，纵轴是旧能力变化。原 SFT 配置掉 33 个点，**换成小学习率、小 batch 后的 SFT 落在 GRPO 旁边**，涨得更多且几乎不忘。",
-     "after": 1
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.34579v1/qwen7b_sft_lr_sweep_tasks_panel.svg",
      "ref": "Figure 4",
-     "caption_zh": "Qwen2.5-7B 上 SFT 的学习率扫描：绿色区域是新任务分数离最佳不到 3 个点的学习率，区域内旧能力掉分从不到 2 个点到超过 12 个点都有，**只看新任务选参很容易落进灾难性遗忘区**。",
-     "after": 2
+     "caption_zh": "Qwen2.5-7B 上 SFT 的学习率扫描：绿色区域是新任务分数离最佳不到 3 个点的学习率，区域内旧能力掉分从不到 2 个点到超过 12 个点都有，**只看新任务选参很容易落进灾难性遗忘区**。"
     },
     {
      "src": "https://arxiv.org/html/2611.34579v1/qwen7b_tradeoff_pareto_panels.svg",

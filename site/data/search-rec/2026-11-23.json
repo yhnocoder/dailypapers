@@ -5,8 +5,9 @@
  "rules_version": "v1",
  "overview": {
   "guide": [
-   "[[@2611.29613|Weight Coding]] 重点看被训练压小的 LayerNorm 增益：Pinterest 生产召回模型里，光把它们重置回 1 就值 10 个点，**线上模型的权重本身可能就有现成的改进空间**。[[@2611.28645|PROSPER]] 说明 LLM 换进 SPLADE 收益小，是因为扩展词压过了品牌、型号这类字面词。[[@2611.28555|abc]] 的精确倒排索引在 top-1000 上比 Seismic 更快，“学习型稀疏检索只能用近似索引”在召回深度大时不成立。[[@2611.31185|CO-GRAFT]] 的结论是只看最终答案的奖励几乎不改进 query。",
-   "[[@2611.30243|搜索 Agent 纠错评测]]发现，把答案页排到第一位，Agent 常常还是不点开；直接把关键段落放进上下文，准确率高出 51 个点，**瓶颈在读没读到，不在搜没搜到**。[[@2611.33210|生物医学自适应检索]]里，置信度在专科难题上的 AUROC 只有 0.506，接近随机，而检索恰好在这些题上最有用，作者建议默认总是检索。[[@2611.30819|Ask Again]] 测到同一个问题问两次，生成式引擎排第一的条目有 32% 的概率不同，品牌可见度监测常用的 7–8 次采样不够。[[@2611.29948|TriVS]] 把磁盘向量检索拆成内存路由、内存蒸馏、按向量读盘三步，吞吐是 PipeANN 的 3.42 倍；[[@2611.29252|Zarc]] 在 4 张 H100 上对十亿向量做精确 kNN，一万个 query 用时 1.1 秒。"
+   "本期有两篇论文让 LLM Agent 不经反向传播、直接改训练好的模型权重。[[@2611.29613|Weight Coding]] 来自 Pinterest：Agent 读生产召回模型的参数、改选定张量的数值，只靠前向评估判断好坏，把 1.47 亿参数图搜召回模型的 recall@10 比生产模型提高 15.0 个点，而一次常规上线通常只带来约 1%。读它时要看保留意见：这类编辑换到留出日平均回落 4.5 个点，线上收藏提升也只按被编辑的这一路召回计。[[@2611.31233|TowerBridge]] 把 Agent 在 CLIP 双编码器上反复写出的修正提炼成几秒就能算出的==闭式修正==，在 21 个检查点上平均把 COCO 图文检索的 RSUM（双向各档召回率之和）提高 16.8。两篇的有效编辑都只动极少数参数，可以对照着读。",
+   "[[learned-sparse-retrieval|学习型稀疏检索]]的查询词多，一般认为精确剪枝跳不掉文档、要快只能用近似索引。[[@2611.28555|abc]] 只用倒排索引的老技术，把文档按固定 8192 篇分块、让累加器放进 L1 缓存，**取前 1000 篇时在四个数据集上都比 Seismic、HNSW 快**，取前 10 篇时仍慢于它们。[[@2611.28645|PROSPER]] 发现把 SPLADE 的 BERT 换成 LLM 做电商召回时，语义扩展会冲淡品牌和型号词，于是用==字面残差网络==补回 query 里原样出现的词的权重，前 1000 个结果的命中率略高于稠密模型 BGE-base，线上作为新增一路召回让成交额涨 1.60%。稠密向量这边，[[@2611.29252|Zarc]] 在四块 H100 上 1.1 秒完成十亿向量的一万次精确近邻查询，此前要五分钟。",
+   "搜索 Agent 的两篇都在拆「涨在哪、错在哪」。[[@2611.31185|CO-GRAFT]] 让 RL 前后的模型合写同一条轨迹、分别负责推理、决策、写 query 和写答案，再用 [[shapley-value|Shapley 值]]分配增益，**写 query 的份额基本不超过总增益的 15%**；写答案的份额有不少来自格式合规，换宽松匹配后从 38% 变成 −5%。[[@2611.30243|一项搜索 Agent 纠错能力的评测]]发现，上下文里已有含答案的段落时，一个自信的错误先验仍让 Nemotron 准确率降 16.1 个点。我觉得两篇指向同一个瓶颈：拿到证据之后怎么用。"
   ]
  },
  "funnel": [
@@ -27,7 +28,7 @@
   {
    "id": "2611.29613",
    "title": "Weight Coding: Evolving Web-Scale Recommenders through Direct Weight Edits with LLM Agents",
-   "title_zh": "不训练、直接改权重：Pinterest 召回 Recall@10 涨 15 个点",
+   "title_zh": "让 Agent 直接改权重、不重训，Pinterest 召回模型 recall@10 涨 15 个点",
    "affiliation": "Pinterest",
    "primary_cat": "cs.IR",
    "direction": "F",
@@ -42,10 +43,12 @@
    "abstract_zh": "网络规模的推荐模型主要通过重训练或微调来演进。我们提出==weight coding==，一种通过直接、可执行的权重编辑来演进模型的方法。大语言模型（LLM）智能体检查模型结构和参数，提出假设，并依据评测反馈实施编辑。这一循环从局部修改推进到定向搜索与组合，使被编辑的组件相互适配。缓存引擎支持无需反向传播的快速前向评测。在 Pinterest 的 147M 参数图像搜索双塔召回模型上，weight coding 只用少量编辑、约为一次完整后训练微调 1/4 的 GPU 时长，就将生产模型在留出数据上的 recall@10 最多提升 15.0 个百分点（相对 +24%），而一次常规上线通常只提升约 1%。在保留周围已训练模型、将 13.6M 参数的整个交互模块随机重新初始化后，只搜索 2,448 个混合与归一化参数，仍比生产模型高 9.8 个点。离线收益覆盖整个漏斗，包括稠密召回、生成式召回和排序，可学习参数最多达 1.37B，且每种架构的编辑各不相同。==引导编辑==（steering）可对新鲜度、商品等细分人群上的模型表现做显式控制。Weight coding 无需改动线上服务，**线上 A/B 测试中，来自被编辑召回源的人均保存数提升 8.4% 至 10.7%**，与目标业务指标一致。我们的结果表明，weight coding 是真实网络规模生产系统中用于模型开发和行为控制的实用工具，并有望扩展到整个漏斗的预训练和后训练阶段。",
    "abstract_en": "Web-scale recommender models evolve primarily through retraining or fine-tuning. We propose \\emph{weight coding}, a methodology for model evolution through direct, executable weight edits. A large language model (LLM) agent inspects model structure and parameters, formulates hypotheses, and implements edits using evaluation feedback. The loop progresses from localized changes to targeted searches and composition, allowing edited components to adapt to one another. A cached engine enables rapid forward evaluation without backpropagation. On Pinterest's 147M-parameter Image Search two-tower retriever, weight coding improves held-out recall@10 of production model by up to 15.0 percentage points (+24\\% relative) with few edits in about 1/4 GPU hours of a full post-training finetune, while a common launch only improves around 1\\%. After reinitializing the entire 13.6M-parameter interaction module randomly while retaining the surrounding trained model, searching 2,448 mixing and normalization parameters yields 9.8 points above production. Offline gains span the full funnel including dense retrieval, generative retrieval and ranking, with up to 1.37B learnable parameters and different edits for each architecture. Steering edits provide explicit control of model performance over segments like freshness and product. Weight coding requires no serving change and online A/B tests increase saves per user from the edited retrieval source by 8.4\\% to 10.7\\%, aligned with the target business objectives. Our results establish weight coding as a practical and useful tool for model development and and behavioral control in a real web-scale production system, with potential to extend to both pre-training and post-training stages across the funnel.",
    "analysis": [
-    "不反传梯度，只让 LLM 智能体直接改已训练好的权重，Pinterest 图搜 147M 参数双塔召回模型的 recall@10 涨了 15.0 个百分点（相对 +24%）。作者称之为 ==weight coding==。单是把交互模块 [[dhen|DHEN]] 里训练后偏小的 LayerNorm 增益（γ≈0.36、0.23）重置回 1、再调低共享偏置，就拿到 +10.1 点。",
-    "流程是==扫描==各模块的缩放、重置、剪枝等编辑，==过滤==掉换一天就反号的效果，再编辑或用 [[evolution-strategy|进化策略]] 搜索，最后在从不参与迭代的留出日上验证。缓存引擎只重算被改模块的下游。4 轮循环的总耗时约为一次 140 GPU 小时微调的 24.6%。",
-    "两条反直觉的发现：删掉 DHEN 全部四个分支，召回反而涨 6.1 点，**训练好的分支净贡献为负**；把 13.6M 参数的 DHEN 整个随机重置、只搜 2,448 个参数，仍比生产高 9.8 点。开发日变化超过 1 点的编辑里，23% 换一天就反号。",
-    "保留意见：**缺少用梯度只训练同样 2,128 个参数的 baseline**，分不清收益来自智能体还是这几个位置本身；按全部互动优化的 6 个线上版本里 5 个保存数下降，换成保存目标才拿到 +8.4%～10.7%。做双塔召回的团队可以先对自家模型的 LayerNorm 增益和共享偏置做一次重置扫描；作者也试过去掉权重衰减重训，增益回到 1 附近但召回反降 3.5 点，所以重训替代不了这一步。"
+    "工业推荐模型的迭代基本靠改数据、损失或结构后重新训练，一轮要好几天，论文说一次常规上线通常只带来 1% 左右的提升。Pinterest 这篇让 LLM 编码 Agent（Opus 5.5）直接读模型的结构和参数、提出假设、改选定张量的数值，只靠前向评估判断好坏，不算梯度，作者称之为 ==weight coding==。在 1.47 亿参数的图搜双塔召回模型上，**几次编辑就让留出日的 recall@10 比生产模型高 15.0 个点（相对 +24%）**，GPU 时间约为一次后训练微调的四分之一，线上服务不用改。",
+    "Agent 的编辑手段包括：给一块权重乘系数、恢复默认值或重新随机初始化、把分支输出置零、和另一个检查点插值、沿某个方向平移，以及用[[evolution-strategy|进化策略]]直接按生产指标搜索选定的少量数值。系统事先缓存生产模型的 embedding 和中间输出，改哪个模块只重算它和下游，单次评估几秒钟。防过拟合靠按日期分工：开发日用来扫描和搜索；另外几天重测，效果变号的编辑丢掉（开发日效果超过 1 个点的编辑里有 23% 换一天就变号）；留出日只做最终评估。",
+    "改动集中在查询塔的两层 [[dhen|DHEN]] 交互模块，每层把几个分支（注意力、MLP、MaskNet）和一条捷径（第一层是混合全部 token 的线性层，第二层是恒等映射）相加，再过 LayerNorm。训练结束时两层 LayerNorm 的增益只有 0.36 和 0.23，只把第一层增益重置为 1、把第二层的共享偏移也重置，共改 128 个数，召回就涨 10.1 个点；四个分支全部删掉也比生产高 6.1 个点，**训练出来的分支在这个指标上是净负贡献**。另从训练好的权重出发，只搜索五个混合矩阵的 2,064 个数值，能涨 13.7 个点，矩阵均方根只变 −6% 到 +16%，主要是在重新分配各 token 的份额。它和一个改检索头偏置和权重的编辑（单独 +8.8）直接叠加，四天平均反而从 14.1 降到 10.2；带着头部编辑重新搜索、让两者互相适应，才得到 +15.0。",
+    "更出人意料的是起点不必是训练好的权重。把 DHEN 的 1,360 万个参数全部重新随机初始化，周围的编码器、输出头和物品塔保持不变，只搜索其中的混合矩阵和 LayerNorm 共 2,448 个数值，模型就比生产高 9.8 个点；搜索曲线起初贴着零召回，随后陡升，在第 90–110 步越过生产线，换随机种子轨迹相近。搜哪些数值很关键：只搜整个随机 DHEN 的行缩放，仍比生产低 10.0 个点，因为行缩放改变不了 token 之间怎么混合。",
+    "同一套流程在漏斗其他环节也有效，只是具体编辑不同：生成式召回 PinRec 靠与另一个微调快照插值一半、再重置一处偏置，无序 recall@1 涨 2.31 个点；13.7 亿参数的排序模型靠缩小专家的 LayerNorm 增益，utility NDCG 涨 0.53%。沿「新鲜 Pin 与非新鲜 Pin 平均 embedding 之差」平移输出头偏置，一个系数就能把 top-10 里新鲜 Pin 的占比从 2% 调到 70%。线上 A/B 中，以收藏为目标的三个版本让这一路召回带来的人均收藏提升 8.4%–10.7%。",
+    "保留意见有三条。一是增益会回落：搜索类编辑的 recall@10 从开发日到留出日平均掉 4.5 个点，作者也承认排除不了自适应过拟合。二是线上收益只按这一路召回计，作者提到排序模型会偏爱被编辑模型的候选、挤占其他召回源，却没给整站数字；以全部互动为目标的六个版本里，五个线上人均收藏反而下降（最多 −3.9%）。三是我觉得缺一个对照：用梯度只微调同样这几千个参数，或不用 Agent 直接在同样位置跑进化策略，能拿到多少；没有它，分不清收益来自 Agent 的假设，还是这些参数本来就没调好。对做推荐模型的人，可以先在自己的线上模型上扫一遍 LayerNorm 增益、共享偏移和分支相对捷径的强度；这类编辑不改服务链路，但绑定具体检查点，模型刷新后要重新验证。"
    ],
    "star_reasons": [
     "Pinterest 生产模型，线上 A/B 验证",
@@ -57,8 +60,8 @@
     {
      "src": "https://arxiv.org/html/2611.29613v1/fig3_effect_map.png",
      "ref": "Figure 3",
-     "after": 3,
-     "caption_zh": "直接编辑的效果：开发日上每个编辑对查询塔召回的影响、==LayerNorm 增益==缩放、分支与偏置缩放，以及混合搜索前后浅层 token 的占比。"
+     "caption_zh": "直接编辑的效果：开发日上每个编辑对查询塔召回的影响、==LayerNorm 增益==缩放、分支与偏置缩放，以及混合搜索前后浅层 token 的占比。",
+     "after": 3
     },
     {
      "src": "https://arxiv.org/html/2611.29613v1/fig1_overview.svg",
@@ -73,7 +76,8 @@
     {
      "src": "https://arxiv.org/html/2611.29613v1/fig4_search.svg",
      "ref": "Figure 4",
-     "caption_zh": "搜索与组合：随机重置后靠搜索把召回找回来，以及从训练好和随机两种起点出发的搜索轨迹。"
+     "caption_zh": "搜索与组合：随机重置后靠搜索把召回找回来，以及从训练好和随机两种起点出发的搜索轨迹。",
+     "after": 4
     },
     {
      "src": "https://arxiv.org/html/2611.29613v1/fig5_knobs.svg",
@@ -89,7 +93,7 @@
   {
    "id": "2611.28645",
    "title": "PROSPER: LLMs as Sparse Retrievers for First-Stage Product Search",
-   "title_zh": "给 LLM 稀疏召回补回品牌词，淘天线上净 GMV +1.6%",
+   "title_zh": "LLM 做电商稀疏召回会冲淡品牌和型号词，补回字面词权重后召回接近稠密模型",
    "affiliation": "中国科学院计算技术研究所、中国科学院大学、阿姆斯特丹大学、阿里巴巴淘天集团",
    "primary_cat": "cs.IR",
    "direction": "B",
@@ -104,10 +108,10 @@
    "abstract_zh": "商品搜索是大型电商平台的关键组成部分，其中第一阶段召回既要做到高召回率，又要保证线上部署的效率。稀疏检索因可解释、易部署，在这一场景中仍有吸引力，但它面临严重的词汇不匹配问题，对短 query 和商品标题尤其如此。大语言模型（LLM）语义能力强，但直接把它用于商品搜索的稀疏检索会带来新的挑战：（i）语义扩展可能扭曲品牌名、型号等关键的字面信号；（ii）在 LLM 带来的高维词表空间中，很难学到有意义的稀疏表示。为此我们提出 PROSPER，一个把 LLM 用作商品搜索稀疏检索器、并显式保持词汇保真度的框架。PROSPER 包含两部分：（i）==literal residual network==，通过残差补偿机制强化权重偏低的字面词，缓解词汇扩展幻觉；（ii）==lexical focusing window==，利用 top-k 选择实现快速的早期稀疏化，并提供有效的训练初始化。大量离线评测和大规模线上 A/B 测试表明，PROSPER **稳定优于现有稀疏检索器，并为工业级混合检索系统带来收入增长**。",
    "abstract_en": "Product search is a crucial component of large-scale e-commerce platforms, where first-stage retrieval should achieve high recall while ensuring efficient online deployment. Sparse retrieval remains attractive for this setting due to its interpretability and deployability, yet it suffers from severe vocabulary mismatch challenges, especially for short queries and product titles. Large language models (LLMs) offer strong semantic capabilities, but directly applying them to sparse retrieval in product search introduces new challenges: (i) semantic expansion may distort critical literal signals such as brand names and model identifiers; and (ii) learning meaningful sparse representations is difficult in the high-dimensional vocabulary space induced by LLMs.To address these challenges, we propose PROSPER, a framework that uses LLMs as sparse retrievers for product search while explicitly preserving lexical fidelity. PROSPER combines (i) a literal residual network that alleviates lexical expansion hallucination by reinforcing underweighted literal terms through a residual compensation mechanism; and (ii) a lexical focusing window that uses top-k selection for rapid early sparsification and effective training initialization. Extensive offline evaluations and large-scale online A/B tests demonstrate that PROSPER consistently improves over existing sparse retrievers, and provides revenue gains for industrial hybrid retrieval systems.",
    "analysis": [
-    "直接把 [[splade|SPLADE]] 的 BERT 换成 Qwen2.5-3B，Multi-CPR 电商测试集的 Hit@1000 只从 89.6% 升到 91.3%；PROSPER 加上两个部件后到 93.9%，略高于稠密模型 BGE-base 的 93.7%，在约 1% 流量上跑了一个月 A/B，直接引导的净 GMV 涨 1.60%。论文追问的是 LLM 语义更强、换进稀疏检索却收益很小的原因，答案是**扩展词压过了字面词**：“爱立舍机油滤芯”里品牌“爱立舍”权重偏低，“老捷豹副水箱”被扩展出“狸”“豺”“虎”等动物词。",
-    "==literal residual network（LRN）== 专门给 query 或商品标题里原样出现的词（字面词）补权重：用一个全连接层从最后一个 token 的隐状态算出向量 w′，每个字面词加上 max(w)−w′，扩展词不动。==lexical focusing window（LFW）== 在训练早期只保留权重最高的 k 个词（query 取 256、商品取 512），非零维数降到 k 以下后自动失效，之后交给 [[flops-regularization|FLOPS 正则]]继续压稀疏。打分时只对 query 向量做 ℓ2 归一化。",
-    "去掉 LFW 后 Hit@1000 从 93.9 掉到 87.2、Hit@1 从 25.3 掉到 13.3，**训练起步的稀疏化比补字面词影响更大**：Qwen2.5 词表超过 15 万维，而 query 平均只有 6 个词。归一化同样敏感，query 和商品两侧都做 ℓ2 归一化时 Hit@1000 也降到 87.2。骨干从 1.5B 换到 7B 没有明显提升，所以线上用 1.5B。线上 8000 万商品的索引是 93 GB（稠密通道 152 GB），匹配延迟约 20 ms，是稠密通道的两倍。",
-    "保留意见：作者自己测的 Qwen3-Embedding-4B 稠密检索 Hit@1000 是 94.9，BGE 在 Hit@1 和 MRR@10 上也更高，**PROSPER 并不比稠密检索更准**，线上收益来自在多路召回里多加一路；线上的 A/B 也没有拆出 LRN 和 LFW 各自的贡献，“只有 PROSPER 召回到的商品”这项分析没给数字。对已有稠密召回、想加一路可解释稀疏通道的电商搜索团队，论文给出的配置可以直接照搬：1.5B 骨干、query 端归一化、上线时 query 只保留权重最高的 16 个词。"
+    "电商搜索的第一阶段召回里，[[learned-sparse-retrieval|学习型稀疏检索]]走倒排索引、成本低，但 query 和标题都很短，词常对不上。把 [[splade|SPLADE]] 的 BERT 换成 LLM 补语义，收益却很小：在公开的 Multi-CPR 电商测试集上，换成 Qwen2.5-3B 只把 Hit@1000（前 1000 个结果里命中目标商品的 query 比例）从 89.6% 提到 91.3%。看词权重就知道原因：搜「爱立舍机油滤芯」时，权重最高的是油、滤、芯这些通用词，品牌「爱立舍」几乎被忽略；搜「老捷豹副水箱」时，模型扩展出了狸、豺、虎、狮。**LLM 的语义扩展压过了 query 里原样出现的品牌和型号词**。",
+    "==PROSPER== 加了两个部件。==字面残差网络==（LRN）只作用于输入里原样出现的词：先取整个表示里最大的那个词权重，再减去一个由全连接层从隐状态学出来的值，把差额加到这些字面词上。这样字面词能被抬到和最强扩展词竞争的水平，扩展词不变。另一个是训练早期的 top-k 窗口：Qwen2.5 词表超过 15 万维，而 query 平均只有约 6 个词，直接用 [[flops-regularization|FLOPS 正则]]压稀疏既慢又不稳；窗口在非零维度超过 k（query 256、商品 512）时只保留权重最高的 k 个词，表示变稀疏后自然失效。",
+    "PROSPER 在 Multi-CPR 电商集上 Hit@1000 达到 93.9%，高于最强的 LLM 稀疏基线（92.4%）和 SPLADE-v2（89.6%），也略高于稠密模型 BGE-base（93.7%）；但前排精度仍落后稠密模型，Hit@1 是 25.3% 对 BGE-base 的 26.6%。去掉 top-k 窗口，Hit@1000 掉到 87.2%，Hit@1 只剩 13.3%。线上，作者用 Qwen2.5-1.5B 在一个真实电商搜索引擎里为约 8000 万商品建索引，作为多路召回里新增的一路，在约 1% 流量上做了一个月 A/B，搜索直接引导的净成交额（GMV）涨 1.60%；索引 93 GB，同场的稠密召回是 152 GB，匹配延迟约 20 ms，稠密召回约 10 ms。",
+    "有两点要打折扣。一是两个部件的功劳分不清：按表里的数字，去掉窗口后的 PROSPER（87.2%）比直接把 BERT 换成 Qwen 的基线（91.3%）还低，而字面残差网络的消融只在开着窗口时以柱状图给出，正文没有具体数字，所以我觉得「补字面词」的单独贡献无从核对。二是线上对照组是不加这一路的同配置流量，测的是多一路召回的增量，没和其他稀疏模型比。对已经有倒排召回通道的团队，这套做法沿用倒排索引和现有的检索算法，字面词补偿只多一个全连接层，可以先在品牌、型号密集的类目上试。"
    ],
    "star_reasons": [
     "1% 流量一个月 A/B，净 GMV +1.60%",
@@ -119,8 +123,8 @@
     {
      "src": "https://arxiv.org/html/2611.28645v1/Overview.png",
      "ref": "Figure 1(a)",
-     "after": 2,
-     "caption_zh": "PROSPER 的模型结构：query 和商品各自编码后，==LRN== 模块单独给原样出现的字面词补权重。"
+     "caption_zh": "PROSPER 的模型结构：query 和商品各自编码后，==LRN== 模块单独给原样出现的字面词补权重。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.28645v1/x1.png",
@@ -141,7 +145,7 @@
   {
    "id": "2611.28555",
    "title": "The abc index: Exact Retrieval for Learned Sparse Representations",
-   "title_zh": "学习型稀疏检索用精确索引，比 Qdrant 最多快 84 倍",
+   "title_zh": "学习型稀疏检索用精确倒排索引，取前 1000 篇时比近似索引还快",
    "affiliation": "比萨大学",
    "primary_cat": "cs.IR",
    "direction": "G",
@@ -156,10 +160,10 @@
    "abstract_zh": "在学习型稀疏检索（LSR）中，query 含有几十个带学习权重的词项，一般认为经典的动态剪枝在这类 query 上会失效，而 Seismic、HNSW 等近似索引比精确索引更快。我们用 abc 质疑这一看法：abc 是一个只用标准 IR 技术构建的==精确索引==，用到逐词（TAAT）评估、Block-Max MaxScore、binary packing 和 doc-id 重排。这些技术以新的方式组合，并针对现代 CPU 做了工程优化。在用四种 LSR 模型编码的 MS MARCO 上，abc 在每个 k 值下都是最快的精确索引：**比 Qdrant 的精确搜索快 6.5–84 倍，比 Lucene 快 13–55 倍，比 BMP 快 2.9–18 倍且索引小 5–7 倍**。与近似索引相比，它的空间占用少 1.5–3.6 倍，延迟随 k 增长得慢得多：k=10 时近似索引最多快 4.3 倍，但到 k=1000 时 abc 反超，最多快 7.4 倍。精确检索还带来一个额外好处：没有需要调的参数。",
    "abstract_en": "In learned sparse retrieval (LSR), queries have tens of terms with learned weights, on which classic dynamic pruning is believed to fail, and approximate indexes such as Seismic and HNSW are considered faster than exact ones. We challenge this view with abc, an exact index built only from standard IR techniques: term-at-a-time (TAAT) evaluation, Block-Max MaxScore, binary packing and doc-id reordering. They are combined in a new design and engineered for modern CPUs. On MS MARCO encoded with four LSR models, the abc index is the fastest exact index at every k: 6.5-84x faster than the exact search of Qdrant, 13-55x faster than that of Lucene, and 2.9-18x faster than BMP with an index 5-7x smaller. Against approximate indexes, it takes 1.5-3.6x less space, and its latency grows much more slowly with k: they are up to 4.3x faster at k=10, but at k=1000 it overtakes them, by up to 7.4x. Exactness comes with an extra benefit: there are no parameters to tune.",
    "analysis": [
-    "在 MS MARCO 的四种稀疏编码上，只用经典倒排技术拼出的精确索引 abc-bmms 比 Qdrant 快 6.5–84 倍，取 k=1000 时还比近似索引 Seismic 快 1.7–7.4 倍。[[learned-sparse-retrieval|学习型稀疏检索（LSR）]]的 query 有几十个学出来的权重，一般认为剪枝在这里失效、精确检索注定慢。论文的回答是：**慢在实现，不在算法**。",
-    "核心是==硬窗口==：doc-id 空间切成固定对齐、每块 8192 个文档的块，所有词共用，累加器只占 32 KiB，放得进 L1 缓存；倒排每条只存 16 位块内偏移，偏移就是累加器下标，打分只剩一次乘加。在这个[[term-at-a-time|逐词（TAAT）]]循环上，每块再分 8 个子块各存 1 字节最大值，块内跑 [[maxscore|Block-Max MaxScore]] 剪枝，剩下的几十个候选用二分查找补分。",
-    "同一个剪枝算法在两处结果相反：abc-bmms 在 k=10 时比不剪枝的 abc 快 2.9–4.1 倍，Lucene 的 Block-Max MaxScore 却比它自己的穷举慢，最多慢 2.7 倍，差别在于 abc 的子块上界跨词对齐、可以直接相加。论文还发现几种号称精确的索引并不精确：BMP、SP 把 query 权重量化到 32 级，召回上限只有 0.966–0.978；SparseUp 的长 query 让 16 位分数溢出，SP 的 recall@10 只有 0.22。",
-    "保留意见：实验只有 880 万篇的 MS MARCO v1、单线程、一台 L1 为 48 KiB 的 CPU，块宽也是按这台机器挑的，**没测更大语料和多线程吞吐**，代码录用后才公开；k=10 时 Seismic 和 HNSW 仍快 1.1–4.3 倍。召回要取 top-1000 交给精排、或者要算精确 ground truth（比暴力扫描快 27–52 倍）的团队，值得用它替换 Qdrant 或 Lucene 的稀疏检索；只取 top-10 的在线召回，近似索引仍更快。"
+    "[[learned-sparse-retrieval|学习型稀疏检索]]（如 [[splade|SPLADE]]）的查询平均有几十个带学习权重的词（CoCondenser 版 SPLADE 在 MS MARCO 上是 44 个），WAND、MaxScore 这类靠分数上界跳过文档的动态剪枝在上面几乎跳不掉什么，以往实测甚至比逐条打分还慢。所以领域里默认要快就用 Seismic、HNSW 这类近似索引，代价是召回损失和逐数据集调参。这篇论文只用倒排索引的老技术拼出一个无需调参的精确索引 ==abc==，**取前 1000 篇时在四个数据集上都比近似索引快**。",
+    "关键是让逐词累加（TAAT）重新变便宜。TAAT 把每个词的整条倒排依次加进每篇文档的累加器，过去输给逐文档处理，因为累加器和语料一样大，写入多是缓存缺失。abc 把文档编号切成固定的 8192 个一块，所有词切法相同，倒排也按块存：一块的累加器 32 KiB，放得进 L1 缓存；每条倒排只存块内 16 位偏移，它就是累加器下标，打分只剩一次乘加。Qdrant 也按窗口做 TAAT，但窗口在查询时临时划，每个词都要先找窗口终点、再换算编号；作者把 abc 改成这种窗口，慢了约 30%。",
+    "块边界对所有词相同，也让剪枝重新划算。剪枝版 ==abc-bmms== 给每个词在每个 1024 篇的子块存一字节最大权重，各词上界可以直接相加；块按上界从高到低访问，前几块就把第 k 名的门槛抬高，之后每块里上界之和够不着门槛的词不整条读，只对剩下的候选去查（CoCondenser 上取前 10 篇时，8192 篇里平均剩 14.4 篇）。和调到 recall@k 0.99 的近似索引比，CoCondenser 上取前 10 篇时 abc-bmms 要 1,078 微秒，Seismic 258、HNSW 428；取前 1000 篇时 abc-bmms 3,459，Seismic 5,760、HNSW 5,565。近似索引要保住召回，k 越大要看的文档越多。索引还小 1.5–3.6 倍，几十秒建完，HNSW 要 9–27 小时。",
+    "保留意见：四个数据集是同一个 MS MARCO v1 换四种编码模型；延迟是单线程逐条查询的均值，没报尾延迟和吞吐，我估计按上界剪枝的耗时随查询波动更大，P99 可能不如均值好看。默认 8 位权重会丢不到 1% 的真实前 k，换回 32 位才严格精确，CoCondenser 上取前 10 篇时压缩版 abc-bmms 从 1,199 涨到 1,476 微秒。作者也是 Seismic 和 kANNolo（文中的 HNSW 实现）的作者之一，代码要录用后才放出。检索阶段要给重排送上千候选的系统，可以考虑直接用精确倒排；用 32 位版本算评测用的精确标准答案比暴力扫描快 27–52 倍。"
    ],
    "star_reasons": [
     "挑战LSR必须用近似索引的共识",
@@ -172,8 +176,8 @@
      "src": "https://arxiv.org/html/2611.28555v1",
      "svg_id": "S3.F1.pic1",
      "ref": "Figure 1",
-     "after": 2,
-     "caption_zh": "一个词的倒排在 abc 里的内存布局：doc-id 空间按 8192 切块，用位向量记哪些块有这个词；稀疏块存 16 位偏移和 8 位权重，稠密块直接存 8192 个权重。"
+     "caption_zh": "一个词的倒排在 abc 里的内存布局：doc-id 空间按 8192 切块，用位向量记哪些块有这个词；稀疏块存 16 位偏移和 8 位权重，稠密块直接存 8192 个权重。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.28555v1",
@@ -190,7 +194,7 @@
   {
    "id": "2611.31185",
    "title": "CO-GRAFT: Attributing Reinforcement Learning Gains in Search Agents via Role-Level Policy Grafting",
-   "title_zh": "RL 让搜索 Agent 变强，但写 query 的贡献不到 15%",
+   "title_zh": "RL 让搜索 Agent 涨分，主要不是因为 query 写得更好",
    "affiliation": "",
    "primary_cat": "cs.IR",
    "direction": "A",
@@ -205,10 +209,10 @@
    "abstract_zh": "强化学习（RL）可使 LLM 搜索 agent 的精确匹配（EM）得分比 RL 前的初始化最多高出 32 个点，但整体准确率的提升并不能说明训练中哪些功能能力得到改进或相互作用。我们提出 CO-GRAFT，一个与奖励无关的==干预式归因框架==：RL 训练后的 agent 与其 RL 前的初始化在带实时检索的闭环执行中共同生成同一条轨迹。每个策略控制四个功能角色中互不重叠的子集：中间推理、搜索或回答的决策、搜索 query 生成、最终答案抽取。无需修改权重或重新训练，评估全部 2^4=16 种角色分配即构成一个合作博弈，其 Shapley 值把总 RL 收益分解到各角色，Möbius 交互项则区分单角色的独立改进与多角色耦合。我们把 CO-GRAFT 用于 Qwen2.5 和 Llama-3.2 上的 Search-R1 agent（涵盖两种规模、base 与 instruction-tuned 初始化、GRPO 与 PPO 优化器、NQ 与 HotpotQA 数据集），结果表明 **query 生成带来的收益从未超过总收益的 15%**；收益主要取决于 RL 前的答案有效性、搜索保留率、模型规模和固定的任务级搜索预算：在更大或答案格式良好的 checkpoint 中，贡献从推理转向答案抽取，而较小的 base 模型依赖推理与决策的耦合。",
    "abstract_en": "Reinforcement learning (RL) improves large language model search agents by up to 32 exact-match (EM) points over their pre-RL initializations, yet overall accuracy gains do not identify which underlying functional capabilities improve or interact during training. We introduce CO-GRAFT, a reward-agnostic interventional attribution framework in which an RL-trained agent and its pre-RL initialization jointly generate a single trajectory under closed-loop execution with live retrieval. Each policy controls a mutually exclusive subset of four functional roles: intermediate reasoning, search-or-answer decision, search query generation, and final answer extraction. Evaluating all 2^4=16 role assignments without modifying weights or retraining defines a cooperative game whose Shapley values decompose the total RL gain across roles, while M\"obius interaction terms distinguish standalone role improvements from multi-role coupling. Applying CO-GRAFT to Search-R1 agents across Qwen2.5 and Llama-3.2 models (spanning two sizes, base and instruction-tuned initializations, GRPO and PPO optimizers, and NQ and HotpotQA datasets), we show that query generation never exceeds 15% of the total gain; instead, gains are governed by pre-RL answer validity, search retention, model scale, and fixed task-level search budgets, shifting credit from reasoning toward answer extraction in larger or well-formatted answer response checkpoints while smaller base models rely on reasoning--decision coupling.",
    "analysis": [
-    "在 Search-R1 类搜索 Agent 上，RL 带来的 EM（exact match，答案与标准答案完全一致的比例）提升最高 31.6 个点，但**“写搜索 query”这一步在所有模型上都只分到不超过 15% 的收益**。论文追问的是 RL 之后 Agent 到底哪一步变好了。答案是收益主要落在推理和写最终答案上，分配比例取决于模型在 RL 前能不能输出格式合法的答案，以及 RL 后还搜不搜。",
-    "CO-GRAFT 把轨迹切成四个==角色==：推理 R（`<think>` 里的文本）、决策 D（下一步发 `<search>` 还是 `<answer>`）、查询 Q（搜索词）、答案 A（填进 `<answer>` 标签的最终答案）。RL 后的模型和 RL 前的初始化在同一条轨迹里接力生成，各管一部分角色，检索实时进行，即[[policy-grafting|策略嫁接]]。16 种分配各跑 1,000 道题，用 [[shapley-value|Shapley 值]] 把总收益分到四个角色，用 [[mobius-interaction|Möbius 交互项]] 区分单角色收益和多角色耦合。模型覆盖 Qwen2.5-3B/7B、Llama-3.2-1B/3B 的 base 与 instruct 版，数据集为 NQ 和 HotpotQA。",
-    "Qwen2.5-3B base 在 NQ 上 70% 的收益来自推理；换成 7B base，推理降到 40%，答案升到 38%。答案份额很多是格式：改用宽松指标（子串匹配、token F1）后，**Qwen2.5-7B base 的答案份额从 38% 跌到 −5%**。决策学到的也不是“证据够了就停”：把 D 换成固定搜索次数（Qwen2.5-3B PPO 在 NQ 上搜 1 次、HotpotQA 上搜 2 次），EM 与完整 RL Agent 相差不到 1 个点。Llama-3.2-3B instruct 在 RL 后完全不搜了（每题 1.4 次降到 0），收益只有 3.2 个点。",
-    "保留意见：模型最大只到 7B，每个数据集只评 1,000 题；固定搜索次数和冻结检索这两组对照只在两对 Qwen2.5 PPO 模型上做，最优搜索次数还是在评测集上挑的。另外 RL 前基线的格式合法率很低（Qwen2.5-3B base 在 NQ 上只有 53%），总收益里本来就有一块是学格式。对训练搜索 Agent 的人来说，**只用结果奖励（只看最终答案对错）不会让 query 变好**，我觉得想提升检索能力得给 query 和停止决策单独设奖励；报告结果时也应同时给出宽松指标，免得把格式收益算成能力收益。"
+    "Search-R1 这类搜索 Agent 每轮先想一段，再决定搜还是答，要搜就写 query，最后写答案。RL 训练后，它们在 NQ、HotpotQA 上的 exact match（EM，答案与标准答案完全一致的比例）比训练前最多高 32 个点。但总分说不清涨在哪：query 写得更准，更会读检索段落，更会判断何时停，还是只是答案格式更合规。论文的结论是：**写 query 拿到的份额基本不超过总增益的 15%**，大头落在推理和写答案上。",
+    "做法叫 ==CO-GRAFT==，一种[[policy-grafting|策略嫁接]]：RL 后的模型和它 RL 前的初始模型合写同一条轨迹，检索实时进行，四个角色各指定由谁来写。四个角色各有两种归属，共 16 种组合，每种在同一批 1,000 道题上测 EM，再用[[shapley-value|Shapley 值]]把总增益拆给四个角色。Qwen2.5-3B base 在 NQ 上涨了 29.4 个点，推理拿走 70%。论文的例子：问第一家 Sonic Drive-In 开在哪，两个模型拿到的检索段落都含正确答案，RL 前的模型却在搜索前就凭记忆在推理里写下错误的城市并照此作答；RL 模型写推理的 8 种组合这题全对，其余 8 种全错。为排除「只是 RL 模型搜到的段落更好」，作者把 RL 模型检索到的段落交给 RL 前的模型，最多只多 3 个点，而让 RL 模型接管推理能多 11–22 个点。",
+    "在 Qwen2.5 上，写答案的份额有相当一部分是格式：Qwen2.5-7B base 的答案格式合规率从 RL 前的 79% 升到 100%，改用宽松的子串匹配计分后，写答案在 NQ 上的份额从 38% 变成 −5%。决策的份额也不代表学会了按证据停：换成每题固定搜若干次，最优的固定次数与完整 RL 模型相差不到 1 个点。",
+    "保留意见：模型最大 7B，每个数据集只测 1,000 题；固定段落和固定次数两个对照只在两组 Qwen2.5 PPO 模型上做过。推理角色把规划、读段落、整理格式装在一起，「推理占 70%」说不清是哪种能力变好。按表里的数字，Llama-3.2-1B instruct 的 query 份额是 16%，我觉得「不超过 15%」应理解为大致这个量级。对训练搜索 Agent 的人，我觉得 EM 上涨不能直接当作检索能力变强的证据，要同时报告格式合规率和宽松指标；作者建议对写 query 和停止决策单独给奖励。"
    ],
    "star_reasons": [
     "拆解搜索 Agent 的 RL 收益来源",
@@ -220,8 +224,8 @@
     {
      "src": "https://arxiv.org/html/2611.31185v1/figs/fig_mechanism.png",
      "ref": "Figure 1",
-     "after": 2,
-     "caption_zh": "CO-GRAFT 框架：(a) 一条轨迹按推理、决策、写 query、写答案四个角色切开；(b) RL 前后两个模型分角色接力生成；(c) 16 种分配下的 EM 和各角色的 Shapley 份额。"
+     "caption_zh": "CO-GRAFT 框架：(a) 一条轨迹按推理、决策、写 query、写答案四个角色切开；(b) RL 前后两个模型分角色接力生成；(c) 16 种分配下的 EM 和各角色的 Shapley 份额。",
+     "after": 2
     }
    ],
    "translation": {

@@ -6,12 +6,13 @@
   "2026-11-24",
   "2026-11-25"
  ],
- "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25（3 批）",
+ "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25",
  "rules_version": "v2",
  "overview": {
   "guide": [
-   "[[@2611.29064|UNIFIED]] 让一个 DiT 同时做编码、生成和解码，215M 参数 gFID 2.08；读的时候注意它按 epoch 比较，按训练 FLOPs 算只和 UNITE 打平。[[@2611.33268|JetDiffusion]] 的 273 倍里约 32 倍来自把 50 步压到 3 步，新东西是 4 比特稀疏注意力和「先逐层对齐老师再蒸馏」的训练顺序。[[@2611.33232|Best-of-N 对 RL]] 发现 Flow-GRPO 的优势几乎只在位置类提示上，还指出两种自动裁判会朝相反方向出错，只信一个裁判结论可能颠倒。",
-   "[[@2611.29547|Align the Pair]]测了 17 种配置：把表征对齐加在单步生成器的纯噪声路径上，recall 都会从 0.45 掉到 0.15–0.25，加在配对的重建路径上才有效。[[@2611.30728|Decide-then-Render]]发现少步采样偏离 50 步结果的原因在噪声水平 0.9 以上的起步阶段，先用低分辨率定构图再渲染细节，比参考采样器快 11–25 倍。[[@2611.29618|Mass Forcing]]针对 DMD 蒸馏把视频蒸得越来越静的问题，1,000 次更新后 Dynamic Degree 仍有 83%，基线只有 12–32%。[[@2611.29184|PhyCoVE]]的 533 个物理反事实编辑案例里，最好的视频编辑模型也只复现了约七分之一的物理变化。"
+   "本期最集中的话题是让视频生成少花算力。[[@2611.33268|JetDiffusion]] 把 Wan2.1-14B 生成 720p 视频的耗时在 RTX 5090 上从约 3,177 秒压到 11.6 秒，核心是一种可训练的 90% 稀疏加 4-bit [[nvfp4|NVFP4]] 注意力 ==VSQA==。读它时要注意 **273 倍里约 32 倍来自去掉 CFG 和少走步**，且 3,177 秒是外推估计。少步蒸馏本身的毛病是另外两篇的话题：[[@2611.29431|HorizonFlow]] 发现 [[dmd|DMD]] 蒸馏里画质几百次迭代就收敛、运动远远落后，把两者的修正分开后，600 次迭代就把 Wan2.1-T2V-1.3B 蒸成 4 步模型；[[@2611.30728|Decide-then-Render]] 发现少步采样偏离 50 步结果是因为构图在最早几步就定了，于是先用半分辨率定构图、再按原种子渲染细节，免训练，快 11–25 倍。",
+   "训练侧两篇各省一样东西。[[@2611.29064|UNIFIED]] 让同一个扩散 Transformer 兼做编码、生成和解码，关键是每个位置在三种任务里都指同一块图像；ImageNet 256 上 215M 参数的 [[gfid-rfid|gFID]] 为 2.08（越低越好），好于同参数的 UNITE。但它每次前向的计算量是 UNITE 的 1.63 倍，**按训练算力对齐后两者只差 0.03 以内**，省的主要是参数。[[@2611.29138|GC-REPA]] 把预训练图像表征拆开用：图像级信息当条件，图像内信息交给 REPA 监督，SiT-XL/2 用 200K 次迭代就达到 REPA 训 4M 次的 FID。",
+   "[[@2611.33232|一项 RL 与 best-of-N 的对比研究]] 在 SD3.5-M 上问一张 Flow-GRPO 图值几张底模图：不涉及物体相对位置的提示，翻底模 3 张就能追平；涉及位置时翻满 8 张找到正确图的比例只有 51.9%，RL 是 92.4%。**只用检测器或只用 VLM 当裁判，结论会分别偏向 RL 或 best-of-N。**想改 RL 算法本身的可以对照着读 [[@2611.30986|iTDM]]，它修正了前向扩散 RL 中 baseline 引起的梯度漂移，在 GenEval2 上收敛快近 3 倍。"
   ]
  },
  "funnel": [
@@ -36,7 +37,7 @@
   {
    "id": "2611.33268",
    "title": "JetDiffusion: Pushing the Speed Limits of Video Generation with NVFP4 Sparse Attention",
-   "title_zh": "视频生成快 273 倍：NVFP4 量化要先逐层对齐老师再蒸馏",
+   "title_zh": "4-bit 稀疏注意力配三步蒸馏，Wan 14B 在 RTX 5090 上 12 秒生成 720p 视频",
    "affiliation": "UC San Diego、CMU、威斯康星大学麦迪逊分校、新加坡国立大学",
    "primary_cat": "cs.CV",
    "direction": "F",
@@ -52,10 +53,12 @@
    "abstract_en": "Attention over long sequences is a major computational bottleneck in video generation, which can be alleviated through sparsity and low-bit quantization. We propose JetDiffusion, a video generation system built on trainable Video Sparse Quantized Attention (VSQA), with custom inference kernels that combine native NVFP4 computation and kernel fusion. At 90% sparsity, VSQA accelerates attention by 8-29x compared with FlashAttention on different hardwares. To further accelerate video generation, we combine VSQA with NVFP4 linear quantization and step distillation. Although each technique can individually preserve generation quality, jointly adapting to all three remains challenging, particularly under aggressive NVFP4 quantization. Through empirical studies, we develop an effective staged training recipe that enables stable adaptation to quantization, sparsity, and few-step denoising. On Wan2.1-14B, the resulting model achieves 273x end-to-end video generation speedup on the RTX 5090 while maintaining comparable video quality.",
    "batch": "2026-11-24",
    "analysis": [
-    "Wan2.1-14B 720p 在 RTX 5090 上端到端快 273 倍，但**其中约 32 倍来自把 50 步加 CFG（无分类器引导，每步要跑两次前向）压到 3 步**；这篇新贡献的是剩下那一截：90% 稀疏、[[nvfp4|NVFP4]] 4 比特的注意力和 NVFP4 线性层，在 3 步模型上合计再快约 6.5 倍。论文追问的是稀疏、4 比特量化、少步蒸馏三者叠在一起还能不能训稳，答案是能，但要分阶段训，画质也没掉：14B 的 VBench Total 比原模型高 2.2 分。",
-    "==VSQA==（视频稀疏量化注意力）沿用 VSA 的粗到细结构：把时空相邻的 token 池化成 cube，按 cube 级注意力分数为每个 query cube 选出前 10% 的 key cube，只在选中的块里用 NVFP4 算 QKᵀ 和 PV，再加一路门控的 cube 级全局输出。训练分三段：先做 ==逐层重建== 预热，让量化后的每一层在相同输入下贴住未量化老师的输出；再打开稀疏做 ODE 初始化（用老师 ODE 轨迹上 3 个目标时间步的状态训练，并保留重建正则）；最后用 [[dmd|DMD]] 精修。",
-    "最值得记住的是 QAT/QAD 的反例：这两种只监督最终速度预测的做法能把量化模型单独出片的画质救回来，但生成视频的构图和细节逐渐偏离老师，**给后面的 DMD 埋下师生错位**。换成逐层重建后，1.3B 的 Total 从直接 DMD 的 81.67 升到 82.72，追平稠密 BF16 对照的 82.69；DMD 阶段 200 次更新里超过梯度裁剪阈值的从 55 次降到 20 次。",
-    "保留意见：**273 倍的基准是估算值**，BF16 的 14B 模型放不进 RTX 5090 显存，原模型耗时由少层模型外推；而在同为 3 步、同分辨率时和 LightWan2.2 比，端到端只快 1.06 倍，人评对原模型的偏好也只有 49.0%，论文也没给出代码地址。对在 Blackwell 显卡上做视频模型压缩的人，可直接借的是顺序：先用逐层重建吸收 4 比特误差，再上稀疏，最后 DMD；序列较短时 VSQA 比稠密注意力还慢，不适合短视频片段。"
+    "视频扩散的计算大头在注意力：Wan2.1-14B 生成一条 77 帧 720p 视频，每层要对 76,800 个 token 做全注意力，按 50 步加 CFG 在 RTX 5090 上跑完一条估计要 3,177 秒（原模型放不进这张卡的显存，这个数是作者外推的）。稀疏和低比特两种加速可以叠加，但已有的组合方案大多停在 8 bit；Blackwell 显卡原生支持的 [[nvfp4]] 让 4-bit 矩阵乘便宜得多，误差也大得多。这篇论文提出 ==VSQA==，一种可训练的 90% 稀疏 + NVFP4 注意力，再把线性层也量化成 NVFP4、把采样蒸馏到 3 步，组成 ==JetDiffusion==：14B 720p 的端到端耗时在 RTX 5090 上降到 11.6 秒（273 倍），在 GB300 上从 489 秒降到 4.11 秒（119 倍），VBench 总分不低于原模型。",
+    "VSQA 沿用 VSA 的两级结构：先把时空相邻的 token 划成小块（720p 时每块 256 个 token），用块内均值做一次粗粒度注意力，给每个 query 块挑出得分最高的 10% key 块；细粒度注意力只在选中的块里逐 token 计算，QKᵀ 和 PV 两个矩阵乘都用 NVFP4（GB300 上 PV 改用 FP8），softmax 保持高精度，再加上一路带门控的粗粒度输出保留全局信息。概率被量化后 FlashAttention 的反向公式不再成立，作者专门写了训练用的反向 kernel；推理 kernel 只遍历选中的块对，并把池化和量化合进同一次显存读取。14B 720p 的单次注意力在 RTX 5090 上只要 19.7 ms，是 FlashAttention-2 的 1/28.5。在 RTX 5090 上 14B 的控制实验里，单开稀疏快 6.2 倍、单开低比特快 3.7 倍，**两者叠加快 29.9 倍，比任何一项单独都大得多**。",
+    "不过 273 倍里大部分来自少走步。附录的逐项累加拆解是：原模型 3,177 秒；去掉 CFG 后 1,591 秒；蒸馏到 3 次前向后 100 秒；换上 VSQA 降到 34.7 秒；线性层换成 NVFP4 后实测 15.6 秒；最后把 VAE 换成轻量解码器 TAEHV，到 11.6 秒。按表里的数字算，步数和 CFG 贡献了约 32 倍，注意力和线性层量化合起来约 6.4 倍。和同类加速系统在同样 3 步、同样分辨率下比，TurboDiffusion 的 DiT 耗时是 JetDiffusion 的 2.48 倍，LightWan2.2 是 1.09 倍。",
+    "三种压缩叠在一起才难训，难点主要在 NVFP4：在 1.3B 模型上直接做 [[dmd|DMD]] 蒸馏，NVFP4 版 VBench 总分 81.67，FP8 版 82.33。作者先预热吸收量化误差再蒸馏，关键在预热目标。常规的 QAT（用原训练目标微调量化模型）和 [[qad|QAD]]（让量化模型拟合原模型最终的速度输出）都能拉回量化模型自身的画质，但生成的视频在构图和内容上逐渐偏离原模型；而 DMD 要让学生分布贴住老师分布，起点偏得越远越难训。论文改用 [[layerwise-reconstruction|逐层重建]]：每一层都喂老师那一层的输入，要求量化后的输出贴住老师的输出，偏差不会沿层累积。之后打开稀疏，用老师 ODE 轨迹上的状态做 3 步初始化并保留重建项，最后才跑 DMD。完整流程在 1.3B 上总分 82.72，比直接 DMD 高 1.05 分，和同样流程训出的稠密 BF16 版（82.69）持平。",
+    "保留意见有几条。第一，训练流程带来的质量差距很小：每个配置只训一次，把预热换成 QAD 只低 0.53 分（82.19），作者也说这个差距不具统计显著性；所以我认为「逐层重建优于 QAD」目前主要靠预热时的生成样例和训练曲线支撑。第二，和其他系统的 VBench 对比各自用了不同的帧数、分辨率和步数，不能隔离模型本身的差别；人评里 JetDiffusion 对原版 Wan2.1 和 LightWan2.2 的偏好率是 49.0% 和 48.5%（平局算半票），基本打平。第三，**14B BF16 原模型放不进 5090 的 32 GB 显存，3,177 秒是用层数更少的模型外推的估计值**，GB300 上的 119 倍才是实测。第四，只测了 Wan2.1；14B 的序列短于 3,840 个 token 时，稠密低比特注意力比 VSQA 快。",
+    "在 Blackwell 显卡上部署视频生成的人可以直接拿走两样东西：RTX 5090 和 GB300 各一套可训练的 NVFP4 稀疏注意力 kernel，以及「先用逐层重建吸收 4-bit 误差、再做稀疏和少步蒸馏」的分阶段顺序。已经在用 LightWan2.2 这类 FP8 少步方案的，按论文的同步数对比，DiT 只再快约 9%；我觉得这篇的增量主要在 4-bit 稀疏注意力 kernel 和让 NVFP4 训得稳的流程，而不是 273 倍这个数字。"
    ],
    "star_reasons": [
     "把 90% 稀疏与 NVFP4 4 比特注意力做成可训练方案，并在 RTX 5090 和 GB300 上给出真实 kernel 的实测加速（注意力 8.0–28.5 倍）",
@@ -67,13 +70,13 @@
      "src": "https://arxiv.org/html/2611.33268v1/inference_speedup.svg",
      "ref": "Figure 6",
      "caption_zh": "左边看单次注意力：14B 720p 在 RTX 5090 上 VSQA 只要 19.7 ms，比 FlashAttention-2 快 28.5 倍，也比同为 90% 稀疏的 SageSLA 快约 2 倍。右边是整次生成的 DiT 耗时，**基线是 50 步加 CFG**，所以 127–307 倍里大部分来自步数。",
-     "after": 1
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.33268v1/warmup_frames.png",
      "ref": "Figure 3",
      "caption_zh": "同一提示词在量化预热过程中的生成结果，从左到右训练步数递增。==QAT== 和 ==QAD== 的画面渐渐和 BF16 原模型的构图分道扬镳，逐层重建（Ours）一直贴着原模型。",
-     "after": 3
+     "after": 4
     },
     {
      "src": "https://arxiv.org/html/2611.33268v1/warmup_loss.svg",
@@ -104,7 +107,7 @@
   {
    "id": "2611.29064",
    "title": "Single-Transformer Latent Diffusion",
-   "title_zh": "一个 DiT 同时编码、生成和解码，215M 参数 gFID 降到 2.08",
+   "title_zh": "潜在扩散的编码、生成、解码可以共用一个 Transformer，前提是三者逐位置对齐",
    "affiliation": "University of Illinois Urbana-Champaign",
    "primary_cat": "cs.CV",
    "direction": "A",
@@ -124,10 +127,10 @@
     "hn": 4
    },
    "analysis": [
-    "潜在扩散的最后一个独立网络——解码器——也能并进生成器，而且并进去反而更好。潜在扩散通常要编码器、生成器、解码器三套网络；UNITE 已经把前两个合成一个，这篇的 UNIFIED 用一个权重全共享的 DiT（diffusion transformer）把三件事都做了，只用重建损失和 [[flow-matching|flow matching]] 损失单阶段从零训练，不用对抗损失也不用 DINO。ImageNet 256×256 上参数量相同时，三个规模的 [[gfid-rfid|gFID]] 都低于 UNITE，Base（215M）从 2.23 降到 **2.08**。",
-    "关键不在共享，而在序列怎么排。直接让 UNITE 的骨干兼做解码（作者叫 UNITE++，编码、解码仍通过额外的 readout token 读出结果）没有用：gFID 2.24 持平，rFID 从 1.41 恶化到 2.20。UNIFIED 改成==位置对齐==：第 i 个位置无论放像素 patch、latent 还是加噪 latent，都对应同一块图像，三种模式只靠序列开头的==模式 token==和时间步区分。编码改用「干净端」t=1；解码不再共用 t=1，而是用一个单独学出来的==解码时间步==（记作 t=−1），避免生成快结束时最后几层既要输出 latent 又要输出像素。[[cka|CKA]] 显示，这一改让最后一层的编码/生成相似度在 t=0.995 时从 0.37 回到 0.92。",
-    "最值得记住的是参数效率：62M 的 Tiny 版 gFID 2.78，和 117M 的 Small UNITE（2.76）基本持平。在 UNITE 内部把参数从解码器挪向编码器，gFID 也一路从 5.01 降到 3.00，**参数放在共享骨干里比放在独立解码器里更划算**。文生图上，218M 的 UNIFIED-B 在 512×512 拿到 GenEval 0.87，高于 1.1B 的 DeCo（0.86）。",
-    "**按 epoch 对比掩盖了算力差**：同参数量下共享骨干更宽，一次生成前向的计算量是 UNITE 的 1.63 倍，训练每步贵 1.5 倍；按相同训练 FLOPs 比，Base 只是 2.22 对 2.23 打平。t=−1 的优势也依赖求解器，换 256 步 Euler 后 t=1 反而更好。对想省掉单独训练 VAE、在小模型上追 gFID 的团队，位置对齐加模式 token 可以直接借用；但这种结构没法冻结 latent 再单独训生成器，比较时要按 FLOPs 而不是 epoch。"
+    "潜在扩散通常要训编码器、生成器、解码器三个网络，参数怎么分配给三者很难事先判断。UNITE 已经把编码器和生成器合成一个网络，单阶段只用重建和 [[flow-matching|flow matching]] 损失训练，解码器仍单独存在。直接让同一主干也去解码、用模式 token 区分任务（作者称 UNITE++）并没有用：ImageNet 256×256、约 215M 参数下，生成 [[gfid-rfid|gFID]] 2.24 对 UNITE 的 2.23（越低越好），重建 rFID 反而从 1.41 退到 2.20。论文认为问题出在序列排法，提出 ==UNIFIED==。",
+    "UNITE++ 从额外拼入的「读出 token」上取输出，潜变量和图像位置没有固定对应，解码时每个位置都要靠注意力找回内容。UNIFIED 改成==位置对齐==：每个图像块对应一个潜变量 token，第 i 个位置无论放像素块、潜变量还是加噪潜变量，都指同一块图像。Base 规模的消融逐个拆开：只改排法，rFID 降到 1.39，但 gFID 变差到 2.31，因为编码仍标着「纯噪声」时间步 t=0，输入却是干净图像；编码改用 t=1 后 gFID 2.15。剩下的冲突在 t=1：编码和生成输出潜变量，解码输出像素，同一个最后一层要兼顾两种输出，编码与生成两次前向在最后一层的 [[cka|CKA]] 相似度在接近干净端的 t=0.995 时跌到 0.37（UNITE 为 0.92）；给解码单独学一个时间步嵌入后回到 0.92，gFID 2.08。**三个规模下都比同参数的 UNITE 好，62M 的版本（2.78）几乎追平 117M 的 UNITE（2.76）。**",
+    "但同参数不等于同算力：共享主干更宽，每次去噪前向的计算量是 UNITE 的 1.63 倍，一个训练步贵 1.5 倍。按训练总 FLOPs 对齐，UNIFIED 少用 10–19% 算力时与 UNITE 只差 0.03 gFID 以内，训练早期 UNITE 还领先。可学解码时间步的好处也依赖求解器，换成 256 步 Euler 采样就不如解码用 t=1 的版本（2.121 对 2.089）。论文只重复了评测种子，没重复训练；在没有网格结构的分子数据 QM9 上，重建略差于 UNITE。",
+    "对从零训练、不想依赖预训练 VAE 或 DINO 的图像生成，这给了一个去掉解码器、也不用调参数配比的方案；文生图上 218M 的模型在 512×512 的 GenEval 拿到 0.87，高于 1.1B 的像素扩散模型 DeCo（0.86）。按上面算力对齐的结果，我觉得它省的主要是参数而不是训练算力，瓶颈在显存或部署参数量时更值得试。采样反而更便宜：64 步的 2.23 已好于 UNITE 跑 256 步的 2.28，每张图计算量 5.2 对 12.8 TFLOPs。"
    ],
    "star_reasons": [
     "回答潜在扩散的基础问题：编码器、生成器、解码器能否合成一个网络，答案是能且更好",
@@ -145,8 +148,7 @@
     {
      "src": "https://arxiv.org/html/2611.29064v1/bar_gfid.svg",
      "ref": "Figure 1",
-     "caption_zh": "三个规模下的 gFID（越低越好），柱子上标的是总参数量。UNIFIED 每档都低于 UNITE，**62M 的 Tiny（2.78）几乎追平 117M 的 Small UNITE（2.76）**；三网络分开训的 Separate 明显落后。",
-     "after": 3
+     "caption_zh": "三个规模下的 gFID（越低越好），柱子上标的是总参数量。UNIFIED 每档都低于 UNITE，**62M 的 Tiny（2.78）几乎追平 117M 的 Small UNITE（2.76）**；三网络分开训的 Separate 明显落后。"
     },
     {
      "src": "https://arxiv.org/html/2611.29064v1/budget_row.svg",
@@ -172,7 +174,7 @@
   {
    "id": "2611.33232",
    "title": "How Many Samples Is RL Worth? Best-of-N versus RL Post-Training for Text-to-Image Models",
-   "title_zh": "位置类提示上 RL 领先 37 个点，其余提示 best-of-N 就能追平",
+   "title_zh": "一张 RL 图值几张底模图：涉及物体位置时 RL 遥遥领先，其余几张就追平",
    "affiliation": "Bosch Research India",
    "primary_cat": "cs.CV",
    "direction": "E",
@@ -188,10 +190,10 @@
    "abstract_en": "Reinforcement learning (RL) on a reward that can be checked automatically has become a common last step in the training of text-to-image models. A simpler way to get more correct images is best-of-N: draw N images from the base model and keep the one that a picker prefers. We ask how many base model samples one RL sample is worth, and call this number the exchange rate. We measure it for Stable Diffusion 3.5 Medium and its public Flow-GRPO checkpoint on 398 new prompts in the style of GenEval, the benchmark behind the RL reward, with human labels on every prompt and two automatic judges other than the reward. The answer depends on the prompt. Four fifths of the prompts do not ask for a position (for example, one object left of another). On these, the base model catches up: best-of-16 with an off-the-shelf vision-language model (VLM) as the picker is about as good as one RL image. A person who looks through up to 3 base images finds a correct one as often as one RL image is correct. On the prompts that ask for a position, RL is far ahead: a person finds a correct image among 8 base images for only 52% of the prompts, against 92% for one RL image. Over all prompts, our primary test, which we fixed in advance, finds best-of-16 with the VLM picker 9.3 points behind one RL image when both automatic judges must pass an image. People see a smaller gap, 5.5 and 6.5 points in two checks. FLUX.1-dev shows a similar gap in the same test. RL also solves 20 prompts that the base model misses in 128 tries, and 1,024 tries recover half of them. The automatic judges are wrong in opposite directions: a detector-based judge like the reward, as used in our primary test, reports a larger gap than people see, and VLM judges report little or none. Comparisons of RL with best-of-N should therefore check the selected images by hand.",
    "batch": "2026-11-24",
    "analysis": [
-    "一张 Flow-GRPO 图值几张底模图？作者称之为==兑换率==（N⋆，底模用 [[best-of-n]] 追上一张 RL 图所需的最小 N），SD3.5-M 上的答案是**要按提示类型分开看**。398 条 GenEval 风格的新提示里，不要求位置的占 4/5：人逐张看底模图，前 3 张里找到正确图的比例（76.2%）就和一张 RL 图（75.9%）持平。要求位置（“A 在 B 左边”）的 1/5：人看完 8 张底模图只有 51.9% 的提示能找到正确图，一张 RL 图是 92.4%。",
-    "对比双方是 SD3.5-M 底模（为 best-of-N 单独把 CFG 调到 7）和公开的 Flow-GRPO LoRA，后者以 GenEval 检测器为奖励做 [[grpo]] 训练。==选择器==（在 N 张图里挑一张）是 InternVL3.5-8B，每张图问一句是否画出了提示内容；==裁判==另用两个不同类的模型：Qwen3-VL-8B 回答拆分后的是非题，OWLv2 检测器套 GenEval 规则，两者都通过才算对。主检验在生成测试图前就写进带时间戳的计划：best-of-16 加 VLM 选择器比一张 RL 图低 9.3 个点。",
-    "全文最有用的是**两种自动裁判朝相反方向出错**。检测器裁判与奖励同类（共用 CLIP 颜色分类器），人判正确的图中，RL 图它放行 89.7%，best-of-16 只放行 78.9%，报出的差距约是人工所见（5.5 点）的两倍；VLM 裁判放过 34.7% 被选中的错图，因为选择器挑出的错图恰好错在 VLM 看不出的地方，于是它报告没有差距。按种子追踪还发现，RL 只跑 40 步里的前 8 步、其余交给底模，就保留 89% 的增益，它改的主要是早期布局。",
-    "保留意见：主结果只有一个底模和一组公开 checkpoint，FLUX.1-dev 没有人工核对，测试提示又沿用 RL 训练时的 GenEval 模板，可能偏向 RL。对做推理时搜索与 RL 对比的人，**被选中的图必须人工抽查**，只信一个裁判，结论可能正反颠倒。业务提示很少涉及空间关系时，16 倍采样加现成 VLM 已能拿到大部分 RL 收益；作者估算 1,000 GPU 小时的 RL 训练要服务约 13.4 万条提示才回本。"
+    "Flow-GRPO 用 GenEval 检测器当奖励做 RL 微调，把 Stable Diffusion 3.5 Medium（SD3.5-M）的 GenEval 分数从 0.63 提到 0.95。不训练也能多拿正确的图：[[best-of-n|best-of-N]] 让底模画 N 张、由选择器挑一张，代价是每次出图贵 N 倍。论文问一张 RL 图值几张底模图，答案取决于提示：**要求物体相对位置（如「A 在 B 左边」）时 RL 遥遥领先，其余提示上底模几张图就能追平。**",
+    "作者新写了 398 条 RL 训练时没见过的 GenEval 风格提示，全部有人工标注。最直接的实验是让人逐张翻底模的图，直到找到一张对的：不涉及位置的 319 条上，翻 3 张就找到的比例是 76.2%，和一张 RL 图的正确率 75.9% 持平；涉及位置的 79 条上，翻满 8 张只有 51.9%，一张 RL 图是 92.4%。三轮人工核对、四种挑图方式（8B 和 38B 的 VLM 选择器、按自动裁判挑、人挑）下，位置类提示上 RL 都领先 34 到 48 个点。中途换模型采样给了原因：在 33 条 RL 增益大的提示上，40 步里前 8 步用 RL 模型、其余交给底模，RL 的增益仍保留 89%，即 RL 改的主要是早期定下的整体布局，而底模在位置题上常画错布局。",
+    "谁来判对错也会改变结论。预先登记的主检验用 8B 的 VLM 选择器做 best-of-16，要求 VLM 裁判和检测器裁判都通过才算对，底模比一张 RL 图低 9.3 个点；两轮人工核对测出的差距小一些，分别是 5.5 和 6.5 点。检测器裁判与 RL 的奖励同类，正确的 RL 图放过 89.7%，正确的 best-of-16 图只放过 78.9%；VLM 裁判与选择器同类，挑出来的错图放过 34.7%（错的 RL 图只放过 18.8%），单用它几乎没有差距。**只用一种自动裁判比较 RL 和 best-of-N，结论可能偏向任一方。**",
+    "主结果只覆盖 SD3.5-M 和公开 checkpoint，看不出 RL 训练量的影响；FLUX.1-dev 上自动裁判测出相近差距，但没人工核对。提示沿用 RL 训练用的 GenEval 模板，可能偏向 RL；人逐张翻图时同一提示由一人连续看，作者承认可能偏向底模。best-of-16 每条提示的成本约是一张 RL 图的 16.4 倍。我觉得部署前先统计自己业务里涉及空间关系的提示占多少，比看 GenEval 总分更能决定选哪条路，因为论文的总差距正随位置类提示的占比变化。"
    ],
    "star_reasons": [
     "直接回答“推理时多采样能否替代 RL 后训练”，给出可用的兑换率和回本点",
@@ -203,7 +205,7 @@
      "src": "https://arxiv.org/html/2611.33232v1/fig_person.svg",
      "ref": "Figure 2",
      "caption_zh": "人逐张翻看底模图时，前 N 张里至少有一张正确的比例（蓝）对比一张 RL 图的正确率（橙）。中间是无位置的提示，约 3 张就追平；右边是**位置类提示，8 张后仍停在 51.9%**，RL 是 92.4%。",
-     "after": 1
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.33232v1/fig_examples.png",

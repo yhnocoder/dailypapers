@@ -5,8 +5,9 @@
  "rules_version": "v2",
  "overview": {
   "guide": [
-   "[[@2611.34366|ConTra]] 说明给 chunk 加的上下文最好以文本前缀存进索引：只把上下文编进向量的 PPLX-4B，接上读原文的重排器后 nDCG@10 反而从 0.821 掉到 0.731；读的时候注意**它的训练奖励和评测用的是同一对 Qwen3 嵌入与重排模型**，在没训练过的 RealContextBench 上只领先 0.56 点。[[@2611.33628|CAMAR]] 在网易云音乐上线后三个域都涨，但消融里去掉多模态语义 ID，歌曲和歌单就落到最强基线以下，收益更多来自内容特征而不是因果解耦。[[@2611.33653|OneQuery]] 的打标提升几乎全在 GRPO 阶段（+2.07 点，SFT 阶段只有 +0.15），而且二值精确匹配奖励比直接用 F1 当奖励更好。",
-   "[[@2611.33844|异构重排器组合]]在 CrossEncoder 或上下文剪枝模型 Provence 前插一个可缓存的轻量打分器，NoLiMa 32K 上答案准确率涨 4.02–9.43 个点、剪枝快 1.57–1.88 倍；它还发现级联可能胜过末级重排器，却输给自己的粗排。[[@2611.34852|DRBench Pro]] 用 Wikipedia 知识树生成 44,102 条评分细则，按广度和深度计算报告的知识覆盖率，16 个深度研究 Agent 里最好的只有 57.04%。[[@2611.33368|DeLoVi]] 用只输出相关分、不生成文本的预训练决策模型给超长视频的片段字幕排序，在 EgoLifeQA 上比此前最好的方法更准、快 3 倍以上。[[@2611.33497|CA-RAG]] 把本体约束和知识图谱关系拼进分节 query，k=6 时 Recall@k 从 0.540 升到 0.595。"
+   "本期检索方向的两篇都在算「召回 + 重排」两阶段系统的账。长文档切块后，块常丢掉认出它所需的上下文，比如财报表格里没有公司名和年份；[[@2611.34366|ConTra]] 指出只把上下文编进块向量，重排器读的仍是原块，改成给块写一段文字前缀，两个阶段都用得上。它用 RL 训练 2B 前缀生成器，在 ConTEB 上最终 nDCG@10 为 0.853，比直接提示的 9B 高 2.5 个点，建索引快约 7.7 倍；读时注意 ConTEB 也是训练数据来源，在作者新建的 RealContextBench 上只领先半个点多。[[@2611.33844|When Rerankers Work Together]] 不训新模型，只把现成的异构重排器串起来：在 32K 长上下文问答上，把两个可缓存的轻量粗排器插到 CrossEncoder 前，答案准确率高 4.02–9.43 个百分点，但级联有时不如单用其中的粗排器。两篇可以对照着读：重排阶段读到什么、拿到哪些候选，比单个模型强弱更决定结果。",
+   "另两篇 ⭐ 来自工业线上，结论都要拆开看。[[@2611.33653|OneQuery]] 把 AliExpress 多语种搜索里语种识别、纠错、翻译、打标四个串行模型，合成一个电商 LLM 的一次 JSON 生成；14B 模型打标 F1 从 0.8128 升到 0.8366，但这部分提升几乎都出在最后的规则奖励 RL，而串行基线没做同样的 RL。[[@2611.33628|CAMAR]] 针对网易云音乐歌曲、歌单、播客联合训练时播客域被歌曲域拖累，把用户偏好拆成跨域通用和域内专属两部分，并用多模态语义 ID 对齐物品；播客 Hit@10（真实下一项落在前 10 个召回结果里的比例）从最强基线的 26.1% 升到 33.1%，可去掉多模态语义 ID 就退回 26.0%，**领先更像来自内容特征而不是偏好拆分**。",
+   "评测一侧，[[@2611.34427|一项 ESC 心脏病指南问答的研究]] 人工逐条审计了「先核对断言、再修订」的 RAG 流水线：被验证器判为幻觉的断言只有 44.7–50.6% 是真的，35% 的最终错误由修订步骤引入。[[@2611.34852|DRBench Pro]] 按报告覆盖了知识树上多少研究方向、沿知识链挖多深来评测深度研究智能体，16 个智能体里最好的整体覆盖率也只有 57.04%。"
   ]
  },
  "funnel": [
@@ -27,7 +28,7 @@
   {
    "id": "2611.34366",
    "title": "ConTra: A Training Framework for Effective Contextual Retrieval via Prefix Generation",
-   "title_zh": "小模型给 chunk 写前缀，向量检索和重排都受益，建索引快 7.7 倍",
+   "title_zh": "给 chunk 加的上下文要存成文字，重排器才用得上；RL 训的 2B 胜过直接提示的 9B",
    "affiliation": "香港中文大学（深圳）",
    "primary_cat": "cs.IR",
    "direction": "B",
@@ -42,10 +43,12 @@
    "abstract_zh": "数据管理系统组织大型文本集合,用于查找相关研究、抽取合同条款等任务。系统把长文档切成独立索引的 chunk 使其可检索,但切块会把文本与其标识性细节分开。索引的难点在于让每个 chunk 能独立被检索,同时保留找到并排序它所需的上下文。现有方法要么把上下文编码进 chunk 向量,要么作为文本前缀附加。只编码在向量中的上下文无法被文本重排器使用;提示生成的前缀既能服务向量检索又能服务重排,但建索引时生成成本高,效果也可能不及上下文编码器。我们提出 ConTra(Context That Travels),一个训练轻量==前缀生成器==的强化学习框架,其奖励结合了冻结的 embedding 与重排模型的反馈、事实核验和长度控制。ConTra 在索引构建时为每个 chunk 生成一个前缀,并存储增强后的文本及其 embedding 供所有查询复用。为评测不同负载及干扰下的上下文检索,我们提出 RealContextBench,包含五个应用集合和三种隔离干扰文本影响的受控条件。在 ConTEB 和 RealContextBench 上,**ConTra-2B 优于使用 Anthropic 方法的提示式 9B 基线和 PPLX-4B 上下文编码器,领先其最佳总分最多 3.15 分,对短文档的索引速度分别是二者的 7.74 倍和 2.15 倍**。仅在 ConTEB 上后训练,它在重排后的 RealContextBench 上领先各独立方法,并且比提示式 2B 基线更不易受随机和主题相近的干扰文本影响。代码、数据集和训练好的模型见 https://github.com/SStan1/ConTra。",
    "abstract_en": "Data management systems organize large text collections for tasks such as finding relevant studies and extracting contract clauses. Systems make long documents searchable by splitting them into independently indexed chunks. Chunking can separate text from its identifying details. The indexing challenge is to keep each chunk independently searchable while preserving the context needed to find and rank it. Existing methods either encode that context in chunk vectors or attach it as a text prefix. Context encoded only in vectors is unavailable to text rerankers. Prompted prefixes serve both vector search and reranking, but are costly to generate at indexing time and can underperform contextual encoders. We propose ConTra (Context That Travels), a reinforcement learning framework for training lightweight prefix generators. Its reward combines feedback from frozen embedding and reranking models with factual verification and length control. ConTra generates one prefix per chunk during index construction and stores the augmented text and its embedding for reuse across queries. To evaluate contextual retrieval across workloads and under interference, we introduce RealContextBench, a benchmark with five application collections and three controlled conditions that isolate the effect of distracting text. On ConTEB and RealContextBench, ConTra-2B outperforms the prompted 9B baseline using Anthropic's method and the PPLX-4B contextual encoder, with a margin of up to 3.15 points over their best overall scores, while indexing short documents 7.74 times and 2.15 times as fast as those baselines, respectively. Post-trained only on ConTEB, it leads the standalone methods on RealContextBench after reranking and is less sensitive than the prompted 2B baseline to random and topically similar distractors. Code, datasets, and trained models are available at https://github.com/SStan1/ConTra.",
    "analysis": [
-    "ConTra-2B 在 ConTEB 八个任务上重排后 nDCG@10 达 0.8525，比用 Anthropic 提示词的 Qwen3.5-9B 高 2.46 点，比上下文编码器 PPLX-4B 的最好成绩高 3.15 点；短文档建索引 3.75 秒，是 9B 的 1/7.7。它追问的是：切块把表格和写着公司、年份的标题分开后，能否让小模型给每个 chunk 写一句可读前缀，同时供向量检索和重排器使用。",
-    "先做对照：同一份未训练 2B 前缀只加在检索侧，最终 nDCG@10 从 0.6483 到 0.6924，只给重排器看到 0.6940，两侧都加到 0.7585，**收益互补**。ConTra 用 [[dapo|DAPO]] 训练前缀生成器，奖励四项：==嵌入增益==（加前缀后与 query 的余弦相似度减去原 chunk 的）、==重排 logit 增益==、事实核验（冻结 Qwen3.5-4B 判断前缀有无原文支持）、长度惩罚（超过 16 token 线性扣分）。训练数据是 ConTEB 训练集筛出的 5,760 对，只跑一个 epoch。",
-    "长度控制最关键：4B 去掉它，前缀从 17.7 涨到 239.2 token，nDCG@10 从 0.8465 掉到 0.7084，相邻 chunk 写进同一段背景，开始抢同一个 query。去掉事实核验分数只降 2.3 点，但人工审 200 条前缀，事实错误率从 4.5% 升到 16.0%。**PPLX-4B 向量检索 0.8210，交给只读原文的重排器反而掉到 0.7310**；把 ConTra 前缀贴到它的候选上，FinanceBench 从 0.4446 升到 0.5250。",
-    "保留意见：**训练奖励用的 Qwen3 嵌入和重排模型就是评测用的那一对，数据也来自 ConTEB**；在没训练过的 RealContextBench 上，重排后 0.6692 只比 Voyage-context-3 高 0.56 点。速度只在 1,027 个 chunk 以内的小集合上测过，也没和 BM25 混合检索比。已经用大模型给 chunk 生成上下文的 RAG 团队，可换成 2B 模型加这套奖励，把离线成本降一个量级；用了重排器的，上下文要以文本形式存进索引。"
+    "长文档切块后，一个块常常丢了认出它所需的信息：财报表格只有数字，公司名和年份在前面另一个块的标题里。向量检索可能捞回别家公司的同类表，重排器只读这张表，也无从纠正。已有两条路：[[late-chunking|晚分块]]一类的==上下文编码器==（PPLX、Voyage-context 等）把整篇文档的信息编进块向量，但重排器读到的仍是原块；Anthropic 的[[contextual-retrieval|上下文检索]]让大模型给每个块写一段说明性前缀，代价是每块都要跑一次大模型，而且只看向量检索时它还输给上下文编码器。论文的答案是：在「向量召回 + 重排」的两阶段系统里，文字前缀两个阶段都能用上；再用 RL 训一个小模型专门写前缀，就能又快又准。",
+    "证据是 ConTEB（8 个必须借助文档上下文才能找对块的检索任务）上的一组控制实验。作者用未训练的 Qwen3.5-2B 按 Anthropic 的提示词写好前缀并固定，只改变哪个阶段看得到它；召回用 Qwen3-Embedding-4B 取前 15 个候选，重排用 Qwen3-Reranker-4B，看最终 nDCG@10。都不加前缀是 0.648，只在召回时加是 0.692，只在重排时加是 0.694，两处都加是 0.759，两份收益可以叠加。PPLX-4B 的召回最强（前 15 个候选里含正确块的比例 0.939），但重排器读原块，最终只有 0.731；同一批候选在重排时附上前缀，一个块都没多召回，分数就升到 0.814。**上下文只编进向量，到重排这一步就用不上了。**",
+    "==ConTra== 把这件事变成训练目标。生成器读文档窗口和目标块，写一段不看查询的前缀，每块只生成一次，存进索引供所有查询复用。训练用 [[dapo|DAPO]]，奖励有四项：冻结的嵌入模型给出加前缀后块与训练查询的相似度提升；冻结的重排器给出相关性分数的提升，权重压得很小，只在主题相近的前缀之间分胜负；一个 Qwen3.5-4B 判官检查前缀内容在原文里有没有依据，把握不足就扣分；前缀超过 16 个 token 后按长度扣分。训练数据是从 ConTEB 训练集 10 万对里筛出的 5,760 对，只留「写具体实体比写笼统主题明显更好」的样本，训练一轮。",
+    "ConTEB 上，ConTra-2B 最终 nDCG@10 为 0.853，比同尺寸提示基线高 9.4 个点，比直接提示的 9B（0.828）高 2.5 个点。消融显示每项奖励各管一件事：2B 去掉重排奖励，Insurance 任务（把格式相同的保险表格对应到文档别处的国家标题）从 1.000 掉到 0.159；4B 去掉长度惩罚，前缀从平均 17.7 个 token 涨到 239.2 个，分数从 0.847 掉到 0.708，因为同一文档的块都加上同一段背景，彼此变得太像；2B 去掉事实检查，分数只降 2.3 个点，但人工核查 200 个前缀，事实错误率从 4.5% 升到 16.0%。为 342 个短故事块建索引，ConTra-2B 用 3.75 秒，提示 9B 用 29.02 秒，PPLX-4B 用 8.08 秒；同是 2B，训练前的提示模型要 7.87 秒，差别来自训练后每块前缀从平均 82.4 个 token 缩到 23.8 个。",
+    "保留意见有三点。第一，ConTEB 既是训练数据来源也是主评测；在作者新建的 ==RealContextBench==（网页搜索、技术问答、童话、会议纪要、财报五个集合，外加掺入干扰文字的条件）上，ConTra-2B 最终 0.669，只比 Voyage-context-3 的 0.664、提示 9B 的 0.663 高半个点多，向量检索这一步还落后于 Voyage 和 PPLX-4B。第二，按表 2 算，ConTra-2B 比 PPLX-4B 高出的约 12 个点里有 8 个点来自 Insurance 这一个任务（1.000 对 0.344），我觉得对上下文编码器的大幅领先主要由这类表格任务撑起。第三，训练和评测用同一家族的冻结 Qwen3 检索模型，没测别家的；我注意到计时也没算前缀让重排器每次查询多读的 token。",
+    "已经在用 Anthropic 式前缀的 RAG 系统，可以把写前缀的大模型换成这种用检索反馈训过的 2B 模型。已有上下文编码器和重排阶段的系统，可以只在重排前附上前缀：论文里 PPLX-4B 召回加 ConTra-2B 前缀，在 FinanceBench 上把最终分数从 0.445 提到 0.525，因为前缀把表格里缺的公司名补成了重排器能核对的文字。"
    ],
    "star_reasons": [
     "2B 前缀生成器重排后超过 9B 提示基线和 PPLX-4B",
@@ -57,8 +60,8 @@
     {
      "src": "https://arxiv.org/html/2611.34366v1/context_travels.svg",
      "ref": "Figure 1",
-     "after": 2,
-     "caption_zh": "上半是文本前缀路线：前缀和 chunk 一起被编码、一起交给重排器；下半是[[late-chunking|晚分块]]式上下文编码器：上下文只进了向量，重排器读到的仍是原始 chunk。"
+     "caption_zh": "上半是文本前缀路线：前缀和 chunk 一起被编码、一起交给重排器；下半是[[late-chunking|晚分块]]式上下文编码器：上下文只进了向量，重排器读到的仍是原始 chunk。",
+     "after": 1
     },
     {
      "src": "https://arxiv.org/html/2611.34366v1/case_context_travel.svg",
@@ -74,7 +77,7 @@
   {
    "id": "2611.33653",
    "title": "OneQuery: Unified Sequence-to-Structure Generation for Multilingual E-commerce Query Understanding",
-   "title_zh": "多语言 Query 理解并成一次 LLM 生成，打标 F1 比流水线高 2.4 点",
+   "title_zh": "AliExpress 把四步串行的 query 理解合成一次生成，14B 上打标的提升主要来自 RL",
    "affiliation": "阿里巴巴 AliExpress",
    "primary_cat": "cs.IR",
    "direction": "D",
@@ -89,10 +92,10 @@
    "abstract_zh": "多语言电商搜索需要稳健的 Query 理解，把跨语言、句式多样的用户 query 转换为标准化语义表示，以支撑检索与排序。然而传统 Query 理解系统存在误差累积、各子任务独立优化而忽略彼此关联、维护成本高等问题。为此，本文提出 OneQuery，一个基于电商领域大语言模型的统一多语言 Query 理解生成框架。我们把语种识别、拼写纠错、翻译和 Query 打标四个子任务重构为受预定义 schema 约束的==统一序列到结构自回归生成==过程，并设计了带多任务强化学习对齐的三阶段渐进训练流程。OneQuery 在所有任务上均稳定优于基线，并在不同规模的骨干模型上保持有效；在 AliExpress 电商搜索场景的**在线实验**进一步验证了其工业部署价值。",
    "abstract_en": "Multilingual e-commerce search requires robust query understanding to convert cross-lingual user queries with varied linguistic patterns into standardized semantic representations that support retrieval and ranking. However, traditional Query Understanding systems suffer from error accumulation, separately optimized subtasks that ignore their mutual correlations, and high maintenance costs. To address these issues, this paper proposes OneQuery, a unified generative framework for multilingual query understanding based on domain-specific large language models in e-commerce. We reformulate four subtasks, namely Language Recognition, Spelling Correction, Translation, and Query Tagging, into a unified Sequenceto-Structure autoregressive generation process constrained by predefined schemas, and design a three-stage progressive training pipeline with multi-task reinforcement learning alignment. OneQuery demonstrates consistent gains over baselines across all tasks and remains effective across different backbone sizes, and online experiments in the AliExpress e-commerce search scenario further confirm its practical value for industrial deployment.",
    "analysis": [
-    "把语种识别、拼写纠错、翻译、[[query-tagging|Query 打标]]四个串联模型换成一个 14B 电商 LLM 一次生成 JSON 后，19,087 条 AliExpress 标注 query 上打标 F1 从 0.8128 升到 0.8366，线上 L2P（搜索列表到支付的转化率）+0.5%。它要解决的是流水线里语种判错就跳过翻译、翻错就打错标的误差传递。",
-    "Stage 1 混合四类单任务数据做 SFT。Stage 2 用 ==Iterative Field Completion==：让 Stage 1 模型逐字段补全缺失标注，已有人工标签的保留，过滤后得 360 万条伪数据，加 31 万条人工数据联合 SFT。Stage 3 用 [[grpo|GRPO]] 和规则奖励：语种、翻译、打标要求精确匹配，纠错按编辑距离给部分分，权重按生成顺序递减（0.35/0.25/0.25/0.15）。",
-    "**打标的提升主要来自 RL**：Stage 1→2 只涨 0.15 个点，Stage 2→3 涨 2.07 个点。直接拿 F1、ROUGE 当奖励反而最差，作者认为组内分数太接近，归一化后噪声被放大。few-shot 的 Qwen3.8-Max、GPT-5.6 Luna 打标 F1 只有约 0.64，因为不认识平台标签体系，补标注只能靠自蒸馏。",
-    "保留意见：对比的“流水线”是同一个 LLM 分任务微调后串起来，不是线上原有的小模型，相对真实线上链路的离线增益不清楚；**线上头部 query 用 14B 离线缓存、长尾用蒸馏的 0.3B 小模型**，A/B 没拆开两部分收益，也没报延迟。4B、8B 上纠错 F1 仍低于流水线；底座和代码都未公开。对维护多语言 QU 链路的跨境电商搜索团队，字段补全造数和精确匹配奖励可以直接搬到自己的底座上。"
+    "AliExpress 多语种搜索线上的 query 理解是四个模型串行：先识别语种，非英语的再纠错、翻译成英文，最后在英文译文上做[[query-tagging|打标]]，抽出品牌、品类、型号等字段。每一步只看得到上一步的输出，看不到原始 query，前面错了后面无法挽回。论文的例子是西班牙语 query「escape yamaha mt 07」：escape 是常见英文词，旧流水线把它判成英语，于是跳过翻译，直接拿原文打标，把 escape 标成了型号。==OneQuery== 让一个电商 LLM 从原始 query 出发一次生成包含四个字段的 JSON；它把这条判成西班牙语，译成 yamaha mt 07 exhaust，escape 被标成产品「排气管」。",
+    "难点是训练数据：四个字段都标齐的样本很少，现有数据每条只标一个字段。训练分三段：先混合四类单任务数据微调；再用这个模型给只有部分标注的 query 逐个补全缺的字段，得到 360 万条伪数据，加上 31 万条人工全标注数据，训练模型一次输出整个 JSON；最后用 [[grpo|GRPO]] 做 RL，四个字段各按规则打分再加权求和，最先生成的语种字段权重最高。在 19,087 条人工标注的线上 query 上，14B 最终模型对比同尺寸底座上分别训练的四个单任务模型串成的流水线：打标 F1 从 0.8128 到 0.8366，翻译 ROUGE-2 从 78.20 到 80.50，语种准确率从 0.9514 到 0.9665。few-shot 提示的 Qwen3.8-Max 和 GPT-5.6 Luna 打标 F1 只有 0.63–0.64。",
+    "**分阶段看，打标的提升几乎都出在 RL 这一步**：学会联合生成之后、做 RL 之前，14B 打标 F1 只从单任务微调时的 0.8144 升到 0.8159，RL 之后才又涨了 2.07 个点。论文把打标的收益解释为统一生成减少了误差传递（escape 这个例子它倒归功于 RL 纠正了 SFT 学到的表面捷径），但没有给流水线里的单任务模型也做同样的 RL，我觉得因此分不清起作用的是「一起生成」还是「规则奖励 RL」。另外，线上并非由 14B 直接服务，头部 query 离线算好缓存，长尾 query 交给从 14B 蒸馏出的 0.3B 小模型实时处理，A/B 中列表到支付转化率提升 0.5% 是这套组合的结果。",
+    "对维护多段 query 理解流水线的团队，可以直接借鉴的是两件事：用单任务模型给部分标注数据补全字段来造联合训练数据，以及「离线大模型＋头部缓存＋蒸馏小模型」的上线方式。如果要评估迁移，我建议先在现有单任务模型上试规则奖励 RL，看统一生成本身还能多带来多少。"
    ],
    "star_reasons": [
     "AliExpress 多国 A/B：L2P +0.5%，人工并排评测相关性 +0.8 pt",
@@ -104,8 +107,8 @@
     {
      "src": "https://arxiv.org/html/2611.33653v1/three_stages.png",
      "ref": "Figure 2",
-     "after": 2,
-     "caption_zh": "三段训练：左边 Stage 1 混合四种单任务数据做 SFT；中间用 Stage 1 模型依次补全拼写、翻译、打标字段，得到 360 万条伪数据，再加 31 万条人工数据联合 SFT；右边 Stage 3 用 [[grpo|GRPO]] 组采样，四个子任务各自的规则奖励加权求和。"
+     "caption_zh": "三段训练：左边 Stage 1 混合四种单任务数据做 SFT；中间用 Stage 1 模型依次补全拼写、翻译、打标字段，得到 360 万条伪数据，再加 31 万条人工数据联合 SFT；右边 Stage 3 用 [[grpo|GRPO]] 组采样，四个子任务各自的规则奖励加权求和。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.33653v1/pipeline.svg",
@@ -126,7 +129,7 @@
   {
    "id": "2611.33628",
    "title": "Multi-Modal Causal Disentanglement for Multi-Domain Sequential Audio Recommendation",
-   "title_zh": "网易云三域联合召回，播客 Hit@5 涨 30%，大头来自多模态语义 ID",
+   "title_zh": "多域音乐推荐把偏好拆成跨域通用和域内专属，数据最少的播客域受益最大",
    "affiliation": "网易云音乐、杭州电子科技大学",
    "primary_cat": "cs.IR",
    "direction": "F",
@@ -141,10 +144,10 @@
    "abstract_zh": "现代音乐平台向用户提供歌曲、歌单、播客等异构音频内容领域。多领域序列推荐（MDSR）试图利用这类跨领域行为，但实践中仍有两个障碍。其一，异构领域的联合优化容易发生[[negative-transfer|负迁移]]，高流量领域主导共享参数空间并压制弱势领域。其二，传统基于 ID 的协同信号无法连接语义相关但行为重叠很少的领域。本文提出 CAMAR，一个面向多领域音频推荐的==多模态因果解耦==框架。从因果视角，用户行为被建模为领域不变偏好与领域特定偏好的共同结果。据此，CAMAR 把用户表示分解为领域不变和领域特定两部分，施加领域对抗不变性和正交约束，将跨领域交互限制在不变子空间，抑制有害的迁移路径。为加强跨领域语义耦合，CAMAR 通过残差量化，从预训练的文本、视觉和音频特征中得到可训练的 ==[[semantic-id|semantic-ID]] embedding==，实现面向推荐的端到端多模态适配。迁移网络为不活跃领域补全用户表示，缓解跨领域冷启动。公开和工业数据集上的实验显示其稳定优于强基线。在中国最大的音乐流媒体平台之一网易云音乐的**在线 A/B 测试**中，CAMAR 在三个领域的主流量场景均取得稳定提升：歌曲和播客的播放时长分别提升 1.0% 和 1.6%，歌单点赞率提升 3.0%，验证了其在大规模多领域音频推荐中的有效性。",
    "abstract_en": "Modern music platforms expose users to heterogeneous audio content domains such as songs, playlists, and podcasts. Multi-domain sequential recommendation (MDSR) seeks to exploit such cross-domain behavior, yet two obstacles persist in practice. First, joint optimization across heterogeneous domains is prone to negative transfer, with high-traffic domains dominating the shared parameter space and suppressing weaker domains. Second, conventional ID-based collaborative signals fail to bridge domains that are semantically related but exhibit little behavioral overlap. This paper presents CAMAR, a multi-modal causal disentanglement framework for multi-domain audio recommendation. From a causal perspective, user behavior is modeled as the joint outcome of a domain-invariant preference and domain-specific preferences. Guided by this view, CAMAR factorizes user representations into domain-invariant and domain-specific components and enforces domain adversarial invariance together with orthogonality, restricting cross-domain interaction to the invariant subspace and suppressing harmful transfer paths. To strengthen cross-domain semantic coupling, CAMAR derives trainable semantic-ID embeddings from pre-trained text, vision, and audio features through residual quantization, yielding an end-to-end multi-modal adaptation tailored to recommendation. A transfer network imputes user representations for inactive domains, mitigating cross-domain cold start. Experiments on both public and industrial datasets demonstrate consistent gains over strong baselines. In online A/B tests on NetEase Cloud Music, one of China's largest music streaming platforms, CAMAR delivers consistent gains across all three domains in their main traffic scenarios, validating its effectiveness in multi-domain audio recommendation at scale.",
    "analysis": [
-    "CAMAR 在网易云音乐三域数据上把最稀疏的播客域 Hit@5 从最强基线 0.2022 提到 0.2622（+29.7%），歌曲域只涨 5.9%；线上作为新增召回通道，歌曲、播客播放时长 +1.0%、+1.6%，歌单点赞率 +3.0%。它针对两件事：歌曲域梯度主导共享参数、压低弱域（[[negative-transfer|负迁移]]）；多域活跃用户少，只靠物品 ID 连不起各域。",
-    "==多模态语义 ID==：文本、封面、音频特征拼接后，用各域共享的 RQ-VAE（残差量化自编码器）离线量化成 3 层码字的[[semantic-id|语义 ID]]，码本 embedding 在推荐模型里可训练。==因果解耦==：用户表示拆成域不变和域特定两部分，加正交约束，并经[[gradient-reversal-layer|梯度反转层]]做域对抗；只有不变部分参与跨域注意力。无行为的域由 TransNet 从其他域补全。",
-    "去掉多模态损失最大：播客 Hit@5 跌到 0.2063，**歌曲、歌单两域反而低于最强基线**；去掉两项因果约束跌到 0.2281。AutoCDSR、CGRec 在播客上不如单域的 Mamba4Rec，负迁移确实存在。目标域历史全遮掉时，播客 Hit@10 约 22.8%，基线约 18%。",
-    "保留意见：**九个基线都只用 ID，没有接入同样多模态特征的对照**，“因果解耦胜过现有方法”证据不足；离线数据只留三域都活跃的用户，避开了多域用户稀少的场景；代码未开源。对有歌曲、播客、有声书等多种内容形态的平台，召回团队先接共享码本的语义 ID 收益最确定，弱域受益最多。"
+    "网易云音乐同时给用户推歌曲、歌单、播客三类内容。把三个域放进一个模型联合训练，本想让数据少的域借到别的域的信号，实际却常出现[[negative-transfer|负迁移]]：工业数据里歌曲域有 2.97 亿条交互，播客只有 7550 万条，共享参数被歌曲域主导，弱域反而变差。论文提出 ==CAMAR==：把每个域的用户表示拆成跨域通用的偏好（如「治愈」「通勤」）和本域专属的偏好（如歌曲的音色、播客的叙事节奏），只允许前者跨域交流；同时把物品的文本、封面和音频特征量化成跨域共享的[[semantic-id|语义 ID]]，让没有共同听众的歌和播客也能在语义上对齐。",
+    "拆分靠三条约束：通用部分和专属部分之间加正交约束；通用部分接一个[[gradient-reversal-layer|梯度反转层]]和域分类器，逼它变得分不出来自哪个域；专属部分从不进入跨域的共享注意力。证据主要看最稀疏的播客域。在 356 万用户的召回实验里，单域最强的 Mamba4Rec 在播客上的 Hit@10（真实下一个物品落在前 10 个召回结果里的比例）是 24.5%，多域基线 AutoCDSR 和 CGRec 只有 20.6% 和 20.1%，**联合训练反而不如只用本域数据，这正是负迁移**。CAMAR 达到 33.1%，比最强基线 MOSAIC 的 26.1% 相对高 27%；而在数据最多的歌曲域，相对提升只有 4%。",
+    "但消融显示，大头不在因果拆分。去掉正交和对抗两条约束，播客 Hit@10 降到 28.8%；去掉多模态语义 ID，降到 26.0%，和 MOSAIC 的 26.1% 几乎一样。我据此判断播客上的领先主要来自内容特征，而论文没交代基线是否用了同样的内容特征；**如果基线只用 ID，这组对比就混进了「有没有内容特征」这一因素**。另外，离线数据只保留三个域都活跃的用户，可论文的出发点正是这类用户很少；冷启动实验靠遮掉某个域的历史来模拟，我觉得这和真正只用过一个域的用户未必一样。公开的 Amazon 数据上，Hit@10 相对提升只有 2.6%–9.5%。",
+    "线上两周 A/B 测试中，CAMAR 作为新增的一路召回加在原有召回之上：歌曲和播客的单次会话平均播放时长分别 +1.0% 和 +1.6%，歌单收藏率 +3.0%，均统计显著。这是多一路召回的增量，不是替换原系统。对做多业务线推荐的团队，可借鉴的是给每个域留一份不跨域的专属表示，并用共享的多模态语义 ID 打通物品；按消融的数字，后者可能值得先做。"
    ],
    "star_reasons": [
     "网易云音乐三域在线 A/B，三域核心指标均涨",
@@ -156,13 +159,12 @@
     {
      "src": "https://arxiv.org/html/2611.33628v1/1.png",
      "ref": "Figure 1",
-     "after": 2,
-     "caption_zh": "左半是多模态偏好编码：三种模态特征量化成[[semantic-id|语义 ID]]，与域内 ID 融合后按域编码，TransNet 补全无行为的域；右半是==因果解耦==：拆出不变和特定两部分，只有不变部分进共享注意力，最后用门控融合打分。"
+     "caption_zh": "左半是多模态偏好编码：三种模态特征量化成[[semantic-id|语义 ID]]，与域内 ID 融合后按域编码，TransNet 补全无行为的域；右半是==因果解耦==：拆出不变和特定两部分，只有不变部分进共享注意力，最后用门控融合打分。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.33628v1/3.png",
      "ref": "Figure 3",
-     "after": 3,
      "caption_zh": "跨域冷启动：目标域历史全部遮掉，只用另外两个域的行为召回。看右侧播客，红色柱 Hit@10 约 22.8%，四个多域基线都在 16%–18% 之间；歌曲、歌单上差距小得多。"
     },
     {

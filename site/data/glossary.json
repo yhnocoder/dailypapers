@@ -383,6 +383,36 @@
    "term": "pass@k",
    "en": "pass@k",
    "def": "生成 k 个结果里至少有一个正确的概率，相当于有一个完美选择器时 best-of-k 的准确率。常用来区分“模型画不出来”和“画得出但挑不出来”。"
+  },
+  {
+   "id": "dsa-indexer",
+   "term": "稀疏注意力索引器",
+   "en": "DSA indexer",
+   "def": "DeepSeek Sparse Attention 里的一个轻量打分模块：为当前 token 给前面每个位置打分，注意力层只读分数最高的固定数量（如 512）的位置。它和模型一起训练，所以选出的位置就是模型真正想看的。"
+  },
+  {
+   "id": "block-parallel-drafter",
+   "term": "块并行草稿模型",
+   "en": "block-parallel drafter",
+   "def": "投机解码里一次前向就填满一整块草稿 token 的草稿模型（如 DFlash）：输入一个锚点 token 加若干 mask 位，各位置同时预测，而不是一个一个自回归地生成。"
+  },
+  {
+   "id": "qad",
+   "term": "量化感知蒸馏（QAD）",
+   "en": "Quantization-Aware Distillation",
+   "def": "训练量化模型时，不用原始数据的训练目标，而是让它去拟合未量化原模型的输出。常用来把量化后掉的画质或精度拉回来。"
+  },
+  {
+   "id": "urdf",
+   "term": "URDF",
+   "en": "Unified Robot Description Format",
+   "def": "描述机器人结构的标准文件格式，写明每个连杆、每个关节的位置、转轴和运动范围。不同厂商写 URDF 时坐标轴怎么定没有统一要求，所以同样的关节可能被写成绕不同的轴转。"
+  },
+  {
+   "id": "contextual-retrieval",
+   "term": "上下文检索",
+   "en": "Contextual Retrieval",
+   "def": "Anthropic 提出的做法：建索引时让大模型读整篇文档，给每个切块写一两句说明它出自哪里、讲的是谁的前缀，再把前缀和块一起做向量和关键词索引。前缀是普通文字，后面的重排器和生成模型也能读到。"
   }
  ]
 }
