@@ -101,7 +101,11 @@
      "ref": "Figure 10",
      "caption_zh": "QVHighlights 上三个查询返回的视频片段：虚线框是标注片段，三角是热度峰值。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32203v1/2611.32203v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32203v1/2611.32203v1_out.zip"
+   }
   },
   {
    "id": "2611.32917",
@@ -180,7 +184,11 @@
      "after": 2,
      "caption_zh": "LARF 的三个阶段：带引导思维链的==冷启动 SFT==、带 margin 对齐的==判别式 GRPO==、==双头蒸馏==。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32125v1/2611.32125v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32125v1/2611.32125v1_out.zip"
+   }
   },
   {
    "id": "2611.32660",
@@ -228,7 +236,11 @@
      "ref": "Figure 2",
      "caption_zh": "数据构造流程：从种子出发组合约束、扩展多跳证据图、模糊化成问题，再由难度和唯一性两个 Agent 校验。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32660v1/2611.32660v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32660v1/2611.32660v1_out.zip"
+   }
   },
   {
    "id": "2611.32855",
