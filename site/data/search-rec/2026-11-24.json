@@ -5,8 +5,8 @@
  "rules_version": "v1",
  "overview": {
   "guide": [
-   "[[@2611.32203|OmniEVIE]] 的关键是训练时就按索引形态聚类，压缩后的多向量索引反而比直接截维更好，百万库单线程查询 54 ms。[[@2611.32917|SOARS]] 发现深度搜索 Agent 的瓶颈常常不在召回，而是答案文档排得太靠后、Agent 没点开。[[@2611.32125|LARF]] 读的时候注意区分 8B 和线上 1.7B 的数字：**线上那个模型离线只比基线高 0.6 点**。[[@2611.32660|Bathys]] 说明 rollout 中途压缩历史时，普通 GSPO 等于白跑。",
-   "[[@2611.32855|SIDECAR]] 用草稿加树注意力验证替代 beam search，还能给出离精确 top-K 差多少的保证，线上可以按质量或延迟阈值提前停。[[@2611.33240|教育推荐离线评测]]发现只看上一个活动的结构预测器就能达到最好方法 95% 的准确率。[[@2611.32908|KuroANN]] 按每个 query 通过过滤的向量数分配读盘量，比 PipeANN-Filter 最多快 34.5 倍。"
+   "[[@2611.32203|OmniEVIE]] 的关键是训练时就按索引形态聚类，压缩后的多向量索引反而比直接截维更好，百万库单线程查询 54 ms。[[@2611.32917|SOARS]] 发现深度搜索 Agent 的瓶颈常常不在召回，而是答案文档排得太靠后、Agent 没点开，每步加一次 250 毫秒的重排就能同时提准确率、减搜索次数。[[@2611.32125|LARF]] 读的时候注意区分 8B 和线上 1.7B 的数字：**线上那个模型离线只比基线高 0.6 点**。[[@2611.32660|Bathys]] 说明 rollout 中途压缩历史时，普通 GSPO 等于白跑，要按压缩边界切段算梯度。",
+   "[[@2611.32855|SIDECAR]] 用草稿加树注意力验证替代 beam search，还能给出离精确 top-K 差多少的保证，线上可以按质量或延迟阈值提前停。[[@2611.32590|LazUnirec]] 在同一个 Transformer 里统一召回和排序，用 LoRA 调制注意力和稀疏 MoE 缓解两个任务的梯度冲突，已经上线。[[@2611.33240|教育推荐离线评测]]发现只看上一个活动的结构预测器就能达到最好方法 95% 的准确率，**离线指标测到的多半是平台的排课逻辑**。[[@2611.32908|KuroANN]] 按每个 query 通过过滤的向量数分配读盘量，比 PipeANN-Filter 最多快 34.5 倍；[[@2611.31882|RELAY]] 让换 embedding 模型时新旧向量能共存打分，不用整库重建。"
   ]
  },
  "funnel": [
@@ -52,6 +52,55 @@
     "训练时按索引形态聚类，压缩后反超直接截维",
     "命中可返回页面框和视频秒数，适合 RAG/Agent",
     "权重与三阶段检索代码开源"
+   ],
+   "figures": [
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig4_sthac.png",
+     "ref": "Figure 5",
+     "after": 2,
+     "caption_zh": "==ST-HAC== 离线压缩：按语义向量加时空编码做 Ward 聚类，孤立区域单独成簇、相邻静止帧合并，质心只取语义向量的均值，再量化成 int8。最右是一条记录最终占用的字节。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig7_alignment.png",
+     "ref": "Figure 8",
+     "after": 3,
+     "caption_zh": "三个查询词在一页医学文档上各自命中的簇（不同颜色），以及门控给每个查询 token 的权重：相关页和无关页的最大相似度拉得很开。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig1_overview.png",
+     "ref": "Figure 1",
+     "caption_zh": "MMEB-V3 精度与参数规模、查询延迟的关系：压缩索引（菱形）比全序列只低 0.62。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig2_training.png",
+     "ref": "Figure 3",
+     "caption_zh": "四阶段训练课程，以及前向图：同一套权重分出 d=2048 的参考分支和 d=64 的服务分支。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig3_merge.png",
+     "ref": "Figure 4",
+     "caption_zh": "两级按参数块合并：先平均多个全量训练变体，再按块加权叠加四个专家模型的增量。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig5_three_stage.png",
+     "ref": "Figure 6",
+     "caption_zh": "==三阶段检索==在百万条记录上每一阶段的候选数和耗时，以及中筛窗口大小对 top-10 保留率的影响。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig6_budget.png",
+     "ref": "Figure 7",
+     "caption_zh": "每百万条的存储量与 ViDoRe V3 精度：比较不同向量维度和质心数量，灰色是单向量和未压缩多向量基线。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig8_localization.png",
+     "ref": "Figure 9",
+     "caption_zh": "命中证据的定位：页面上命中的簇用框标出；视频里按时间窗口给出每个查询词的匹配热度。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32203v1/figures/fig9_video_cases.png",
+     "ref": "Figure 10",
+     "caption_zh": "QVHighlights 上三个查询返回的视频片段：虚线框是标注片段，三角是热度峰值。"
+    }
    ]
   },
   {
@@ -86,7 +135,15 @@
    "translation": {
     "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32917v1/2611.32917v1.zh.pdf",
     "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32917v1/2611.32917v1_out.zip"
-   }
+   },
+   "figures": [
+    {
+     "src": "https://arxiv.org/html/2611.32917v1/motivation_figure_file.png",
+     "ref": "Figure 1",
+     "after": 1,
+     "caption_zh": "六个 LLM 骨干在 BrowseComp-Plus 上加不加 SOARS 的对比：横轴是搜索次数，纵轴是准确率，每个模型都往左上方移动。"
+    }
+   ]
   },
   {
    "id": "2611.32125",
@@ -115,6 +172,14 @@
     "消融把增益拆到每个组件，margin loss 单项最大",
     "训练用 CoT、推理只走分类头的工业落地路径",
     "有元宝 AI 搜索线上 A/B 结果"
+   ],
+   "figures": [
+    {
+     "src": "https://arxiv.org/html/2611.32125v1/fig1.png",
+     "ref": "Figure 1",
+     "after": 2,
+     "caption_zh": "LARF 的三个阶段：带引导思维链的==冷启动 SFT==、带 margin 对齐的==判别式 GRPO==、==双头蒸馏==。"
+    }
    ]
   },
   {
@@ -145,6 +210,24 @@
     "KTO 与 DPO 同数据池对比，DPO 两个规模都掉点",
     "9B 开源模型 BrowseComp 66.51%，权重与部分数据开源",
     "坦白列出 BrowseComp 参考答案错误与评测协议影响"
+   ],
+   "figures": [
+    {
+     "src": "https://arxiv.org/html/2611.32660v1/assets/bathys_browsecomp_trajectory_reliability_cost.png",
+     "ref": "Figure 3",
+     "after": 3,
+     "caption_zh": "各训练阶段的轨迹可靠性与成本：上下两行是 27B 和 9B，左边是答对、答错、超时的占比，右边是轨迹长度。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32660v1/bathys-main-results.png",
+     "ref": "Figure 1",
+     "caption_zh": "主要基准上的准确率，紫色是 Bathys；每组只列了部分基线，表 1 里有比 Bathys 更高的模型。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.32660v1/assets/data_pipeline_v2.png",
+     "ref": "Figure 2",
+     "caption_zh": "数据构造流程：从种子出发组合约束、扩展多跳证据图、模糊化成问题，再由难度和唯一性两个 Agent 校验。"
+    }
    ]
   },
   {

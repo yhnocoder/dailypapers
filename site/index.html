@@ -90,6 +90,35 @@ h1,h2,h3,p{margin:0}
 
 .body{font-size:16.5px;line-height:1.85;columns:1;column-gap:30px;column-rule:1px solid var(--hair);text-align:left;hyphens:auto;orphans:2;widows:2}
 .body p{margin:0}
+.fig{margin:1.1em 0 1.2em;padding:0}
+.fig.side{float:right;width:46%;margin:.35em 0 .8em 22px}
+.body p{overflow-wrap:break-word}
+.fig .zoom{display:block;width:100%;padding:0;border:1px solid var(--hair);background:#fff;cursor:zoom-in}
+.fig img{display:block;width:100%;height:auto}
+.fig figcaption{font:400 13.5px/1.65 var(--serif);color:var(--mute);margin-top:8px}
+.fig figcaption .src{margin-left:.6em;font:400 12px var(--sans);color:var(--faint)}
+.thumbs{clear:both;display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:1.4em;padding-top:12px;border-top:1px solid var(--hair)}
+.thumbs .th{width:96px;height:64px;padding:0;border:1px solid var(--hair);background:#fff;cursor:zoom-in;overflow:hidden}
+.thumbs .th img{width:100%;height:100%;object-fit:cover;object-position:top left}
+.thumbs .more-th{height:64px;padding:0 12px;border:1px solid var(--hair);background:none;color:var(--accent);font:500 13px var(--sans);cursor:pointer}
+.thumbs .more-th:hover{border-color:var(--accent)}
+.thumbs .th:hover,.fig .zoom:hover{border-color:var(--accent)}
+#lb{position:fixed;inset:0;z-index:60;background:rgba(18,17,14,.92);display:grid;grid-template-rows:minmax(0,1fr) auto;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+#lb[hidden]{display:none}
+#lb .st{display:grid;place-items:center;min-height:0}
+#lb img{max-width:min(1400px,calc(100vw - 120px));max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);width:auto;height:auto;object-fit:contain;background:#fff}
+@media(max-width:620px){#lb img{max-width:calc(100vw - 32px)}}
+#lb .bar{display:flex;align-items:flex-start;gap:16px;color:#e9e4d8;font:400 14px/1.6 var(--serif);max-width:1100px;margin:12px auto 0;width:100%}
+#lb .cap{flex:1;min-width:0}
+#lb .cap .src{margin-left:.6em;font:400 12px var(--sans);color:#a39c8e}
+#lb .n{font:500 13px var(--sans);color:#a39c8e;white-space:nowrap}
+#lb a.raw{font:500 13px var(--sans);color:#e9e4d8;white-space:nowrap}
+#lb button{position:absolute;background:rgba(0,0,0,.35);color:#fff;border:0;width:44px;height:44px;border-radius:22px;font:400 22px/44px var(--sans);cursor:pointer}
+#lb .x{top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right))}
+#lb .pv{left:max(10px,env(safe-area-inset-left));top:45%}#lb .nx{right:max(10px,env(safe-area-inset-right));top:45%}
+#lb button:hover{background:rgba(0,0,0,.6)}
+@media(max-width:620px){.fig.side{float:none;width:100%;margin:1.1em 0 1.2em}}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .fig img{filter:brightness(.92)}}
 .body p+p{margin-top:.9em}
 .body p:first-child::first-line{font-weight:600}
 mark{color:inherit;background:linear-gradient(transparent 58%,var(--hl) 58%,var(--hl) 94%,transparent 94%);padding:0 .08em;margin:0 -.08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
@@ -298,13 +327,19 @@ const title=p=>url(p.links?.abs)?`<a href="${url(p.links.abs)}" rel="noopener" l
 
 /* tongtu translation, served from Cloudflare (Access-protected): PDF opens in a new tab */
 const tl=p=>url(p.translation?.zip)?`<span class="tl"><a href="${url(p.translation.zip)}" rel="noopener" title="tongtu 输出目录（out.zip）">通途</a></span>`:'';
-function story(p){
+/* figures hot-linked from the paper's arXiv HTML. after:n → inline after paragraph n; no `after` → thumbnail strip.
+   Inline figures go full width when wide, float right when squarish (decided on load, or forced by layout). */
+const FG=p=>(p.figures||[]).filter(f=>url(f.src));
+const figs=(p,n)=>FG(p).map((f,i)=>[f,i]).filter(([f])=>f.after===n).map(([f,i])=>`<figure class="fig${f.layout==='side'?' side':f.layout==='full'?' full':''}"><button type="button" class="zoom" data-pid="${esc(p.id)}" data-i="${i}" aria-label="查看大图：${esc(f.ref||'')}"><img src="${url(f.src)}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="figFit(this)" onerror="this.closest('figure').remove()"></button><figcaption>${rich(f.caption_zh)}<span class="src">原文 ${esc(f.ref||'')}</span></figcaption></figure>`).join('');
+const strip=(p,all)=>{const t=FG(p).map((f,i)=>[f,i]).filter(([f])=>!f.after),k=all?t.length:3;return t.length?`<div class="thumbs">${t.map(([f,i],j)=>`<button type="button" class="zoom th"${j>=k?' hidden':''} data-pid="${esc(p.id)}" data-i="${i}" aria-label="查看大图：${esc(f.ref||'')}" title="${esc(f.ref||'')}"><img src="${url(f.src)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('button').remove()"></button>`).join('')}${t.length>k?`<button type="button" class="more-th">more +${t.length-k}</button>`:''}</div>`:''};
+window.figFit=img=>{const f=img.closest('figure');if(!f||f.classList.contains('full')||f.classList.contains('side'))return;if(img.naturalWidth/img.naturalHeight<1.4)f.classList.add('side')};
+function story(p,lead){
   const head=`<div class="head"><h2>${esc(p.title_zh)}</h2><p class="deck">${title(p)}</p>
     <div class="by">${p.star?'<span class="st" aria-label="精读">★</span>':''}${p.affiliation?`<span>${esc(p.affiliation)}</span>`:""}<span>${esc(full(dir(p.direction).name))}</span><span>${esc(p.primary_cat)}</span>${links(p)}</div></div>`;
   if(!p.analysis?.length)
     return `<article class="story plain" id="p-${esc(p.id)}">${head}<div class="body"><p>${rich(p.abstract_zh)}</p><div class="tail">${en(p)}</div></div></article>`;
   return `<article class="story" id="p-${esc(p.id)}">${head}
-    <div class="body">${p.analysis.map(t=>`<p>${rich(t)}</p>`).join('')}</div>
+    <div class="body">${p.analysis.map((t,i)=>`${i?figs(p,i):''}<p>${rich(t)}</p>`).join('')}${figs(p,p.analysis.length)}${strip(p,lead)}</div>
     <div class="abs"><p>${rich(p.abstract_zh)}</p>${en(p)}
       ${tl(p)||p.star_reasons?.length?`<div class="fine">${tl(p)}
       ${p.star_reasons?.length?`<details><summary>入选理由</summary><ul>${p.star_reasons.map(r=>`<li>${esc(r)}</li>`).join('')}</ul></details>`:''}</div>`:''}
@@ -364,8 +399,8 @@ function render(){
   const stars=f.filter(p=>p.star);
   /* the front page always has a lead: the first ⭐, else the top-scored paper in view */
   const lead=stars[0]||(S.star?null:f[0]);
-  $('lead').innerHTML=lead?story(lead):`<p class="none">${S.q?'本期没有与检索词匹配的论文':'这一版今天没有论文'}</p>`;
-  $('more').innerHTML=stars.slice(1).map(story).join('');
+  $('lead').innerHTML=lead?story(lead,true):`<p class="none">${S.q?'本期没有与检索词匹配的论文':'这一版今天没有论文'}</p>`;
+  $('more').innerHTML=stars.slice(1).map(p=>story(p,false)).join('');
 
   const tot=d.funnel?.[0]?.[1];
   const gd=d.overview?.guide||[];
@@ -387,7 +422,20 @@ function render(){
 
 const tst=document.createElement('div');tst.id='toast';tst.setAttribute('role','status');tst.setAttribute('aria-live','polite');document.body.append(tst);
 let tstT=0;function toast(msg){tst.textContent=msg;tst.classList.add('on');clearTimeout(tstT);tstT=setTimeout(()=>tst.classList.remove('on'),1800)}
+const lb=document.createElement('div');lb.id='lb';lb.hidden=true;lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','图片查看');
+lb.innerHTML='<div class="st"><img alt=""></div><div class="bar"><div class="cap"></div><span class="n"></span><a class="raw" target="_blank" rel="noopener">原图</a></div><button class="x" type="button" aria-label="关闭">×</button><button class="pv" type="button" aria-label="上一张">‹</button><button class="nx" type="button" aria-label="下一张">›</button>';
+document.body.append(lb);
+let LB={list:[],i:0,back:null};
+function lbShow(){const f=LB.list[LB.i];lb.querySelector('img').src=f.src;lb.querySelector('img').alt=f.ref||'';lb.querySelector('.cap').innerHTML=`${rich(f.caption_zh)}<span class="src">原文 ${esc(f.ref||'')}</span>`;lb.querySelector('.n').textContent=LB.list.length>1?`${LB.i+1} / ${LB.list.length}`:'';lb.querySelector('.raw').href=f.src;const many=LB.list.length>1;lb.querySelector('.pv').hidden=!many;lb.querySelector('.nx').hidden=!many}
+function lbOpen(pid,i,back){const p=(S.day?.papers||[]).find(x=>x.id===pid);if(!p)return;LB={list:FG(p),i,back};lb.hidden=false;document.body.style.overflow='hidden';lbShow();lb.querySelector('.x').focus()}
+function lbClose(){lb.hidden=true;document.body.style.overflow='';LB.back?.focus()}
+const lbGo=d=>{LB.i=(LB.i+d+LB.list.length)%LB.list.length;lbShow()};
+lb.addEventListener('click',e=>{if(e.target.closest('.x')||e.target===lb||e.target.classList.contains('st'))lbClose();else if(e.target.closest('.pv'))lbGo(-1);else if(e.target.closest('.nx'))lbGo(1)});
+document.addEventListener('keydown',e=>{if(lb.hidden)return;if(e.key==='Escape')lbClose();else if(e.key==='ArrowLeft')lbGo(-1);else if(e.key==='ArrowRight')lbGo(1)});
+let tx=null;lb.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});lb.addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>50&&LB.list.length>1)lbGo(dx<0?1:-1)});
 document.addEventListener('click',e=>{
+  const mt=e.target.closest('button.more-th');if(mt){mt.parentElement.querySelectorAll('.th[hidden]').forEach(x=>x.hidden=false);mt.remove();return}
+  const zb=e.target.closest('button.zoom');if(zb){lbOpen(zb.dataset.pid,+zb.dataset.i,zb);return}
   const cp=e.target.closest('button[data-copy]');
   if(cp){const id=cp.dataset.copy,done=()=>{cp.classList.add('ok');toast('已复制 arXiv 编号 '+id);setTimeout(()=>cp.classList.remove('ok'),1500)};
     const fb=()=>{try{const t=document.createElement('textarea');t.value=id;t.style.position='fixed';t.style.opacity='0';document.body.append(t);t.select();document.execCommand('copy');t.remove();done()}catch(_){}};
