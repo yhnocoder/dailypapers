@@ -4,6 +4,11 @@
 
 ## 每日流程（一个主题、一个 arXiv 公布日）
 
+定时任务在 **周日到周四 21:07 America/New_York** 触发（arXiv 20:00 ET 公布后约 1 小时，冬令时、夏令时都一样）。要处理的批次用 `python3 pipeline/batch_date.py` 计算：周一到周四处理当天的批次，周日处理上周五的批次。批次日期就是截稿日（ET），也是页面和分支名里用的日期。
+
+**节假日检查**：第 1 步抓取后，如果候选数明显偏少（少于 150 篇；平时工作日约 400–500 篇，周一约 800–900 篇），说明这一批多半还没公布（美国节假日 arXiv 会停发或顺延）。这时不要生成日报，直接结束，并在汇报里说明。
+
+
 工作目录 `WORK` 放在会话的 scratchpad 里，不要放进仓库。
 
 1. **抓取**：`python3 pipeline/fetch_arxiv.py topics/search-rec.json <YYYY-MM-DD> WORK/all.json`
