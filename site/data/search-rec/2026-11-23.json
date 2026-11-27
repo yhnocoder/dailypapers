@@ -59,6 +59,26 @@
      "ref": "Figure 3",
      "after": 3,
      "caption_zh": "直接编辑的效果：开发日上每个编辑对查询塔召回的影响、==LayerNorm 增益==缩放、分支与偏置缩放，以及混合搜索前后浅层 token 的占比。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.29613v1/fig1_overview.svg",
+     "ref": "Figure 1",
+     "caption_zh": "(a) 智能体驱动的循环：对训练好或随机初始化的权重直接编辑、验证；(b) 在 Pinterest 图搜召回模型上，逐轮编辑后各项指标的相对变化。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.29613v1/fig2_model.svg",
+     "ref": "Figure 2",
+     "caption_zh": "Pinterest 图搜双塔召回模型：两塔都从跨场景基础模型微调而来；右边是查询塔里的 ==DHEN== 交互模块，标出了本文的编辑位置。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.29613v1/fig4_search.svg",
+     "ref": "Figure 4",
+     "caption_zh": "搜索与组合：随机重置后靠搜索把召回找回来，以及从训练好和随机两种起点出发的搜索轨迹。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.29613v1/fig5_knobs.svg",
+     "ref": "Figure 5",
+     "caption_zh": "换到其他模型和目标上的编辑：PinRec 插值、排序模型专家缩放，以及按新鲜度、商品定向的召回调控。"
     }
    ]
   },
