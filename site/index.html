@@ -401,7 +401,7 @@ async function search(){
     const os=S.star?[]:(d.others||[]).filter(e=>(!S.dir||e.direction===S.dir)&&hit(e));
     const xs=S.dir||S.star?[]:(d.excluded||[]).filter(hit);
     if(!ps.length&&!os.length&&!xs.length)return '';n+=ps.length+os.length+xs.length;
-    return `<section class="rg"><h2><a href="#${esc(t.id)}-${esc(t.dates[i])}" data-go="${esc(t.dates[i])}">${esc(cn(t.dates[i]))}</a><span>${ps.length+os.length+xs.length} 篇</span></h2><div class="rgl">${ps.map(p=>hitArt(p,t.dates[i])).join('')}${os.map(e=>hitArt(e,t.dates[i],'其他相关')).join('')}${xs.map(e=>hitArt(e,t.dates[i],true)).join('')}</div></section>`}).join('');
+    return `<section class="rg"><h2><a href="#${esc(t.id)}-${esc(t.dates[i])}" data-go="${esc(t.dates[i])}">${esc(span(t,t.dates[i])||cn(t.dates[i]))}</a><span>${ps.length+os.length+xs.length} 篇</span></h2><div class="rgl">${ps.map(p=>hitArt(p,t.dates[i])).join('')}${os.map(e=>hitArt(e,t.dates[i],'其他相关')).join('')}${xs.map(e=>hitArt(e,t.dates[i],true)).join('')}</div></section>`}).join('');
   R.innerHTML=`<p class="rh">“${esc(S.q)}” · ${t.dates.length} 期中找到 ${n} 篇</p>`+(n?groups:'<p class="none">没有找到匹配的论文</p>');
 }
 function render(){
@@ -440,7 +440,7 @@ function render(){
   const wk='日一二三四五六'[new Date(d.date+'T00:00:00Z').getUTCDay()];
   const fsrc=(d.funnel?.[0]?.[0]||'').match(/（(.+)）/)?.[1]||'';
   $('foot').innerHTML=`<div class="fn"><p class="tally">${tot!=null?`<span><b>${esc(tot)}</b> 篇新论文</span><span><i>→</i>`:'<span>'}${rel!=null?`<b>${esc(rel)}</b> 篇相关</span><span><i>→</i>`:''}<b>${ps.length}</b> 篇入选</span>${nStar?`<span><i>→</i><b class="st">${nStar}</b> 篇精读</span>`:''}</p>${fsrc?`<p class="src">${esc(fsrc)}</p>`:''}</div>
-    <div class="colo">${esc(d.date)}（周${wk}）</div>
+    <div class="colo">${esc((d.batches||[]).length>1?d.batches[0]+' – '+d.date:d.date+'（周'+wk+'）')}</div>
     ${d.others?.length?`<details class="xl"><summary>其他相关 ${d.others.length} 篇</summary><div class="xg">${d.others.map(e=>`<article><h4>${esc(e.title_zh||e.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(e.id)}" rel="noopener" lang="en">${esc(e.title)}</a> · ${esc(e.cat)}</p>${e.summary_zh?`<p class="x">${rich(e.summary_zh)}</p>`:''}</article>`).join('')}</div></details>`:''}
     ${d.excluded?.length?`<details class="xl"><summary>未收录 ${d.excluded.length} 篇</summary><div class="xg">${d.excluded.map(e=>`<article><h4>${esc(e.title_zh||e.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(e.id)}" rel="noopener" lang="en">${esc(e.title)}</a> · ${esc(e.cat)}</p>${e.summary_zh?`<p class="x">${rich(e.summary_zh)}</p>`:''}</article>`).join('')}</div></details>`:''}`;
 }

@@ -10,7 +10,8 @@ of the topic includes it (site/data/topics.json → issues). Using the set diffe
 arXiv announced late (holidays) is picked up by the next issue instead of falling between ranges.
 
 - daily topics (5 run days): one issue per uncovered batch
-- other topics: on a run day (America/New_York weekday in `cadence.run_days`, or with --force),
+- other topics: on a run day (America/New_York weekday in `cadence.run_days`, counted until 06:00
+  the next morning; or with --force),
   one issue covering every uncovered batch; nothing on other days
 If the latest announced batch has no pool yet, a note goes to stderr (ingest still running or failed).
 """
@@ -46,7 +47,9 @@ def plan(topic_id, now, force=False):
     run_days = cfg["cadence"]["run_days"]
     if len(run_days) >= 5:
         return [{"key": d, "batches": [d]} for d in todo]
-    if force or DAYS[now.weekday()] in run_days:
+    # the run day is the evening the run was scheduled for: a run that slips past midnight
+    # (late start, waiting for the ingest) still counts for that evening
+    if force or DAYS[(now - timedelta(hours=6)).weekday()] in run_days:
         return [{"key": todo[-1], "batches": todo}]
     return []
 

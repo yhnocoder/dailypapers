@@ -9,7 +9,7 @@ Writes WORK/selection.json:
 and WORK/abstract_in.json: [{id, title, abstract}] of the shown papers, for the abstract agents.
 
 Ranking = topic score + a small heat bonus (HF upvotes, HN points from the latest heat snapshot,
-capped at +0.15). Diversity: first the best paper of each direction that scores ≥ 0.45 (at most
+capped at +0.15; only for the batch's own arXiv papers, not for HF / HN extras). Diversity: first the best paper of each direction that scores ≥ 0.45 (at most
 half of the slots), then the remaining slots by ranking.
 """
 import json, math, os, sys
@@ -40,7 +40,9 @@ def main(topic_path, work, *batches):
                 tag = p["tags"][tid]
                 rel.append({"id": p["id"], "title": p["title"], "abstract": p["abstract"], "dir": tag["direction"],
                             "score": tag["score"], "star": tag["star_candidate"],
-                            "rank": tag["score"] + heat_bonus(heat.get(p["id"]))})
+                            # HF / HN extras are in the pool *because* they are hot; most are older papers.
+                            # Only the batch's own arXiv papers get the heat bonus, extras compete on score.
+                            "rank": tag["score"] + (heat_bonus(heat.get(p["id"])) if "arxiv" in p["src"] else 0)})
     rel.sort(key=lambda x: -x["rank"])
     pick, dirs = [], set()
     for x in rel:

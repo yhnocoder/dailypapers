@@ -10,7 +10,7 @@ A paper can belong to several topics (e.g. a GPU vector index → search-rec and
 - NO filler: never use 值得注意的是 / 综上所述 / 总而言之 / 具有重要意义 / 奠定基础 / 开辟新方向 / 令人振奋 / 显著提升(without a number) / 三连排比. No preamble sentences; start with the substance.
 - Don't invent facts or numbers not in the abstract.
 
-Fields (one JSON object per paper):
+Output: one JSON **array** per batch file, one object per paper, in input order. Fields of each object:
 - `id`
 - `title_zh` (ALL papers): faithful Chinese rendering of the title, readable, not sensationalised. Model/system names stay in English.
 - `summary_zh` (ALL papers): ONE sentence (≤60 Chinese chars) saying concretely what the paper does / finds. No "本文" opener.

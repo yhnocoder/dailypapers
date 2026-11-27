@@ -45,15 +45,19 @@ def main(topic_path, key, work):
     batches = sel["batches"]
     if key != batches[-1]:
         sys.exit(f"key {key} must be the last batch of the issue ({batches[-1]})")
-    pool, n_new, cats = {}, 0, set()
+    pool, n_new, n_arxiv, cats = {}, 0, 0, set()
     for b in batches:
         P = load(os.path.join(ROOT, "data", "papers", f"{b}.json"))
         n_new += len(P["papers"])
+        n_arxiv += P["n_arxiv"]
         cats |= set(P["categories"])
         for p in P["papers"]:
             pool.setdefault(p["id"], {**p, "batch": b})
     abstracts = {x["id"]: x["abstract_zh"] for x in load(os.path.join(work, "abstracts.json"), [])}
     stars = {s["id"]: s for f in glob.glob(os.path.join(work, "star", "*.out.json")) for s in [load(f)]}
+    for i in stars:
+        if i not in sel["shown"]:
+            print(f"WARNING star/{i}.out.json is not a shown paper of this issue: ignored")
     translations = load(os.path.join(work, "translations.json"), {})
     heat = {}
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -101,7 +105,7 @@ def main(topic_path, key, work):
     out = {
         "topic": tid, "date": key, "batches": batches, "batch": f"arXiv 公布批次 {span}",
         "rules_version": topic["rules_version"], "overview": load(os.path.join(work, "overview.json"), {}),
-        "funnel": [[f"新论文（{len(cats)} 个 arXiv 分类全量 + HF / HN 热门补充）", n_new],
+        "funnel": [[f"新论文（{len(cats)} 个 arXiv 分类 {n_arxiv} 篇 + HF / HN 热门补充 {n_new - n_arxiv} 篇）", n_new],
                    [f"判定{topic['name']}相关", n_rel], ["入选", len(papers)], ["⭐ 精读", sum(r["star"] for r in papers)]],
         "papers": papers, "others": others, "excluded": excluded,
     }

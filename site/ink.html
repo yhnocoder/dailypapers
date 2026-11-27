@@ -704,7 +704,7 @@ async function search(){
     const os=S.star?[]:(d.others||[]).filter(e=>(!S.dir||e.direction===S.dir)&&hit(e));
     const xs=S.dir||S.star?[]:(d.excluded||[]).filter(hit);
     if(!ps.length&&!os.length&&!xs.length)return '';n+=ps.length+os.length+xs.length;
-    return `<section class="rg"><h2><a href="#${esc(t.id)}-${esc(t.dates[i])}" data-go="${esc(t.dates[i])}">${esc(cn(t.dates[i]))}</a><span>${ps.length+os.length+xs.length} 篇</span></h2><div class="rgl">${ps.map(p=>hitArt(p,t.dates[i])).join('')}${os.map(e=>hitArt(e,t.dates[i],'其他相关')).join('')}${xs.map(e=>hitArt(e,t.dates[i],true)).join('')}</div></section>`}).join('');
+    return `<section class="rg"><h2><a href="#${esc(t.id)}-${esc(t.dates[i])}" data-go="${esc(t.dates[i])}">${esc(span(t,t.dates[i])||cn(t.dates[i]))}</a><span>${ps.length+os.length+xs.length} 篇</span></h2><div class="rgl">${ps.map(p=>hitArt(p,t.dates[i])).join('')}${os.map(e=>hitArt(e,t.dates[i],'其他相关')).join('')}${xs.map(e=>hitArt(e,t.dates[i],true)).join('')}</div></section>`}).join('');
   R.innerHTML=`<p class="rh"><b>“${esc(S.q)}”</b>${t.dates.length} 期中找到 ${n} 篇</p>`+(n?groups:'<p class="none">没有找到匹配的论文</p>');
   watch(R);
 }

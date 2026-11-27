@@ -15,7 +15,7 @@ import glob, json, os, re, sys, time, urllib.parse, urllib.request
 from datetime import date, datetime, timedelta
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from batch_date import ET, latest_batch  # noqa: E402
+from batch_date import ET, is_batch, latest_batch  # noqa: E402
 from fetch_arxiv import query, window  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -46,7 +46,7 @@ def plan(now):
     have = set(pool_dates())
     d, out = start, []
     while d <= last:
-        if d.weekday() < 5 and d.isoformat() not in have:
+        if is_batch(d) and d.isoformat() not in have:
             out.append(d.isoformat())
         d += timedelta(days=1)
     return out
@@ -133,12 +133,16 @@ def fetch(batch, work):
 def split(work):
     c = cfg()
     P = json.load(open(os.path.join(work, "all.json")))["papers"]
+    for sub in ("batches", "out"):  # never mix in files from another batch
+        for f in glob.glob(os.path.join(work, sub, "*.json")):
+            os.remove(f)
     os.makedirs(os.path.join(work, "batches"), exist_ok=True)
+    os.makedirs(os.path.join(work, "out"), exist_ok=True)
     k = c["batch_size"]
     for i in range(0, len(P), k):
         json.dump([{x: p[x] for x in ("id", "title", "cat", "cats", "comment", "abstract")} for p in P[i:i + k]],
                   open(os.path.join(work, "batches", f"b{i // k}.json"), "w"), ensure_ascii=False)
-    print(f"{(len(P) + k - 1) // k} batches of ≤{k}")
+    print(f"{(len(P) + k - 1) // k} batches of ≤{k}; write each result to WORK/out/b<i>.json as a JSON array")
 
 
 def build(batch, work):
