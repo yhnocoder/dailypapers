@@ -2,7 +2,7 @@
  "id": "search-rec",
  "name": "搜索与推荐",
  "taxonomy_version": "v1",
- "rules_version": "v1",
+ "rules_version": "v2",
  "full_categories": [
   "cs.IR",
   "cs.CL",
@@ -20,8 +20,7 @@
    "composed image retrieval",
    "cross-modal retrieval",
    "video retrieval",
-   "visual place recognition",
-   "person re-identification"
+   "visual place recognition"
   ]
  },
  "directions": [
