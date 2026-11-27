@@ -31,6 +31,9 @@ def put(url, data, ctype):
 def main(topic_path, work, *ids):
     cfg = json.load(open(topic_path))["translations"]
     up, files = cfg["upload_base"].rstrip("/"), cfg["files_base"].rstrip("/")
+    if not up or not files:
+        print("translations.upload_base / files_base not configured; skipping upload")
+        return
     path = os.path.join(work, "translations.json")
     result = json.load(open(path)) if os.path.exists(path) else {}
     for pid in ids:
