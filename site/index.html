@@ -349,6 +349,31 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 #lb .pv{left:max(10px,env(safe-area-inset-left));top:45%}#lb .nx{right:max(10px,env(safe-area-inset-right));top:45%}
 #lb button:hover{background:rgba(0,0,0,.65);transform:scale(1.08)}
 #toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,10px);background:var(--ink);color:var(--paper);font:500 14px/1.4 var(--sans);padding:9px 16px;opacity:0;pointer-events:none;transition:opacity .2s,transform .35s var(--ease);z-index:95;white-space:nowrap}
+/* boost：只有在设置里存了 GitHub token 的浏览器才显示 */
+.bo{display:none;font:500 12px/1.6 var(--sans);letter-spacing:.04em;color:var(--mute);transition:color .2s}
+:root[data-boost] .bo{display:inline}
+.bo:hover,.bo:focus-visible{color:var(--accent)}
+.bo.pend{color:var(--accent);cursor:default}
+.xg .bo{margin-left:8px;font-style:normal}
+.srow input{width:100%;font:400 13px/1 var(--mono);color:var(--ink);padding:7px 8px;border:1px solid var(--hair)}
+.srow input:focus{border-color:var(--ink);outline:0}
+.srow small a{text-decoration:underline}
+#bd{width:min(460px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;background:var(--paper);color:var(--body);border:1px solid var(--ink);border-top-width:3px;padding:0;box-shadow:0 24px 60px -20px rgba(0,0,0,.55)}
+#bd form{padding:18px 20px 16px}
+#bd::backdrop{background:rgba(20,18,14,.45)}
+#bd h2{font:700 15px/1 var(--song);color:var(--ink);letter-spacing:.3em}
+#bd .bt{margin:12px 0 2px;font:700 16px/1.5 var(--song);color:var(--ink)}
+#bd .be{font:italic 13px/1.45 var(--serif);color:var(--mute)}
+#bd .srow{grid-template-columns:minmax(0,1fr);border-top:0;padding:14px 0 0}
+#bd textarea{display:block;width:100%;margin-top:12px;min-height:110px;resize:vertical;font:400 15px/1.7 var(--serif);color:var(--ink);background:none;border:1px solid var(--hair);border-radius:0;padding:8px 10px}
+#bd textarea:focus{border-color:var(--ink);outline:0}
+#bd .bm{min-height:1.6em;margin-top:8px;font:400 12.5px/1.6 var(--sans);color:var(--mute)}
+#bd .bm.err{color:var(--accent)}
+#bd .ba{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+#bd .ba button{font:500 14px/1 var(--sans);padding:9px 16px;border:1px solid var(--hair);color:var(--ink)}
+#bd .ba button:hover{border-color:var(--ink)}
+#bd .ba .go{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+#bd .ba button:disabled{opacity:.5;cursor:default}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 
 /* 换主题时的圆形揭开；换版面时的淡入淡出 */
@@ -501,6 +526,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
         <h2>设置</h2>
         <div class="srow"><span>纸色</span><p><button data-paper="y"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="x"><i style="background:#faf9f5"></i>宣白</button><button data-paper="w"><i style="background:#fff"></i>纯白</button></p><small>只在日间生效</small></div>
         <div class="srow"><span>明暗</span><p><button data-mode="auto">跟随系统</button><button data-mode="light">日间</button><button data-mode="dark">夜间</button></p></div>
+        <div class="srow"><span>Boost</span><p><input id="ghtok" type="password" autocomplete="off" spellcheck="false" placeholder="GitHub token" aria-label="GitHub token"></p><small id="ghmsg"></small></div>
       </div>
     </div>
   </div>
@@ -514,6 +540,13 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
+<dialog id="bd" aria-labelledby="bdh"><form method="dialog">
+  <h2 id="bdh">Boost</h2><p class="bt" id="bdt"></p><p class="be" id="bde" lang="en"></p>
+  <div class="srow"><p id="bdl"><button type="button" data-lv="shown">提到入选</button><button type="button" data-lv="star">提到 ★ 精读</button></p></div>
+  <textarea id="bdn" placeholder="想法（可选）：为什么值得看，希望精读回答什么问题" aria-label="想法（可选）"></textarea>
+  <p class="bm" id="bdm" role="status"></p>
+  <div class="ba"><button type="button" id="bdx">取消</button><button type="button" class="go" id="bdgo">提交</button></div>
+</form></dialog>
 
 <script>
 {
@@ -568,7 +601,8 @@ const emblem=c=>`<svg class="em" viewBox="0 0 48 48" aria-hidden="true"><circle 
 
 /* 论文链接：arXiv 页、英文 PDF、中文 PDF（通途译文，Access 保护）、代码、复制编号 */
 const CP='<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
-const links=p=>`<span class="lk">${[['links',p.links?.abs],['en',p.links?.pdf],['zh',p.translation?.pdf],['code',p.links?.code],['hf',p.heat?.hf>0?`https://huggingface.co/papers/${p.id}`:'']].filter(x=>url(x[1])).map(([t,u])=>`<a href="${url(u)}" target="_blank" rel="noopener">${t}</a>`).join('')}<button class="cp" type="button" data-copy="${esc(p.id)}" title="复制 arXiv 编号 ${esc(p.id)}" aria-label="复制 arXiv 编号 ${esc(p.id)}">${CP}</button></span>`;
+const bo=id=>`<button class="bo" type="button" data-boost="${esc(id)}" title="把这篇提到入选或 ★ 精读">boost</button>`;
+const links=p=>`<span class="lk">${[['links',p.links?.abs],['en',p.links?.pdf],['zh',p.translation?.pdf],['code',p.links?.code],['hf',p.heat?.hf>0?`https://huggingface.co/papers/${p.id}`:'']].filter(x=>url(x[1])).map(([t,u])=>`<a href="${url(u)}" target="_blank" rel="noopener">${t}</a>`).join('')}${p.star?'':bo(p.id)}<button class="cp" type="button" data-copy="${esc(p.id)}" title="复制 arXiv 编号 ${esc(p.id)}" aria-label="复制 arXiv 编号 ${esc(p.id)}">${CP}</button></span>`;
 /* 先转义，再转换行内标记 */
 const G=new Map();
 const rich=t=>esc(t).replace(/\[\[@([\w.-]+)\|([^\]]*?)\]\]/g,(m,id,tx)=>`<a class="pref" href="#p-${id}" data-ref="${id}">${tx}</a>`).replace(/\[\[([\w.-]+)(?:\|([^\]]*?))?\]\]/g,(m,id,tx)=>{const g=G.get(id);
@@ -716,8 +750,8 @@ function render(fresh){
     ${d.others?.length?`<details class="xl" id="ol"><summary>其他相关 ${d.others.length} 篇</summary><div class="xg"></div></details>`:''}
     ${d.excluded?.length?`<details class="xl" id="xl"><summary>未收录 ${d.excluded.length} 篇</summary><div class="xg"></div></details>`:''}`;
   /* 未收录和其他相关各有几百条，展开时才生成 */
-  for(const [id,list] of [['ol',d.others],['xl',d.excluded]])$(id)?.addEventListener('toggle',e=>{const g=e.target.querySelector('.xg');if(e.target.open&&!g.childElementCount)g.innerHTML=list.map(v=>`<article><h4>${esc(v.title_zh||v.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(v.id)}" target="_blank" rel="noopener" lang="en">${esc(v.title)}</a> · ${esc(v.cat)}</p>${v.summary_zh?`<p class="x">${rich(v.summary_zh)}</p>`:''}</article>`).join('')});
-  watch($('main'));watch($('foot'));
+  for(const [id,list] of [['ol',d.others],['xl',d.excluded]])$(id)?.addEventListener('toggle',e=>{const g=e.target.querySelector('.xg');if(e.target.open&&!g.childElementCount){g.innerHTML=list.map(v=>`<article><h4>${esc(v.title_zh||v.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(v.id)}" target="_blank" rel="noopener" lang="en">${esc(v.title)}</a> · ${esc(v.cat)}${bo(v.id)}</p>${v.summary_zh?`<p class="x">${rich(v.summary_zh)}</p>`:''}</article>`).join('');markPend()}});
+  watch($('main'));watch($('foot'));markPend();
   requestAnimationFrame(()=>root.classList.add('ready'));
 }
 function jump(id){
@@ -822,6 +856,39 @@ function setTheme(){
   bloom($('theme'),()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}syncSet()});
 }
 
+/* ── boost：把已发布的论文提到入选或 ★ 精读 ───────────────
+   请求写成 GitHub issue 的评论：有开着的 boost issue 就追加，没有就新建一个；每天的定时任务处理后关闭它。
+   token（只需要本仓库的 Issues 读写权限）存在这个浏览器的 localStorage 里，只发给 api.github.com。 */
+const REPO='yhnocoder/dailypapers',BRE=/^boost:\s*(\S+)\s+(\d{4}-\d{2}-\d{2})\s+(\S+)\s+(shown|star)\b/m;
+let TOK='';try{TOK=localStorage.getItem('gh_boost')||''}catch(e){}
+const gh=async(path,body)=>{const r=await fetch(`https://api.github.com/repos/${REPO}${path}`,{method:body?'POST':'GET',cache:'no-store',headers:{Authorization:'Bearer '+TOK,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},body:body?JSON.stringify(body):undefined});
+  if(!r.ok)throw new Error(r.status===401?'token 无效或已过期':r.status===403||r.status===404?'token 没有这个仓库的 Issues 读写权限':'GitHub 返回 '+r.status);return r.json()};
+const inbox=async()=>(await gh('/issues?state=open&per_page=100')).filter(i=>!i.pull_request&&/^boost\b/i.test(i.title)).sort((a,b)=>a.number-b.number)[0];
+/* 待处理的请求：开着的 boost issue 里的评论。键是 主题/期/论文 */
+let PEND=null;const pendKey=(t,k,id)=>t+'/'+k+'/'+id;
+const pending=()=>PEND||(PEND=(async()=>{const m=new Map();if(!TOK)return m;try{const i=await inbox();if(i)for(const c of await gh(`/issues/${i.number}/comments?per_page=100`)){const x=(c.body||'').match(BRE);if(x)m.set(pendKey(x[1],x[2],x[3]),x[4])}}catch(e){}return m})());
+function markPend(){if(!TOK||!S.topic)return;const t=S.topic.id,k=S.date;pending().then(m=>{if(t!==S.topic.id||k!==S.date)return;document.querySelectorAll('button.bo[data-boost]').forEach(b=>{const lv=m.get(pendKey(t,k,b.dataset.boost));if(lv){b.classList.add('pend');b.textContent=lv==='star'?'待提 ★':'待入选';b.title='已提交，等待处理'}})})}
+function syncBoost(){if(TOK)root.dataset.boost='1';else delete root.dataset.boost;$('ghtok').value=TOK;
+  $('ghmsg').innerHTML=TOK?'已保存在这个浏览器里。清空后回车可以移除。':`粘贴一个只有本仓库 Issues 读写权限的 <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a>，回车保存；之后每篇论文旁会出现 boost。`}
+$('ghtok').addEventListener('keydown',async e=>{if(e.key!=='Enter')return;e.preventDefault();const v=e.target.value.trim(),old=TOK;
+  if(!v){TOK='';try{localStorage.removeItem('gh_boost')}catch(_){}PEND=null;syncBoost();toast('已移除 token');return}
+  TOK=v;$('ghmsg').textContent='检查中…';
+  try{await gh('/issues?state=open&per_page=1');try{localStorage.setItem('gh_boost',v)}catch(_){}PEND=null;syncBoost();markPend();toast('token 已保存')}
+  catch(err){TOK=old;$('ghmsg').textContent=err.message}});
+const bd=$('bd');let bP=null,bLv='star';
+const bLevel=lv=>{bLv=lv;bd.querySelectorAll('[data-lv]').forEach(b=>b.classList.toggle('on',b.dataset.lv===lv))};
+function boostOpen(id){const d=S.day;if(!d)return;const shown=(d.papers||[]).find(p=>p.id===id),p=shown||(d.others||[]).find(p=>p.id===id)||(d.excluded||[]).find(p=>p.id===id);if(!p)return;
+  bP={id,title:p.title,topic:S.topic.id,key:S.date};$('bdt').textContent=p.title_zh||p.title;$('bde').textContent=p.title+' · '+id;
+  bd.querySelector('[data-lv=shown]').hidden=!!shown;bLevel(shown?'star':'shown');$('bdn').value='';$('bdm').textContent='';$('bdm').className='bm';$('bdgo').disabled=false;bd.showModal();$('bdn').focus()}
+async function boostSend(){const p=bP,note=$('bdn').value.trim(),m=$('bdm');$('bdgo').disabled=true;m.className='bm';m.textContent='提交中…';
+  try{let i=await inbox();
+    if(!i)i=await gh('/issues',{title:'boost '+new Date().toLocaleDateString('sv'),body:'论文日报的 boost 请求：每条评论一个请求，第一行是 `boost: <主题> <期> <arXiv 编号> <shown|star>`，后面是想法（可选）。每天的定时任务处理完后会回复并关闭这个 issue。'});
+    await gh(`/issues/${i.number}/comments`,{body:`boost: ${p.topic} ${p.key} ${p.id} ${bLv}\n> ${p.title}`+(note?'\n\n'+note:'')});
+    (await pending()).set(pendKey(p.topic,p.key,p.id),bLv);bd.close();markPend();toast('已提交到 issue #'+i.number)}
+  catch(err){m.className='bm err';m.textContent='没有提交成功：'+err.message;$('bdgo').disabled=false}}
+bd.addEventListener('click',e=>{const lv=e.target.closest('[data-lv]');if(lv)bLevel(lv.dataset.lv);else if(e.target.closest('#bdx')||e.target===bd)bd.close();else if(e.target.closest('#bdgo'))boostSend()});
+$('bdn').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)&&!$('bdgo').disabled){e.preventDefault();boostSend()}});
+
 /* ── 事件 ─────────────────────────────────────────────── */
 document.addEventListener('click',e=>{
   const t=termOf(e);
@@ -845,6 +912,7 @@ document.addEventListener('click',e=>{
   if(!$('set').hidden&&!e.target.closest('#set'))closeSet();
   const mt=e.target.closest('button.more-th');if(mt){mt.parentElement.querySelectorAll('.th[hidden]').forEach(v=>v.hidden=false);mt.remove();return}
   const zb=e.target.closest('button.zoom');if(zb){lbOpen(zb.dataset.pid,+zb.dataset.i,zb);return}
+  const bb=e.target.closest('button.bo');if(bb){if(!bb.classList.contains('pend'))boostOpen(bb.dataset.boost);return}
   const cp=e.target.closest('button[data-copy]');
   if(cp){const id=cp.dataset.copy,done=()=>{cp.classList.add('ok');toast('已复制 arXiv 编号 '+id);setTimeout(()=>cp.classList.remove('ok'),1500)};
     const fb=()=>{try{const a=document.createElement('textarea');a.value=id;a.style.position='fixed';a.style.opacity='0';document.body.append(a);a.select();document.execCommand('copy');a.remove();done()}catch(_){}};
@@ -860,6 +928,7 @@ document.addEventListener('click',e=>{
   if(sc){e.preventDefault();const el=$('sec-'+sc.dataset.sec);if(el)el.scrollIntoView({behavior:RM.matches?'auto':'smooth',block:'start'});else jump(sc.dataset.first)}
 });
 document.addEventListener('keydown',e=>{
+  if(bd.open)return;
   if(!lb.hidden){if(e.key==='Escape')lbClose();else if(e.key==='ArrowLeft')lbGo(-1);else if(e.key==='ArrowRight')lbGo(1);return}
   if(e.key==='Escape'){if(!$('set').hidden){closeSet();$('gear').focus();return}if($('cal')){closeCal();$('date').focus();return}if(gEl){hideG();return}if(S.q||document.activeElement===$('q')){S.q='';$('q').value='';$('q').blur();if(S.day)render();return}}
   if((e.key==='Enter'||e.key===' ')&&termOf(e)){e.preventDefault();const t=termOf(e);if(gEl===t&&gPin)hideG();else showG(t,true);return}
@@ -882,7 +951,7 @@ function route(){
   $('topic').value=S.topic.id;
 }
 async function boot(){
-  syncSet();
+  syncSet();syncBoost();
   try{S.topics=(await (await fetch('data/topics.json')).json()).topics}catch(e){$('cday').innerHTML='<p class="none">无法加载数据</p>';root.classList.add('ready');return}
   try{const r=await fetch('data/glossary.json');if(r.ok)for(const g of (await r.json()).terms||[])if(g&&g.id)G.set(String(g.id),g)}catch(e){}
   $('topic').innerHTML=S.topics.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');

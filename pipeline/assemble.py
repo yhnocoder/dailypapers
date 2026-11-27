@@ -38,6 +38,50 @@ def label(d):
     return f"{d}（周{WK[x.weekday()]}）"
 
 
+def record(p, tid, s, abstract_zh, h, t, tag=None):
+    """One shown paper of an issue. p: pool paper (with `batch`); s: its ⭐ write-up (star/<id>.out.json) or None;
+    h: its entry in the heat snapshot; t: its tongtu upload; tag: overrides the pool's tag for this topic (boost.py)."""
+    pid, tag = p["id"], tag or p["tags"][tid]
+    rec = {"id": pid, "title": p["title"], "title_zh": p["title_zh"],
+           "affiliation": (s or {}).get("affiliation") or p["affiliation"], "primary_cat": p["cat"],
+           "direction": tag["direction"], "star": bool(s), "score": tag["score"],
+           "links": {"abs": f"https://arxiv.org/abs/{pid}", "pdf": f"https://arxiv.org/pdf/{pid}",
+                     "code": (s or {}).get("code") or p.get("code")},
+           "summary_zh": p["summary_zh"], "abstract_zh": (s or {}).get("abstract_zh") or abstract_zh,
+           "abstract_en": p["abstract"], "batch": p["batch"]}
+    if h:
+        rec["heat"] = {"hf": (h.get("hf") or {}).get("upvotes", 0),
+                       "hn": max((x.get("points", 0) for x in h.get("hn", [])), default=0)}
+    if s:
+        rec.update(title_zh=s["title_zh"], analysis=s["analysis"], star_reasons=s.get("star_reasons", []))
+        if s.get("figures"):
+            rec["figures"] = s["figures"]
+        if t.get("pdf"):
+            rec["translation"] = {"pdf": t["pdf"], "zip": t.get("zip")}
+    return rec
+
+
+def merge_glossary(new_terms):
+    """Add the terms that are not in site/data/glossary.json yet; returns the ones added."""
+    gp = os.path.join(ROOT, "site", "data", "glossary.json")
+    g = load(gp, {"terms": []})
+    have, added = {t["id"] for t in g["terms"]}, []
+    for t in new_terms:  # two write-ups may define the same new term
+        if t.get("id") and t["id"] not in have:
+            have.add(t["id"])
+            added.append(t)
+    g["terms"] += added
+    dump(g, gp)
+    return added
+
+
+def funnel(out, topic_name):
+    """Refresh the counts of the related / shown / ⭐ rows from the issue's lists (row 0, the pool, stays)."""
+    ps = out["papers"]
+    out["funnel"][1:] = [[f"判定{topic_name}相关", len(ps) + len(out.get("others", []))], ["入选", len(ps)],
+                         ["⭐ 精读", sum(r["star"] for r in ps)]]
+
+
 def main(topic_path, key, work):
     topic = load(os.path.join(ROOT, topic_path))
     tid = topic["id"]
@@ -72,26 +116,9 @@ def main(topic_path, key, work):
 
     papers, new_terms, warn = [], [], []
     for pid in sel["shown"]:
-        p, s = pool[pid], stars.get(pid)
-        tag = p["tags"][tid]
-        rec = {"id": pid, "title": p["title"], "title_zh": p["title_zh"],
-               "affiliation": (s or {}).get("affiliation") or p["affiliation"], "primary_cat": p["cat"],
-               "direction": tag["direction"], "star": bool(s), "score": tag["score"],
-               "links": {"abs": f"https://arxiv.org/abs/{pid}", "pdf": f"https://arxiv.org/pdf/{pid}",
-                         "code": (s or {}).get("code") or p.get("code")},
-               "summary_zh": p["summary_zh"], "abstract_zh": (s or {}).get("abstract_zh") or abstracts.get(pid, ""),
-               "abstract_en": p["abstract"], "batch": p["batch"]}
-        h = heat.get(pid)
-        if h:
-            rec["heat"] = {"hf": (h.get("hf") or {}).get("upvotes", 0),
-                           "hn": max((x.get("points", 0) for x in h.get("hn", [])), default=0)}
+        s = stars.get(pid)
+        rec = record(pool[pid], tid, s, abstracts.get(pid, ""), heat.get(pid), translations.get(pid, {}))
         if s:
-            rec.update(title_zh=s["title_zh"], analysis=s["analysis"], star_reasons=s.get("star_reasons", []))
-            if s.get("figures"):
-                rec["figures"] = s["figures"]
-            t = translations.get(pid, {})
-            if t.get("pdf"):
-                rec["translation"] = {"pdf": t["pdf"], "zip": t.get("zip")}
             new_terms += s.get("glossary_new", [])
         if not rec["abstract_zh"]:
             warn.append(f"{pid}: no abstract_zh")
@@ -106,10 +133,10 @@ def main(topic_path, key, work):
     out = {
         "topic": tid, "date": key, "batches": batches, "batch": f"arXiv 公布批次 {span}",
         "rules_version": topic["rules_version"], "overview": load(os.path.join(work, "overview.json"), {}),
-        "funnel": [[f"新论文（{len(cats)} 个 arXiv 分类 {n_arxiv} 篇 + HF / HN 热门补充 {n_new - n_arxiv} 篇）", n_new],
-                   [f"判定{topic['name']}相关", n_rel], ["入选", len(papers)], ["⭐ 精读", sum(r["star"] for r in papers)]],
+        "funnel": [[f"新论文（{len(cats)} 个 arXiv 分类 {n_arxiv} 篇 + HF / HN 热门补充 {n_new - n_arxiv} 篇）", n_new]],
         "papers": papers, "others": others, "excluded": excluded,
     }
+    funnel(out, topic["name"])
     dump(out, os.path.join(ROOT, "site", "data", tid, f"{key}.json"))
 
     tp = os.path.join(ROOT, "site", "data", "topics.json")
@@ -123,15 +150,7 @@ def main(topic_path, key, work):
     entry.setdefault("issues", {})[key] = batches
     dump(topics, tp)
 
-    gp = os.path.join(ROOT, "site", "data", "glossary.json")
-    g = load(gp, {"terms": []})
-    have, added = {t["id"] for t in g["terms"]}, []
-    for t in new_terms:  # two write-ups may define the same new term
-        if t.get("id") and t["id"] not in have:
-            have.add(t["id"])
-            added.append(t)
-    g["terms"] += added
-    dump(g, gp)
+    added = merge_glossary(new_terms)
     for w in warn:
         print("WARNING", w)
     print(f"{tid} {key} ({len(batches)} batch): {n_new} new → {n_rel} related → {len(papers)} shown, "
