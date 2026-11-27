@@ -107,9 +107,9 @@ h1,h2,h3,p{margin:0}
 #lb[hidden]{display:none}
 #lb .st{display:grid;place-items:center;min-height:0}
 #lb img{max-width:min(1400px,calc(100vw - 120px));max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);width:auto;height:auto;object-fit:contain;background:#fff}
-#lb img[src$=".svg"]{width:min(1400px,calc(100vw - 120px))}
+#lb img.vec{width:min(1400px,calc(100vw - 120px))}
 @media(max-width:620px){#lb img{max-width:calc(100vw - 32px)}}
-@media(max-width:620px){#lb img[src$=".svg"]{width:calc(100vw - 32px)}}
+@media(max-width:620px){#lb img.vec{width:calc(100vw - 32px)}}
 #lb .bar{display:flex;align-items:flex-start;gap:16px;color:#e9e4d8;font:400 14px/1.6 var(--serif);max-width:1100px;margin:12px auto 0;width:100%}
 #lb .cap{flex:1;min-width:0}
 #lb .cap .src{margin-left:.6em;font:400 12px var(--sans);color:#a39c8e}
@@ -331,9 +331,22 @@ const title=p=>url(p.links?.abs)?`<a href="${url(p.links.abs)}" rel="noopener" l
 const tl=p=>url(p.translation?.zip)?`<span class="tl"><a href="${url(p.translation.zip)}" rel="noopener" title="tongtu 输出目录（out.zip）">通途</a></span>`:'';
 /* figures hot-linked from the paper's arXiv HTML. after:n → inline after paragraph n; no `after` → thumbnail strip.
    Inline figures go full width when wide, float right when squarish (decided on load, or forced by layout). */
+/* TikZ figures have no image file: arXiv HTML draws them inline as <svg>. arXiv serves its HTML with CORS *,
+   so we fetch the page, pull that <svg> by id, add the few LaTeXML rules it needs to render on its own,
+   and show it through a blob: URL in an <img> (no third-party markup in our DOM, no scripts can run). */
+const PG=new Map(),SV=new Map();
+const SVCSS='[style*="--ltx-fill-color:"]{fill:var(--ltx-fill-color)}[style*="--ltx-stroke-color:"]{stroke:var(--ltx-stroke-color)}[style*="--ltx-fg-color:"]{color:var(--ltx-fg-color)}svg{font-family:"Latin Modern Roman","Times New Roman",serif;background:#fff}foreignObject>.ltx_foreignobject_container{display:flex;align-items:end;height:100%;width:100%}foreignObject *{line-height:1.2;margin:0}';
+const svgKey=f=>f.src+'#'+f.svg_id;
+function svgURL(f){const k=svgKey(f);if(!SV.has(k)){const page=f.src.split('#')[0];if(!PG.has(page))PG.set(page,fetch(page).then(r=>r.ok?r.text():Promise.reject()).then(t=>new DOMParser().parseFromString(t,'text/html')));
+  SV.set(k,PG.get(page).then(doc=>{const el=doc.getElementById(f.svg_id);if(!el||el.tagName.toLowerCase()!=='svg')throw 0;const svg=el.cloneNode(true);svg.querySelectorAll('script').forEach(x=>x.remove());
+    for(const n of [svg,...svg.querySelectorAll('*')])for(const a of [...n.attributes])if(/^on/i.test(a.name)||/^\s*javascript:/i.test(a.value))n.removeAttribute(a.name);
+    svg.setAttribute('xmlns','http://www.w3.org/2000/svg');const st=document.createElementNS('http://www.w3.org/2000/svg','style');st.textContent=SVCSS;svg.prepend(st);
+    return URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml'}))}))}return SV.get(k)}
+function fillSvgs(root){root.querySelectorAll('img[data-svg]').forEach(img=>{const f={src:img.dataset.src,svg_id:img.dataset.svg};img.removeAttribute('data-svg');svgURL(f).then(u=>{img.src=u},()=>{(img.closest('figure')||img.closest('button'))?.remove()})})}
+const imgAttrs=f=>f.svg_id?`data-svg="${esc(f.svg_id)}" data-src="${url(f.src)}"`:`src="${url(f.src)}"`;
 const FG=p=>(p.figures||[]).filter(f=>url(f.src));
-const figs=(p,n)=>FG(p).map((f,i)=>[f,i]).filter(([f])=>f.after===n).map(([f,i])=>`<figure class="fig${f.layout==='side'?' side':f.layout==='full'?' full':''}"><button type="button" class="zoom" data-pid="${esc(p.id)}" data-i="${i}" aria-label="查看大图：${esc(f.ref||'')}"><img src="${url(f.src)}" alt="" loading="lazy" referrerpolicy="no-referrer" onload="figFit(this)" onerror="this.closest('figure').remove()"></button><figcaption>${rich(f.caption_zh)}<span class="src">原文 ${esc(f.ref||'')}</span></figcaption></figure>`).join('');
-const strip=(p,all)=>{const t=FG(p).map((f,i)=>[f,i]).filter(([f])=>!f.after),k=all?t.length:3;return t.length?`<div class="thumbs">${t.map(([f,i],j)=>`<button type="button" class="zoom th"${j>=k?' hidden':''} data-pid="${esc(p.id)}" data-i="${i}" aria-label="查看大图：${esc(f.ref||'')}" title="${esc(f.ref||'')}"><img src="${url(f.src)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('button').remove()"></button>`).join('')}${t.length>k?`<button type="button" class="more-th">more +${t.length-k}</button>`:''}</div>`:''};
+const figs=(p,n)=>FG(p).map((f,i)=>[f,i]).filter(([f])=>f.after===n).map(([f,i])=>`<figure class="fig${f.layout==='side'?' side':f.layout==='full'?' full':''}"><button type="button" class="zoom" data-pid="${esc(p.id)}" data-i="${i}" aria-label="查看大图：${esc(f.ref||'')}"><img ${imgAttrs(f)} alt="" loading="lazy" referrerpolicy="no-referrer" onload="figFit(this)" onerror="this.closest('figure').remove()"></button><figcaption>${rich(f.caption_zh)}<span class="src">原文 ${esc(f.ref||'')}</span></figcaption></figure>`).join('');
+const strip=(p,all)=>{const t=FG(p).map((f,i)=>[f,i]).filter(([f])=>!f.after),k=all?t.length:3;return t.length?`<div class="thumbs">${t.map(([f,i],j)=>`<button type="button" class="zoom th"${j>=k?' hidden':''} data-pid="${esc(p.id)}" data-i="${i}" aria-label="查看大图：${esc(f.ref||'')}" title="${esc(f.ref||'')}"><img ${imgAttrs(f)} alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('button').remove()"></button>`).join('')}${t.length>k?`<button type="button" class="more-th">more +${t.length-k}</button>`:''}</div>`:''};
 window.figFit=img=>{const f=img.closest('figure');if(!f||f.classList.contains('full')||f.classList.contains('side'))return;if(img.naturalWidth/img.naturalHeight<1.4)f.classList.add('side')};
 function story(p,lead){
   const head=`<div class="head"><h2>${esc(p.title_zh)}</h2><p class="deck">${title(p)}</p>
@@ -403,6 +416,7 @@ function render(){
   const lead=stars[0]||(S.star?null:f[0]);
   $('lead').innerHTML=lead?story(lead,true):`<p class="none">${S.q?'本期没有与检索词匹配的论文':'这一版今天没有论文'}</p>`;
   $('more').innerHTML=stars.slice(1).map(p=>story(p,false)).join('');
+  fillSvgs($('lead'));fillSvgs($('more'));
 
   const tot=d.funnel?.[0]?.[1];
   const gd=d.overview?.guide||[];
@@ -428,7 +442,7 @@ const lb=document.createElement('div');lb.id='lb';lb.hidden=true;lb.setAttribute
 lb.innerHTML='<div class="st"><img alt=""></div><div class="bar"><div class="cap"></div><span class="n"></span><a class="raw" target="_blank" rel="noopener">原图</a></div><button class="x" type="button" aria-label="关闭">×</button><button class="pv" type="button" aria-label="上一张">‹</button><button class="nx" type="button" aria-label="下一张">›</button>';
 document.body.append(lb);
 let LB={list:[],i:0,back:null};
-function lbShow(){const f=LB.list[LB.i];lb.querySelector('img').src=f.src;lb.querySelector('img').alt=f.ref||'';lb.querySelector('.cap').innerHTML=`${rich(f.caption_zh)}<span class="src">原文 ${esc(f.ref||'')}</span>`;lb.querySelector('.n').textContent=LB.list.length>1?`${LB.i+1} / ${LB.list.length}`:'';lb.querySelector('.raw').href=f.src;const many=LB.list.length>1;lb.querySelector('.pv').hidden=!many;lb.querySelector('.nx').hidden=!many}
+function lbShow(){const f=LB.list[LB.i],li=lb.querySelector('img');li.classList.toggle('vec',!!f.svg_id||/\.svg$/i.test(f.src));if(f.svg_id){li.removeAttribute('src');svgURL(f).then(u=>{if(LB.list[LB.i]===f)li.src=u})}else li.src=f.src;lb.querySelector('img').alt=f.ref||'';lb.querySelector('.cap').innerHTML=`${rich(f.caption_zh)}<span class="src">原文 ${esc(f.ref||'')}</span>`;lb.querySelector('.n').textContent=LB.list.length>1?`${LB.i+1} / ${LB.list.length}`:'';lb.querySelector('.raw').href=f.svg_id?f.src.split('#')[0]+'#'+f.svg_id.replace(/\.pic\d+$/,''):f.src;const many=LB.list.length>1;lb.querySelector('.pv').hidden=!many;lb.querySelector('.nx').hidden=!many}
 function lbOpen(pid,i,back){const p=(S.day?.papers||[]).find(x=>x.id===pid);if(!p)return;LB={list:FG(p),i,back};lb.hidden=false;document.body.style.overflow='hidden';lbShow();lb.querySelector('.x').focus()}
 function lbClose(){lb.hidden=true;document.body.style.overflow='';LB.back?.focus()}
 const lbGo=d=>{LB.i=(LB.i+d+LB.list.length)%LB.list.length;lbShow()};

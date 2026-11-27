@@ -27,7 +27,7 @@
 
 ## 配图（`figures`）
 
-图片直接引用论文 arXiv HTML 版（`https://arxiv.org/html/<id>v<n>`）里的图片文件，不下载、不转存。图片有两种写法，都要找：`<img src="….png">`，以及矢量图 `<object type="image/svg+xml" data="….svg">`（SVG 可以直接当图片用）。地址按相对路径拼成 `https://arxiv.org/html/<相对路径>`，写之前用 curl 确认返回 200。直接画在页面里的图（`<svg class="ltx_picture">`，通常是 TikZ）没有单独的文件，用不了。没有 HTML 版本、或里面没有可用图片的论文就不配图。
+图片直接引用论文 arXiv HTML 版（`https://arxiv.org/html/<id>v<n>`）里的图片文件，不下载、不转存。图片有两种写法，都要找：`<img src="….png">`，以及矢量图 `<object type="image/svg+xml" data="….svg">`（SVG 可以直接当图片用）。地址按相对路径拼成 `https://arxiv.org/html/<相对路径>`，写之前用 curl 确认返回 200。直接画在页面里的图（`<svg id="S3.F1.pic1" class="ltx_picture">`，通常是 TikZ）没有单独的文件：这类图写成 `{"src": "https://arxiv.org/html/<id>v<n>", "svg_id": "S3.F1.pic1", …}`，页面打开时会从 arXiv 取回这张 SVG 显示。没有 HTML 版本、或里面没有可用图片的论文就不配图。
 
 - 每张图的字段：`{"src", "ref"（原文图号，如 "Figure 3"）, "caption_zh", "after"（可选）, "layout"（可选：full / side）}`。
 - **正文配图 1–2 张**，写 `after: n`，表示放在第 n 段之后。图要和它前面那段文字直接相关：方法段配方法图，结果段配结果图。
