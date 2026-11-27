@@ -64,6 +64,7 @@
  "classify_prompt": "prompts/classify.md",
  "writing_prompt": "prompts/writing.md",
  "branch_prefix": "daily/search",
+ "weekly_branch_prefix": "weekly/search",
  "translations": {
   "tongtu_mode": "fast",
   "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",

@@ -47,7 +47,8 @@ h1,h2,h3,p{margin:0}
   letter-spacing:.14em;margin-right:-.14em;white-space:nowrap}
 .ear{font:400 13px/1.4 var(--sans);color:var(--mute);padding-bottom:.9em;letter-spacing:.04em}
 .ear.r{text-align:right}
-#skin{font:400 12.5px/1.4 var(--sans);color:var(--mute);letter-spacing:.04em}#skin:hover{color:var(--accent);text-decoration:none}
+#skin{font:400 12.5px/1.4 var(--sans);color:var(--mute);letter-spacing:.04em}
+#wk{font:500 12.5px/1.4 var(--sans);color:var(--accent);letter-spacing:.08em;margin-right:12px}#skin:hover{color:var(--accent);text-decoration:none}
 .ear select{font:600 16px/1.4 var(--serif);color:var(--ink);appearance:none;-webkit-appearance:none;text-align:right;text-align-last:right;letter-spacing:.06em;max-width:100%}
 .folio{display:flex;align-items:center;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;
   border-top:3px solid var(--rule);box-shadow:inset 0 1px 0 var(--paper),inset 0 2px 0 var(--rule);padding:9px 0 7px}
@@ -284,7 +285,7 @@ a.pref:hover,a.pref:focus-visible{text-decoration:underline;text-underline-offse
   <header class="mast">
     <div class="ear" id="issue"></div>
     <h1>论文日报</h1>
-    <div class="ear r"><select id="topic" aria-label="主题"></select><br><a href="ink.html" id="skin" title="换成「纸墨」版面">版面：报纸 ⇄ 纸墨</a></div>
+    <div class="ear r"><select id="topic" aria-label="主题"></select><br><a href="weekly.html" id="wk" hidden>周报</a><a href="ink.html" id="skin" title="换成「纸墨」版面">版面：报纸 ⇄ 纸墨</a></div>
   </header>
   <div class="folio">
     <div class="when">
@@ -507,8 +508,13 @@ document.addEventListener('keydown',e=>{
   else if((e.key==='Enter'||e.key===' ')&&termOf(e)){e.preventDefault();const t=termOf(e);if(gEl===t&&gPin)hideG();else showG(t,true)}});
 addEventListener('resize',hideG);
 
+const isoWk=d=>{const t=new Date(d+'T00:00:00Z');t.setUTCDate(t.getUTCDate()-(t.getUTCDay()+6)%7+3);const y=t.getUTCFullYear(),j=new Date(Date.UTC(y,0,4));return `${y}-W${String(1+Math.round(((t-j)/864e5-3+(j.getUTCDay()+6)%7)/7)).padStart(2,'0')}`};
+/* 周报入口：指向当前这一期所在的那一周，没有就指向最新一期周报 */
+function wkLink(){const ws=S.topic.weeks||[],w=ws.includes(isoWk(S.date))?isoWk(S.date):ws[0],a=$('wk');a.hidden=!w;if(w)a.href=`weekly.html#${S.topic.id}-${w}`}
+/* 从周报或外部链接来：#主题-日期/论文编号，打开那一期并滚到那张卡片 */
+function toPaper(){const pid=S.pid;S.pid=null;const el=pid&&$('p-'+pid);if(el){el.scrollIntoView({block:'start'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}}
 async function loadDay(){
-  const ds=S.topic.dates,i=ds.indexOf(S.date);
+  const ds=S.topic.dates,i=ds.indexOf(S.date);wkLink();
   $('date').innerHTML=ds.map(x=>`<option value="${esc(x)}"${x===S.date?' selected':''}>${esc(cn(x))}</option>`).join('');
   $('prev').disabled=i>=ds.length-1;$('next').disabled=i<=0;
   try{S.day=await getDay(S.topic.id,S.date);render()}
@@ -516,7 +522,7 @@ async function loadDay(){
   try{history.replaceState(null,'',`#${S.topic.id}-${S.date}`)}catch(e){}
 }
 function route(){
-  const m=decodeURIComponent(location.hash.slice(1)).match(/^(.+)-(\d{4}-\d{2}-\d{2})$/)||[];
+  const m=decodeURIComponent(location.hash.slice(1)).match(/^(.+)-(\d{4}-\d{2}-\d{2})(?:\/([\w.-]+))?$/)||[];S.pid=m[3]||null;
   S.topic=S.topics.find(t=>t.id===m[1])||S.topic||S.topics[0];
   S.date=S.topic.dates.includes(m[2])?m[2]:S.topic.dates[0];
   $('topic').value=S.topic.id;
@@ -531,8 +537,8 @@ async function boot(){
   $('prev').onclick=()=>{const ds=S.topic.dates;S.date=ds[ds.indexOf(S.date)+1]||S.date;loadDay()};
   $('next').onclick=()=>{const ds=S.topic.dates;S.date=ds[ds.indexOf(S.date)-1]||S.date;loadDay()};
   let qT=0;$('q').oninput=e=>{clearTimeout(qT);qT=setTimeout(()=>{S.q=e.target.value.trim();if(S.day)render()},180)};
-  addEventListener('hashchange',()=>{const t=S.topic,dt=S.date;route();if(t!==S.topic||dt!==S.date)loadDay()});
-  loadDay();
+  addEventListener('hashchange',()=>{const t=S.topic,dt=S.date;route();if(t!==S.topic||dt!==S.date)loadDay().then(toPaper);else toPaper()});
+  loadDay().then(toPaper);
 }
 boot();
 }

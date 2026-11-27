@@ -22,12 +22,26 @@
    **只要某篇翻译失败过（包括重跑后成功的），都要把它的 tongtu 工作目录打包发给用户调试**：工作目录用 `tongtu status <id> --json` 的 `workdir` 字段取得（形如 `/root/.tongtu/papers/2611.34366v1/`，里面有 `logs/`、`build/manifests/`、`last_run.json` 等），打成 `tongtu_<idv>_<date>.zip` 放在 scratchpad，用发文件的工具（SendUserFile）在会话里发出来，并在汇报里注明。译文只存在 R2，不进仓库，说明见 `worker/README.md`。
 6. **导读**：主会话按 `prompts/writing.md` 写 `WORK/overview.json`，格式为 `{"guide": ["⭐ 段落", "非 ⭐ 段落"]}`，最多 2 段、约 600 字以内。
 7. **组装**：`python3 pipeline/assemble.py topics/search-rec.json <date> WORK`。这一步会更新 `site/data/<topic>/<date>.json`、`site/data/topics.json`、`site/data/glossary.json`。
-8. **本地检查**：`cd site && python3 -m http.server 8766`，用 Playwright 在 1280 和 400 宽度下打开页面（两个主题都要看：默认的「报纸」`index.html` 和「纸墨」`ink.html`，它们读同一份 `data/`），确认没有 pageerror、`scrollWidth` 等于视口宽度、每个 `.term` 都能对应到术语表。
+8. **本地检查**：`cd site && python3 -m http.server 8766`，用 Playwright 在 1280 和 400 宽度下打开页面（两个主题都要看：默认的「报纸」`index.html` 和「纸墨」`ink.html`，它们读同一份 `data/`；周报页 `weekly.html` 见下面「周报」一节），确认没有 pageerror、`scrollWidth` 等于视口宽度、每个 `.term` 都能对应到术语表。
+
+## 周报（每周一期，接在日报后面）
+
+周报不抓取、不重读论文，只用已经合并进 `main` 的日报数据做两件事：跨天重选、跨论文串联。页面是 `site/weekly.html`（一页两套版面，跟随日报的版面选择），数据在 `site/data/<topic>/weekly/<YYYY-Www>.json`。
+
+**每次运行在当天的日报 PR 全部合并之后**，执行 `python3 pipeline/week.py --pending`。它列出已经收齐、而且还没出周报（或周报是用更少的日报生成的）的 ISO 周。一周算收齐的条件：它的周五批次已入库，或者已有更晚一周的批次入库。正常情况下只有周日晚那次运行会列出一周；没有输出就跳过。当周日报不管有几期都出周报。
+
+对列出的每一周：
+
+1. **收集**：`python3 pipeline/week.py collect <YYYY-Www> WORK`，生成 `WORK/week.in.json`（当周全部入选论文的一句话摘要，⭐ 带精读正文，外加每天的导读和漏斗数字）。想细看某几篇时用 `python3 pipeline/week.py show <YYYY-Www> <id> …` 打印摘要和精读。
+2. **写作**：主会话按 `prompts/writing.md` 的「周报」一节写 `WORK/weekly.json`，格式为 `{"lede": "…", "picks": [{"id", "why"}], "themes": [{"title", "body": ["…"], "papers": [id, …]}], "gems": [{"id", "note"}]}`。不用 subagent，不下载 PDF。
+3. **组装**：`python3 pipeline/assemble_weekly.py topics/search-rec.json <YYYY-Www> WORK`。脚本会校验（论文都在当周、必读必须是 ⭐、遗珠必须不是 ⭐、每条线索至少 2 篇且正文里都链接到、术语都在术语表里），算出一周数字和本周新术语，写出周报文件并把这一周加进 `site/data/topics.json` 的 `weeks`。校验不过就改 `weekly.json` 重跑。
+4. **本地检查**：和日报第 8 步一样，另外打开 `weekly.html#search-rec-<YYYY-Www>`，在 1280 和 400 宽度、两种版面下（`localStorage.skin` 不设或设为 `ink`）确认没有 pageerror、`scrollWidth` 等于视口宽度；再点一个遗珠标题，确认能跳到日报里那张卡片（链接形如 `index.html#search-rec-2026-11-24/2611.32855`）。
+5. **提交**：分支 `weekly/search/<YYYY-Www>`（前缀见 `topics/search-rec.json` 的 `weekly_branch_prefix`），单独一个 PR，描述里写：覆盖哪几期日报、必读和理由、线索标题、遗珠。
 
 ## 提交约定
 
 - 不直接 push 到 `main`。每次改动都新建分支，提 PR，然后 **squash merge**。
-- 分支命名：每日更新用 `daily/search/<YYYY-MM-DD>`（前缀见 `topics/search-rec.json` 的 `branch_prefix`）；改规则或模板用 `chore/…` / `feat/…`。
+- 分支命名：每日更新用 `daily/search/<YYYY-MM-DD>`（前缀见 `topics/search-rec.json` 的 `branch_prefix`）；周报用 `weekly/search/<YYYY-Www>`；改规则或模板用 `chore/…` / `feat/…`。
 - 会话里 `gh pr create` 用不了（GraphQL 被拦截），改用 REST：
   - 建 PR：`gh api repos/yhnocoder/dailypapers/pulls -f title=… -f head=<branch> -f base=main -F body=@pr.md`
   - 合并（必须带上提交信息，否则署名会丢）：

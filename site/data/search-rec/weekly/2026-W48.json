@@ -1,0 +1,1478 @@
+{
+ "topic": "search-rec",
+ "week": "2026-W48",
+ "dates": [
+  "2026-11-23",
+  "2026-11-24",
+  "2026-11-25"
+ ],
+ "overview": {
+  "lede": "本周最集中的结论来自搜索 Agent：[[@2611.32917|SOARS]] 和[[@2611.30243|搜索 Agent 纠错评测]]在同一个 BrowseComp-Plus 上各自发现，答案文档早就在搜索结果里，Agent 没有读到。11 篇精读里有 5 篇用到 RL，**收益大小取决于奖励和损失的具体写法**，[[@2611.31185|CO-GRAFT]] 测到只看最终答案的奖励几乎不改进 query。索引层，[[@2611.28555|abc]] 取 top-1000 时快过近似索引 Seismic，[[@2611.29252|Zarc]] 把十亿向量的精确 kNN 从五分钟压到 1.1 秒。最容易动手验证的是 [[@2611.29613|Weight Coding]]：Pinterest 的生产召回模型只重置几个 LayerNorm 增益就涨了 10 个点。"
+ },
+ "picks": [
+  {
+   "date": "2026-11-24",
+   "why": "本周只有这一个结论被另一篇独立实验印证：纠错评测在同一个基准上测到，把决定性段落直接放进上下文，准确率比中性递送高 51 个点。改动只是每步加一次 250 毫秒的重排，不用训练。",
+   "paper": {
+    "id": "2611.32917",
+    "title": "SOARS: System One Assisted Reranking for Agentic Search",
+    "title_zh": "召回不变、只做重排：搜索 Agent 准确率从 73.9% 提到 84.7%",
+    "affiliation": "Thomson Reuters Labs",
+    "primary_cat": "cs.IR",
+    "direction": "A",
+    "star": true,
+    "score": 0.62,
+    "links": {
+     "abs": "https://arxiv.org/abs/2611.32917",
+     "pdf": "https://arxiv.org/pdf/2611.32917",
+     "code": null
+    },
+    "summary_zh": "用免训练的快速相关性模型在每步搜索中重排，提升深度搜索Agent准确率并减少搜索次数。",
+    "abstract_zh": "深度搜索Agent通过多轮迭代的检索与推理来满足复杂信息需求，检索到的证据是否相关会影响下游表现。现有reranker能提升检索效果，但在整个搜索轨迹中反复调用时会带来可观的延迟和成本。我们提出SOARS，一个==免训练==框架，利用[[system-one-model|System One模型]]做快速、经过校准的相关性估计。在每一步搜索中，SOARS从长文档中选出与query相关的段落，并在一次调用中对候选重排，同时考虑==原始问题和Agent生成的子query==。在BrowseComp-Plus和WebShaper上，跨六种LLM骨干，SOARS一致地提高了答案准确率和证据召回，同时减少搜索调用次数、端到端延迟和推理成本。在BrowseComp-Plus上，**GPT-5.4 Mini的准确率从73.9%提高到84.7%，搜索调用从23次降到14次**，显示了System One重排让深度搜索更有效、更高效的潜力。",
+    "analysis": [
+     "在深度搜索 Agent 的每次搜索后插一个重排器，能不能同时更准、更省？答案是能：在 BrowseComp-Plus 上，六个 LLM 骨干的准确率全部显著上升，相对涨幅从 GPT-5.5 的 10.2% 到 Gemini 2.5 Pro 的 63.8%，搜索次数也全部下降。前提是重排器够快，每次约 250 毫秒。",
+     "方法叫 SOARS，免训练。重排器是 [[system-one-model|System One 模型]] Jev：一次调用给 BM25 前 100 篇候选逐篇打分，输出 0–3 四档相关度的==校准概率分布==，按期望相关度排序。查询用==原问题 ⊕ 子 query==（用户原问题拼上 Agent 这一步写的子查询），文档只取标题加 128 token 的==重叠段落==（从子查询第一个非停用词在文中首次出现处截取，而不是取开头）。离线对比中 Recall@10 达 47.2%（gold），与 RankGPT 打平，延迟却是 254 毫秒对 8.7 秒。",
+     "最值得记住的是收益来源：**同一个 BM25 下，surfaced recall（搜索返回过的文档覆盖了多少答案文档）几乎没变**，变的是 [[preview-behavior-recall|previewed 和 behavior recall]]。GPT-5.5 的 previewed gold recall 从 72.9 升到 88.7，behavior 从 56.1 升到 79.0。答案文档本来就在候选里，只是排在 Agent 不看的位置。搜得少也省钱：Opus 4.7 总成本 $247→$119。",
+     "保留意见：**端到端实验只和“不重排”比，没把 RankGPT 等重排器同样放进循环**，“不输 LLM 重排”只在 50 题离线实验里成立；Jev 还是不开源的商用 API。对做搜索 Agent 的人：先看 previewed 与 surfaced recall 的差距，差距大时，在循环里加毫秒级重排并把原问题拼进 query，往往比换更强的召回或更大的 Agent 模型划算。"
+    ],
+    "star_reasons": [
+     "六个骨干、两个基准全部同向提升",
+     "拆出收益来源：召回不变，靠把证据排到前面",
+     "同时报告准确率、延迟和美元成本",
+     "原问题拼进重排 query 的做法可直接搬用"
+    ],
+    "translation": {
+     "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32917v1/2611.32917v1.zh.pdf",
+     "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.32917v1/2611.32917v1_out.zip"
+    },
+    "figures": [
+     {
+      "src": "https://arxiv.org/html/2611.32917v1/motivation_figure_file.png",
+      "ref": "Figure 1",
+      "after": 1,
+      "caption_zh": "六个 LLM 骨干在 BrowseComp-Plus 上加不加 SOARS 的对比：横轴是搜索次数，纵轴是准确率，每个模型都往左上方移动。"
+     }
+    ]
+   }
+  },
+  {
+   "date": "2026-11-23",
+   "why": "11 篇精读里验证成本最低的一篇：对自家双塔模型扫一遍 LayerNorm 增益和共享偏置的重置，不需要训练，Pinterest 的生产模型上这一步值 10.1 个点。",
+   "paper": {
+    "id": "2611.29613",
+    "title": "Weight Coding: Evolving Web-Scale Recommenders through Direct Weight Edits with LLM Agents",
+    "title_zh": "不训练、直接改权重：Pinterest 召回 Recall@10 涨 15 个点",
+    "affiliation": "Pinterest",
+    "primary_cat": "cs.IR",
+    "direction": "F",
+    "star": true,
+    "score": 0.76,
+    "links": {
+     "abs": "https://arxiv.org/abs/2611.29613",
+     "pdf": "https://arxiv.org/pdf/2611.29613",
+     "code": null
+    },
+    "summary_zh": "让 LLM Agent 直接编辑生产推荐模型权重，Pinterest 图搜召回模型 Recall@10 最多涨 15 个点。",
+    "abstract_zh": "网络规模的推荐模型主要通过重训练或微调来演进。我们提出==weight coding==，一种通过直接、可执行的权重编辑来演进模型的方法。大语言模型（LLM）智能体检查模型结构和参数，提出假设，并依据评测反馈实施编辑。这一循环从局部修改推进到定向搜索与组合，使被编辑的组件相互适配。缓存引擎支持无需反向传播的快速前向评测。在 Pinterest 的 147M 参数图像搜索双塔召回模型上，weight coding 只用少量编辑、约为一次完整后训练微调 1/4 的 GPU 时长，就将生产模型在留出数据上的 recall@10 最多提升 15.0 个百分点（相对 +24%），而一次常规上线通常只提升约 1%。在保留周围已训练模型、将 13.6M 参数的整个交互模块随机重新初始化后，只搜索 2,448 个混合与归一化参数，仍比生产模型高 9.8 个点。离线收益覆盖整个漏斗，包括稠密召回、生成式召回和排序，可学习参数最多达 1.37B，且每种架构的编辑各不相同。==引导编辑==（steering）可对新鲜度、商品等细分人群上的模型表现做显式控制。Weight coding 无需改动线上服务，**线上 A/B 测试中，来自被编辑召回源的人均保存数提升 8.4% 至 10.7%**，与目标业务指标一致。我们的结果表明，weight coding 是真实网络规模生产系统中用于模型开发和行为控制的实用工具，并有望扩展到整个漏斗的预训练和后训练阶段。",
+    "analysis": [
+     "不反传梯度，只让 LLM 智能体直接改已训练好的权重，Pinterest 图搜 147M 参数双塔召回模型的 recall@10 涨了 15.0 个百分点（相对 +24%）。作者称之为 ==weight coding==。单是把交互模块 [[dhen|DHEN]] 里训练后偏小的 LayerNorm 增益（γ≈0.36、0.23）重置回 1、再调低共享偏置，就拿到 +10.1 点。",
+     "流程是==扫描==各模块的缩放、重置、剪枝等编辑，==过滤==掉换一天就反号的效果，再编辑或用 [[evolution-strategy|进化策略]] 搜索，最后在从不参与迭代的留出日上验证。缓存引擎只重算被改模块的下游。4 轮循环的总耗时约为一次 140 GPU 小时微调的 24.6%。",
+     "两条反直觉的发现：删掉 DHEN 全部四个分支，召回反而涨 6.1 点，**训练好的分支净贡献为负**；把 13.6M 参数的 DHEN 整个随机重置、只搜 2,448 个参数，仍比生产高 9.8 点。开发日变化超过 1 点的编辑里，23% 换一天就反号。",
+     "保留意见：**缺少用梯度只训练同样 2,128 个参数的 baseline**，分不清收益来自智能体还是这几个位置本身；按全部互动优化的 6 个线上版本里 5 个保存数下降，换成保存目标才拿到 +8.4%～10.7%。做双塔召回的团队可以先对自家模型的 LayerNorm 增益和共享偏置做一次重置扫描；作者也试过去掉权重衰减重训，增益回到 1 附近但召回反降 3.5 点，所以重训替代不了这一步。"
+    ],
+    "star_reasons": [
+     "Pinterest 生产模型，线上 A/B 验证",
+     "不反传梯度只改权重，Recall@10 +15 点",
+     "随机重置交互模块仍超生产 9.8 点",
+     "揭示 LayerNorm 增益被训练压小"
+    ],
+    "figures": [
+     {
+      "src": "https://arxiv.org/html/2611.29613v1/fig3_effect_map.png",
+      "ref": "Figure 3",
+      "after": 3,
+      "caption_zh": "直接编辑的效果：开发日上每个编辑对查询塔召回的影响、==LayerNorm 增益==缩放、分支与偏置缩放，以及混合搜索前后浅层 token 的占比。"
+     },
+     {
+      "src": "https://arxiv.org/html/2611.29613v1/fig1_overview.svg",
+      "ref": "Figure 1",
+      "caption_zh": "(a) 智能体驱动的循环：对训练好或随机初始化的权重直接编辑、验证；(b) 在 Pinterest 图搜召回模型上，逐轮编辑后各项指标的相对变化。"
+     },
+     {
+      "src": "https://arxiv.org/html/2611.29613v1/fig2_model.svg",
+      "ref": "Figure 2",
+      "caption_zh": "Pinterest 图搜双塔召回模型：两塔都从跨场景基础模型微调而来；右边是查询塔里的 ==DHEN== 交互模块，标出了本文的编辑位置。"
+     },
+     {
+      "src": "https://arxiv.org/html/2611.29613v1/fig4_search.svg",
+      "ref": "Figure 4",
+      "caption_zh": "搜索与组合：随机重置后靠搜索把召回找回来，以及从训练好和随机两种起点出发的搜索轨迹。"
+     },
+     {
+      "src": "https://arxiv.org/html/2611.29613v1/fig5_knobs.svg",
+      "ref": "Figure 5",
+      "caption_zh": "换到其他模型和目标上的编辑：PinRec 插值、排序模型专家缩放，以及按新鲜度、商品定向的召回调控。"
+     }
+    ],
+    "translation": {
+     "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.29613v1/2611.29613v1.zh.pdf",
+     "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.29613v1/2611.29613v1_out.zip"
+    }
+   }
+  },
+  {
+   "date": "2026-11-23",
+   "why": "本周几篇上线工作里交代最全的：一个月 A/B、8000 万商品的索引大小和延迟都给了，配置可以照搬。它和 ConTra 说的是同一件事，字面信息要原样留给下游。",
+   "paper": {
+    "id": "2611.28645",
+    "title": "PROSPER: LLMs as Sparse Retrievers for First-Stage Product Search",
+    "title_zh": "给 LLM 稀疏召回补回品牌词，淘天线上净 GMV +1.6%",
+    "affiliation": "中国科学院计算技术研究所、中国科学院大学、阿姆斯特丹大学、阿里巴巴淘天集团",
+    "primary_cat": "cs.IR",
+    "direction": "B",
+    "star": true,
+    "score": 0.72,
+    "links": {
+     "abs": "https://arxiv.org/abs/2611.28645",
+     "pdf": "https://arxiv.org/pdf/2611.28645",
+     "code": null
+    },
+    "summary_zh": "用LLM做商品搜索的稀疏检索器，并通过残差网络保留品牌、型号等字面信号。",
+    "abstract_zh": "商品搜索是大型电商平台的关键组成部分，其中第一阶段召回既要做到高召回率，又要保证线上部署的效率。稀疏检索因可解释、易部署，在这一场景中仍有吸引力，但它面临严重的词汇不匹配问题，对短 query 和商品标题尤其如此。大语言模型（LLM）语义能力强，但直接把它用于商品搜索的稀疏检索会带来新的挑战：（i）语义扩展可能扭曲品牌名、型号等关键的字面信号；（ii）在 LLM 带来的高维词表空间中，很难学到有意义的稀疏表示。为此我们提出 PROSPER，一个把 LLM 用作商品搜索稀疏检索器、并显式保持词汇保真度的框架。PROSPER 包含两部分：（i）==literal residual network==，通过残差补偿机制强化权重偏低的字面词，缓解词汇扩展幻觉；（ii）==lexical focusing window==，利用 top-k 选择实现快速的早期稀疏化，并提供有效的训练初始化。大量离线评测和大规模线上 A/B 测试表明，PROSPER **稳定优于现有稀疏检索器，并为工业级混合检索系统带来收入增长**。",
+    "analysis": [
+     "直接把 [[splade|SPLADE]] 的 BERT 换成 Qwen2.5-3B，Multi-CPR 电商测试集的 Hit@1000 只从 89.6% 升到 91.3%；PROSPER 加上两个部件后到 93.9%，略高于稠密模型 BGE-base 的 93.7%，在约 1% 流量上跑了一个月 A/B，直接引导的净 GMV 涨 1.60%。论文追问的是 LLM 语义更强、换进稀疏检索却收益很小的原因，答案是**扩展词压过了字面词**：“爱立舍机油滤芯”里品牌“爱立舍”权重偏低，“老捷豹副水箱”被扩展出“狸”“豺”“虎”等动物词。",
+     "==literal residual network（LRN）== 专门给 query 或商品标题里原样出现的词（字面词）补权重：用一个全连接层从最后一个 token 的隐状态算出向量 w′，每个字面词加上 max(w)−w′，扩展词不动。==lexical focusing window（LFW）== 在训练早期只保留权重最高的 k 个词（query 取 256、商品取 512），非零维数降到 k 以下后自动失效，之后交给 [[flops-regularization|FLOPS 正则]]继续压稀疏。打分时只对 query 向量做 ℓ2 归一化。",
+     "去掉 LFW 后 Hit@1000 从 93.9 掉到 87.2、Hit@1 从 25.3 掉到 13.3，**训练起步的稀疏化比补字面词影响更大**：Qwen2.5 词表超过 15 万维，而 query 平均只有 6 个词。归一化同样敏感，query 和商品两侧都做 ℓ2 归一化时 Hit@1000 也降到 87.2。骨干从 1.5B 换到 7B 没有明显提升，所以线上用 1.5B。线上 8000 万商品的索引是 93 GB（稠密通道 152 GB），匹配延迟约 20 ms，是稠密通道的两倍。",
+     "保留意见：作者自己测的 Qwen3-Embedding-4B 稠密检索 Hit@1000 是 94.9，BGE 在 Hit@1 和 MRR@10 上也更高，**PROSPER 并不比稠密检索更准**，线上收益来自在多路召回里多加一路；线上的 A/B 也没有拆出 LRN 和 LFW 各自的贡献，“只有 PROSPER 召回到的商品”这项分析没给数字。对已有稠密召回、想加一路可解释稀疏通道的电商搜索团队，论文给出的配置可以直接照搬：1.5B 骨干、query 端归一化、上线时 query 只保留权重最高的 16 个词。"
+    ],
+    "star_reasons": [
+     "1% 流量一个月 A/B，净 GMV +1.60%",
+     "消融指出早期 top-k 稀疏化最关键",
+     "稀疏召回 Hit@1000 略高于 BGE-base 稠密模型",
+     "部署配置完整，可直接照搬"
+    ],
+    "figures": [
+     {
+      "src": "https://arxiv.org/html/2611.28645v1/Overview.png",
+      "ref": "Figure 1(a)",
+      "after": 2,
+      "caption_zh": "PROSPER 的模型结构：query 和商品各自编码后，==LRN== 模块单独给原样出现的字面词补权重。"
+     },
+     {
+      "src": "https://arxiv.org/html/2611.28645v1/x1.png",
+      "ref": "Figure 1(b)",
+      "caption_zh": "训练流程：==LFW== 在训练早期只保留权重最高的 k 个词，之后交给 FLOPS 正则继续压稀疏。"
+     },
+     {
+      "src": "https://arxiv.org/html/2611.28645v1/system.png",
+      "ref": "Figure 7",
+      "caption_zh": "PROSPER 在淘天工业级搜索引擎里的位置：作为多路召回中新增的一路稀疏通道。"
+     }
+    ],
+    "translation": {
+     "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.28645v1/2611.28645v1.zh.pdf",
+     "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.28645v1/2611.28645v1_out.zip"
+    }
+   }
+  },
+  {
+   "date": "2026-11-23",
+   "why": "单看有模型太小的问题（最大 7B），但它给本周另外四篇用 RL 的精读提供了读法：先问收益落在哪一步，再问其中有多少是输出格式。",
+   "paper": {
+    "id": "2611.31185",
+    "title": "CO-GRAFT: Attributing Reinforcement Learning Gains in Search Agents via Role-Level Policy Grafting",
+    "title_zh": "RL 让搜索 Agent 变强，但写 query 的贡献不到 15%",
+    "affiliation": "",
+    "primary_cat": "cs.IR",
+    "direction": "A",
+    "star": true,
+    "score": 0.55,
+    "links": {
+     "abs": "https://arxiv.org/abs/2611.31185",
+     "pdf": "https://arxiv.org/pdf/2611.31185",
+     "code": null
+    },
+    "summary_zh": "用 Shapley 值把搜索 agent 的 RL 收益拆分到推理、决策、query 生成和答案抽取四个角色。",
+    "abstract_zh": "强化学习（RL）可使 LLM 搜索 agent 的精确匹配（EM）得分比 RL 前的初始化最多高出 32 个点，但整体准确率的提升并不能说明训练中哪些功能能力得到改进或相互作用。我们提出 CO-GRAFT，一个与奖励无关的==干预式归因框架==：RL 训练后的 agent 与其 RL 前的初始化在带实时检索的闭环执行中共同生成同一条轨迹。每个策略控制四个功能角色中互不重叠的子集：中间推理、搜索或回答的决策、搜索 query 生成、最终答案抽取。无需修改权重或重新训练，评估全部 2^4=16 种角色分配即构成一个合作博弈，其 Shapley 值把总 RL 收益分解到各角色，Möbius 交互项则区分单角色的独立改进与多角色耦合。我们把 CO-GRAFT 用于 Qwen2.5 和 Llama-3.2 上的 Search-R1 agent（涵盖两种规模、base 与 instruction-tuned 初始化、GRPO 与 PPO 优化器、NQ 与 HotpotQA 数据集），结果表明 **query 生成带来的收益从未超过总收益的 15%**；收益主要取决于 RL 前的答案有效性、搜索保留率、模型规模和固定的任务级搜索预算：在更大或答案格式良好的 checkpoint 中，贡献从推理转向答案抽取，而较小的 base 模型依赖推理与决策的耦合。",
+    "analysis": [
+     "在 Search-R1 类搜索 Agent 上，RL 带来的 EM（exact match，答案与标准答案完全一致的比例）提升最高 31.6 个点，但**“写搜索 query”这一步在所有模型上都只分到不超过 15% 的收益**。论文追问的是 RL 之后 Agent 到底哪一步变好了。答案是收益主要落在推理和写最终答案上，分配比例取决于模型在 RL 前能不能输出格式合法的答案，以及 RL 后还搜不搜。",
+     "CO-GRAFT 把轨迹切成四个==角色==：推理 R（`<think>` 里的文本）、决策 D（下一步发 `<search>` 还是 `<answer>`）、查询 Q（搜索词）、答案 A（填进 `<answer>` 标签的最终答案）。RL 后的模型和 RL 前的初始化在同一条轨迹里接力生成，各管一部分角色，检索实时进行，即[[policy-grafting|策略嫁接]]。16 种分配各跑 1,000 道题，用 [[shapley-value|Shapley 值]] 把总收益分到四个角色，用 [[mobius-interaction|Möbius 交互项]] 区分单角色收益和多角色耦合。模型覆盖 Qwen2.5-3B/7B、Llama-3.2-1B/3B 的 base 与 instruct 版，数据集为 NQ 和 HotpotQA。",
+     "Qwen2.5-3B base 在 NQ 上 70% 的收益来自推理；换成 7B base，推理降到 40%，答案升到 38%。答案份额很多是格式：改用宽松指标（子串匹配、token F1）后，**Qwen2.5-7B base 的答案份额从 38% 跌到 −5%**。决策学到的也不是“证据够了就停”：把 D 换成固定搜索次数（Qwen2.5-3B PPO 在 NQ 上搜 1 次、HotpotQA 上搜 2 次），EM 与完整 RL Agent 相差不到 1 个点。Llama-3.2-3B instruct 在 RL 后完全不搜了（每题 1.4 次降到 0），收益只有 3.2 个点。",
+     "保留意见：模型最大只到 7B，每个数据集只评 1,000 题；固定搜索次数和冻结检索这两组对照只在两对 Qwen2.5 PPO 模型上做，最优搜索次数还是在评测集上挑的。另外 RL 前基线的格式合法率很低（Qwen2.5-3B base 在 NQ 上只有 53%），总收益里本来就有一块是学格式。对训练搜索 Agent 的人来说，**只用结果奖励（只看最终答案对错）不会让 query 变好**，我觉得想提升检索能力得给 query 和停止决策单独设奖励；报告结果时也应同时给出宽松指标，免得把格式收益算成能力收益。"
+    ],
+    "star_reasons": [
+     "拆解搜索 Agent 的 RL 收益来源",
+     "16 种角色组合在实时检索下实测",
+     "覆盖两个模型家族、两种优化器",
+     "宽松指标下答案收益消失，格式被算成能力"
+    ],
+    "figures": [
+     {
+      "src": "https://arxiv.org/html/2611.31185v1/figs/fig_mechanism.png",
+      "ref": "Figure 1",
+      "after": 2,
+      "caption_zh": "CO-GRAFT 框架：(a) 一条轨迹按推理、决策、写 query、写答案四个角色切开；(b) RL 前后两个模型分角色接力生成；(c) 16 种分配下的 EM 和各角色的 Shapley 份额。"
+     }
+    ],
+    "translation": {
+     "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.31185v1/2611.31185v1.zh.pdf",
+     "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.31185v1/2611.31185v1_out.zip"
+    }
+   }
+  }
+ ],
+ "themes": [
+  {
+   "title": "答案文档在候选里，Agent 没读到",
+   "body": [
+    "[[@2611.32917|SOARS]] 在 BrowseComp-Plus 上保持 BM25 召回不变，只在每步搜索后加一次重排，GPT-5.5 的 previewed gold recall 从 72.9 升到 88.7，surfaced recall 几乎没动：答案文档本来就在候选里，只是排在 Agent 不看的位置。[[@2611.30243|搜索 Agent 纠错评测]]在同一个基准上做干预，摘要称把决定性段落直接放进上下文，Qwen3.5 的准确率比中性递送高 51.0 个点。",
+    "**两篇有一处对不上**：纠错评测里把 gold 页面排到第一位，Agent 往往仍不打开，而 SOARS 的收益恰恰来自排序。两边用的模型不同（闭源大模型对开源权重模型），排到第几位才算“看得到”可能因模型而异，目前没有能直接对比的实验。[[@2611.31185|CO-GRAFT]] 说明这个问题靠 RL 自己不会解决：写 query 这一步在所有模型上分到的收益都不超过 15%。"
+   ],
+   "papers": [
+    "2611.32917",
+    "2611.30243",
+    "2611.31185"
+   ]
+  },
+  {
+   "title": "RL 的收益取决于奖励怎么写",
+   "body": [
+    "[[@2611.33653|OneQuery]] 的打标 F1 在 GRPO 阶段涨 2.07 点，直接拿 F1、ROUGE 当奖励效果最差，换成二值的精确匹配才行。[[@2611.32125|LARF]] 同样用 [[grpo|GRPO]]，三种奖励合起来只把六分类准确率从 46.12% 推到 47.40%，在打分 token 上加一项 [[margin-loss|margin loss]] 就到 49.35%。[[@2611.34366|ConTra]] 的四项奖励里起决定作用的是长度惩罚，去掉后前缀从 17.7 涨到 239.2 token，nDCG@10 从 0.8465 掉到 0.7084。",
+    "[[@2611.32660|Bathys]] 的问题出在梯度怎么算：rollout 中途压缩历史时，普通 GSPO 在四个基准上都没超过 RL 前的检查点，按压缩边界切段后才涨 9 个点。我觉得四篇的共同点是，**约束越贴近最终要输出的那个 token 或那条硬性要求越有效**，连续的软指标容易被组内归一化放大噪声。[[@2611.31185|CO-GRAFT]] 给了反面的例子：只奖励最终答案时，写 query 这样的中间步骤几乎学不到东西。"
+   ],
+   "papers": [
+    "2611.33653",
+    "2611.32125",
+    "2611.34366",
+    "2611.32660",
+    "2611.31185"
+   ]
+  },
+  {
+   "title": "精确检索变快，磁盘索引两篇都拿 PipeANN 当靶子",
+   "body": [
+    "[[@2611.28555|abc]] 只用经典倒排技术做[[learned-sparse-retrieval|学习型稀疏检索]]的精确索引，取 top-1000 时比近似索引 Seismic 快 1.7–7.4 倍；它顺带发现 BMP、SP 这些号称精确的索引召回上限只有 0.966–0.978。[[@2611.29252|Zarc]] 做的是稠密一侧，摘要称 4 张 H100 上对十亿向量跑一万次精确查询只要 1.1 秒，此前需要五分钟。两篇的适用范围都有限：abc 取 top-10 时仍慢于 Seismic 和 HNSW，Zarc 要多张 GPU。",
+    "向量放在 SSD 上的场景本周也有两篇。[[@2611.29948|TriVS]] 的摘要报告吞吐是 PipeANN 的 3.42 倍，[[@2611.32908|KuroANN]] 的摘要报告比 PipeANN-Filter 最多快 34.5 倍，思路都是在读盘之前先用内存里的信息决定读多少。"
+   ],
+   "papers": [
+    "2611.28555",
+    "2611.29252",
+    "2611.29948",
+    "2611.32908"
+   ]
+  },
+  {
+   "title": "离线指标量到的是什么",
+   "body": [
+    "[[@2611.33240|教育推荐离线评测]]的摘要称，只看上一个活动、不用任何学习者信息的结构预测器，能达到最好方法准确度的 0.81–1.00（中位数 0.95），因为下一个活动多半是平台排的。[[@2611.31185|CO-GRAFT]] 里有同类现象：改用宽松指标后，Qwen2.5-7B base 的“答案”角色份额从 38% 跌到 −5%，**严格 EM 量到的很大一块是输出格式**。[[@2611.30819|Ask Again]] 测的是另一种不可靠，摘要称同一个问题问两次，生成式引擎排第一的条目有 32% 的概率不同。",
+    "三篇的补救办法方向一致：教育推荐那篇要求报告相对结构基线的提升，CO-GRAFT 建议同时给出宽松指标，Ask Again 要求对每个引擎分别给出不确定性。"
+   ],
+   "papers": [
+    "2611.33240",
+    "2611.31185",
+    "2611.30819"
+   ]
+  }
+ ],
+ "gems": [
+  {
+   "id": "2611.32855",
+   "note": "[[semantic-id|语义 ID]] 生成式召回的 beam search 每个请求固定 L 次模型调用，而且不知道结果离精确 top-K 差多少。摘要称 SIDECAR 用草稿加一次树注意力就能证明结果是否精确，证明不了时给出 1+δ 的保证因子，线上可以按质量或延迟阈值提前停。"
+  },
+  {
+   "id": "2611.33844",
+   "note": "摘要称在 CrossEncoder 或 Provence 前插一个可缓存的轻量打分器，NoLiMa 32K 上答案准确率涨 4.02–9.43 个点。更值得记的是那条不对称：**级联可以胜过自己的末级重排器，却输给自己的粗排**。"
+  },
+  {
+   "id": "2611.31882",
+   "note": "换 embedding 模型时不用整库重建：先训新的 query 编码器对齐旧库，回填期间同一个 query 向量给新旧两版文档打分。摘要称在未改动的图库上 Recall@1 提升 8.66–10.23 个点；实验只有 COCO 和 Flickr30K 的文本到图像检索。"
+  },
+  {
+   "id": "2611.33210",
+   "note": "摘要称在专家级生物医学问题上，五种置信度信号的 AUROC 都接近随机（0.506），而检索恰好在这些题上收益最大（+11.2%）。做“不确定才检索”的自适应 RAG 之前值得先看。"
+  }
+ ],
+ "stats": {
+  "days": 3,
+  "total": 1866,
+  "relevant": 99,
+  "stars": 11,
+  "by_direction": {
+   "F": 19,
+   "B": 26,
+   "G": 7,
+   "A": 5,
+   "H": 12,
+   "E": 23,
+   "Z": 1,
+   "C": 5,
+   "D": 1
+  },
+  "per_day": [
+   {
+    "date": "2026-11-23",
+    "total": 890,
+    "relevant": 47,
+    "stars": 4,
+    "by_direction": {
+     "F": 9,
+     "B": 8,
+     "G": 4,
+     "A": 3,
+     "H": 7,
+     "E": 13,
+     "Z": 1,
+     "C": 2
+    }
+   },
+   {
+    "date": "2026-11-24",
+    "total": 512,
+    "relevant": 31,
+    "stars": 4,
+    "by_direction": {
+     "B": 11,
+     "A": 2,
+     "C": 2,
+     "F": 6,
+     "G": 3,
+     "E": 6,
+     "H": 1
+    }
+   },
+   {
+    "date": "2026-11-25",
+    "total": 464,
+    "relevant": 21,
+    "stars": 3,
+    "by_direction": {
+     "B": 7,
+     "D": 1,
+     "F": 4,
+     "C": 1,
+     "H": 4,
+     "E": 4
+    }
+   }
+  ]
+ },
+ "glossary_new": [
+  "context-compaction",
+  "dapo",
+  "dhen",
+  "dual-head-distillation",
+  "evolution-strategy",
+  "false-negative",
+  "flops-regularization",
+  "gradient-reversal-layer",
+  "grpo",
+  "gspo",
+  "kto",
+  "late-chunking",
+  "late-interaction",
+  "learned-sparse-retrieval",
+  "margin-loss",
+  "maxscore",
+  "mobius-interaction",
+  "negative-transfer",
+  "policy-grafting",
+  "preview-behavior-recall",
+  "query-tagging",
+  "semantic-id",
+  "shapley-value",
+  "splade",
+  "system-one-model",
+  "term-at-a-time"
+ ],
+ "papers": [
+  {
+   "id": "2611.29613",
+   "title": "Weight Coding: Evolving Web-Scale Recommenders through Direct Weight Edits with LLM Agents",
+   "title_zh": "不训练、直接改权重：Pinterest 召回 Recall@10 涨 15 个点",
+   "direction": "F",
+   "star": true,
+   "score": 0.76,
+   "affiliation": "Pinterest",
+   "summary_zh": "让 LLM Agent 直接编辑生产推荐模型权重，Pinterest 图搜召回模型 Recall@10 最多涨 15 个点。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28645",
+   "title": "PROSPER: LLMs as Sparse Retrievers for First-Stage Product Search",
+   "title_zh": "给 LLM 稀疏召回补回品牌词，淘天线上净 GMV +1.6%",
+   "direction": "B",
+   "star": true,
+   "score": 0.72,
+   "affiliation": "中国科学院计算技术研究所、中国科学院大学、阿姆斯特丹大学、阿里巴巴淘天集团",
+   "summary_zh": "用LLM做商品搜索的稀疏检索器，并通过残差网络保留品牌、型号等字面信号。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28555",
+   "title": "The abc index: Exact Retrieval for Learned Sparse Representations",
+   "title_zh": "学习型稀疏检索用精确索引，比 Qdrant 最多快 84 倍",
+   "direction": "G",
+   "star": true,
+   "score": 0.68,
+   "affiliation": "比萨大学",
+   "summary_zh": "仅用经典IR技术构建精确索引，在学习型稀疏检索上比多数精确和近似索引更快。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.31185",
+   "title": "CO-GRAFT: Attributing Reinforcement Learning Gains in Search Agents via Role-Level Policy Grafting",
+   "title_zh": "RL 让搜索 Agent 变强，但写 query 的贡献不到 15%",
+   "direction": "A",
+   "star": true,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "用 Shapley 值把搜索 agent 的 RL 收益拆分到推理、决策、query 生成和答案抽取四个角色。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30727",
+   "title": "CocoonBench: Can Multilingual Search Agents Escape Language Information Cocoons?",
+   "title_zh": "CocoonBench：多语言搜索智能体能否逃离语言信息茧房？",
+   "direction": "H",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "基于 Wikidata 构建的多语言搜索智能体基准，最强模型准确率不足 70%。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29948",
+   "title": "Look Before You Leap: Re-Architecting Disk-Resident Vector Search with TriVS",
+   "title_zh": "三思而行：用TriVS重构磁盘驻留向量检索",
+   "direction": "G",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "TriVS把磁盘向量检索拆为粗逼近、内存蒸馏、精确收敛三阶段，吞吐达PipeANN的3.42倍。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29252",
+   "title": "Zarc: Exact Nearest Neighbors over a Billion Vectors in Seconds",
+   "title_zh": "Zarc：数秒内完成十亿向量的精确最近邻搜索",
+   "direction": "G",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "多GPU上基于半精度证明与主机内存回取实现十亿向量精确kNN",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28995",
+   "title": "S$^2$LMR: Supervised Sequential Long-Context Multi-Step Retriever",
+   "title_zh": "S²LMR：有监督的序列式长上下文多步检索器",
+   "direction": "E",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "用单个共享Transformer建模多步检索，监督训练即可逼近SOTA。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.31233",
+   "title": "TowerBridge: Bridging the Dual-Encoder Modality Gap via Weight-Space Programming",
+   "title_zh": "TowerBridge：通过权重空间编程弥合双编码器的模态鸿沟",
+   "direction": "B",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "用 LLM agent 发现并蒸馏出闭式权重修正，在 21 个 CLIP 检查点上提升图文检索。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.31344",
+   "title": "Query Obfuscation with Embedding-Optimized Noise (EON): A Representational Blindspot in Agentic Retrieval",
+   "title_zh": "基于 Embedding 优化噪声的 Query 混淆（EON）：Agentic 检索中的表征盲区",
+   "direction": "B",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "无语义噪声可保留 query 的检索结果并绕过输入护栏，暴露双编码器的 BLINDSPOT。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.31052",
+   "title": "From Head to Tail: LLM-Augmented Sequential Recommendation and Trade-off Optimization",
+   "title_zh": "从头部到长尾：LLM 增强的序列推荐与权衡优化",
+   "direction": "F",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "用 LLM 为不同流行度分组的物品生成合成交互，在约束整体 NDCG 下优化长尾效果。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30819",
+   "title": "Ask Again: Answer-List Instability in Generative Engines",
+   "title_zh": "再问一次：生成式引擎中答案列表的不稳定性",
+   "direction": "H",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "6 万条回答显示生成式搜索引擎对同一问题的答案列表和首位项经常变化，品牌可见度测量需量化不确定性。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30648",
+   "title": "MTL-MHOL: Predicting Online Conversions under Delayed Feedback and Data Sparsity",
+   "title_zh": "MTL-MHOL：在延迟反馈与数据稀疏下预测线上转化",
+   "direction": "F",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "Criteo",
+   "summary_zh": "用时间分桶处理延迟反馈、辅助任务缓解稀疏的 CVR 预测框架。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30243",
+   "title": "Can Search Agents Correct Their Own Errors? Evaluating Retrieval, Evidence Delivery, and Answer Completion",
+   "title_zh": "搜索 Agent 能纠正自己的错误吗？检索、证据递送与答案补全的评测",
+   "direction": "A",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "在 BrowseComp-Plus 上干预证据来源，区分搜索 Agent 的检索、递送、纠错与补全失败。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30069",
+   "title": "Pixel as the Common Language: Unified Multimodal Embedding via Visual Rendering",
+   "title_zh": "以像素为通用语言：基于视觉渲染的统一多模态 Embedding",
+   "direction": "B",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "RenderEmbed 先把各类输入渲染成图像再由 VLM 编码，统一多模态检索表示。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29549",
+   "title": "CompareDR: Benchmarking Deep Research Reports from Individual Quality to Comparative Merit",
+   "title_zh": "CompareDR:从单篇质量到比较价值的深度研究报告基准",
+   "direction": "H",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "用逐项审计加两两比较评测深度研究报告,与人类偏好一致率86.25%",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29470",
+   "title": "GraphSeer: Multimodal Knowledge Graph Relational Image Retrieval with MLLMs",
+   "title_zh": "GraphSeer:基于MLLM的多模态知识图谱关系图像检索",
+   "direction": "B",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "给定照片和关系描述,用MLLM检索图谱中相关实体,MRR提升12.5-70.0%",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29399",
+   "title": "SJG: A Skyline Joint Graph for Multi-Component Approximate Nearest Neighbor Search",
+   "title_zh": "SJG:面向多分量近似最近邻搜索的天际线联合图",
+   "direction": "G",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "用天际线联合图支持查询权重未知的多分量ANN搜索,吞吐最高27.9倍",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28519",
+   "title": "SupportChain: Trace-Calibrated Aggregation of Quote-Grounded Reasoning Chains for Multi-Hop RAG with Small Readers",
+   "title_zh": "SupportChain：面向小型推理模型多跳RAG的、基于引文推理链的轨迹校准聚合",
+   "direction": "E",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "多跳RAG中拆分子问题、绑定引文并按支持度聚合多次执行，无需建索引。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28379",
+   "title": "Beyond Relevance: An Empirical Study of Multimodal LLMs for Diversity-Aware Recommendation Reranking",
+   "title_zh": "超越相关性:多模态 LLM 用于多样性感知推荐重排的实证研究",
+   "direction": "F",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "Amazon Prime Video",
+   "summary_zh": "免训练的多模态 LLM 重排框架,在 Prime Video 上同时提升相关性与类目多样性。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.33210",
+   "title": "Confidence-Based Adaptive Retrieval Fails Where It Matters Most: A Paradox in Biomedical Question Answering",
+   "title_zh": "基于置信度的自适应检索在最关键处失效：生物医学问答中的悖论",
+   "direction": "E",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "发现置信度路由在专家级问题上近乎随机，建议默认总是检索",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.31198",
+   "title": "ToolSmith: An Automatic Tool-Generation Framework for Multimodal Search Agents",
+   "title_zh": "ToolSmith：面向多模态搜索 Agent 的自动工具生成框架",
+   "direction": "A",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "在精简基础工具库上自动生成并复用工具，提升多模态搜索 agent 的泛化表现。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.31175",
+   "title": "Needwise: Generation-Free Conversational Recommendation from Need-Level Typed Decisions",
+   "title_zh": "Needwise：基于需求级类型化决策的免生成对话式推荐",
+   "direction": "F",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "用对固定选项输出概率的类型化决策代替 LLM 重读对话，在 Google Local 上 nDCG@10 超过 GPT-6 Sol。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29697",
+   "title": "Where Do Fact-Checking Errors Arise? Separating Retrieval, Search Control and Judgement in Evidence-Grounded Verification",
+   "title_zh": "事实核查错误出在哪里？分离基于证据验证中的检索、搜索控制与判断",
+   "direction": "H",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "把事实核查拆成检索、搜索控制、判断与验证来定位错误来源",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29462",
+   "title": "MoR4Rec: Mixture-of-Recursion for Sequential Recommendation",
+   "title_zh": "MoR4Rec:面向序列推荐的递归混合",
+   "direction": "F",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "用共享Transformer按item自适应递归深度做序列推荐,Recall@5平均提升2.28%",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29094",
+   "title": "HME-PFD: Heterogeneous Mixture-of-Experts Privileged Feature Distillation",
+   "title_zh": "HME-PFD：异构混合专家特权特征蒸馏",
+   "direction": "F",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "把特权特征用于MoE学生模型的路由，提升广告转化预测蒸馏效果。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30588",
+   "title": "SuSi-RAG: A Hybrid Graph RAG for Equipment Maintenance",
+   "title_zh": "SuSi-RAG：面向设备维护的混合 Graph RAG",
+   "direction": "E",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "Bosch",
+   "summary_zh": "用子图相似度匹配查询与维护记录的 Graph RAG，已在博世产线运行八个月。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30546",
+   "title": "Fetch, Read, Reuse: How AI Search Agents Bend the Web's Rules",
+   "title_zh": "获取、阅读、复用：AI 搜索智能体如何绕开网络规则",
+   "direction": "H",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "黑盒测量各家 AI 搜索智能体对 robots.txt、缓存等规则的遵守情况。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30335",
+   "title": "MH-RAG-DIVE: Dynamic and Cost-Efficient Multi-Hop RAG Evaluation via Tree-Cached Dialogue Simulation",
+   "title_zh": "MH-RAG-DIVE：基于树缓存对话模拟的动态低成本多跳 RAG 评测",
+   "direction": "H",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "用对话模拟与缓存做多跳多轮 RAG 的动态评测并降低 token 开销。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30181",
+   "title": "Retrieval-Augmented Generation in the Agentic Era: Tradition, Present, and Prospect",
+   "title_zh": "Agent 时代的检索增强生成：传统、现状与展望",
+   "direction": "E",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "按离线索引、检索前、检索、检索后和编排的生命周期梳理 Agent 时代的 RAG。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30156",
+   "title": "Beyond Knowledge Transfer: How User Overlap Shapes Diversity in Cross-Domain Recommendation",
+   "title_zh": "超越知识迁移：用户重叠如何影响跨域推荐的多样性",
+   "direction": "F",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "提出 DivCDR，用 Push–Pull 框架在跨域推荐中提高多样性并保持准确率。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29966",
+   "title": "Structure-Exploiting Hierarchical Retrieval for Long Narrative Documents: A Precision-Oriented Alternative to Learned Abstraction Trees",
+   "title_zh": "面向长篇叙事文档的结构利用式分层检索：学习式抽象树的高精度替代方案",
+   "direction": "E",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "利用书籍章节结构做两级检索，在QuALITY上优于平铺检索，与RAPTOR互有取舍。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28638",
+   "title": "Make Position Uninformative: Exchangeable Self-Distillation Flattens the Lost-in-the-Middle Curve",
+   "title_zh": "让位置不携带信息：可交换自蒸馏抹平“中间丢失”曲线",
+   "direction": "E",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "用打乱上下文的自蒸馏训练小adapter，缓解RAG阅读器的位置偏置。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28233",
+   "title": "DM-Lab at TREC 2026 RAG: Multi-Query Retrieval, Ensemble Judging, and Claim-Pack Generation",
+   "title_zh": "DM-Lab 在 TREC 2026 RAG 的参赛系统：多查询检索、集成评判与断言包生成",
+   "direction": "E",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "TREC 2026 RAG 参赛系统，多查询 BM25 加重排与断言优先生成",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29877",
+   "title": "Towards Agentic Video Corpus Moment Retrieval",
+   "title_zh": "迈向智能体式视频语料时刻检索",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "训练-free 框架 RELAY，跨查询共享记忆完成视频检索与定位",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29419",
+   "title": "VistaTree: Question Answering over Long Multimodal Documents with Image-Derived Summary Trees",
+   "title_zh": "VistaTree:基于图像派生摘要树的长多模态文档问答",
+   "direction": "E",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "从页面图像构建摘要树,让智能体分层导航检索长多模态文档",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29155",
+   "title": "ContextFact: Remembering Facts in Context for Long-Term Conversational Agents",
+   "title_zh": "ContextFact：为长期对话智能体在上下文中记住事实",
+   "direction": "E",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "保留上下文的事实记忆与实体表征，用于长对话记忆检索",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28748",
+   "title": "Beyond Single-Turn Privacy: Training-Data Leakage in Conversational RAG",
+   "title_zh": "超越单轮隐私:对话式RAG中的训练数据泄露",
+   "direction": "E",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "提出CRELT逐轮追踪对话式RAG的训练数据泄露",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28604",
+   "title": "MADRec: Reliable Multi-Agent Reasoning with Evidence-Grounded Debate for Recommendation",
+   "title_zh": "MADRec：基于证据落地辩论的可靠多智能体推荐推理",
+   "direction": "F",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "多智能体辩论加证据检索推理，并校准排序，提高LLM推荐推理的可靠性。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30538",
+   "title": "Where Compositionality Hides: Shared-Content Interference in Vision-Language Retrieval",
+   "title_zh": "组合性藏在哪里：视觉语言检索中的共享内容干扰",
+   "direction": "B",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "用均值擦除分离 Winoground 中的图像间比较与文本偏好误差",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30339",
+   "title": "AirVT-15k: A Query-Diverse UAV Video-Text Dataset and Query-Adaptive Evidence Alignment Network for Retrieval",
+   "title_zh": "AirVT-15k：查询多样的无人机视频文本数据集与查询自适应证据对齐网络",
+   "direction": "B",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "发布无人机视频文本检索基准并提出查询自适应对齐网络",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30839",
+   "title": "SARA: An Auditor-in-the-Loop LLM Recommender for Sustainability Reports",
+   "title_zh": "SARA：面向可持续发展报告的审计员在环 LLM 推荐系统",
+   "direction": "Z",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "PwC Germany",
+   "summary_zh": "把可持续报告审计建模为基于内容的推荐，用主题预测过滤降低 LLM 匹配成本。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30715",
+   "title": "Skill-Composer: Requirement-Driven Skill Selection from Multiple Marketplaces",
+   "title_zh": "Skill-Composer：跨多个市场按需求选择技能",
+   "direction": "C",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "",
+   "summary_zh": "把技能获取从单项排序改为集合选择，选出覆盖需求且不冗余的技能包。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.29356",
+   "title": "Automatic Construction of Persian E-Commerce Dialogue Datasets for Conversational Product Search",
+   "title_zh": "面向对话式商品搜索的波斯语电商对话数据集自动构建",
+   "direction": "H",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "Digikala",
+   "summary_zh": "自动从Digikala目录构建波斯语对话式商品搜索数据集，并提出RPB提问选择分数",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.28295",
+   "title": "GERF: A Token-Efficient Multimodal Retrieval Framework for Schema-Guided Scientific Information Extraction",
+   "title_zh": "GERF:面向 Schema 引导科学信息抽取的省 token 多模态检索框架",
+   "direction": "E",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "",
+   "summary_zh": "用异构证据图检索字段相关的文本与图表,输入 token 比全文处理少 73.4%。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.31056",
+   "title": "DKnown-Jev-2: Article-Level Answer-Evidence Classification and Efficient Inference with a Pre-trained Language Model",
+   "title_zh": "DKnown-Jev-2：基于预训练语言模型的文章级答案证据分类与高效推理",
+   "direction": "C",
+   "star": false,
+   "score": 0.25,
+   "affiliation": "",
+   "summary_zh": "跨段落联合编码的文章级答案证据分类器，一次前向同时判断 AE 与 NE，准确率 91.77%。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.30500",
+   "title": "Why Calibrated BM25 Filtering Barely Reduced Context on LongMemEval",
+   "title_zh": "为什么校准后的 BM25 过滤在 LongMemEval 上几乎没有减少上下文",
+   "direction": "E",
+   "star": false,
+   "score": 0.25,
+   "affiliation": "",
+   "summary_zh": "在 LongMemEval 上 BM25 过滤仅节省 0.096% 输入 token，并给出打包过滤的精确检验。",
+   "date": "2026-11-23"
+  },
+  {
+   "id": "2611.32203",
+   "title": "OmniEVIE: Evidence-Vector-Informed Embedding for Multi-modal Retrieval",
+   "title_zh": "多向量检索索引压到每条 9.4 KB，精度几乎不掉",
+   "direction": "B",
+   "star": true,
+   "score": 0.82,
+   "affiliation": "腾讯（IMA 产品中心、优图实验室）",
+   "summary_zh": "OmniEVIE用压缩多向量索引统一文本、图像、文档、视频与工具检索。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32917",
+   "title": "SOARS: System One Assisted Reranking for Agentic Search",
+   "title_zh": "召回不变、只做重排：搜索 Agent 准确率从 73.9% 提到 84.7%",
+   "direction": "A",
+   "star": true,
+   "score": 0.62,
+   "affiliation": "Thomson Reuters Labs",
+   "summary_zh": "用免训练的快速相关性模型在每步搜索中重排，提升深度搜索Agent准确率并减少搜索次数。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32125",
+   "title": "LARF: Learning-aligned Reasoning Framework for Search Relevance",
+   "title_zh": "给打分 token 加一项 margin loss，比三种 RL 奖励加起来还管用",
+   "direction": "C",
+   "star": true,
+   "score": 0.62,
+   "affiliation": "腾讯元宝团队（Yuanbao Team, Tencent）",
+   "summary_zh": "三阶段训练推理式相关性模型，并蒸馏为无需生成的分类头，延迟降低82.9%。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32660",
+   "title": "Bathys: Advancing Deep Search Agents",
+   "title_zh": "按压缩边界切段做 RL，27B 搜索 Agent 多涨 9 个点",
+   "direction": "A",
+   "star": true,
+   "score": 0.6,
+   "affiliation": "商汤 SenseTime Research、香港大学等",
+   "summary_zh": "发布9B和27B深度搜索智能体，用SFT、KTO与CM-GSPO训练，BrowseComp达80.49%",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32855",
+   "title": "Speculative Decoding for Semantic-ID-Based Generative Recommendations",
+   "title_zh": "面向语义ID生成式推荐的投机解码",
+   "direction": "F",
+   "star": false,
+   "score": 0.68,
+   "affiliation": "",
+   "summary_zh": "SIDECAR用草稿加树注意力验证并给出精确top-K证书，减少SID生成式召回的模型调用。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32908",
+   "title": "KuroANN: Avoiding Unnecessary SSD Reads in High-Recall Filtered Vector Search",
+   "title_zh": "KuroANN：在高召回过滤向量搜索中避免不必要的SSD读取",
+   "direction": "G",
+   "star": false,
+   "score": 0.6,
+   "affiliation": "",
+   "summary_zh": "按每个query的过滤匹配数分配SSD读取量，减少磁盘过滤向量搜索的无效I/O。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32590",
+   "title": "LazUnirec: Unifying Retrieval and Ranking in Multi-scenario Industrial Recommendation",
+   "title_zh": "LazUnirec：多场景工业推荐中统一召回与排序",
+   "direction": "F",
+   "star": false,
+   "score": 0.6,
+   "affiliation": "",
+   "summary_zh": "在共享Transformer中用LoRA调制注意力和稀疏MoE统一召回与排序，已上线",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32439",
+   "title": "See the Answer, Learn to Embed: Learning Universal Multimodal Embeddings from Hindsight",
+   "title_zh": "看见答案，学会嵌入：从后见之明中学习通用多模态Embedding",
+   "direction": "B",
+   "star": false,
+   "score": 0.6,
+   "affiliation": "",
+   "summary_zh": "用候选条件的后见教师蒸馏出无需候选的多模态embedding学生模型。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31951",
+   "title": "User-Adaptive Fusion of Multiple Foundation Models for Recommender Systems",
+   "title_zh": "面向推荐系统的多基础模型用户自适应融合",
+   "direction": "F",
+   "star": false,
+   "score": 0.6,
+   "affiliation": "",
+   "summary_zh": "按用户自适应地在得分层融合多个基础模型的推荐视图，UF2O最多领先7%。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31940",
+   "title": "MELODI: Similarity-Identity Decoupling for Lightweight Ranking",
+   "title_zh": "MELODI：面向轻量排序的相似性-身份解耦",
+   "direction": "F",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "把目标-历史相似性与目标自身信息解耦，做低延迟候选排序，并在工业数据上验证。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31771",
+   "title": "SPARQL-Planned Single-Hop Traversal over a Live Knowledge Graph for Multi-Hop Question Answering",
+   "title_zh": "基于SPARQL规划的实时知识图谱单跳遍历，用于多跳问答",
+   "direction": "E",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "让稠密检索与Wikidata图遍历交替进行，由LLM生成SPARQL规划但只解析不执行",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32971",
+   "title": "Teaching Time Without Losing General Retrieval: Adapting Multimodal Embeddings for Time-Sensitive Video Retrieval",
+   "title_zh": "教会时间而不丢失通用检索:面向时间敏感视频检索的多模态 embedding 适配",
+   "direction": "B",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "用 keep loss、pair loss 和中间层 LoRA 让单个模型同时兼顾通用与时间敏感视频检索。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.33240",
+   "title": "Learning the Platform, Not the Learner: Sequencing Shortcuts in the Offline Evaluation of Educational Recommender Systems and LLM Rankers",
+   "title_zh": "学到的是平台而非学习者：教育推荐系统与LLM排序器离线评估中的序列捷径",
+   "direction": "H",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "教育推荐离线评测主要反映平台的活动安排结构，仅用上一活动的结构预测器就接近最优",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31882",
+   "title": "RELAY: Learning Compatible Representations One Encoder at a Time",
+   "title_zh": "RELAY：一次一个编码器地学习兼容表示",
+   "direction": "B",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "先训新query编码器对齐旧库，再训新文档编码器，实现向量库增量重编码时的兼容检索。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31656",
+   "title": "BRAG: Bayesian Retrieval Augmented Generation",
+   "title_zh": "BRAG：贝叶斯检索增强生成",
+   "direction": "E",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "用贝叶斯生成模型统一RAG中的反馈式检索改进方法，并在记忆检索上提升Recall",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31579",
+   "title": "Provably Near-Optimal PQ in the Extended Zador Model",
+   "title_zh": "扩展 Zador 模型下可证明近最优的乘积量化(PQ)",
+   "direction": "G",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "证明 SVD 是 PQ 的最优预处理旋转,并给出带近似保证的 EZPQ 算法。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.33036",
+   "title": "Towards Realistic Evaluation of Uncertainty Quantification for LLM-Based Recommender Systems",
+   "title_zh": "面向基于LLM的推荐系统的不确定性量化的现实评测",
+   "direction": "F",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "固定排序基准下比较八种UQ信号在LLM推荐中的失败检测能力",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32938",
+   "title": "Efficient Video Retrieval Augmented Generation via Token Allocation",
+   "title_zh": "基于Token分配的高效视频检索增强生成",
+   "direction": "E",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "把视频RAG建模为帧与字幕间的token预算分配问题，用water-filling求解。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32630",
+   "title": "MargEmbed-Akan: Bridging Twi Questions and English Knowledge through Cross-Lingual Score Distillation",
+   "title_zh": "MargEmbed-Akan：通过跨语言分数蒸馏连接Twi语问题与英文知识",
+   "direction": "B",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "用跨语言分数蒸馏训练Twi查询编码器，AfriQA上nDCG@10达71.5",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31679",
+   "title": "Rethinking Document Indexing for LLM-based Analysis",
+   "title_zh": "重新思考面向LLM分析的文档索引",
+   "direction": "G",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "借鉴B+树提出由LLM构建的层次化纯文本索引Periplus，token消耗减少70%以上",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.33124",
+   "title": "SAG-Mem-1.0 Technical Report",
+   "title_zh": "SAG-Mem-1.0 技术报告",
+   "direction": "E",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "保留完整对话分块，用BM25加查询时词法扩展做长期对话记忆检索",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32780",
+   "title": "C3H: Compression-to-Consensus Criteria Hijacking in Multimodal LLM Recommender Systems",
+   "title_zh": "C3H：多模态LLM推荐系统中的压缩到共识准则劫持",
+   "direction": "F",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "提出推理时攻击C3H，利用压缩与跨模态共识偏差在多模态LLM推荐中推高目标item曝光。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32073",
+   "title": "Efficient Semantic ORDER BY via Transitivity-Aware LLM Batch Sorting",
+   "title_zh": "基于传递性感知LLM批量排序的高效语义ORDER BY",
+   "direction": "C",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "TBS记录已推断的偏好并利用传递性，使LLM语义排序调用减少12-20倍。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32006",
+   "title": "TableRouter: Query-Aware Evidence Construction for Long-Table Question Answering",
+   "title_zh": "TableRouter：面向长表格问答的查询感知证据构建",
+   "direction": "E",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "按query在统计计算与行检索两条路线间选择，为长表格问答构建证据。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31465",
+   "title": "A dataset of clinically similar image pairs from citation-linked case reports for medical image retrieval",
+   "title_zh": "基于引文关联病例报告的临床相似图像对数据集,用于医学图像检索",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "构建 8.6 万对临床相似医学图像数据集 PMC-PaIR,用于训练检索模型。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31442",
+   "title": "Small Learned Projections for Semantic-Reversal-Aware Retrieval with Spectral Acceleration: A Four-Domain Empirical Study",
+   "title_zh": "面向语义反转感知检索的小型学习投影与谱加速:四领域实证研究",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "用小型学习投影压制稠密检索中的语义反转陷阱文档,并给出加速方案。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32621",
+   "title": "ShapeQuest: Towards Granularity-Controlled Edit-Conditioned 3D Asset Retrieval",
+   "title_zh": "ShapeQuest:迈向粒度可控、以编辑为条件的 3D 资产检索",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "提出编辑条件 3D 资产检索基准 ShapeQuest 及联合重建的检索模型 ShapeQuester。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32310",
+   "title": "CREDIT: Compositional Reliability Learning for Noisy Composed Image Retrieval",
+   "title_zh": "CREDIT:面向含噪组合图像检索的组合可靠性学习",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "用证据学习估计三元组可靠性并以扩散精炼参考表示,应对含噪组合图像检索。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.32088",
+   "title": "From Memory Access to Evidence Sufficiency: Diagnosing and Addressing Demand--Evidence Misalignment",
+   "title_zh": "从记忆访问到证据充分性：诊断并解决需求-证据错位",
+   "direction": "E",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "诊断长期记忆检索的需求-证据错位，并提出按类型化需求引导检索的BiDE-Mem。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.31495",
+   "title": "ModernELECTRA: Replaced-Token Detection with Boundary-Window Reconstruction for Compact Encoders that Classify and Embed",
+   "title_zh": "ModernELECTRA:用边界窗口重构做替换词检测,得到既能分类又能做 embedding 的紧凑编码器",
+   "direction": "B",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "Knowledgator",
+   "summary_zh": "在 RTD 预训练上加边界窗口重构任务,使紧凑编码器同时适合分类和 embedding。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.33250",
+   "title": "Focus On Facts: Stylistically Invariant and Factually Sensitive Text Embeddings",
+   "title_zh": "聚焦事实：风格不变且对事实敏感的文本Embedding",
+   "direction": "B",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "",
+   "summary_zh": "用难负例对比学习缓解文本embedding把表面相似当作事实一致的问题，并构建FOF-Bench。",
+   "date": "2026-11-24"
+  },
+  {
+   "id": "2611.34366",
+   "title": "ConTra: A Training Framework for Effective Contextual Retrieval via Prefix Generation",
+   "title_zh": "小模型给 chunk 写前缀，向量检索和重排都受益，建索引快 7.7 倍",
+   "direction": "B",
+   "star": true,
+   "score": 0.65,
+   "affiliation": "香港中文大学（深圳）",
+   "summary_zh": "ConTra 用强化学习训练轻量前缀生成器,在建索引时给 chunk 加上下文前缀,同时服务向量检索和重排",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33653",
+   "title": "OneQuery: Unified Sequence-to-Structure Generation for Multilingual E-commerce Query Understanding",
+   "title_zh": "多语言 Query 理解并成一次 LLM 生成，打标 F1 比流水线高 2.4 点",
+   "direction": "D",
+   "star": true,
+   "score": 0.6,
+   "affiliation": "阿里巴巴 AliExpress",
+   "summary_zh": "把语种识别、纠错、翻译、打标统一为生成任务用于电商Query理解",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33628",
+   "title": "Multi-Modal Causal Disentanglement for Multi-Domain Sequential Audio Recommendation",
+   "title_zh": "网易云三域联合召回，播客 Hit@5 涨 30%，大头来自多模态语义 ID",
+   "direction": "F",
+   "star": true,
+   "score": 0.6,
+   "affiliation": "网易云音乐、杭州电子科技大学",
+   "summary_zh": "多模态因果解耦框架缓解多领域音频推荐的负迁移，网易云音乐A/B有效",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34436",
+   "title": "Grounding User Preferences in Shared Multimodal Concepts for Recommendation",
+   "title_zh": "在共享多模态概念中落地用户偏好的推荐",
+   "direction": "F",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "MKGE 用多模态知识图谱把用户偏好落到可共享的规范概念上,三个公开数据集上全面超过现有推荐方法",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33844",
+   "title": "When Rerankers Work Together: Better and Faster Reranking without Joint Training",
+   "title_zh": "当重排器协同工作：无需联合训练的更好更快重排",
+   "direction": "C",
+   "star": false,
+   "score": 0.55,
+   "affiliation": "",
+   "summary_zh": "无需联合训练组合异构重排器，提高RAG重排的精度与速度。",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34852",
+   "title": "DRBench Pro: A Knowledge-Centric Benchmark for Professional Deep Research Agents",
+   "title_zh": "DRBench Pro：面向专业深度研究智能体的知识中心基准",
+   "direction": "H",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "以知识覆盖的广度和深度评测深度研究智能体，144个案例、44102条rubric。",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34407",
+   "title": "Agentic Waterfall: An Intent-Driven Information Discovery Framework for Reclaiming User Control in the Attention Economy",
+   "title_zh": "Agentic Waterfall:在注意力经济中夺回用户控制权的意图驱动信息发现框架",
+   "direction": "F",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "提出由 LLM 控制器维护用户状态的 Agentic Waterfall 推荐信息流,并给出数据集与回放评测协议",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33497",
+   "title": "CA-RAG: Constraint-Aligned Retrieval for Structurally Faithful Long-Form Generation",
+   "title_zh": "CA-RAG：面向结构忠实的长文本生成的约束对齐检索",
+   "direction": "E",
+   "star": false,
+   "score": 0.5,
+   "affiliation": "",
+   "summary_zh": "用本体约束和知识图谱关系改写 section 级 query，提升合规长文生成的证据召回。",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34188",
+   "title": "MINE: A Training-Free Defense against Indirect Prompt Injection via Mutual Information and Embedding Variance",
+   "title_zh": "MINE:基于互信息与 embedding 方差的免训练间接提示注入防御",
+   "direction": "E",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "MINE 以最大化相关性代替检测攻击来防御 RAG 间接提示注入,同时可作为 query 条件的重排器",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33627",
+   "title": "Welfare-Enhancing Mechanism Design for Agent Ecosystems",
+   "title_zh": "面向智能体生态的福利提升机制设计",
+   "direction": "H",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "在agentic search中研究内容智能体优化profile的博弈并设计平台机制",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34877",
+   "title": "Towards Closing the Performance Gap in Cross-Modal Place Recognition",
+   "title_zh": "缩小跨模态场景识别的性能差距",
+   "direction": "B",
+   "star": false,
+   "score": 0.45,
+   "affiliation": "",
+   "summary_zh": "CrossPlace 用全局检索加 token 级 reranker，做文本到地理标注图像的检索。",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34330",
+   "title": "RecField: Embedding Recommendations into Spatial Movie Organization as Affordances for Serendipitous Encounters",
+   "title_zh": "RecField:把推荐嵌入空间化电影整理中,作为偶遇式发现的可供性",
+   "direction": "F",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "RecField 把推荐嵌入电影空间整理界面,用 57 人实验研究推荐对偶遇式发现的影响",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33649",
+   "title": "Structure-Aware Multimodal Retrieval Under Data Scarcity, Privacy Constraints and Out-of-Domain Content",
+   "title_zh": "数据稀缺、隐私约束与域外内容下的结构感知多模态检索",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "用版面几何配对加本地VLM，无需训练即可检索专业图集中的图像",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33368",
+   "title": "Searching Ultra-Long Videos with Decision Models",
+   "title_zh": "用决策模型搜索超长视频",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "affiliation": "",
+   "summary_zh": "用预训练决策模型直接输出相关性分数，从超长视频中快速检索证据以回答问题",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34427",
+   "title": "Mitigating Hallucinations in Medical Question Answering on ESC Cardiology Guidelines: Evaluation and Retrieval Optimization",
+   "title_zh": "缓解 ESC 心脏病指南医学问答中的幻觉:评估与检索优化",
+   "direction": "E",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "在 ESC 心脏病指南问答上逐条人工审计验证-修正式 RAG 流水线,发现验证器可靠性是瓶颈",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33594",
+   "title": "Aligned Machine: A Benchmark for Evaluating Multimodal Embedding Similarity via Human Comparative Judgements",
+   "title_zh": "Aligned Machine：基于人类比较判断评测多模态嵌入相似度的基准",
+   "direction": "H",
+   "star": false,
+   "score": 0.35,
+   "affiliation": "",
+   "summary_zh": "用人类两两比较判断评测文本与多模态嵌入相似度的对齐程度",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34083",
+   "title": "MulCLIP: A Multi-level Alignment Framework for Enhancing Fine-grained Long-context CLIP",
+   "title_zh": "MulCLIP：增强细粒度长文本CLIP的多层级对齐框架",
+   "direction": "B",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "",
+   "summary_zh": "无需区域提议，用多粒度文本对齐改进CLIP的长文本图文匹配",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33890",
+   "title": "Privacy-Aware Adaptive Client Selection for Federated Retrieval-Augmented Generation",
+   "title_zh": "联邦RAG的隐私感知自适应客户端选择",
+   "direction": "E",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "",
+   "summary_zh": "在线选择联邦RAG的检索客户端，减少查询暴露与检索开销。",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34640",
+   "title": "PRAM: Activating Latent Multimodal Knowledge through Partwise Reasoning",
+   "title_zh": "PRAM：通过分部分推理激活潜在多模态知识",
+   "direction": "B",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "",
+   "summary_zh": "经共享枢纽模态组合分部分统计关系，做跨模态分类与检索。",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.34344",
+   "title": "SPARC: Semantic Calibration with Latent Multimodal Knowledge for Robust Image-Text Retrieval",
+   "title_zh": "SPARC：基于潜在多模态知识的语义校准，用于鲁棒图文检索",
+   "direction": "B",
+   "star": false,
+   "score": 0.3,
+   "affiliation": "",
+   "summary_zh": "在图像或文本查询不完整时，校准特征以提升图文检索的候选区分和排序稳定性",
+   "date": "2026-11-25"
+  },
+  {
+   "id": "2611.33322",
+   "title": "Brand Recall and Category Accuracy in Language Models: An Audit of 1,000 B2B SaaS Brands",
+   "title_zh": "语言模型的品牌召回与类别准确率：对 1000 个 B2B SaaS 品牌的审计",
+   "direction": "H",
+   "star": false,
+   "score": 0.25,
+   "affiliation": "",
+   "summary_zh": "在无检索下分别度量 LLM 对 1000 个 B2B SaaS 品牌的召回和类别判断。",
+   "date": "2026-11-25"
+  }
+ ]
+}
