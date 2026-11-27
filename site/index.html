@@ -82,6 +82,9 @@ h1,h2,h3,p{margin:0}
 .lk .cp{display:inline-flex;align-items:center;padding:0 2px;border:0;background:none;color:var(--mute);cursor:pointer;line-height:1}
 .lk .cp:hover,.lk .cp:focus-visible{color:var(--accent)}
 .lk .cp.ok{color:var(--accent)}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,8px);background:var(--ink);color:var(--paper);font:500 14px/1.4 var(--sans);padding:8px 14px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;z-index:50;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){#toast{transition:none}}
 .st{color:var(--accent)}
 
 .body{font-size:16.5px;line-height:1.85;columns:2;column-gap:30px;column-rule:1px solid var(--hair);text-align:left;hyphens:auto;orphans:2;widows:2}
@@ -379,9 +382,11 @@ function render(){
     ${d.excluded?.length?`<details class="xl"><summary>未收录 ${d.excluded.length} 篇</summary><div class="xg">${d.excluded.map(e=>`<article><h4>${esc(e.title_zh||e.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(e.id)}" rel="noopener" lang="en">${esc(e.title)}</a> · ${esc(e.cat)}</p>${e.summary_zh?`<p class="x">${rich(e.summary_zh)}</p>`:''}</article>`).join('')}</div></details>`:''}`;
 }
 
+const tst=document.createElement('div');tst.id='toast';tst.setAttribute('role','status');tst.setAttribute('aria-live','polite');document.body.append(tst);
+let tstT=0;function toast(msg){tst.textContent=msg;tst.classList.add('on');clearTimeout(tstT);tstT=setTimeout(()=>tst.classList.remove('on'),1800)}
 document.addEventListener('click',e=>{
   const cp=e.target.closest('button[data-copy]');
-  if(cp){const id=cp.dataset.copy,done=()=>{cp.classList.add('ok');cp.title='已复制 '+id;setTimeout(()=>{cp.classList.remove('ok');cp.title='复制 arXiv 编号 '+id},1500)};
+  if(cp){const id=cp.dataset.copy,done=()=>{cp.classList.add('ok');toast('已复制 arXiv 编号 '+id);setTimeout(()=>cp.classList.remove('ok'),1500)};
     const fb=()=>{try{const t=document.createElement('textarea');t.value=id;t.style.position='fixed';t.style.opacity='0';document.body.append(t);t.select();document.execCommand('copy');t.remove();done()}catch(_){}};
     try{navigator.clipboard.writeText(id).then(done,fb)}catch(_){fb()}
     return}
