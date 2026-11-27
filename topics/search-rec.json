@@ -2,7 +2,7 @@
  "id": "search-rec",
  "name": "Search & Rec",
  "taxonomy_version": "v1",
- "rules_version": "v4",
+ "rules_version": "v5",
  "categories": [
   "cs.IR",
   "cs.CL",

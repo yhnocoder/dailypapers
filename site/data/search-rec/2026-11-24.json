@@ -5,8 +5,9 @@
  "rules_version": "v1",
  "overview": {
   "guide": [
-   "[[@2611.32203|OmniEVIE]] 的关键是训练时就按索引形态聚类，压缩后的多向量索引反而比直接截维更好，百万库单线程查询 54 ms。[[@2611.32917|SOARS]] 发现深度搜索 Agent 的瓶颈常常不在召回，而是答案文档排得太靠后、Agent 没点开，每步加一次 250 毫秒的重排就能同时提准确率、减搜索次数。[[@2611.32125|LARF]] 读的时候注意区分 8B 和线上 1.7B 的数字：**线上那个模型离线只比基线高 0.6 点**。[[@2611.32660|Bathys]] 说明 rollout 中途压缩历史时，普通 GSPO 等于白跑，要按压缩边界切段算梯度。",
-   "[[@2611.32855|SIDECAR]] 用草稿加树注意力验证替代 beam search，还能给出离精确 top-K 差多少的保证，线上可以按质量或延迟阈值提前停。[[@2611.32590|LazUnirec]] 在同一个 Transformer 里统一召回和排序，用 LoRA 调制注意力和稀疏 MoE 缓解两个任务的梯度冲突，已经上线。[[@2611.33240|教育推荐离线评测]]发现只看上一个活动的结构预测器就能达到最好方法 95% 的准确率，**离线指标测到的多半是平台的排课逻辑**。[[@2611.32908|KuroANN]] 按每个 query 通过过滤的向量数分配读盘量，比 PipeANN-Filter 最多快 34.5 倍；[[@2611.31882|RELAY]] 让换 embedding 模型时新旧向量能共存打分，不用整库重建。"
+   "本期两篇深度搜索 Agent 的论文，一篇改推理、一篇改训练，可以对照着读。[[@2611.32917|SOARS]] 发现 Agent 答错常常不是没搜到，而是证据排得太靠后：搜到过的 gold 文档比例几乎不变，Agent 实际预览到的却从 69.9% 升到 81.7%。它在每次搜索后用一个 254 毫秒就能给 BM25 前 100 篇打完分的快速相关性模型重排，GPT-5.4 Mini 在 BrowseComp-Plus 上的准确率从 73.9% 升到 84.7%，搜索次数从 23 降到 14，**但 Agent 层面只和不重排比**。[[@2611.32660|Bathys]] 处理长轨迹 RL 的一个加权偏差：上下文压缩把一条 rollout 切成几段，各段分别平均后短段被放大。==CM-GSPO== 按每段的 token 占比分配优势，27B 在 BrowseComp 子集上从 66.5% 升到 75.5%，普通 GSPO 加压缩反而是 64.0%；主表 80.49% 的基线多取自各家报告。",
+   "另两篇 ⭐ 都让训练时的表示和线上的一致。[[@2611.32203|OmniEVIE]] 是腾讯的多模态多向量 embedding 模型，每条记录压成最多 128 个 64 维 int8 向量（约 9KB），训练时就用压缩后的向量算损失，MMEB-V3 上压缩前后是 60.68 对 60.06，百万条记录单线程检索 54.2 ms；**速度对比的单向量基线是精确全扫，不是 ANN**。[[@2611.32125|LARF]] 给搜索相关性打六档分，在分档 token 上加 margin 约束，再蒸馏成只跑分类头的模型，延迟从 5.68 秒降到 0.97 秒，准确率从 45.20% 升到 50.98%；数据是内部标注集。",
+   "非 ⭐ 里，[[@2611.32855|SIDECAR]] 给语义 ID 生成式召回做投机解码，能证明结果是否为精确 top-K，算不出时报告误差因子供服务端提前停止。[[@2611.32908|KuroANN]] 按每个查询通过过滤的向量数分配 SSD 读取，最高比 PipeANN-Filter 快 34.5 倍。[[@2611.32073|TBS]] 把 LLM 语义排序已揭示的偏好记进无环图、靠传递性少问，调用比成对快排少 12–20 倍。[[@2611.33240|一项教育推荐评测研究]]发现，只看上一个活动的结构预测器就能达到最佳准确度的 0.81–1.00，离线分数测到的主要是平台怎么排课。"
   ]
  },
  "funnel": [
@@ -27,7 +28,7 @@
   {
    "id": "2611.32203",
    "title": "OmniEVIE: Evidence-Vector-Informed Embedding for Multi-modal Retrieval",
-   "title_zh": "多向量检索索引压到每条 9.4 KB，精度几乎不掉",
+   "title_zh": "训练时就按索引格式压缩：多向量检索每条 9KB，百万库单线程 54 毫秒",
    "affiliation": "腾讯（IMA 产品中心、优图实验室）",
    "primary_cat": "cs.IR",
    "direction": "B",
@@ -42,10 +43,12 @@
    "abstract_zh": "多模态检索需要匹配信息密集的页面、细粒度实体、有时序的视频，以及 Agent 的工具与记忆。单向量 embedding 会丢失局部证据，cross-encoder 要在线重读每个召回项，未压缩的[[late-interaction|late interaction]]又大到无法部署。我们提出 OmniEVIE，一个 4.5B 的==多向量 embedding 模型==，用一个压缩索引和一个==三阶段检索器==覆盖文本、图像、视觉文档、视频和工具。每条记录最多存储 128 个 64 维 int8 向量（9,472 字节，每百万条 8.82 GiB），从中得到均值向量、1-bit 符号和 int8 多向量，分别用于粗筛、中筛和最终检索，同时把每个命中定位到页面区域或视频时间段。训练、合并、索引和检索是协同设计的：所有任务共用一种检索格式；三级证据检查去除[[false-negative|假负例]]；动态采样依据基线模型与教师模型之间的差距；训练时就用 ==ST-HAC== 压缩候选，与索引形态保持一致；分阶段模型与专家模型按参数块合并；带噪声下限的显著性门控改进 query 侧打分。仅用公开数据训练，OmniEVIE 在 MMEB-V3（190 个任务）上得分 60.68（完整 d=2048 序列）和 60.06（K128×d64 int8 索引），在 MMEB-V2（78 个任务）上为 77.96，在 ViDoRe V3（48 个任务）上为 62.96。在 100 万和 500 万条记录上，单线程查询分别耗时 54.2 ms 和 120.2 ms，**比精确的 4096 维单向量检索快 11.1 倍和 25.3 倍，比完整 int8 MaxSim 快 236 倍和 532 倍**。视频直接从帧编码，无需视频解析模型：在 QVHighlights（1,083 个 query）上，78.0% 的 query 热度峰值落在标注片段内，**返回的片段（平均占视频长度 18%）有 94.3% 与标注片段相交，同长度随机片段为 44.9%**。权重与代码：https://huggingface.co/tencent/OmniEVIE-4B 和 https://github.com/Tencent/OmniEVIE。",
    "abstract_en": "Multimodal retrieval must match dense pages, fine-grained entities, ordered video, and agent tools and memory. Single-vector embeddings lose local evidence, cross-encoders reread every recalled item online, and uncompressed late interaction is too large to serve. We present OmniEVIE, a 4.5B multi-vector embedding model covering text, images, visual documents, video, and tools with one compressed index and a three-stage retriever. Each record stores at most 128 int8 vectors of dimension 64 (9,472 bytes, or 8.82 GiB per million records), providing a mean vector, 1-bit signs, and int8 multi-vectors for coarse, middle, and final search while localizing each hit to a page region or video interval. Training, merging, indexing, and retrieval are co-designed: all tasks share one retrieval format, a three-grade evidence check removes false negatives, dynamic sampling follows the baseline-teacher gap, candidates are compressed with ST-HAC during training to match the index, stage-wise and specialist models are merged by parameter block, and a saliency gate with a noise floor refines query scoring. Trained on public datasets, OmniEVIE scores 60.68 (full d=2048 sequence) and 60.06 (K128 x d64 int8 index) on MMEB-V3 (190 tasks), 77.96 on MMEB-V2 (78 tasks), and 62.96 on ViDoRe V3 (48 tasks). On 1M and 5M records, a single-thread query takes 54.2 ms and 120.2 ms (11.1x and 25.3x faster than exact 4096-d single-vector search; 236x and 532x faster than full int8 MaxSim). Video is encoded directly from frames without a parsing model: on QVHighlights (1,083 queries), the peak falls inside the labeled segment for 78.0% of queries and the returned span (18% of video length) intersects it for 94.3% vs. 44.9% random. Weights and code: https://huggingface.co/tencent/OmniEVIE-4B and https://github.com/Tencent/OmniEVIE.",
    "analysis": [
-    "OmniEVIE 把每条记录压到 9,472 字节，MMEB-V3（190 个任务）得 60.06，只比不压缩的 d=2048 全序列低 0.62；百万库单线程查询 54.2 ms，比全量 int8 MaxSim 快 236 倍。它要回答的是：[[late-interaction|后期交互]]能保留局部证据，但索引太大、扫描太慢，能否压到接近单向量的成本直接上线。",
-    "做法是 ==ST-HAC==：用 Ward 层次聚类把一条记录的 token 向量合并成最多 128 个 64 维 int8 质心，位置编码只参与分组。同一条记录读出均值向量、1-bit 符号、int8 多向量，构成 ==三阶段检索==：全库粗筛留 5,000，XOR+popcount 中筛留 1,000，int8 MaxSim 定排序。训练时候选就按建索引的方式聚类；难负例按证据分三级，排除[[false-negative|假负例]]。",
-    "最值得记住的是训练时就压缩的效果：**全序列直接截到 d=64 只有 59.02，低于 128 个质心的发布索引 60.06**。ViDoRe V3 同预算下 ST-HAC 62.96，随机留 token 60.41，网格池化 56.50；4,096 字节里，64 个 64 维向量（62.47）胜过 32 个 128 维（61.82）。视频改成逐帧独立编码，正放/倒放判别从 75.63% 掉到 51.17%。",
-    "保留意见：**MMEB-V2 上它 77.96，低于同底座的单向量 WeMM-Emb-4B（79.19）**，收益主要在长文本和工具检索；400 token 的长 query 也要 439.9 ms。对做多模态 RAG 或 Agent 工具检索的团队，这是一套可照搬的配置：百万条 8.82 GiB，不用 reranker 重读原始媒体，命中还给出页面框或视频秒数，下游生成只读那一块。"
+    "多模态检索里，相关性常常取决于几处不相邻的证据：财务表里的表头和某一格，视频里两个动作的先后。单向量 embedding 只做一次内积，局部证据会被平均掉；[[late-interaction|后期交互]]让查询的每个 token 各自去候选里找最像的向量，能保住证据，但一页文档或一段视频就有几千个向量，百万条记录要几百 GB，单线程查一次要十秒量级。腾讯的 ==OmniEVIE== 是一个 4.5B 的多向量 embedding 模型，覆盖文本、图像、文档页、视频和工具。它把每条记录固定压成最多 128 个 64 维 int8 向量，连同辅助数据每条最多 9,472 字节，**并且训练时就用这份压缩后的向量算损失**。",
+    "压缩方法叫 ==ST-HAC==：给 token 的语义向量拼上权重很小的空间、时间位置编码，做 Ward 层次聚类到 128 簇。Ward 每次合并代价最小的一对，所以大片背景和相邻静止帧先合并，一格数字、一个小 logo、一段短动作这类孤立的点留到最后、自成一簇。位置编码只决定怎么分簇，簇心只取语义向量的均值，再按全库统一的刻度量化成 int8。训练时，64 维分支的候选每一步都这样聚类、用簇心打分，所以训练分数和线上分数来自同一批向量。同一条记录还能读出三种表示，组成 ==三阶段检索==：所有簇心的均值（一个 64 维向量）扫全库，粗筛到 5,000 条；簇心的符号位（一次 XOR 加 popcount 就能比完）中筛到 1,000 条；最后用 int8 簇心做 MaxSim 排序。",
+    "压缩的损失不大。在 190 个任务的 MMEB-V3 上，同一套权重保留全部 token、2048 维时平均 60.68，换成发布的压缩索引是 60.06；视频只用官方 8 帧也有 59.76，高于 WeMM-Embedding-9B 的 59.33。视觉文档检索 ViDoRe V3（nDCG@10）上，压缩索引 62.96，不压缩 64.34；参照的 8B 模型 Nemotron-ColEmbed-V2 不压缩是 63.76，论文估算它每百万页约 5,898 GiB。同样 128 个 64 维向量的预算，均匀网格池化只有 56.50，随机留 128 个 token 是 60.41。单线程 CPU 上，一百万条记录时三阶段检索 54.2 ms，对全库跑 int8 MaxSim 要 12,781 ms，nDCG 只差 0.13（文档）和 0.26（视频）；对 4096 维单向量做精确搜索要 604 ms。",
+    "第一，字节固定时，向量个数比维度更值钱：每条 4,096 字节下，64 个 64 维向量得 62.47，32 个 128 维得 61.82。第二，查询侧的 ==噪声下限==：64 维单位球上，一个查询 token 和 128 个随机簇心的最大内积期望不超过约 0.389，即无关记录每个 token 也能白拿约 0.39 分。作者把下限定在 0.38，只把超出部分放大到 3.5 倍；加上它和一个给 token 加权的小门控，MMEB-V3 从 59.71 升到 60.06，agent 任务（工具、界面、记忆检索）从 52.99 升到 54.03。第三，每个簇心记着覆盖的页面矩形或时间区间，命中即可定位：在视频片段定位集 QVHighlights 上，返回片段平均占视频 18%，与标注相交的比例是 94.3%，同长度随机片段为 44.9%。",
+    "保留意见。MMEB-V2（78 个任务）上它是 77.96，低于同一骨干的 WeMM-Embedding-4B（79.19），作者说落后主要在细粒度分类和视频检索。MMEB-V3 的领先来自文本和 agent 任务，指令遵循是 69.65 对 WeMM-9B 的 52.78，论文归因于后期交互能把每个条件对到不同片段，但没有同数据训练的单向量对照，我觉得训练数据的差异也可能有贡献。速度对比里的单向量基线是精确全扫，**我觉得线上单向量系统通常用 ANN 索引，约 11 倍的加速不能直接套到真实系统上**；查询变长代价上升，一整页作查询要 440 ms。论文也没测“单向量召回加 cross-encoder 重排”的精度和时延。",
+    "对做多模态 RAG 或 agent 检索的人，价值在部署：每百万条 8.82 GiB，能放进单机内存，新记录直接追加，不用像 PLAID 那样重建码本；命中结果带页面矩形或视频起止秒数，下游生成模型可以只读那一块。权重和检索代码已开源。我觉得即使不用这个模型，“训练时就按索引格式压缩候选”这一点也可以单独搬到自己的多向量模型上。"
    ],
    "star_reasons": [
     "多向量检索压到百万条 8.82 GiB、单线程 54 ms",
@@ -57,13 +60,12 @@
     {
      "src": "https://arxiv.org/html/2611.32203v1/figures/fig4_sthac.png",
      "ref": "Figure 5",
-     "after": 2,
-     "caption_zh": "==ST-HAC== 离线压缩：按语义向量加时空编码做 Ward 聚类，孤立区域单独成簇、相邻静止帧合并，质心只取语义向量的均值，再量化成 int8。最右是一条记录最终占用的字节。"
+     "caption_zh": "==ST-HAC== 离线压缩：按语义向量加时空编码做 Ward 聚类，孤立区域单独成簇、相邻静止帧合并，质心只取语义向量的均值，再量化成 int8。最右是一条记录最终占用的字节。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.32203v1/figures/fig7_alignment.png",
      "ref": "Figure 8",
-     "after": 3,
      "caption_zh": "三个查询词在一页医学文档上各自命中的簇（不同颜色），以及门控给每个查询 token 的权重：相关页和无关页的最大相似度拉得很开。"
     },
     {
@@ -84,7 +86,8 @@
     {
      "src": "https://arxiv.org/html/2611.32203v1/figures/fig5_three_stage.png",
      "ref": "Figure 6",
-     "caption_zh": "==三阶段检索==在百万条记录上每一阶段的候选数和耗时，以及中筛窗口大小对 top-10 保留率的影响。"
+     "caption_zh": "==三阶段检索==在百万条记录上每一阶段的候选数和耗时，以及中筛窗口大小对 top-10 保留率的影响。",
+     "after": 3
     },
     {
      "src": "https://arxiv.org/html/2611.32203v1/figures/fig6_budget.png",
@@ -110,7 +113,7 @@
   {
    "id": "2611.32917",
    "title": "SOARS: System One Assisted Reranking for Agentic Search",
-   "title_zh": "召回不变、只做重排：搜索 Agent 准确率从 73.9% 提到 84.7%",
+   "title_zh": "证据早已搜到，只是排得太靠后：快速重排让搜索 Agent 少搜多答对",
    "affiliation": "Thomson Reuters Labs",
    "primary_cat": "cs.IR",
    "direction": "A",
@@ -125,10 +128,10 @@
    "abstract_zh": "深度搜索Agent通过多轮迭代的检索与推理来满足复杂信息需求，检索到的证据是否相关会影响下游表现。现有reranker能提升检索效果，但在整个搜索轨迹中反复调用时会带来可观的延迟和成本。我们提出SOARS，一个==免训练==框架，利用[[system-one-model|System One模型]]做快速、经过校准的相关性估计。在每一步搜索中，SOARS从长文档中选出与query相关的段落，并在一次调用中对候选重排，同时考虑==原始问题和Agent生成的子query==。在BrowseComp-Plus和WebShaper上，跨六种LLM骨干，SOARS一致地提高了答案准确率和证据召回，同时减少搜索调用次数、端到端延迟和推理成本。在BrowseComp-Plus上，**GPT-5.4 Mini的准确率从73.9%提高到84.7%，搜索调用从23次降到14次**，显示了System One重排让深度搜索更有效、更高效的潜力。",
    "abstract_en": "Deep search agents address complex information needs through iterative retrieval and reasoning, where the relevance of retrieved evidence influences downstream performance. Existing rerankers improve retrieval effectiveness but introduce substantial latency and cost when invoked throughout the search trajectory. We introduce SOARS, a training-free framework leveraging a System One model for fast, calibrated relevance estimation. At each search step, SOARS selects query-relevant passages from long documents and reranks candidates in a single call, jointly considering the original question and agent-generated sub-query. Across six LLM backbones on BrowseComp-Plus and WebShaper, SOARS consistently improves answer accuracy and evidence recall while reducing search calls, end-to-end latency, and inference cost. On BrowseComp-Plus, it improves GPT-5.4 Mini's accuracy from 73.9% to 84.7% while reducing search calls from 23 to 14, demonstrating the potential of System One reranking for more effective and efficient deep search.",
    "analysis": [
-    "在深度搜索 Agent 的每次搜索后插一个重排器，能不能同时更准、更省？答案是能：在 BrowseComp-Plus 上，六个 LLM 骨干的准确率全部显著上升，相对涨幅从 GPT-5.5 的 10.2% 到 Gemini 2.5 Pro 的 63.8%，搜索次数也全部下降。前提是重排器够快，每次约 250 毫秒。",
-    "方法叫 SOARS，免训练。重排器是 [[system-one-model|System One 模型]] Jev：一次调用给 BM25 前 100 篇候选逐篇打分，输出 0–3 四档相关度的==校准概率分布==，按期望相关度排序。查询用==原问题 ⊕ 子 query==（用户原问题拼上 Agent 这一步写的子查询），文档只取标题加 128 token 的==重叠段落==（从子查询第一个非停用词在文中首次出现处截取，而不是取开头）。离线对比中 Recall@10 达 47.2%（gold），与 RankGPT 打平，延迟却是 254 毫秒对 8.7 秒。",
-    "最值得记住的是收益来源：**同一个 BM25 下，surfaced recall（搜索返回过的文档覆盖了多少答案文档）几乎没变**，变的是 [[preview-behavior-recall|previewed 和 behavior recall]]。GPT-5.5 的 previewed gold recall 从 72.9 升到 88.7，behavior 从 56.1 升到 79.0。答案文档本来就在候选里，只是排在 Agent 不看的位置。搜得少也省钱：Opus 4.7 总成本 $247→$119。",
-    "保留意见：**端到端实验只和“不重排”比，没把 RankGPT 等重排器同样放进循环**，“不输 LLM 重排”只在 50 题离线实验里成立；Jev 还是不开源的商用 API。对做搜索 Agent 的人：先看 previewed 与 surfaced recall 的差距，差距大时，在循环里加毫秒级重排并把原问题拼进 query，往往比换更强的召回或更大的 Agent 模型划算。"
+    "深度搜索 Agent 回答一道难题要发二三十次子查询，每次返回的候选列表它只预览排在前面的几篇。每次搜索后加一个重排器能让好文档靠前，但用 LLM 做重排太慢：论文测得 RankGPT 重排一次要 8.7 秒，乘上几十次搜索就不划算。论文的 ==SOARS== 改用 [[system-one-model]] Jev：它一次前向就给每篇文档输出「无关、相关话题、部分提供、完整提供答案所需信息」四档上的校准概率，按期望档位排序，BM25 前 100 篇候选一次调用打完分，耗时 254 毫秒。为了让 100 篇装进它有限的输入，每篇只取标题加 128 个 token 的片段，片段从子查询里任一非停用词在文中最早出现的位置开始，而不是取文档开头；打分用的查询是原问题拼上子查询。",
+    "先看重排本身。在 BrowseComp-Plus（830 道难题、固定约 10 万篇文档的基准）上抽 50 题，用 GPT-5.4 Mini 生成的 1,044 个子查询重排 BM25 前 100 篇：SOARS 排进前 10 的 gold 文档（含答案的文档）召回是 47.2%，RankGPT 是 46.6%，把真值文档全部排到最前的上限是 48.0%。拼上原问题这一步贡献最大，只用子查询时 SOARS 是 41.2%，RankGPT 和 Qwen3-Reranker-4B 加上原问题也各涨 4–5 个点。再看整个 Agent：GPT-5.4 Mini 的准确率从 73.9% 升到 84.7%，平均搜索次数从 23 降到 14，六个模型的准确率都显著上升。**涨点来自排序而不是检索**：Agent 搜索返回过的 gold 文档比例几乎不变（94.9% 对 95.5%），它实际预览到的比例（[[preview-behavior-recall|预览召回]]）却从 69.9% 升到 81.7%。证据原本就在 BM25 的候选里，只是排在 Agent 不看的位置。",
+    "**Agent 层面只和不重排比**，没有把 RankGPT 等重排器放进循环比准确率，所以准确率提升里有多少要靠 Jev、有多少是任何像样的重排器都能带来的，文中分不开。GPT-5.5、Opus 4.7、Haiku 4.5 的无重排基线复用了 Pi-Serini 之前公开的轨迹，加 SOARS 的是新跑的，我怀疑两组之间隔着模型 API 的版本变化。第一阶段只用了 BM25，我估计换成更强的稠密检索后，好文档本来就更靠前，重排的空间会变小，依据是涨点主要来自把已检索到的文档往前挪。",
+    "对做 Deep Research Agent 的人，我觉得可以先在自己的轨迹日志里比一比「搜到过」和「预览过」的证据比例，差距大说明该补的是重排而不是检索。把原问题拼进重排查询不依赖 Jev，可以直接加在现有的重排器上。"
    ],
    "star_reasons": [
     "六个骨干、两个基准全部同向提升",
@@ -144,15 +147,15 @@
     {
      "src": "https://arxiv.org/html/2611.32917v1/motivation_figure_file.png",
      "ref": "Figure 1",
-     "after": 1,
-     "caption_zh": "六个 LLM 骨干在 BrowseComp-Plus 上加不加 SOARS 的对比：横轴是搜索次数，纵轴是准确率，每个模型都往左上方移动。"
+     "caption_zh": "六个 LLM 骨干在 BrowseComp-Plus 上加不加 SOARS 的对比：横轴是搜索次数，纵轴是准确率，每个模型都往左上方移动。",
+     "after": 2
     }
    ]
   },
   {
    "id": "2611.32125",
    "title": "LARF: Learning-aligned Reasoning Framework for Search Relevance",
-   "title_zh": "给打分 token 加一项 margin loss，比三种 RL 奖励加起来还管用",
+   "title_zh": "搜索相关性：推理只在训练时用，线上只跑分类头，准确率反而更高",
    "affiliation": "腾讯元宝团队（Yuanbao Team, Tencent）",
    "primary_cat": "cs.IR",
    "direction": "C",
@@ -167,10 +170,10 @@
    "abstract_zh": "query-文档相关性估计是 AI 原生搜索系统的核心组件：模型需要在复杂、多维的标准下判断检索到的文档是否满足用户的信息需求。然而，直接把大语言模型用于该任务仍有困难：常规监督微调（SFT）对特定领域判断依据的监督有限，而标准的轨迹级强化学习（RL）目标并不显式拉开相邻有序相关性标签之间的间隔。此外，推理虽然在训练中有用，但 chain-of-thought（CoT）推理对延迟敏感的在线排序并不现实。这些问题使模糊的决策边界难以分清。我们提出三阶段框架 ==LARF==（Learning-Aligned Reasoning Framework for Search Relevance）：先在策略性挑选的样本上，用多 Agent 引导生成的 CoT 判断依据做冷启动 SFT；再采用==判别式 GRPO==（[[grpo]]），使用属性级、列表级和规则一致性奖励，并在终止相关性 token 上加 [[margin-loss|margin loss]]；最后把教师模型蒸馏为[[dual-head-distillation|双头学生模型]]，保留其分类头做非自回归推理。在一个人工标注的网页搜索相关性基准（约 30 万训练、1.6 万测试样本）上，**LARF-8B 的六分类准确率提高 5.78 个百分点，NDCG 提高 5.05 个点**，而**仅用分类头的服务路径使推理延迟降低 82.9%**。这些结果表明，把结构化推理、终止决策优化和分类头蒸馏对齐起来，可以为工业搜索相关性建模提供有效的精度-效率权衡。",
    "abstract_en": "Query-document relevance estimation is a core component of AI-native search systems, where a model must assess whether retrieved documents satisfy users' information needs under complex, multi-dimensional criteria. However, directly applying large language models (LLMs) to this task remains challenging because conventional supervised fine-tuning (SFT) provides limited supervision for domain-specific judgment rationales, while standard trajectory-level reinforcement learning (RL) objectives do not explicitly enforce margin separation among adjacent ordinal relevance labels. Moreover, although such reasoning can be useful during training, chain-of-thought (CoT) reasoning is impractical for latency-sensitive online ranking. These challenges make it difficult to resolve ambiguous decision boundaries. We propose a three-stage framework LARF (Learning-Aligned Reasoning Framework for Search Relevance): it first performs cold-start SFT on strategically selected samples with multi-agent guided CoT rationales, then applies discriminative GRPO with attribute-wise, list-wise, and rule-consistency rewards together with a margin loss on the terminal relevance token, and finally distills the teacher into a dual-head student whose classification heads are retained for non-autoregressive inference. On a human-annotated web search relevance benchmark with approximately 300K training and 16K test instances, LARF-8B improves six-class classification accuracy by 5.78 percentage points and NDCG by 5.05 points, while the classification-only serving path reduces inference latency by 82.9\\%. These results indicate that aligning structured reasoning, terminal decision optimization, and classification-head distillation can provide an effective accuracy--efficiency trade-off for industrial search relevance modeling.",
    "analysis": [
-    "这篇论文来自腾讯元宝 AI 搜索团队，追问的是：用 LLM 给 query-文档打 0–5 六档相关分，难点到底在哪？他们的答案是相邻档位之间的边界。8B 模型的六分类准确率从 45.20% 提到 50.98%（+5.78），NDCG 从 74.51 到 79.56，其中最大的单笔增益来自直接约束最终打分 token 的一项损失。",
-    "做法分三段。==冷启动 SFT==：按主题分层、按相关档位覆盖、再加难例挑出 1/3 的数据，由语义、时效、权威、质量四个 Agent 分别写分析，协调者在人工标签的条件下汇总成 CoT 目标。==判别式 GRPO==：[[grpo]] 的奖励由属性级、列表级（同一 query 下文档排序的一致率）和规则一致性三项相加，另外在输出档位数字的那个位置，对 0–5 六个数字的 logits 加 hinge 式 [[margin-loss|margin loss]]。==双头蒸馏==：[[dual-head-distillation|共享骨干接 5 个分类头和 1 个生成头]]，上线时只走分类头。",
-    "最值得记住的是消融表 3：三种奖励合起来只把准确率从 46.12% 推到 47.40%，其中规则奖励只贡献 0.22 点，还让二分类精度从 71.95 降到 71.28；**margin loss 一项就从 47.40% 拉到 49.35%**。表 4 也有意思：只训分类头得到 48.95%，比带 CoT 的自回归推理（49.35%）低；训练时加回生成头作正则，单头升到 50.65%，五个维度头到 50.98%。理由监督在训练时有用，推理时可以不生成。",
-    "保留意见：**82.9% 的延迟下降是 8B 双头模型相对 8B 自回归（5.68 秒降到 0.97 秒/对）**，线上 A/B 部署的却是 1.7B 学生，它的离线准确率只有 45.80%，比没有经过 LARF 训练的 Qwen3-8B 只高 0.6 点，论文也没给它的延迟；另外 Qwen3-Reranker 基线是否在同一批 30 万数据上微调过没有说明，所有离线结果都来自内部测试集。对做 LLM 相关性打分的团队来说，如果模型最终输出一个档位 token，在 GRPO 里给这个 token 加 margin loss 是改动最小、收益最大的一步；CoT 可以只留在训练阶段。"
+    "搜索相关性模型要给每个查询-文档对打 0–5 六档分，难点在相邻两档的边界，比如「基本相关」和「高度相关」，模型最容易在这里分错。论文认为现有做法各缺一块：只用标签做 SFT 学不到判断理由；[[grpo]] 只按整条回答给奖励，决定分档的那个数字 token 没有直接监督；带思维链推理又太慢。==LARF== 分三段解决：先用三分之一数据加多 agent 生成的分维度推理做冷启动 SFT，再用 GRPO 加一个只作用在最终分档 token 上的 [[margin-loss]]，最后蒸馏成上线时不生成推理、只跑分类头的模型。",
+    "边界问题主要靠第二段解决。做法是在最终分档位置的六个数字 token 上，要求正确档的 logit 比得分最高的错误档至少高出 1，不够就罚，已经拉开的样本不再管。从同一个 SFT 起点做消融，三种奖励（逐维度打分、同查询内排序、规则一致）合起来只把六档准确率从 46.12% 提到 47.40%；**加上 margin loss 后跳到 49.35%，我按消融表算，这是全流程最大的一步**。三段全做完，Qwen3-8B 的六档准确率从 45.20% 到 50.98%，NDCG 从 74.51 到 79.56，对照是同一模型用全量约 30 万条数据直接 SFT。",
+    "第三段回答「不生成推理会不会掉点」。==双头蒸馏==让模型共用一个主干：一组分类头读最后一个输入 token 的隐状态，分别给总体相关和语义、权威、质量、时效四个子维度打分；另一个生成头学着复述 GRPO 模型写的推理。消融显示生成头不能省：只训分类头是 48.95%，比边推理边出分的 49.35% 低；带上生成头、五个维度头一起训到 50.98%。每对的延迟从 5.68 秒降到 0.97 秒，减少 82.9%。推理监督起的是训练时正则化的作用。",
+    "保留意见。数据是内部人工标注集，没有公开基准和多次运行的方差。我觉得「8B 超过近 30 倍大的 Qwen3-235B」要打折扣：论文没说 235B 是否在同样数据上微调过，8B 基线却是全量 SFT 过的，而且 235B 是只激活 22B 参数的 MoE。0.97 秒是 8B 双头模型的延迟，真正上线的是蒸馏出的 1.7B 学生，准确率 45.80% 只比 8B 全量 SFT 基线高 0.6 个点，延迟也没给；线上 A/B 的涨幅没说是绝对还是相对值，也没给显著性。做相关性精排可以直接借用两件事：在分档 token 的 logit 上加 margin 约束；训练时留一个学推理的辅助头，上线时扔掉。"
    ],
    "star_reasons": [
     "消融把增益拆到每个组件，margin loss 单项最大",
@@ -181,8 +184,8 @@
     {
      "src": "https://arxiv.org/html/2611.32125v1/fig1.png",
      "ref": "Figure 1",
-     "after": 2,
-     "caption_zh": "LARF 的三个阶段：带引导思维链的==冷启动 SFT==、带 margin 对齐的==判别式 GRPO==、==双头蒸馏==。"
+     "caption_zh": "LARF 的三个阶段：带引导思维链的==冷启动 SFT==、带 margin 对齐的==判别式 GRPO==、==双头蒸馏==。",
+     "after": 1
     }
    ],
    "translation": {
@@ -193,7 +196,7 @@
   {
    "id": "2611.32660",
    "title": "Bathys: Advancing Deep Search Agents",
-   "title_zh": "按压缩边界切段做 RL，27B 搜索 Agent 多涨 9 个点",
+   "title_zh": "搜索轨迹压缩切段后，RL 要逐段算比率、按整条轨迹加权，四个基准三个涨分",
    "affiliation": "商汤 SenseTime Research、香港大学等",
    "primary_cat": "cs.CL",
    "direction": "A",
@@ -208,10 +211,10 @@
    "abstract_zh": "深度搜索是智能体处理复杂开放式任务的关键能力：这类任务需要迭代地收集信息、改写 query 并基于证据做验证，而不是一次检索就能解决。为此我们提出 Bathys 9B 和 27B 深度搜索智能体，其训练框架涵盖可验证问题合成、后训练，以及在[[context-compaction|上下文压缩]]下的在线强化学习（RL）。我们的高质量数据构造同时保证搜索深度与可靠性：每条线索都被改写为需要单独检索才能解开的==间接指代==，保留下来的证据链则可用于验证这些线索共同确定唯一答案。精选轨迹支撑起由监督微调（SFT）、Kahneman–Tversky 优化（[[kto|KTO]]）和==压缩管理的组序列策略优化（CM-GSPO）==组成的训练流程：SFT 为长程工具使用和 query 改写打下稳定基础；KTO 利用轨迹级的二元反馈，改进对有证据支撑的答案的选择；CM-GSPO 在记录下来的 rollout 上下文上，用长度归一化的似然比优化执行子轨迹，并对子轨迹优势重新加权，以修正对各子轨迹损失分别取平均所带来的额外权重。在带有轨迹自验证和条件重试的评测协议下，Bathys 9B 和 27B 在 BrowseComp 上分别达到 **66.51% 和 80.49%**。",
    "abstract_en": "Deep search is a critical capability for agents tackling complex, open-ended tasks, where solving a problem requires iterative information gathering, query reformulation, and evidence-based verification rather than a single retrieval step. To address these requirements, we present Bathys 9B and 27B deep search agents built around a training framework that spans verifiable question synthesis, post-training, and online reinforcement learning (RL) under context compression. Our high-quality data construction ensures both search depth and reliability: each clue is reformulated as an indirect reference requiring independent retrieval, and retained evidence chains enable verification that the clues jointly determine a unique answer. Curated trajectories underpin a pipeline of supervised fine-tuning (SFT), Kahneman-Tversky Optimization (KTO), and Compaction-Managed Group Sequence Policy Optimization (CM-GSPO): SFT provides a stable foundation for tool use over long horizons and query reformulation; KTO uses binary feedback on trajectories to improve the selection of answers grounded in evidence; CM-GSPO optimizes execution sub-trajectories with length-normalized likelihood ratios on the recorded rollout contexts and reweights sub-trajectory advantages to correct the extra weighting introduced by independently averaging sub-trajectory losses. Bathys 9B and 27B attain 66.51% and 80.49% on BrowseComp, respectively, under an evaluation protocol with trajectory self-verification and conditional retries.",
    "analysis": [
-    "27B 模型从 KTO 检查点出发做在线 RL，用 ==CM-GSPO== 后在 200 题 BrowseComp 子集上从 66.50% 涨到 75.50%（+9.00，未开自验证）；同起点的普通 [[gspo|GSPO]] 和把[[context-compaction|上下文压缩]]直接塞进 GSPO 的 Compaction RL，**在四个基准上都没超过 KTO**。论文追问：轨迹长到要压缩历史时，RL 梯度该怎么算。",
-    "做法是按每次压缩把 rollout 切成 ==子轨迹==，每段在其起点保存的上下文下算长度归一化的重要性比；各段共享整条轨迹的优势值，再乘以该段 token 占比，避免切得碎的轨迹被放大。流程为 SFT → [[kto|KTO]] → CM-GSPO，基座 Qwen3.5-9B / Qwen3.6-27B，数据合成和 CM-GSPO 沿用同团队的 Glasseek。",
-    "KTO 让 27B 超时率从 15.5% 升到 26.0%，准确率却从 65.00% 升到 66.50%；同一数据池换成成对的 DPO，9B 掉 4.00 点、27B 掉 1.50 点。**9B 上 CM-GSPO 完成率到 99.5%，平均轮数却从 61.5 涨到 98.5。**",
-    "保留意见：主表 66.51% / 80.49% 用了 ==自验证加条件重试==，**论文没给全量集去掉自验证的分数和重试次数**，无法和训练收益分开。对做长程搜索 Agent 的团队：rollout 中途会压缩历史，就不能把它当普通序列交给 GSPO，否则 RL 可能白跑甚至倒退。"
+    "深度搜索 Agent 一道题常要上百轮搜索和读网页，会撑满 128K 上下文，在线 RL 时常用[[context-compaction|上下文压缩]]：历史超过阈值就压掉旧内容接着搜。于是一条 rollout 在压缩点被切成几段，每段看到的历史不同，只能各自作为一条训练序列；如果每段各自对 token 求平均，短的段、被切得多的轨迹在梯度里的分量就被放大了。Bathys（商汤等，基于 Qwen3.5-9B 和 Qwen3.6-27B）走 SFT → [[kto|KTO]] → ==CM-GSPO== 三步，最后一步专门处理这个问题；CM-GSPO 和出题流程都沿用同组前作 Glasseek。",
+    "CM-GSPO 在 [[gspo|GSPO]] 上改了两处：每段用 rollout 时记录下的那份压缩后上下文来算新旧策略的概率比；整条轨迹只有一个最终奖励，它的优势值按「这段的策略 token 数 ÷ 整条轨迹的策略 token 数」分给各段，这样每个 token 的权重都和没切段时一样。27B 上从 KTO 之后的模型出发做消融，在固定的 200 道 BrowseComp 子集上测、不开自验证：起点 66.5%；不压缩的普通 GSPO 66.0%；加了压缩但仍用普通 GSPO 的版本 64.0%；**CM-GSPO 75.5%，是三种在线 RL 里唯一超过起点的**。在搜索结果互相矛盾的 Seal-0 上，它从 49.55% 升到 62.16%。我怀疑「加了压缩反而更差」正是上面那种加权偏差造成的，但论文没单独验证，压缩改变了模型看到的历史也可能是原因。",
+    "这组结果有几处要打折扣。表里没有把「分段算概率比」和「按长度分配优势」拆开测；CM-GSPO 在中文的 BrowseComp-ZH 上反而从 75.78% 掉到 71.97%；数字都是点估计，作者自己也只当方向性证据。同一个 200 题子集上，9B 经 CM-GSPO 后超时（轨迹没跑完）的比例从 KTO 后的 20.0% 降到 0.5%，但每题平均轮数从 SFT 的 61.5 涨到 98.5。主表里 9B 的 66.51%、27B 的 80.49%（BrowseComp 全集）用的是「跑一遍，让模型自查整条轨迹，不通过才重跑」的协议，**基线大多取自各家报告、各用各的评测框架，不是同条件比较**。",
+    "对在长程 Agent 上做 RL、训练时会压缩或总结历史的人，这篇给了一个很便宜的检查项：如果把 rollout 在压缩点切成了多条序列，看看损失是不是按段各自平均；按论文的写法，修正只是在每段的优势上乘以它占整条轨迹的 token 比例。9B、27B 的权重和一部分 SFT 轨迹、KTO 好坏标注数据已在 Hugging Face 公开。"
    ],
    "star_reasons": [
     "压缩感知 RL 有对照消融：普通 GSPO 反而退步",
@@ -223,8 +226,8 @@
     {
      "src": "https://arxiv.org/html/2611.32660v1/assets/bathys_browsecomp_trajectory_reliability_cost.png",
      "ref": "Figure 3",
-     "after": 3,
-     "caption_zh": "各训练阶段的轨迹可靠性与成本：上下两行是 27B 和 9B，左边是答对、答错、超时的占比，右边是轨迹长度。"
+     "caption_zh": "各训练阶段的轨迹可靠性与成本：上下两行是 27B 和 9B，左边是答对、答错、超时的占比，右边是轨迹长度。",
+     "after": 3
     },
     {
      "src": "https://arxiv.org/html/2611.32660v1/bathys-main-results.png",

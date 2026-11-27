@@ -129,7 +129,7 @@ def main(topic_path, key, work):
     related = shown | set(sel["others"])  # below the topic's min_score counts as excluded
     excluded = [line(p) for p in pool.values() if p["id"] not in related]
     n_rel = len(shown) + len(others)
-    span = label(batches[0]) if len(batches) == 1 else f"{batches[0]} – {batches[-1]}（{len(batches)} 批）"
+    span = label(batches[0]) if len(batches) == 1 else f"{batches[0]} – {batches[-1]}"
     out = {
         "topic": tid, "date": key, "batches": batches, "batch": f"arXiv 公布批次 {span}",
         "rules_version": topic["rules_version"], "overview": load(os.path.join(work, "overview.json"), {}),

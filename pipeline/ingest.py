@@ -76,7 +76,9 @@ def recent_pool_ids(days=30):
 
 def hot_extras(batch):
     """arXiv ids that are on HF Daily (batch day and the day before) or were posted to HN in the
-    last 2 days. They are added to the pool even if outside our categories or from older batches."""
+    last 2 days with at least `heat.hn_min_points` points (most arXiv links on HN get no attention).
+    They are added to the pool even if outside our categories or from older batches."""
+    min_points = cfg()["heat"].get("hn_min_points", 10)
     b = date.fromisoformat(batch)
     found = {}
     for d in (b - timedelta(days=1), b):
@@ -91,7 +93,7 @@ def hot_extras(batch):
                                     "numericFilters": f"created_at_i>{since}"})
         for h in get_json(f"https://hn.algolia.com/api/v1/search_by_date?{q}")["hits"]:
             m = ARXIV_ID.search(h.get("url") or "")
-            if m:
+            if m and (h.get("points") or 0) >= min_points:
                 found.setdefault(m.group(1), set()).add("hn")
     except Exception as e:
         print(f"HN: {e}", file=sys.stderr)

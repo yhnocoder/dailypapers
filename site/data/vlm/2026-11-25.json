@@ -6,12 +6,13 @@
   "2026-11-24",
   "2026-11-25"
  ],
- "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25（3 批）",
+ "batch": "arXiv 公布批次 2026-11-23 – 2026-11-25",
  "rules_version": "v2",
  "overview": {
   "guide": [
-   "[[@2611.28665|Seeing Right, Writing Wrong]] 用孪生图测出开源 VLM 一旦写下空间关系就不再看图：固定思维链后换成左右镜像的图，答案只变 3.4 个点，而中层探针显示模型其实看对了。[[@2611.32316|ASTERISM]] 审了 19 个多图基准，24.2% 的题一张图就能答；22 个 RL 后训练的 Qwen2.5-VL-7B 在新基准上最多只涨 1.6 分。[[@2611.29146|RVLM]] 用无训练分割把图块聚成区域 token，大图上 token 少一半、分数高 5.3，但这部分收益来自推理时的分辨率外推，文字密集任务反而掉分。",
-   "[[@2611.28684|视觉 token 保留研究]]发现推理时对图像的注意力在头几步达到峰值、集中在中间层，生成过程中删掉最多 59% 的提示 token，性能只小幅下降，视频上可删到 65%。[[@2611.30320|Accuracy Is Not Evidence]]测出 SFT 和三个 IoU-reward RL checkpoint 让 Qwen2.5-VL-7B 的时序定位涨了 9–20 个点，但答案对事件帧的依赖没有比基础模型更强，部分涨幅来自盲答。[[@2611.28947|NightWatch]]用一个 0.8B 的流式监视器给电脑操作 Agent 补上实时感知，OSWorld 上浪费的时间减少 53%，成功率持平。[[@2611.34575|Sage-Med]]是一份 101 页的医疗多模态报告，35B-A3B 模型在 31 个公开基准上平均 58.26%，超过 235B 的 Hulu-Med。"
+   "生成过程中模型还在不在看图，本期有两篇可以对照着读。[[@2611.28665|Seeing Right, Writing Wrong]] 解释了为什么先写推理再答空间题常常更差：一旦写下一句空间关系，答案就照着这句话读。把推理原样接到只交换遮挡前后、答案相反的图后面，7 个 8B 及以下模型的答案随图变化的幅度（100 表示完全跟着图走，0 表示完全不看图）从直接作答时的 3.0–76.5 降到 2.0–8.9。读它时要注意，**错多半出在写下的那句关系本身**，模型中间层其实还能解出正确的前后顺序。[[@2611.28684|一项关于视觉 token 保留的研究]]从注意力上看到相似的时间结构：视觉注意力在生成最初几步达到峰值，随后转向已生成的推理 token，沿生成时间移除最多 59% 的输入 token，性能只有很小的下降。",
+   "另外两篇怀疑的是分数本身。[[@2611.32316|ASTERISM]] 逐题审查 19 个多图基准的 32,688 道题，发现 24.2% 只看一张图或只读题目就能答对；重建后的基准上，最强的闭源模型 Claude Opus 5.5 在人工核验的 400 道难题上只有 67.9%。它还提出 ==CICA==，在 [[rlvr|RLVR]] 里按每个 token 对其他图的依赖程度分配奖励，在三个 7B–9B 模型上的提升是同数据训练的 GRPO 等五种 RL 目标的两倍以上。[[@2611.30320|Accuracy Is Not Evidence]] 在视频时序定位上可以对照着读：监督微调和三个用 IoU 当奖励的 RL checkpoint 让 Qwen2.5-VL-7B 的准确率涨了 9–20 个点，答案却并不比基础模型更依赖事件所在的帧；作者用编辑事件帧后答案似然的下降度量这种依赖，并拿它当训练目标。",
+   "模型结构上，[[@2611.29146|RVLM]] 用不需要训练的颜色分割把图切成区域，每个区域池化成一个 token：同样的训练下平均少用 21.5% 的视觉 token，在最大一档的图上少用 51.8%、分数高 5.3。我怀疑这一档的差距有一部分来自基线在超出训练长度的视觉序列上退化。Agent 方面，[[@2611.34232|OS-Omni]] 在六类系统环境里评测跨平台长程工作流，人完成一个任务平均要 67.54 步；最强的 Claude Opus 5.5 成功率 68.5%，比人类低 8.8 个点，在 iOS 和 macOS 上落后超过 25 个点。"
   ]
  },
  "funnel": [
@@ -36,7 +37,7 @@
   {
    "id": "2611.28665",
    "title": "Seeing Right, Writing Wrong: Where Short Chain-of-Thought Breaks Spatial VQA",
-   "title_zh": "开源 VLM 一写下空间关系就不再看图：换图只改 3 个点",
+   "title_zh": "开源 VLM 在思维链里写下空间关系后，答案就不再跟着图走",
    "affiliation": "华中科技大学",
    "primary_cat": "cs.CV",
    "direction": "B",
@@ -56,10 +57,12 @@
     "hn": 0
    },
    "analysis": [
-    "让开源 VLM「一步步想」再答空间题，答案会改由它自己写下的那句空间关系决定，图像几乎不再起作用。把模型自己的思维链去掉结论句后固定住（==Rcut==），换上深度或左右相反的孪生图：在左右镜像的自然照片上，直接作答时答案随图变化 69.6 个点，固定思维链后只剩 3.4 个点。**短 CoT 是帮还是害，基本取决于写下的那句关系比直接作答准不准**。",
-    "论文覆盖 15 个开源 VLM（2B–38B）和 6 个闭源模型，用[[forced-readout|强制读出]]逐句追踪正确选项的概率，定位答案翻转的==转折句==。同长度填充文本与直接作答相差不到 2.3 个点，重新给图最多找回 0.8 个点，排除了格式和遗忘。失败分三段：写作削弱「越低越近」捷径，也丢掉有效的遮挡线索；文本接管答案；结论句在反向问法（写了「F 在 K 前面」，问「K 在 F 后面吗」）上出错 29.5%。**错误关系加结论误映射占 CoT 损失的五分之四。**",
-    "最值得记住的是「看对了、写错了」：模型写出错误关系的那个 token 上，中层线性探针仍能以 0.88–0.93 的平衡准确率解出真实深度顺序。Qwen3-VL-32B 同样锁死，规模不解决问题。闭源的 Claude、GPT、Gemini 在文本固定时仍随图改答（74–92 个点），即[[answer-step-regrounding]]；关掉推理调用的另三家照样锁死。在 Qwen3-VL-8B 上用 [[lora]] 只在答案字母上训练、标签由图像决定，COCO 孪生图上的图像影响从 2.9 回升到 51.7。",
-    "保留意见：题目全是二选一的深度或左右关系；**LoRA 只在一个 8B 模型上试过，原本答对的题保留率从 98.9% 降到 92.8%**，闭源模型的重新看图也和答案轮推理分不开。对做空间 VQA 或多模态 CoT 的人：自然图基准上 CoT 净效应接近 0，但逐题答案大量翻动，不能当作无害；评估时要单独统计写下的空间关系准确率，训练里可加入「固定推理、按图打标签」的答案步样本。"
+    "让 VLM「一步步想」再回答空间问题（谁在前、谁在左），准确率常常不升反降，而图像一直在上下文里，模型有足够的信息来判断。作者在 15 个开源 VLM 和 6 个闭源模型上排查原因，结论是短 CoT 把感知问题变成了==转写问题==：**模型一旦写下一句空间关系，答案就照着这句话读，不再回头看图**。所以 CoT 有没有用，主要看写下的关系比直接作答准还是不准。两种常见解释先被排除：把推理换成同样长度的中性文字，准确率和直接作答相差不超过 2.3 分；推理写完后再给一遍图，最多找回 0.8 分。",
+    "核心证据是固定推理、只换图。作者渲染成对的==孪生图==：两个形状轮廓和位置相同，只交换谁压在谁上面，正确答案因此相反。先让模型对原图写推理并删掉结论句，再把这段文字原样接在原图或孪生图后面，用[[forced-readout]]读出答案，看答案随图变化的幅度（100 表示完全跟着图走，0 表示完全不看图）。直接作答时，7 个 8B 及以下模型在 3.0 到 76.5 之间；接上自己的推理后只剩 2.0–8.9。自然照片上也一样：把左右关系照片水平镜像，直接作答平均变化 69.6，固定推理后是 3.4。反过来，把推理第一句空间关系改成正确的再续写，6 个模型里有 5 个比直接作答高 14.3–34.9 分。",
+    "既然答案跟着文字走，问题就变成写下的关系为什么会错。逐句读出正确选项的概率：Qwen3-VL-8B 被问「橙色圆在绿色方块前面吗」（实际是方块在前），前三句概率都是 1.00，写到「橙色圆盖住了绿色方块的一部分」就跌到 0。在直接作答对、CoT 答错的 3,014 个样本里，57% 写下的关系本身是错的，多是把遮挡读反；24% 关系写对了却==结论误映射==，主要出在反向问法：写了「F 在 K 前面」，被问「K 在 F 后面吗」却答否，这类题错 29.5%，同义复述只错 2.4%。写错也不是没看见：中间层的线性探针仍能以约 0.9 的平衡准确率解出真实前后顺序。",
+    "写推理还改变了模型依赖的线索。很多小模型直接作答时靠「画面里越低越近」这条捷径，写推理在 13 个开源模型里都削弱了它，这在线索平衡的题上有帮助；但本来会读遮挡的 Molmo-7B-D 和 Qwen3-VL-32B 对遮挡线索的依赖也明显减弱。两头相抵，CoT 的净收益约等于写下关系的准确率减去直接作答准确率，合成数据上相关系数 0.93，用来预测自然照片深度题平均误差约 1.4 分。规模不解决问题，Qwen3-VL-32B 固定推理后换图答案只变 0.1 分。闭源模型里，Claude Opus 5.5、GPT-6-Astra、Gemini-4-Argon 固定推理后仍跟着新图改答案（74–92 分），另外三个和开源模型一样锁在文本上。",
+    "作者在 Qwen3-VL-8B 上试着补上这一步：用 [[lora]] 在渲染图上微调，输入是模型自己删掉结论的推理，标签由当前给的图决定。训练后在镜像照片上固定推理换图，变化幅度从 1.3 升到 90.7。保留意见有三条。一是闭源模型能否[[answer-step-regrounding|在答案步重新看图]]，和答题时是否开着推理完全重合，锁死的三个恰好都是关掉推理调用的。二是微调只做了一个模型，留出集上直接作答准确率没有提高（70.7% 到 70.0%）。三是题目全是二选一的前后、左右判断，长推理和开放式任务没测；句子对错由 Claude 和 GPT 判定，人工只由作者核对了 24 句。",
+    "对评测空间能力的人，汇总分数会掩盖这个问题：在 BLINK 和 3DSRBench 留出集上，CoT 与直接作答只差 −3.1 到 +1.3 分，单题答案却大量翻动，单独统计写下的关系对不对更能说明问题。对训练开源 VLM 的人，「固定推理、按图给标签」的答案步监督是可以直接试的目标。我觉得把模型自己的图像描述放回上下文再决策的 Agent 也有同样风险：按这篇的结果，写错的描述后面多半不会被图纠正。"
    ],
    "star_reasons": [
     "直击多模态 CoT 为何伤害空间感知的核心问题，并给出可证伪的三段机制",
@@ -72,13 +75,13 @@
      "src": "https://arxiv.org/html/2611.28665v1/fig1_teaser.png",
      "ref": "Figure 1",
      "caption_zh": "(a) 同一对遮挡孪生图，直接作答随图翻转，CoT 两张都说「六边形在上面」；(c) 是关键：写下关系后图像影响从直接作答的几十个点跌到 3–5 个点，而 Claude、GPT 等闭源模型固定文本后仍有 74–90 个点。",
-     "after": 1
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.28665v1/fig_cues.svg",
      "ref": "Figure 3",
      "caption_zh": "(a) CoT 让「越低越近」捷径（高度）的作用在所有模型里下降，但读遮挡好的 Molmo、Qwen3-VL-32B 的遮挡线索也跟着掉；(b) 3,014 个「直接对、CoT 错」的样本里，57% 以==错误关系==收尾，24% 是对的关系配了错的结论。",
-     "after": 2
+     "after": 3
     },
     {
      "src": "https://arxiv.org/html/2611.28665v1/supp_qual_examples.png",
@@ -104,7 +107,7 @@
   {
    "id": "2611.29146",
    "title": "RVLM: Fewer Tokens, Better Resolution Scaling, Fine-Grained Spatial Grounding",
-   "title_zh": "无训练分割把图块聚成区域 token：越高清越占优，最多涨 5.3 分",
+   "title_zh": "把图按颜色切成区域再池化：图越大，VLM 省的 token 越多、领先基线越多",
    "affiliation": "University of Illinois Urbana-Champaign；Allen Institute for AI",
    "primary_cat": "cs.CV",
    "direction": "A",
@@ -120,10 +123,10 @@
    "abstract_en": "Vision-Language Models (VLMs) tokenize images using fixed spatial grids, so visual token count grows with pixel area rather than scene content. We propose to group neighboring patches based on their visual appearance, allowing tokens to represent coherent image regions rather than fixed spatial windows. We introduce RVLM, a VLM trained to use regions rather than patches as its visual units. Analyzing region construction for general-purpose VLMs, we find that regions must cover the full image, stay spatially connected during end-to-end training, and preserve fine structure such as small text, while semantic grouping adds little. RVLM therefore partitions images using training-free Felzenszwalb-Huttenlocher segmentation, assigns each ViT patch to a region, and pools patches within each region into a variable-length sequence of visual tokens. The patch-to-region assignment is retained to support spatially precise prediction through coarse-to-fine decoding. Across tasks spanning VQA, pointing, counting, segmentation, and depth estimation, RVLM matches or improves example-weighted task performance while using 21.5% fewer visual tokens than an identically trained patch baseline. The advantage grows with image resolution, reaching a 5.3-point gain while using 51.8% fewer visual tokens at the highest-resolution setting. The gains are largest on spatially demanding tasks, where prior token-reduction methods degrade most sharply. RVLM adds no model parameters and improves inference throughput by up to 35.9%. On unseen pathology and satellite images and on video benchmarks without any video training, RVLM performs on par with the patch baseline while using 2-3$\\times$ fewer visual tokens. These results establish regions as a scalable alternative to patch-based visual representations while preserving the spatial precision required for grounded prediction.",
    "batch": "2026-11-23",
    "analysis": [
-    "视觉 token 不必按固定网格切：RVLM 用无需训练的 ==FH 分割==（[[fh-segmentation]]）把相邻、颜色相近的 ViT patch 聚成区域，每个区域池化成一个 token，在 35 个任务上比 patch 基线少用 21.5% 视觉 token，平均分还略高 0.6。**收益集中在大图**：2.08–2.63 MP 的图上 token 少 51.8%，分数高 5.3。对照组 PVLM 与它架构、数据、训练配方完全相同（SigLIP2 + Qwen3-4B，MolmoPoint 架构），只差分词方式。",
-    "FH 在 CPU 的 dataloader 里跑，每张图约 49 ms，不占 GPU 时间。每个 patch 只归属一个区域，超过 16 个 patch 的区域再切成相邻的小组，组内用 cross-attention 池化。指点沿用 ==由粗到细解码==（[[coarse-to-fine-pointing]]）：先选区域 token，再选区域里的 patch，最后在 patch 的 4×4 格里选点。这两条规则缺一不可：**直接把 patch 换成区域，PixMo-Point 从 84.4 掉到 10.0**。",
-    "最值得记住的是造区域的对比：SAM 会留下 13–29% 的像素没有区域，从 VLM 自身特征聚出的区域在端到端训练 1000 步后约 37% 变得不连通，而按语义分组并没有比 FH 更好。在相同 token 预算下，FastV（剪枝）、ToMe（合并）这类[[post-hoc-token-compression|事后压缩]]在图像问答上和 RVLM 持平，但在 pointing、分割、深度上大幅掉分，深度任务只剩 48–52 分（RVLM 85.4），因为 token 和图像位置的对应关系丢了。",
-    "保留意见：**大图上的 5.3 分来自推理时把裁块上限从训练时的 14 提到 32**，是分辨率外推；patch 基线用更高分辨率训练后差距还剩多少，论文没有测。文字密集任务反而掉分，InfoVQA −4.9、ScreenSpot Pro −3.3，做 GUI 的要谨慎。ViT 仍要处理全部 patch，省下的只在 LLM 一侧。对做高分辨率输入、又要输出点和掩码的 VLM（驾驶、深度、计数），这是一个不加参数、可以直接替换池化层的选项。"
+    "VLM 把图切成固定网格的 patch，token 数跟着像素面积涨，而不跟着画面内容涨：一页文档的空白边距可能比正文占更多 token。RVLM 的做法是先用不需要训练的 [[fh-segmentation|FH 分割]]按颜色把图切成相连的小区域，把每个 ViT patch 分给一个区域，区域内的 patch 用 attention 池化成一个 ==区域 token==，一个区域最多 16 个 patch，更大的区域拆成几组。**同样的训练下，区域 token 用得更少，而且图越大省得越多、比基线领先越多。**",
+    "证据来自一对只差切分方式的模型：patch 基线和 RVLM 都用 SigLIP2 视觉编码器加 Qwen3-4B，数据和训练流程完全相同。在 35 个任务（问答、指点、计数、分割、深度）上，RVLM 平均少用 21.5% 的视觉 token，按样本加权的平均分高 0.6。把评测样本按原图大小分成五档，差别集中在大图：最小一档（0.14–0.41 百万像素）两者都是 85.3 分，token 只省 4.5%；最大一档（2.08–2.63 百万像素）RVLM 少用 51.8% 的 token，分数高 5.3。作者还在 patch 基线上套了 FastV、ToMe、VisionZip 三种[[post-hoc-token-compression|事后 token 压缩]]，让它们每张图保留和 RVLM 一样多的 token：问答分数几乎不变，分割却从 RVLM 的 71.2 分掉到 52 分以下。区别在于 RVLM 记着每个 patch 属于哪个区域，指点时先选区域、再选区域里的 patch、最后选 patch 内的点（==由粗到细解码==），压缩方法丢掉或合并了这层对应关系。",
+    "有几处要打折扣。细字吃亏：InfoVQA 低 4.9 分，ScreenSpot Pro 低 3.3 分，作者的失败分析是极细的笔画被并进了周围的大区域。省下的只在 LLM 一侧：ViT 仍然处理完整的 patch 网格，1 到 4 个裁块、batch 为 1 时 RVLM 反而略慢，8 个裁块以上才开始变快。最大一档的 5.3 分里，计数一项基线只有 61.9 分，RVLM 有 87.8 分；推理时裁块上限从训练时的 14 提到了 32，**我怀疑这一档的差距有相当一部分来自 patch 基线在比训练时长得多的视觉序列上退化**，而不全是区域表示更好，依据是在训练分辨率附近的第二档两者只差 0.4 分。另外只在 MolmoPoint 一种架构、4B 和 1.7B 两个规模上验证过。",
+    "对做文档、屏幕截图这类大图 VLM 的人，这是一个不加参数的连接器改动：FH 在 dataloader 的 CPU 上跑，每张图约 49 毫秒。前提是定位输出要走专门的 grounding token 解码；如果模型像多数 VLM 那样把坐标写成文本，区域 token 在 PixMo-Point 指点任务上比 patch 低 4.8 分（1.7B 规模）。"
    ],
    "star_reasons": [
     "在同架构、同数据、同配方的 patch 基线上做了 35 个任务的严格对照，变量只有视觉分词方式",
@@ -135,13 +138,13 @@
      "src": "https://arxiv.org/html/2611.29146v2/method-overview.svg",
      "ref": "Figure 2",
      "caption_zh": "RVLM 流程：左边 FH 在 CPU 上把图切成区域并把每个 ViT patch 分到一个区域，中间按区域做 attention 池化得到变长的 ==区域 token==，右边是由粗到细的指点：选区域 → 选 patch → 选点。",
-     "after": 2
+     "after": 1
     },
     {
      "src": "https://arxiv.org/html/2611.29146v2/fixed-compression-family-bars.svg",
      "ref": "Figure 3",
      "caption_zh": "同 token 预算下与 FastV、ToMe、VisionZip 的对比，横线是 patch 基线。看最左边的图像问答几组柱子几乎一样高，**右边 pointing、分割、深度三组里事后压缩方法明显矮一截**，深度只剩 48–52 分。",
-     "after": 3
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.29146v2/fixed-res-comparison.svg",
@@ -172,7 +175,7 @@
   {
    "id": "2611.32316",
    "title": "ASTERISM: Do Multimodal LLMs Actually Look at All the Images?",
-   "title_zh": "多图基准 24% 的题只看一张图就能答，RL 还在奖励这种捷径",
+   "title_zh": "多图基准约四分之一的题只看一张图就能答对，模型答错时也常只看了一张图",
    "affiliation": "首尔市立大学 Machine Intelligence Lab",
    "primary_cat": "cs.CV",
    "direction": "H",
@@ -188,10 +191,10 @@
    "abstract_en": "Multi-image benchmarks aim to test whether a multimodal large language model (MLLM) combines evidence across images, but many of their items can be answered from a single image. Across about 33k items from 19 public benchmarks, our audit and a two-stage single-image filter find that one image or the question alone settles 24.2% of them. On these items, MLLMs recover from one image a median 78% of the accuracy that all images add over the text alone, so these items reward answering from one image, which we call the single-image shortcut. MLLMs take this shortcut even on items where one image is not enough. On such items, most of their wrong answers repeat an answer they give from one image, at a rate well above chance. We build ASTERISM, to our knowledge the largest audited multi-image benchmark, from these 19 benchmarks by keeping their items that need more than one image. Its 18.7k items, 2.0k of them corrected or rewritten, share one format, one scorer and seven task categories. We also release ASTERISM-Train with 49k training items and ASTERISM-Lite, a hard subset whose items we manually verify one by one. On ASTERISM-Lite, the strongest proprietary MLLM scores 68%. Reinforcement learning with verifiable rewards (RLVR), now common in MLLM post-training, rewards the shortcut as well, because a correct answer read off one image earns as much reward as one that combines images. In line with this, existing RLVR objectives add little to the ASTERISM score. To stop rewarding the shortcut in training as ASTERISM does in evaluation, we propose cross-image credit assignment (CICA), an extension of RLVR that moves the credit toward the tokens that need more than one image. On three open-source MLLMs, CICA raises the ASTERISM score by 2.6 to 6.0 points, more than twice the gain of each general and vision-specific RL objective trained on the same data.",
    "batch": "2026-11-24",
    "analysis": [
-    "多图基准里相当一部分题根本不需要多张图：19 个公开基准共 32,688 题，**一张图或只读题干就能答对的占 24.2%**，算上标注错误、歧义和重复，32.8% 的题没在考多图推理。在这些被剔除的题上，23 个开源模型只看一张图（其余图涂成灰色）就拿回了==全图增益==（所有图相对纯文本多出的准确率）的中位 78%，保留下来的题只有 18%。即便题目真需要多张图，模型答错时也有 75–85% 是在重复它只看某一张图时的答案，随机水平约一半。作者把这叫做==单图捷径==。",
-    "做法分评测和训练两侧。评测侧由两个前沿模型独立审题、人工裁决分歧，加上单图过滤，留下 18,696 题组成 ASTERISM，统一格式、统一的规则打分器（不用 LLM 评委）、7 类任务；另有 400 道人工逐题核对的难题子集 ASTERISM-Lite，最强的 Claude Opus 5.5 只有 67.9%。训练侧提出 ==CICA==（cross-image credit assignment）：对回答里的每个 token，比较它在全部图下和在“最能解释它的那一张图”下的对数似然差 σ，再按 σ 把 [[grpo]] 里整条回答共用的 advantage 重新分配到各 token，权重限制在 [1−β, 1+β]。",
-    "正文里最该记住的是 [[rlvr]] 本身就在奖励捷径：只看最终答案，分不清答案是综合多图得来还是从一张图读出。22 个基于 Qwen2.5-VL-7B 的公开后训练模型（多数用 RL）在 ASTERISM 上最多只涨 1.6 分。CICA 在三个骨干上涨 2.6–6.0 分（Qwen3.5-9B 从 65.7 到 70.6），是同数据下各 RL 基线增益的两倍以上，且全图可见时的领先幅度最大。**把 σ 随机打乱后反而低于 GRPO**（41.3 对 41.7），说明增益来自 σ 与图像的对应，而非加权本身。额外开销约占一个训练步的 9%。",
-    "保留意见：CICA 只在 7–9B 的三个模型上各训练一次，没有测更大的模型；对检索类题（从一堆图里找出含答案的那张）基本无效，Qwen2.5-VL-7B 和 GLM 上只涨 0.1–0.2 分。**用现有多图基准报分的团队应换用或至少用 ASTERISM 的审题结果过滤一遍**；做多图 RL 的，CICA 每张图只多一次无梯度前向、不加参数，可以直接接到现有的 GRPO trainer 上。"
+    "多图基准要测模型能否把几张图的证据合起来，前提是题目真的需要不止一张图。作者用两个不同家族的前沿模型逐题审查 19 个公开多图基准的 32,688 道题（分歧由人工裁决），再加两道单图过滤：24.2% 的题只看一张图或只读题目就能答对，MuirBench、Q-Bench2、MIRB 里占 28–54%。作者把只凭一张图作答叫做==[[single-image-shortcut|单图捷径]]==，**模型在真正需要多张图的题上也照样走这条捷径**。",
+    "检验时把其余图换成同尺寸灰图，看只露一张图能拿回「全部图相对纯文本的准确率增益」的多少：23 个开源模型在被剔除的题上中位数 78%，在保留的题上只有 18%。错误答案更能说明问题：在保留的选择题上，Qwen2.5-VL-7B 等三个模型 75–85% 的错误答案和它们只看某一张图时的答案相同，随机挑错误选项只有 46–53% 会撞上。保留下来的 17,290 题加上 1,406 道改写的新题，统一格式和评分后成为 ==ASTERISM==（共 18,696 题），其中人工逐题核验的 400 道难题上，闭源模型里最强的 Claude Opus 5.5 只有 67.9% 的准确率。",
+    "作者认为 [[rlvr|RLVR]] 也在奖励捷径：奖励只看最终答案，每个 token 分到相同的优势值。==CICA==（跨图信用分配）只改这一步：对每个 token，比较模型「看全部图」和「只看对它最有利的一张图」时的对数概率，差越大越依赖其他图，就分到越多的奖励或惩罚。在三个 7B–9B 模型上，CICA 把 ASTERISM 分数（7 类任务的宏平均准确率）提高 2.6–6.0 分（Qwen2.5-VL-7B 从 40.7 到 46.7），同数据训练的 [[grpo|GRPO]]、DAPO 等五种 RL 目标提升都不到它的一半；把差值在 token 间打乱后反而低于 GRPO。",
+    "保留意见：多数题的判定只靠两个审查模型，抽样中审查结论与人工的一致率 82.6%，和两名人工之间的 82.3% 相当，错判并非没有。论文没有报告多个随机种子，我理解 CICA 在三个 9B 及以下的模型上各只训了一次。它每条回答要为每张图多算一次不求梯度的前向，Qwen2.5-VL-7B 上约占训练步的 9%；作者测算图变多时它的开销跟着 GRPO 本身同步增长，而不是按图数成倍增加。用 MuirBench 这类基准报多图能力时，分数里混着不少单图能力；做多图 RL 的人可以把 CICA 叠在 GRPO 上，它不加任务和参数，十个单图基准的分数也没有下降。"
    ],
    "star_reasons": [
     "对 19 个多图基准 3.2 万题做了审查，24.2% 的题只需一张图或题干，直接影响多图评测结论",
@@ -204,13 +207,13 @@
      "src": "https://arxiv.org/html/2611.32316v2/fig_reliance_main.svg",
      "ref": "Figure 3",
      "caption_zh": "横轴是==恢复比== ρ：只露一张图能拿回多少全图增益。每个模型的灰点（被剔除的题）都远在彩点（ASTERISM 保留的题）右边，23 个模型的中位数分别是 **0.78 和 0.18**。",
-     "after": 1
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.32316v2/fig_method.png",
      "ref": "Figure 6",
      "caption_zh": "CICA 的做法：同一个模型分别在全部图和单张图下算每个 token 的概率，σ 是两者的对数差。只靠第 3 张图就能写出的步骤拿到的 credit 变少，**把第 3、4 张图联系起来的那一步拿得最多**。",
-     "after": 2
+     "after": 3
     },
     {
      "src": "https://arxiv.org/html/2611.32316v2/fig_audit_pie.svg",

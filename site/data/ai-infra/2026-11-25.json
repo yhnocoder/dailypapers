@@ -5,8 +5,9 @@
  "rules_version": "v1",
  "overview": {
   "guide": [
-   "[[@2611.34776|DFly2]] 说明原生稀疏模型做投机解码时，草稿模型应该直接借用目标模型选好的位置，不要另建缓存；但长 prompt 下大部分时间花在 prefill，端到端只快 1.5 倍左右，看数字时要分清解码加速和端到端加速。[[@2611.33542|RankCast]] 在长上下文 MoE 服务里比 EPLB 有效，因为按历史负载摆放专家跟不上每批的变化；代价是改了路由，精度不是无损的。[[@2611.34615|PipeAxes]] 最有价值的是那段测量：MoE 上把 chunk 调小几乎碰不到更少的专家，**调小块大小换 decode 延迟的老办法走不通**；标题里的倍数则来自很小的样本。",
-   "[[@2611.33981|MixMoMo]] 在手机 SoC 上把超大 MoE 拆到 GPU 和 NPU 上，用混合精度跑，解码比统一 Q4_0 量化快 3.72 倍。[[@2611.34010|非对称投机解码]]只给草稿模型看示例解答、不改目标模型的 prompt，免训练拿到 2.29–4.95 倍加速。[[@2611.33896|Floodgates]] 让循环结构的语言模型用掩码 token 后缀并行起草，自投机解码最高快 7.5 倍。[[@2611.33761|ScanAR]] 把统一自回归模型生成图像时的解码深度从 H×W 降到 H+W，Emu3.5-Image-34B 出 512×512 的图快 13.8 倍。[[@2611.34273|Libtt]] 给 Tenstorrent 处理器实现了 PJRT 接口，JAX 和 PyTorch 可以直接跑在这类非 NVIDIA 硬件上。"
+   "本期三篇 ⭐ 都在推理服务，各自找到了一种已有但没被用上的资源。[[@2611.34776|DFly2]] 面向 DeepSeek-V4 这类原生稀疏注意力模型：目标模型的[[dsa-indexer|索引器]]本来就为每个 query 选好了要读的 KV 位置，[[speculative-decoding|投机解码]]的草稿模型直接读目标的缓存和这份选择，不再自建缓存。高并发下单用户速度相同时，两个 64K 任务的吞吐比 DSpark 高 62% 和 81%；但**单请求端到端加速只有 1.50 倍**，省下的主要是解码时间和显存，且只适用于带索引器的稀疏模型。同样做投机解码，[[@2611.34010|AsymSpec]] 只是在草稿模型的提示里多放一份任务相关的示例解答，免训练比自回归解码快 2.29–4.95 倍，可以对照着读。",
+   "[[@2611.33542|RankCast]] 处理 MoE [[expert-parallelism|专家并行]]的负载不均，不搬专家、不加副本，而是改路由：每个 token 的前两名专家不动，其余在前 16 名里换。prefill 给忙的卡加价，把 token 引向空闲卡；decode 从最忙的卡开始关专家，因为此时耗时取决于开了几个专家。Qwen3-235B 8 卡上 prefill 吞吐 +18.5%（在线 [[eplb|EPLB]] 为 +14.7%），decode 提速 6.1–8.2%，代价是评测最多跌 0.84 个百分点。[[@2611.34615|PipeAxes]] 面向只有 PCIe 互联的流水线并行：整批宽 prefill 每次只推进几层，层段间插入 decode，层间激活压成 INT4 再传。两张 A800 上混跑长短请求，短请求 p95 首 token 时间从基线的 129.8 s 以上降到 512 ms，**8 个长 prompt 仍然一个都没达标**。端侧的 [[@2611.33981|MixMoMo]] 在手机上按量化敏感度给专家分配位宽，并在 GPU 与 NPU 间均衡分配，解码比统一 Q4_0 快 3.72 倍。",
+   "[[@2611.34462|一项 AlphaFold 3 跨平台复现研究]]提醒做科学计算服务的人：相同输入和种子，只把 TPU v5e 换成 v6e，300 次预测里 18.0% 返回了不同的最优样本，作者建议报告所用设备，并用 float32 主干加全精度矩阵乘法让五种加速器在几乎所有预测上一致。"
   ]
  },
  "funnel": [
@@ -27,7 +28,7 @@
   {
    "id": "2611.34776",
    "title": "DFly2: Turbocharging Long-Context Speculative Decoding by Sharing the Target's Sparsity",
-   "title_zh": "草稿模型直接用目标的稀疏选择，64K 长上下文吞吐高 81%",
+   "title_zh": "投机解码的草稿模型不必自建缓存：直接读稀疏目标模型选好的 KV 位置",
    "affiliation": "腾讯（Tencent Hy）",
    "primary_cat": "cs.CL",
    "direction": "B",
@@ -42,10 +43,12 @@
    "abstract_zh": "为避免稠密注意力在长上下文上的二次方开销，DeepSeek-V4、Hy4 等模型已转向原生稀疏；投机解码在解码最慢的场景最有价值，也越来越多地运行在这类模型上。然而，它们的草稿模型仍保留自己的上下文缓存，覆盖整个提示或一个滑动窗口。除了显存，这种缓存还会拖累 prefill 时间、前缀缓存命中和解码并发度。读取目标模型缓存的草稿模型省去了自己的缓存，但只决定了读哪份缓存，没有决定读哪些位置，仍然读取全部位置或最近的窗口。这两种规则都不是为当前 query 设计的，而在草稿模型里为每个 query 单独计算选择，代价又会随上下文增长。可原生稀疏的目标模型本来就会在它必须维护的缓存上，为每个 query 挑选位置。因此，草稿模型的两项选择——用哪份缓存、读哪些位置——目标模型都已做出并付过代价。我们测量了一次选择能沿用多远：在 DS-V4.1-Flash 上，提前一步做出的选择仍能覆盖后续每个 token 所选内容的近九成。我们提出 DFly2，一个共享目标模型稀疏性的块并行草稿模型。每个草稿层读取与之配对的目标层所缓存的 KV（==KV 共享==），位置取该层 indexer 选出的、可来自上下文任意处的固定数量位置（==Index 共享==）。因此 DFly2 不做打分，也不保留自己的缓存。在 DS-V4.1-Flash、GLM-5.3-Flash 和 Hy4 flash 这三个稀疏注意力与架构各不相同的模型上，在通用、长上下文和智能体基准中，它每步接受的 token 数都多于用相同配方训练的 DFlash 和 DSpark。相对更强基线的优势从通用负载上的 3.9%–10.5% 扩大到长上下文和智能体负载上的 10.0%–31.5%。在 DS-V4.1-Flash 的高并发场景下，单用户解码速度相同时，**它在两个 64K 数据集上的吞吐分别高出 62% 和 81%**。",
    "abstract_en": "To avoid the quadratic cost of dense attention over long contexts, models such as DeepSeek-V4 and Hy4 have turned natively sparse, and speculative decoding, which matters most where decoding is slowest, increasingly runs on them. Their drafters, however, still keep a context cache of their own, over the whole prompt or a sliding window. Beyond memory, such a cache costs prefill time, prefix-cache hits and decode concurrency. Drafters that read the target's cache avoid one of their own, but settle only which cache, not which positions, and still read everything or a recent window. Neither rule is made for the query at hand, and computing a selection per query in the drafter would cost more as the context grows. Yet a natively sparse target already picks positions for each query, over a cache it keeps anyway. Both of the drafter's choices are therefore already made, and paid for, by the target: its cache and its selection. We measure how far one selection carries: made a step early, it still covers close to nine tenths of what each later token selects on DS-V4.1-Flash. We present DFly2, a block-parallel drafter that shares the target's sparsity. Each draft layer reads the KV its paired target layer cached (KV sharing), at the positions that layer's indexer selected, a fixed number anywhere in the context (Index sharing). DFly2 thus runs no scoring pass and keeps no cache of its own. On DS-V4.1-Flash, GLM-5.3-Flash and Hy4~flash, whose sparse attention and architecture differ, it accepts more tokens per step than DFlash and DSpark trained on the same recipe, over general, long-context and agentic benchmarks. Its margin over the stronger baseline widens from 3.9%-10.5% on general workloads to 10.0%-31.5% on long-context and agentic ones. At high concurrency on DS-V4.1-Flash, at matched per-user decode speed, its throughput is 62% and 81% higher on two 64K sets.",
    "analysis": [
-    "原生稀疏的大模型（DeepSeek-V4 一类）本来就会为每个 query 挑出要看的位置，所以[[speculative-decoding|投机解码]]的草稿模型不必再自建上下文缓存。DFly2 直接读目标模型的 KV 缓存和选择结果，在 DS-V4.1-Flash 上、单用户解码速度相同时，**两个 64K 数据集的吞吐比 DSpark 高 62% 和 81%**，短文本高 28%。前提是锚点前一步的选择对块内后续 5 个草稿位仍适用：在 15.9 万个块上平均覆盖率约 0.88，同样大小的最近窗口不到 0.18。",
-    "草稿模型有 3 层，每层对应目标模型的一个 DSA 层（带 indexer 打分选位置的稀疏注意力层）。==KV 共享==：直接读该层已缓存的 latent；==Index 共享==：只读该层 indexer 在锚点前一行选出的 top-512 个位置，再加 128 个近邻，每步共读 646 个位置，与上下文长短无关。草稿层的权重和专家都从对应层复制。另外补了两样缓存里没有的东西：目标最后一层的 hidden，以及读上下文的==块内修正==。自建缓存不只占显存：[[pd-disaggregation|PD 分离]]部署下草稿模型还得跑在 prefill 实例上。在 DS-V4.1-Flash 上，自建缓存让每 token 的 KV 增加 76%，去掉后 32K 下能多容纳 1.73 倍的并发请求。",
-    "消融实验说明，接受长度的提升主要来自共享选择，省掉缓存的贡献不大。去掉 top-k、只留近邻窗口，长上下文的[[acceptance-length|接受长度]] τ 从 3.62 降到 2.76；换回草稿模型自建的缓存只降到 3.34。长度外推的差异更明显：草稿模型都只训练到 32K，在 Hy4 flash 上超过这个长度后，全缓存的 DFlash 只剩每步 1.08 个 token，DFly2 在 agent 任务上的接受长度与通用任务的平均值相差不到 4%。",
-    "保留意见：**长 prompt 下端到端收益远小于解码收益**。DS-V4.1-Flash 的 agent 组端到端加速是 1.50 倍，DSpark 是 1.44 倍，长 prompt 的时间主要花在 prefill；基线也都是作者按同一配方重训的，没有和模型自带的 MTP 模块比，硬件只有 H20。对用稀疏模型做长上下文或 agent 服务的团队来说，草稿模型应该优先接入目标的 indexer 和 KV，不要另建缓存；在 vLLM 里它不需要单独注册 KV group。"
+    "DeepSeek-V4、GLM-5、Hy4 这类长上下文模型已经改成==原生稀疏注意力==：每个稀疏层由一个训练过的[[dsa-indexer|索引器]]给前文每个位置打分，只读分数最高的固定数量的位置，KV cache 也压得很小。给它们配的[[speculative-decoding|投机解码]]草稿模型却还自己存一份上下文 KV。在 DS-V4.1-Flash 上，三层草稿模型的这份缓存让每个 token 的 KV 多出 76%；在[[pd-disaggregation|PD 分离]]部署里，草稿模型还得跑在 prefill 机器上建缓存，前缀缓存也得为它多存一份或重算。DSpark 只存最近 128 个 token，代价是看不到更早的上下文。腾讯这篇的答案是：**目标模型已经存好了 KV，也已经为每个 query 选好了位置，草稿模型两样都直接拿来用**。",
+    "这里有个疑问：草稿模型一次并行生成一整块 token（本文每块 5 个），手里只有目标为块前最后一个 token 做的那次选择，块里后面的 token 各有自己的 query。作者在 DS-V4.1-Flash 的 158,638 个长上下文块上，让目标把真实续写跑一遍，拿到每个位置自己的 top-512，再看块前那次选择覆盖了其中多少索引分数（1 表示和它自己选的一样好）。平均覆盖率是 0.87–0.88，同样 512 个位置的最近窗口只有 0.15–0.18；越往块后面越低，但最差的位置仍有约 0.81。作者的解释是位置编码几乎不影响选择（把块前的 query 旋转到后面各位置，72 组检查里 top-512 都没变），选择只随内容缓慢漂移。",
+    "==DFly2== 是一个三层的[[block-parallel-drafter|块并行草稿模型]]，每层和目标模型的一个稀疏层配对（DS-V4.1-Flash 上是第 28、32、36 层）。草稿层直接读配对层缓存的 latent KV（KV sharing），读该层索引器在块前选出的位置（Index sharing），DS-V4.1-Flash 上是 512 个，再加最近 128 个和块内 6 个，每步固定 646 个，不随上下文变长。草稿层权重也从配对层复制，包括它和索引器共用的 query 投影，草稿 query 从一开始就落在产生这份选择的空间里。另外补上目标最后一层的 hidden state，并在块内逐位置修正时再读一次共享上下文。配对要选各自带索引器的层：换成相邻的第 37–39 层，三层读到的是同一份选择，接受长度掉 4.6%。",
+    "对比对象是作者用同一配方自己训的 DFlash（全上下文自有缓存）和 DSpark（滑动窗口自有缓存）。在三个目标模型上，DFly2 的[[acceptance-length|接受长度]]都更高，领先较强基线的幅度从通用任务的 3.9%–10.5% 扩大到长上下文和 agent 任务的 10.0%–31.5%。所有草稿模型都在 32K 上训练，agent 任务的 prompt 大多更长：DFly2 在 agent 任务上的平均接受长度和通用任务相差不到 4%，DSpark 掉了 11%–21%，全缓存的 DFlash 在 Hy4 flash 上最低崩到每步 1.08 个 token。消融也指向选择本身：在 DS-V4.1-Flash 上去掉 top-k、只读最近窗口，长上下文平均接受长度从 3.62 降到 2.76，是消融里损失最大的一项。",
+    "这个优势带到了服务端。DS-V4.1-Flash 上单用户解码速度相同时，DFly2 的吞吐比 DSpark 高 28%（短文本）、62%（CodeSpan 64K）和 81%（SWE 64K）。DFlash 要在 prefill 阶段自建缓存，首 token 时间最多翻倍，agent 任务上端到端比不做投机解码还慢（0.90 倍）；DFly2 不给 prefill 加开销。不过单请求下，DFly2 在这组任务上的解码加速是 3.10 倍，端到端只有 1.50 倍，比 DSpark 的 1.44 倍高得不多。我理解是长 prompt 的 prefill 时间占了大头，**省下的主要是解码阶段和显存，长 prompt 的端到端延迟改善有限**。",
+    "保留意见：方法只适用于带索引器的原生稀疏目标，稠密模型没有选择可借。基线都是作者按自己的配方重训的，论文没有和这些模型自带的 MTP 草稿模块比。覆盖率和高并发吞吐只测了 DS-V4.1-Flash。我还觉得草稿模型和目标的层号、权重、缓存布局绑得很紧：目标换版本就要重训，引擎也要让草稿直接读目标的 KV 分页，接入成本比独立草稿模型高。对在长上下文、agent 场景部署 DeepSeek-V4、GLM-5 这类稀疏模型的团队，它能同时省掉草稿缓存的显存、prefill 开销和前缀缓存损失，代码在 Tencent/AngelSpec。"
    ],
    "star_reasons": [
     "核心推理服务问题：长上下文投机解码里草稿模型的缓存和读取位置",
@@ -57,14 +60,14 @@
     {
      "src": "https://arxiv.org/html/2611.34776v1/fig_coverage_triptych.svg",
      "ref": "Figure 3",
-     "after": 1,
-     "caption_zh": "左图看蓝线和灰线的差距：锚点前一步的 ==top-512 选择==对块内后续 token 的覆盖率约 0.88，同样大小的最近窗口只有 0.15–0.18；右图显示上下文越长，两者差距越大。"
+     "caption_zh": "左图看蓝线和灰线的差距：锚点前一步的 ==top-512 选择==对块内后续 token 的覆盖率约 0.88，同样大小的最近窗口只有 0.15–0.18；右图显示上下文越长，两者差距越大。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.34776v1/fig_method_sharing.svg",
      "ref": "Figure 5",
-     "after": 2,
-     "caption_zh": "DFlash、DSpark 把上下文投影成自己的 KV 再存起来，DFly2 只在运行时接收目标层的 latent KV 和 top-k 下标，自己不带 indexer。DS-V4.1-Flash 上每步固定读 646 个位置。"
+     "caption_zh": "DFlash、DSpark 把上下文投影成自己的 KV 再存起来，DFly2 只在运行时接收目标层的 latent KV 和 top-k 下标，自己不带 indexer。DS-V4.1-Flash 上每步固定读 646 个位置。",
+     "after": 3
     },
     {
      "src": "https://arxiv.org/html/2611.34776v1/fig_concurrency_long.svg",
@@ -95,7 +98,7 @@
   {
    "id": "2611.33542",
    "title": "RankCast: Phase-Aware Rank Balancing in MoE Serving",
-   "title_zh": "不搬专家只改次要路由，MoE prefill 吞吐最高涨 19%",
+   "title_zh": "MoE 推理不搬专家改路由：prefill 均摊 token，decode 少开专家",
    "affiliation": "美团；伊利诺伊大学厄巴纳-香槟分校（UIUC）",
    "primary_cat": "cs.DC",
    "direction": "B",
@@ -110,10 +113,10 @@
    "abstract_zh": "现代大语言模型（LLM）推理越来越多地采用将预填充（P）与解码（D）阶段分离的解耦架构。同时，专家并行（EP）已被广泛用于大规模混合专家（MoE）模型服务。然而，负载不均衡仍会拖慢 MoE 推理，因为每一层都必须等待最繁忙的 EP rank。预填充与解码的主要延迟来源不同：预填充是计算受限的，其 MoE 层延迟由最繁忙 rank 的最大 token 数决定；而在中等批大小下，解码是访存受限的，延迟由各 rank 中最多的激活专家数主导。为在统一框架下同时解决这两个问题，我们提出 ==RankCast==，一个在预填充阶段降低 rank 级最大 token 数、在解码阶段降低最大激活专家数的系统。对每个 token，RankCast 保留预测的 ==Top-p 专家==，并从其 Top-L 候选（L > k）中选出其余 k−p 个。在预填充中，RankCast 为每个 rank 给出一个价格，引导可调整的分配流向负载较轻的 rank；在解码中，RankCast 关闭最繁忙 rank 上的专家，同时满足每个 token 的约束。两条路径均在业界领先的推理框架 SGLang 和 DeepEP 中实现并测试。我们让 RankCast 的 kernel 与模型执行重叠，并复用 DeepEP 现有的通信通道传输元数据。在 EP=8 的 Qwen3-235B-A22B 和 EP=16 的 Qwen3.5-397B-A17B 上，RankCast 消除了最繁忙 rank 超出均值部分的 75% 以上，**预填充输入吞吐最高提升 19%，解码每输出 token 时间最高降低 10%**，质量损失低于一个百分点。",
    "abstract_en": "Modern large language model (LLM) inference increasingly adopts disaggregated architectures that separate Prefill (P) and Decode (D) phases. Meanwhile, Expert Parallelism (EP) has been widely adopted in large Mixture-of-Experts (MoE) model serving. However, load imbalance still slows down MoE inference because each layer must wait for the busiest EP rank. The main source of latency differs between prefill and decode. Prefill is compute-bound, and its MoE layers' latency is determined by the maximum token count of the busiest rank. At the same time, under moderate batch sizes, Decode is memory-bound, so the latency is dominated by the maximum active-expert count across ranks. To solve both problems under a unified framework, we present RankCast, a system that reduces rank-level maximum token counts during prefill and active-expert counts during decode. For every token, RankCast preserves the predicted Top-p experts and chooses the remaining k-p from its Top-L candidates (L > k). In prefill, RankCast yields a price per rank that steers flexible assignments to less loaded ranks. In decode, RankCast closes experts on the busiest ranks while preserving the constraints for each token. Both paths are implemented and tested in the state-of-the-art inference frameworks SGLang and DeepEP. We overlap RankCast's kernels with model execution and reuse the existing DeepEP communication channel for metadata transmission. On Qwen3-235B-A22B with EP=8 and Qwen3.5-397B-A17B with EP=16, RankCast removes over 75% of the busiest rank's excess prefill load, improves prefill input throughput by up to 19%, and reduces decode time per output token by up to 10%. The quality cost is below one percentage point.",
    "analysis": [
-    "在 [[expert-parallelism|专家并行（EP）]] 的 MoE 推理里，每一层都要等最忙的那个 rank（一张 GPU）算完。RankCast 的办法是不复制、不搬动专家权重，而是在推理时调整每个 token 排名靠后的专家选择。在 [[pd-disaggregation|PD 分离]] 部署的 Qwen3-235B（8 卡 EP）上，**prefill 输入吞吐提升 16–19%，比 DeepSeek 的在线 [[eplb|EPLB]] 多 2.7–6.8 个点**；decode 的每输出 token 时间（TPOT）降低 6–8%，在 Qwen3.5-397B 上降低 9–11%。",
-    "论文先用 profiling 说明两个阶段的瓶颈不同：prefill 的专家 GEMM 时间随 rank 收到的 token 数线性增长；decode 时耗时花在读权重上，每多激活一个专家多 9.5 µs。两条路径共用一个约束：每个 token 保留预测的 ==Top-p 保护专家==（p=2），其余 k−p 个只能在 Top-L（L=16）候选里换，仍然跑满 k 个专家。prefill 给每个 rank 算一个==价格==，从候选分数里减掉，拥挤的 rank 就少接 token；decode 则在最忙的 rank 上==关闭专家==。下一层的路由用当前层的 hidden state 乘下一层门控权重来预测，元数据搭 DeepEP 已有的 dispatch 消息传输，额外开销 0.5–0.9%。",
-    "最值得记住的是长上下文场景。在 LongBench v2 的 32K 输入上，EPLB 和加了 8 个冗余专家的 EPLB-R 吞吐变化只有 −1.2% 到 +0.9%，RankCast 仍有 +4–7%。原因是每批负载分布都在变，按历史负载摆放专家跟不上；把每批价格换成跨批累积的慢偏置，收益同样归零。**冗余专家占用 HBM、挤掉并发请求，在两个模型上都比不加冗余的 EPLB 更慢。**decode 端，TPOT 和最忙 rank 的激活专家数呈线性关系（每个专家 0.52 ms，R²=0.99），RankCast 把这个数从 14.4 降到 9.7。",
-    "**它改了模型的路由，所以不是无损的**：8 个基准里最大掉 0.85 个百分点，作者说在重复运行的波动范围内，但 MMLU-Redux 等 4 个基准只跑了 3 次。我觉得更大的缺口在 decode 对比：XShare、OEA 只在离线回放里比较，没有放进同一个服务栈跑端到端；此外只测了 Qwen 一个模型家族、最多 16 张 H800，DeepSeek 系的 sigmoid 门控没有测。对用 SGLang + DeepEP 跑 MoE、长上下文 prefill 显存紧张的团队，这条路比加冗余专家更划算；它和 EPLB 理论上可以叠加，但论文没测。"
+    "在[[expert-parallelism|专家并行]]部署里，每层 MoE 都要等最忙的那张卡算完。论文指出两个阶段的「忙」不是一回事：prefill 时每个专家分到上千个 token，计算时间随 token 数线性增长，瓶颈是最忙的卡收到多少 token；decode 时每个专家平均只有 2.5–6 个 token，从 1 个加到 64 个耗时变化不到 1.3%，时间花在读权重上，瓶颈变成最忙的卡开了几个专家。现有的专家放置、复制和预取不改路由，代价是显存或带宽，副本会挤掉 KV cache。==RankCast== 改的是路由本身，并按阶段换目标。",
+    "每个 token 预测得分最高的 2 个专家不动，其余的只能在得分前 16 名里换，每个 token 用的专家数不变。prefill 给每张卡定一个==价格==，从它所托管专家的得分里扣掉，被争抢的卡价格高，可换的分配就流向空闲的卡。decode 从最忙的卡开始关专家，先关对相关 token 影响小、且这些 token 还有别的候选的。决定要在下一层路由前做出，所以在当前层就用下一层的 gate 权重预测分数，在 Qwen3-235B 的 prefill 抽样里，真实 Top-8 专家有 98.7% 落在预测的前 16 名里。",
+    "Qwen3-235B 用 8 卡专家并行，ShareGPT 负载、每卡每次 prefill 4K token 时，最忙卡与平均的 token 数之比从 1.75 降到 1.08，输入吞吐 +18.5%，同条件下在线 [[eplb|EPLB]] 是 +14.7%。decode 上最忙卡的平均激活专家数从 14.4 降到 9.7，**单 token 生成时间和这个数在 11 种配置下几乎成一条直线，每少开一个专家省 0.52 ms**，四种负载上解码速度提升 6.1–8.2%。",
+    "代价是改路由不无损：Qwen3-235B 两阶段同时打开时，八个评测里跌得最多的是 LiveCodeBench 的 0.84 个百分点，作者认为它没超出基线自己重复测量的波动（0.89）。decode 预测错会关掉真正的前两名专家，Qwen3.5-397B 上只有 87.9–94.5% 的 token 保住了两个。实验只有一个模型家族、最多 16 卡，没测和 EPLB 叠加。对跑 [[pd-disaggregation|PD 分离]]的团队，我觉得 prefill 的价格方案最容易先用：不占显存，32K 长输入上 EPLB 几乎没有收益，它仍有 4–7%。"
    ],
    "star_reasons": [
     "核心 AI Infra 问题：EP 下 MoE 推理的 rank 级负载不均，prefill 和 decode 分别建模",
@@ -125,14 +128,14 @@
     {
      "src": "https://arxiv.org/html/2611.33542v1/rankcast_overview.svg",
      "ref": "Figure 1",
-     "after": 2,
-     "caption_zh": "RankCast 总览。(a) 每个 token 的 ==Top-p 保护专家==不动，其余只能在 Top-L 候选里换；(b) prefill 给拥挤的 rank 提高价格，把可调的分配挪到空闲 rank，降低每卡最大 token 数；(c) decode 在最忙的 rank 上关掉低代价专家，降低每卡最大激活专家数。"
+     "caption_zh": "RankCast 总览。(a) 每个 token 的 ==Top-p 保护专家==不动，其余只能在 Top-L 候选里换；(b) prefill 给拥挤的 rank 提高价格，把可调的分配挪到空闲 rank，降低每卡最大 token 数；(c) decode 在最忙的 rank 上关掉低代价专家，降低每卡最大激活专家数。",
+     "after": 2
     },
     {
      "src": "https://arxiv.org/html/2611.33542v1/rankcast_eval.svg",
      "ref": "Figure 3",
-     "after": 3,
-     "caption_zh": "左图：Qwen3-235B 的 decode TPOT 与最忙 rank 激活专家数在 11 种配置下几乎成一条直线（每个专家 0.52 ms，R²=0.99），截距 20.1 ms 是关专家省不掉的部分。右图：跨层路由预测的准确率，真实 Top-8 有 98.7% 落在预测的 Top-16 里。"
+     "caption_zh": "左图：Qwen3-235B 的 decode TPOT 与最忙 rank 激活专家数在 11 种配置下几乎成一条直线（每个专家 0.52 ms，R²=0.99），截距 20.1 ms 是关专家省不掉的部分。右图：跨层路由预测的准确率，真实 Top-8 有 98.7% 落在预测的 Top-16 里。",
+     "after": 3
     },
     {
      "src": "https://arxiv.org/html/2611.33542v1/rankcast_system.svg",
@@ -153,7 +156,7 @@
   {
    "id": "2611.34615",
    "title": "PipeAxes: Decoupling Compute and Communication Granularities for Pipeline-Parallel LLM Serving",
-   "title_zh": "按层而非按 token 切 prefill，PCIe 双卡上短请求首 token 快 250 倍",
+   "title_zh": "流水线并行把 prefill 按层切而不按 token 切，长 prompt 不再堵住短请求",
    "affiliation": "浙江大学",
    "primary_cat": "cs.DC",
    "direction": "B",
@@ -168,10 +171,10 @@
    "abstract_zh": "流水线并行可以在 PCIe 服务器和异构 GPU 集群上服务长上下文语言模型。现有引擎把 prefill 切成 token 块，以减少 decode 停顿；但块大小同时决定了 GPU 批宽度和阶段间激活传输的大小：小块会更频繁地重新加载模型权重，大块则可能长时间占满 GPU 和链路，拖慢交互式请求。==PipeAxes== 运行宽 prefill 批，但每次只推进几层，使 decode 能在切片之间运行。一个融合的 Triton Hadamard-INT4 编解码器压缩激活，压缩后的激活按各自大小独立的行组，通过多条并行 TCP 连接传输。调度器根据延迟余量选择批宽度、切片深度和行组大小。我们在 A800、RTX 4090 和 RTX 3090 GPU 上做了 97 次回放、覆盖 5,016 个请求。**在链路带宽变化十倍期间，全部 74 个请求都满足了延迟目标。**在四阶段混合专家（MoE）流水线中，PipeAxes 在满足延迟目标的前提下，可服务的请求速率是校准后 Revisit-PP 的 23.3 倍、带 Express 的 Fixed-4096 的 4.44 倍。在混合 64K 上下文负载中，**短请求的 p95 首 token 时间从原生 vLLM 的 129.8 秒降到 512 毫秒。**使用 INT4 传输时，相对 BF16，MMLU 准确率提高 0.06 个百分点，GSM8K 准确率下降 0.46 个百分点。",
    "abstract_en": "Pipeline parallelism can serve long-context language models on PCIe servers and across heterogeneous GPU clusters. Existing engines split prefill into token chunks to limit decode stalls. The chunk size also sets the GPU batch width and the size of activation transfers between stages. Small chunks reload model weights more often. Large chunks can keep the GPU and the link busy long enough to delay interactive requests. PipeAxes runs wide prefill batches a few layers at a time so decodes can run between slices. A fused Triton Hadamard-INT4 codec compresses activations, which travel in independently sized row groups over parallel TCP sockets. The scheduler uses latency slack to choose batch width, slice depth, and row-group size. We evaluated PipeAxes in 97 replays covering 5,016 requests on A800, RTX 4090, and RTX 3090 GPUs. All 74 requests met their latency targets during a tenfold bandwidth swing. In a four-stage mixture-of-experts pipeline, PipeAxes served requests within their latency targets at 23.3x the rate of calibrated Revisit-PP and 4.44x the rate of Fixed-4096 with Express. In a mixed 64K-context workload, p95 time to first token for short requests fell from 129.8 s with native vLLM to 512 ms. With INT4 transport, MMLU accuracy rose by 0.06 percentage points and GSM8K accuracy fell by 0.46 percentage points relative to BF16.",
    "analysis": [
-    "在 PCIe 或以太网相连的 GPU 上做==流水线并行==（PP，按层把模型切到几张卡上）服务时，[[chunked-prefill]] 的块大小一个参数同时决定了 GPU 批宽度、decode 要等多久、级间要传多少数据，调小调大都吃亏。PipeAxes 把这三个粒度拆开：在 64K 混合长上下文负载下，短请求 p95 首 token 时间（TTFT）从原生 vLLM 的 129.8 秒降到 512 毫秒；四级 MoE 流水线上，[[slo-goodput|SLO goodput]] 是 Revisit-PP（OSDI'26 的 PP 服务调度方案）的 23.3 倍。",
-    "做法分三块。==LayerSpool== 让 prefill 保持宽批（本地最大 4096 token），每次只推进几层就把 GPU 让给 decode，每层权重每批只加载一次。级间激活先把 hidden state 和 residual 相加（下一层本来只用它们的和），再做 [[hadamard-rotation|Hadamard 旋转]]和 INT4 打包，一个融合的 Triton kernel 小批量下只要 0.10 ms，传输量降到 1/7.53。压缩后的激活按==行组==轮流走多条 TCP 连接，短请求和 decode 可以在每个 32 KiB 帧的边界插队。调度器根据离延迟目标还剩多少余量，选批宽、切片层数和行组大小。实现基于 vLLM v0.23.0，改动和新增约 4,100 行。",
-    "最值得记住的是第 2 节的测量：Qwen3-30B-A3B 上，128 token 以上的块就几乎会碰到全部 128 个专家，块从 4096 缩到 128，一个 stage 的计算时间增加 591.7%。**所以在 MoE 上，靠调小 chunk 换 decode 延迟这条常规办法基本走不通。**另一面，收益主要在延迟而不是吞吐：两张 4090 单机上，PipeAxes 的输出吞吐只有原生 vLLM 的 95.3%，goodput 比“固定 512 块 + 同样的插队通道”只高 1.23 倍，可见单机场景里不少收益来自插队通道本身。",
-    "保留意见：**最惊人的倍数来自很小的样本**，23.3 倍是 21 个请求里 16 个对 1 个达标，64K 场景总共 23 个请求；Revisit-PP 是作者从 SGLang 移植到 vLLM 的版本；实验只有 Qwen3、最多 4 级，关闭了前缀缓存，代码要到发表后才开源。对用消费级卡或跨机房链路跑长上下文 PP 的团队，“prefill 按层让出 GPU”和“级间激活 INT4 压缩”可以直接借鉴；有 NVLink 的机内部署论文没有测。"
+    "在只有 PCIe 或以太网相连的 GPU 上跑长上下文模型，常用流水线并行：每张卡放一段连续的层，只把层边界的激活传给下一张。vLLM 等引擎用[[chunked-prefill|分块 prefill]]把长 prompt 切成 token 块，好让 decode 插空执行。问题在于块大小一个参数同时定了三件事：GPU 一次算多宽、decode 要等多久才能插进来、每次往下一级传多大的激活。块切小，每块都要把整段层的权重重读一遍：Qwen3-30B-A3B 这个 MoE 模型里，128 token 的块已经会碰到几乎全部专家，在 A800 上跑第一级、处理一个 4096 token 的批时，块从 4096 缩到 128，这一级的计算时间从 173.9 ms 涨到 1,202.6 ms。块切大，用 4096 token 的块处理 32K 或 64K 的请求时，一步 prefill 能占住 A800 519–643 ms，还要往链路上塞 64–80 MiB 的 BF16 激活，正在生成的请求只能等。",
+    "==PipeAxes== 的做法是把这三个粒度拆开。prefill 批保持很宽，但每次只往前推几层，层段之间让 decode 插进来，于是每层权重对整批只读一次；推几层由调度器按剩余的延迟余量算。传输侧先把 hidden state 和 residual 相加（下一层本来只用它们的和），再做 [[hadamard-rotation|Hadamard 旋转]]摊平离群值、压成 INT4，体积是原来两份 BF16 的 1/7.53；压缩后的激活切成行组，在多条并行 TCP 连接上发，短请求可以在每个 32 KiB 帧的边界插队。",
+    "最能说明效果的是两张 PCIe A800 上的稠密 Qwen3-32B：15 个短请求和 8 个 56K–63K token 的长 prompt 混在一起到达。固定 4096、固定 512 块和原生 vLLM 都是 23 个请求全不达标，短请求的 p95 首 token 时间 129.8–183.4 s；PipeAxes 让 15 个短请求全部达标，p95 首 token 时间 512 ms，输出吞吐保留固定 4096 块的 93.6%。在四级流水线的 MoE 场景里，它的 [[slo-goodput|SLO goodput]] 是 Revisit-PP（OSDI'26 的方法，按在线拟合的延迟模型动态选块大小）的 23.3 倍。",
+    "要打折扣的地方：**那 8 个长 prompt 仍然一个都没达标**，两张卡算 60K 的 prefill 本身就超过 14 s，已超出长请求 12 s 的首 token 时间上限，所以 512 ms 是把短请求从长请求身后放出来，不是让长请求变快。Revisit-PP 是作者自己从 SGLang 移植进 vLLM 的版本；实验关了 prefix cache、只测 Qwen3；跨机链路是在 1 GbE 上用 tc netem 限速模拟的。对在没有 NVLink 的机器、或用消费级显卡跨机部署长上下文服务的人，按层切 prefill 这一条可以单独借鉴。我估计在高带宽互联上传输侧的收益会小很多，依据是论文自己在带宽超过 500 Mbps 时就可能改走原生通信。"
    ],
    "star_reasons": [
     "核心推理服务问题：PP 下 chunked prefill 的块大小同时绑定计算、等待和传输三个粒度",
@@ -189,7 +192,7 @@
      "src": "https://arxiv.org/html/2611.34615v1/fig01_pareto_dilemma.svg",
      "ref": "Figure 1",
      "caption_zh": "分块大小的两难。左图：MoE 30B 第一级上，块从 4K 缩到 128，计算时间多出 ==591.7%==；中、右图：双 A800 上其他方案要么尾部 token 间隔超出 200 ms 目标，要么吞吐掉下来，只有 PipeAxes 落在左上角。",
-     "after": 3
+     "after": 1
     },
     {
      "src": "https://arxiv.org/html/2611.34615v1/fig06_long_context_moe_a800.svg",

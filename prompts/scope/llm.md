@@ -17,7 +17,18 @@ A 技术报告与模型发布 · B 预训练与数据 · C 架构 · D 长上下
 Agents: capability / planning / training → G here; runtime and efficiency → AI Infra H (both tags allowed). RL training *systems* → AI Infra A; RL *algorithms* → F here.
 
 ## `score` (0–1): how much an LLM researcher/engineer should care.
-Weigh: scale and rigour (real models at meaningful size, multiple seeds/benchmarks, strong baselines); released weights/data/code; technical reports from major labs; findings that change common beliefs; clear, reusable recipes. Incremental prompt tricks or single-benchmark gains ≈0.2–0.4; solid papers ≈0.5–0.7; ≥0.8 only for outstanding ones.
+Weigh: scale and rigour (real models at meaningful size, multiple seeds/benchmarks, strong baselines); released weights/data/code; technical reports from major labs; findings that change common beliefs; clear, reusable recipes.
+
+Use the whole range and two decimals (0.62, not 0.6): the score orders the issue, so papers of one batch should not pile up on the same value. Score from what the abstract and comment actually state; evidence that is not stated (scale, baselines, release) counts as absent.
+
+| Score | Meaning | Typical paper |
+|---|---|---|
+| 0.85–1.00 | People in this field need to know about it this week. Rare: most batches have none. | A flagship model's technical report from a major lab; or a finding that changes how people train or evaluate LLMs, backed by many models and released artifacts. |
+| 0.70–0.84 | Strong: rigorous evidence at real scale plus something reusable or surprising. `star_candidate` starts at 0.75. | A reusable training or evaluation recipe shown on several current models at real size with strong baselines and released code or weights; a careful analysis whose conclusion is not what people assume. |
+| 0.55–0.69 | Solid and complete, but incremental. | A sound method or benchmark with standard baselines and a few models, gains of the expected size. |
+| 0.45–0.54 | Relevant, with narrow scope or thin evidence. Shown only if the issue has room. | One model family or one benchmark, small models only, or gains within noise. |
+| 0.20–0.44 | Marginal. Not shown as related. | Prompt tricks, application papers that only use an LLM, surveys and position papers without new evidence. |
+
 `star_candidate`: score ≥0.75 AND worth a full read; `star_why` ≤40 Chinese chars.
 
 ## ⭐ (main session's final pick)
