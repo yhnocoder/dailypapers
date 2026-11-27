@@ -22,7 +22,14 @@
 - 分支命名：每日更新用 `daily/search/<YYYY-MM-DD>`（前缀见 `topics/search-rec.json` 的 `branch_prefix`）；改规则或模板用 `chore/…` / `feat/…`。
 - 会话里 `gh pr create` 用不了（GraphQL 被拦截），改用 REST：
   - 建 PR：`gh api repos/yhnocoder/dailypapers/pulls -f title=… -f head=<branch> -f base=main -F body=@pr.md`
-  - 合并：`gh api -X PUT repos/yhnocoder/dailypapers/pulls/<n>/merge -f merge_method=squash`
+  - 合并（必须带上提交信息，否则署名会丢）：
+    ```
+    gh api -X PUT repos/yhnocoder/dailypapers/pulls/<n>/merge -f merge_method=squash \
+      -f commit_title="<PR 标题> (#<n>)" \
+      -f commit_message="<一句话说明>
+
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+    ```
 - push 用 `git -c push.negotiate=true push -u origin <branch>`。
 - 日报 PR 描述里写：漏斗数字、⭐ 论文和入选理由、新增的术语。
 - commit 信息末尾必须原样带上这一行（squash merge 时也放进合并后的提交信息）：
