@@ -13,7 +13,7 @@
 <style>
 /* 纸、墨、朱砂印。
    一份手工印出来的日报：暖色的纸，松烟墨，一方朱砂印，再加九种矿物颜料给九个方向上色。
-   封面是一朵「葵花盘」：当天公布的每篇论文是一粒，入选的上色，精读的点朱。
+   版式沿用报纸的骨架：报头、头条配侧栏导读、其余精读、各版三栏。
    衬线体（Newsreader + 思源宋体）承担一切要读的字，黑体只做注记和控件。
    动效只做三件事：翻页（换期）、落墨（进入视野）、盖印（封面）。 */
 :root{
@@ -21,6 +21,7 @@
   --hair:#d9d2c3;--plate:#f8f5ee;--accent:#c4351c;--hl:#f4cdb8;--seal:#c4351c;--sealink:#f7efe2;
   --dA:#2f6a8f;--dB:#3a7d64;--dC:#a65f35;--dD:#987313;--dE:#3a548a;--dF:#a23a5c;--dG:#647539;--dH:#73528a;--dZ:#7a746a;
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .12 0 0 0 0 .06 0 0 0 .34 -.13'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-n:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .12 0 0 0 0 .11 0 0 0 .3 -.115'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --serif:"Newsreader","Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
   --song:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
   --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
@@ -75,7 +76,7 @@ html:not(.norv) .rv:not(.in) .em .s{stroke-dashoffset:1;transition:none}
 html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 
 /* ── 封面 ─────────────────────────────────────────────── */
-.cover{position:relative;display:grid;grid-template-rows:auto 1fr;min-height:min(100vh,940px);min-height:min(100svh,940px);padding-top:max(18px,env(safe-area-inset-top,0px))}
+.cover{position:relative;padding-top:max(18px,env(safe-area-inset-top,0px))}
 .c-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;font:400 12.5px/1.6 var(--sans);color:var(--mute);letter-spacing:.14em}
 .c-top select{font:500 13px/1.6 var(--sans);color:var(--ink);letter-spacing:.1em;appearance:none;-webkit-appearance:none;text-align:right;text-align-last:right;padding:0 16px 0 4px;line-height:1;max-width:100%;
   background:no-repeat right 2px center/8px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5' fill='none' stroke='%23888' stroke-width='1.2'%3E%3Cpath d='m1 1 3 3 3-3'/%3E%3C/svg%3E")}
@@ -97,10 +98,9 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .rail button.on::before{width:7px;height:7px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%)}
 .rail button.on small{color:var(--accent)}
 .np{font:600 19px/1 var(--serif);color:var(--ink);letter-spacing:.01em;margin-right:14px;white-space:nowrap}
-.c-grid{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,min(46vw,76vh,640px));grid-template-areas:"day disc" "info disc";grid-template-rows:auto 1fr;
-  gap:0 clamp(28px,4.6vw,76px);align-items:start;align-content:center;padding:clamp(20px,4vh,44px) 0 clamp(28px,5vh,56px)}
-.c-day{grid-area:day}
-.lock{--ns:clamp(112px,min(13.5vw,25vh),208px);display:flex;align-items:stretch;gap:clamp(14px,1.6vw,26px)}
+.c-grid{padding:clamp(10px,2vh,20px) 0 clamp(14px,2.4vh,24px)}
+.c-day{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px clamp(24px,4vw,64px)}
+.lock{--ns:clamp(72px,8.4vw,120px);display:flex;align-items:stretch;gap:clamp(14px,1.6vw,26px)}
 /* 数字的盒子正好等于字形的高度（顶到数字顶、底到基线），旁边两列竖排字两端对齐撑满同样的高度，重心才会一致 */
 .num{display:flex;font:500 var(--ns)/1 var(--serif);color:var(--ink);letter-spacing:-.045em;font-variant-numeric:lining-nums;margin-left:-.04em}
 .num .m{display:block;overflow:hidden;height:.8em;padding:.03em .06em 0 0}
@@ -111,48 +111,18 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .lock .v{writing-mode:vertical-rl;text-orientation:upright;font:700 calc(var(--ns)*.205)/1 var(--song);color:var(--ink);white-space:nowrap;text-align:justify;text-align-last:justify}
 .lock .v.w{font-weight:400;color:var(--mute)}
 .np+.seal{writing-mode:horizontal-tb;font-size:12.5px;letter-spacing:.16em;padding:.42em .34em .42em .5em;margin:0 auto 0 -4px;flex:none}
-.c-day .tally{margin-top:clamp(14px,2.4vh,24px)}
-.c-info{grid-area:info;padding-top:clamp(16px,3vh,34px);max-width:35em}
-.c-info .kick{margin-bottom:12px}
-.c-info .g{font-size:clamp(17px,1.42vw,20px);line-height:2;color:var(--body);text-wrap:pretty}
-
+.c-day .tally{margin:0 0 -.3em}
 .tally{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .4em;font:400 14px/1.5 var(--sans);color:var(--mute);letter-spacing:.04em}
 .tally span{white-space:nowrap}
 .tally b{font:500 clamp(28px,2.6vw,38px)/1.15 var(--serif);color:var(--ink);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em;margin-right:.08em}
 .tally b.st{color:var(--accent)}
 .tally i{font-style:normal;color:var(--faint);margin:0 .35em}
-.c-stars{list-style:none;padding:0;margin-top:clamp(12px,2.2vh,24px);border-top:1px solid var(--ink)}
-.c-stars li{border-bottom:1px solid var(--hair)}
-.c-stars a{display:grid;grid-template-columns:1.6em minmax(0,1fr) auto;align-items:baseline;gap:0 6px;padding:9px 0 8px;font:600 clamp(15px,1.25vw,17.5px)/1.45 var(--song);color:var(--ink);transition:padding .45s var(--ease),color .3s}
-.c-stars a b{font:900 1em var(--song);color:var(--accent)}
-.c-stars a u{text-decoration:none;font:400 15px var(--serif);color:var(--accent);opacity:0;transform:translateX(-8px);transition:opacity .3s,transform .45s var(--ease)}
-.c-stars a:hover,.c-stars a:focus-visible{padding-left:10px;color:var(--accent)}
-.c-stars a:hover u,.c-stars a:focus-visible u{opacity:1;transform:none}
-.c-stars .no{padding:10px 0;font:italic 400 15px var(--serif);color:var(--mute)}
-
-.c-disc{grid-area:disc;position:relative;align-self:center}
-.c-disc .sq{position:relative;aspect-ratio:1;width:100%}
-#disc{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:default}
-.c-disc figcaption{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 18px;font:400 12px/1.7 var(--sans);color:var(--mute);letter-spacing:.06em;margin-top:6px;text-align:center}
-.c-disc figcaption i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
-.c-disc figcaption .k2 i{background:var(--accent);box-shadow:0 0 0 2px var(--paper),0 0 0 3px var(--accent)}
-.c-disc figcaption .k1 i{background:conic-gradient(var(--dA),var(--dB),var(--dD),var(--dC),var(--dF),var(--dH),var(--dA))}
-.c-disc figcaption .k0 i{width:5px;height:5px;background:var(--ink);opacity:.4;vertical-align:1px}
-#dtip{position:absolute;z-index:5;left:0;top:0;width:max-content;max-width:min(300px,78vw);pointer-events:none;background:var(--ink);color:var(--paper);padding:8px 12px 9px;font:600 14px/1.5 var(--song);
-  opacity:0;transform:translateY(4px);transition:opacity .18s,transform .25s var(--ease);box-shadow:0 14px 30px -14px rgba(0,0,0,.5)}
-#dtip.on{opacity:1;transform:none}
-#dtip small{display:block;font:400 11.5px/1.5 var(--sans);letter-spacing:.06em;opacity:.72;margin-bottom:2px}
-#dtip small i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
-
 .seal{display:block;writing-mode:vertical-rl;text-orientation:upright;background:var(--seal);color:var(--sealink);font:900 clamp(15px,1.25vw,18px)/1 var(--song);letter-spacing:.2em;
   padding:.62em .46em .44em;border-radius:3px;filter:url(#rough);transform:rotate(-1.5deg) scale(1.5);opacity:0}
 .ready .seal{animation:stamp .5s 1.15s cubic-bezier(.3,1.5,.5,1) both}
 @keyframes stamp{0%{opacity:0;transform:rotate(-9deg) scale(1.7)}55%{opacity:1}100%{opacity:.94;transform:rotate(-1.5deg) scale(1)}}
 .c-fade{opacity:0;transform:translateY(14px);transition:opacity .9s .5s var(--ease),transform .9s .5s var(--ease)}
 .ready .c-fade{opacity:1;transform:none}
-.c-hint{position:absolute;left:50%;bottom:12px;width:1px;height:34px;background:linear-gradient(var(--ink),transparent);transform-origin:50% 0;animation:drip 2.6s 2s var(--ease) infinite;opacity:0}
-@keyframes drip{0%{opacity:0;transform:scaleY(0)}35%{opacity:.55;transform:scaleY(1)}100%{opacity:0;transform:translateY(16px) scaleY(1)}}
-
 /* ── 贴顶导航 ─────────────────────────────────────────── */
 #stick{height:1px;margin-top:-1px}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;display:flex;align-items:center;gap:6px clamp(12px,1.8vw,26px);background:var(--paper) var(--grain);margin:0 calc(-1*var(--pad));padding:7px var(--pad)}
@@ -210,8 +180,8 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .guide .cols{columns:2 300px;column-gap:clamp(28px,3vw,48px)}
 .guide p{font-size:clamp(16px,1.25vw,17.5px);line-height:1.95;break-inside:avoid;text-wrap:pretty;margin-bottom:1em}
 .guide .cols.one p{break-inside:auto}
-/* 导读里的论文名：前面一粒和葵花盘里同色的珠子，底下一道同色的线；
-   指上去整块填满，封面上盘里对应的那一粒也会亮起来。 */
+/* 导读里的论文名：前面一粒和各版索引里同色的珠子，底下一道同色的线；
+   指上去整块填满，并弹出一张小卡片。 */
 a.pref{--c:var(--accent);font-weight:700;color:var(--ink);margin:0 .12em;padding:.06em .22em .04em .16em;-webkit-box-decoration-break:clone;box-decoration-break:clone;
   background:linear-gradient(var(--c),var(--c)) no-repeat 0 100%/100% 1.5px;transition:background-size .42s var(--ease),color .25s}
 a.pref::before{content:"";display:inline-block;width:.46em;height:.46em;border-radius:50%;background:var(--c);margin-right:.34em;vertical-align:.1em;transition:background .25s,box-shadow .25s,transform .5s var(--ease)}
@@ -219,16 +189,11 @@ a.pref.s::before{margin:0 .46em 0 .1em;box-shadow:0 0 0 1.5px var(--paper),0 0 0
 a.pref:hover,a.pref:focus-visible,a.pref.hot{background-size:100% 100%;color:var(--paper)}
 a.pref:hover::before,a.pref:focus-visible::before,a.pref.hot::before{background:var(--paper);transform:scale(1.25)}
 a.pref.s:hover::before,a.pref.s:focus-visible::before,a.pref.s.hot::before{box-shadow:0 0 0 1.5px var(--c),0 0 0 2.6px var(--paper)}
-.ready .c-info a.pref{animation:uline .8s calc(.9s + var(--i,0)*.16s) var(--ease) backwards}
-.ready .c-info a.pref::before{animation:bead .6s calc(.8s + var(--i,0)*.16s) cubic-bezier(.3,1.6,.5,1) backwards}
-@keyframes uline{from{background-size:0 1.5px}}
-@keyframes bead{from{transform:scale(0)}}
 #pcard{position:absolute;z-index:44;width:max-content;max-width:min(320px,calc(100vw - 32px));background:var(--ink);color:var(--paper);padding:8px 12px 9px;font:600 14px/1.5 var(--song);pointer-events:none;box-shadow:0 14px 30px -14px rgba(0,0,0,.5);animation:pop .22s var(--ease)}
 #pcard small{display:block;font:400 11.5px/1.5 var(--sans);letter-spacing:.06em;opacity:.72;margin-bottom:2px}
 #pcard small i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
 .guide strong,.s-body strong,.s-abs strong,.x strong{font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:.32em}
 .idx{align-self:start}
-.lede.solo{grid-template-columns:minmax(0,1fr)}.lede.solo .guide{display:none}.lede.solo .idx{columns:2 320px;column-gap:clamp(32px,4.4vw,72px)}.lede.solo .idx .kick{column-span:all}.lede.solo .idx .row{break-inside:avoid}
 .idx .row{display:grid;grid-template-columns:22px minmax(0,auto) minmax(0,1fr) auto;align-items:center;gap:0 10px;padding:7px 0;border-bottom:1px solid var(--hair)}
 .idx .row .em{font-size:22px}.idx .row .em *{stroke-width:2.1}
 .idx .row>button{font:400 14.5px/1.45 var(--serif);color:var(--ink);text-align:left;transition:color .2s}
@@ -410,85 +375,71 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 .vt-theme::view-transition-new(root){z-index:2}
 
 
-/* ── 试看：三种封面布局（lay-a / lay-b / lay-c）和一档紧凑（dense）。选定之后只留一种，其余删掉。 ── */
-#try{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:4px;background:var(--ink);color:var(--paper);padding:5px 6px 5px 14px;font:500 12.5px/1 var(--sans);letter-spacing:.06em;box-shadow:0 14px 30px -12px rgba(0,0,0,.55);white-space:nowrap;max-width:calc(100vw - 16px)}
-#try span{opacity:.6;margin-right:4px}
-#try button{padding:8px 10px;color:var(--paper);opacity:.7;transition:opacity .2s,background .2s}
-#try button:hover{opacity:1}
-#try button.on{opacity:1;background:var(--seal);color:var(--sealink)}
-#try i{width:1px;height:16px;background:var(--paper);opacity:.25;margin:0 6px}
-.gc{columns:2 300px;column-gap:clamp(24px,2.6vw,40px)}
-.gc .g{break-inside:avoid;margin-bottom:.8em}
-#dslot:empty{display:none}
-/* A：封面压成一条报头，葵花盘缩成右上角的小图，导读整段在报头下面 */
-.lay-a .cover,.lay-b .cover{min-height:0}
-.lay-a .c-hint,.lay-b .c-hint,.lay-a .c-info,.lay-b .c-info{display:none}
-.lay-a .c-grid{grid-template-columns:minmax(0,1fr) clamp(120px,14vw,184px);grid-template-areas:"day disc";grid-template-rows:auto;align-items:center;padding:clamp(10px,2vh,20px) 0 clamp(14px,2.4vh,24px)}
-.lay-a .c-disc{margin:0;width:auto}
-.lay-a .c-disc figcaption{display:none}
-.lay-a .lock,.lay-b .lock{--ns:clamp(72px,8.4vw,120px)}
-.lay-a .c-day,.lay-b .c-day{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px clamp(24px,4vw,64px)}
-.lay-a .c-day .tally,.lay-b .c-day .tally{margin:0 0 -.3em}
-.lay-a .lede,.lay-b .lede{padding-top:clamp(22px,3vw,36px)}
-/* B：原版的骨架。左边头条直接开始，右边一栏是完整导读、葵花盘和各版索引 */
-.lay-b .c-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"day";grid-template-rows:auto;padding:clamp(10px,2vh,20px) 0 clamp(14px,2.4vh,24px)}
-.lay-b .lede{display:block}
-.lay-b .lede .guide .cols{columns:1}
-.lay-b .lede .guide p{font-size:15.5px;line-height:1.85}
-.lay-b .lede .c-disc{margin:6px auto 10px;width:min(100%,330px)}
-.lay-b .lede .idx{margin-top:18px}
+/* ── 版式：报头只有日期和数字；左边头条直接开始，右边一栏是完整导读和各版索引；其余精读正文分两栏；各版三栏 ── */
+.lede{display:block;padding-top:clamp(22px,3vw,36px)}
+.lede .guide .cols{columns:1}
+.lede .guide p{font-size:15.5px;line-height:1.85}
+.lede .idx{margin-top:18px}
+#lead:empty{display:none}
 @media(min-width:901px){
-  .lay-b main{display:grid;grid-template-columns:minmax(0,1fr) clamp(270px,25vw,340px);gap:0 clamp(30px,3.4vw,49px);align-items:start}
-  .lay-b #lede{grid-column:2;grid-row:1;border-left:1px solid var(--hair);padding-left:clamp(20px,2vw,28px);margin-top:clamp(22px,3vw,36px);padding-top:0}
-  .lay-b #lead{grid-column:1;grid-row:1;margin-top:clamp(22px,3vw,36px)}
-  .lay-b #stars,.lay-b #inside,.lay-b #results{grid-column:1/-1}
+  main{display:grid;grid-template-columns:minmax(0,1fr) clamp(270px,25vw,340px);gap:0 clamp(30px,3.4vw,49px);align-items:start}
+  #lede{grid-column:2;grid-row:1;border-left:1px solid var(--hair);padding-left:clamp(20px,2vw,28px);margin-top:clamp(22px,3vw,36px);padding-top:0}
+  #lead{grid-column:1;grid-row:1;margin-top:clamp(22px,3vw,36px)}
+  #stars,#inside,#results{grid-column:1/-1}
+  /* 没有头条的日子（没有精读，或筛选后没有）：导读和索引横着排满 */
+  main.nolead #lede{grid-column:1/-1;border-left:0;padding-left:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(270px,25vw,340px);gap:0 clamp(30px,3.4vw,49px)}
+  main.nolead #lede .guide .cols{columns:2 300px;column-gap:clamp(28px,3vw,48px)}
+  main.nolead #lede .idx{margin-top:0}
 }
+.rv{transform:translateY(8px);transition-duration:.3s}
+.rv.in mark{transition:background-size .4s .1s var(--ease)}
+.ln{transition-duration:.4s}
+.stars{margin-top:clamp(26px,3.4vw,44px)}
+.stars:empty{display:none}
+.star+.star{margin-top:clamp(30px,3.6vw,48px)}
+.star{padding-top:16px}
+.s-head h2{font-size:clamp(25px,2.7vw,38px)}
+.deck{font-size:clamp(16px,1.3vw,18.5px);margin-top:8px}
+.by{margin:12px 0 18px;padding:6px 0}
+.s-body{font-size:16.5px;line-height:1.82}
+.s-abs{font-size:13px;line-height:1.75}
+.inside{margin-top:clamp(34px,4.4vw,56px)}
+.sec+.sec{margin-top:clamp(22px,2.6vw,34px)}
+.sec{grid-template-columns:minmax(0,1fr);padding-top:12px}
+.sec-h{position:static;display:flex;align-items:center;gap:12px;padding-bottom:12px}
+.sec-h .em{font-size:34px;margin:0}
+.sec-h h2{font-size:19px;flex:0 1 auto}
+.sec-h .ct{margin:0 0 0 auto}.sec-h .ct b{font-size:22px}
+.art{padding-bottom:13px;margin-bottom:12px}
+.art h3{font-size:17.5px;line-height:1.4}
+.art .x{font-size:14.5px;line-height:1.75}
+.foot{margin-top:clamp(36px,4.4vw,60px)}
 @media(min-width:1101px){
-  .lay-b #lead .star{grid-template-columns:minmax(0,1fr) clamp(210px,19vw,260px);grid-template-areas:"rail rail" "head head" "body abs";gap:0 clamp(22px,2.4vw,34px)}
-  .lay-b #lead .s-rail{position:static;flex-direction:row;align-items:center;gap:12px;margin-bottom:8px}
-  .lay-b #lead .s-rail .ord{font-size:40px}.lay-b #lead .s-rail .em{font-size:30px}
+  .sec-l{columns:3;column-gap:clamp(26px,3vw,44px)}
+  .star{grid-template-columns:minmax(0,1.9fr) minmax(240px,1fr);grid-template-areas:"rail rail" "head head" "body abs";gap:0 clamp(26px,3vw,44px)}
+  .s-rail{position:static;flex-direction:row;align-items:center;gap:12px;margin-bottom:8px}
+  .s-rail .ord{font-size:40px}.s-rail .em{font-size:30px}
+  #lead .star{grid-template-columns:minmax(0,1fr) clamp(210px,19vw,260px);gap:0 clamp(22px,2.4vw,34px)}
+  /* 头条之外的精读：正文分两栏，栏里的图一律整栏宽 */
+  #stars .s-body{columns:2;column-gap:clamp(26px,3vw,44px);column-rule:1px solid var(--hair)}
+  #stars .s-body .fig,#stars .s-body .thumbs{break-inside:avoid}
+  #stars .s-body .fig.side{float:none;width:100%;margin:1.2em 0 1.3em}
 }
-.lay-b #lead:empty{display:none}
-/* C：封面保留一屏，导读两段都在封面上 */
-.lay-c .c-grid{grid-template-columns:minmax(0,1fr) minmax(0,min(34vw,62vh,460px))}
-.lay-c .c-info{max-width:none}
-.lay-c .c-info .g{font-size:clamp(15.5px,1.2vw,17px);line-height:1.9}
-.lay-c .lock{--ns:clamp(96px,min(10.5vw,20vh),160px)}
-@media(max-width:900px){
-  .lay-a .c-grid{grid-template-columns:minmax(0,1fr) 112px}
-  .lay-c .c-grid{grid-template-columns:minmax(0,1fr)}
-}
-/* 紧凑：各版三栏、精读去掉左侧序号栏、字号行距留白收紧、显现动画缩短 */
-.dense .rv{transform:translateY(8px);transition-duration:.3s}
-.dense .rv.in mark{transition:background-size .4s .1s var(--ease)}
-.dense .ln{transition-duration:.4s}
-.dense .stars{margin-top:clamp(26px,3.4vw,44px)}
-.dense .star+.star{margin-top:clamp(30px,3.6vw,48px)}
-.dense .star{padding-top:16px}
-.dense .s-head h2{font-size:clamp(25px,2.7vw,38px)}
-.dense .deck{font-size:clamp(16px,1.3vw,18.5px);margin-top:8px}
-.dense .by{margin:12px 0 18px;padding:6px 0}
-.dense .s-body{font-size:16.5px;line-height:1.82}
-.dense .s-abs{font-size:13px;line-height:1.75}
-.dense .guide p{font-size:15.5px;line-height:1.85}
-.dense .lede{padding-top:clamp(22px,3vw,36px)}
-.dense .inside{margin-top:clamp(34px,4.4vw,56px)}
-.dense .sec+.sec{margin-top:clamp(22px,2.6vw,34px)}
-.dense .sec{grid-template-columns:minmax(0,1fr);padding-top:12px}
-.dense .sec-h{position:static;display:flex;align-items:center;gap:12px;padding-bottom:12px}
-.dense .sec-h .em{font-size:34px;margin:0}
-.dense .sec-h h2{font-size:19px;flex:0 1 auto}
-.dense .sec-h .ct{margin:0 0 0 auto}.dense .sec-h .ct b{font-size:22px}
-.dense .art{padding-bottom:13px;margin-bottom:12px}
-.dense .art h3{font-size:17.5px;line-height:1.4}
-.dense .art .x{font-size:14.5px;line-height:1.75}
-.dense .foot{margin-top:clamp(36px,4.4vw,60px)}
-@media(min-width:1101px){
-  .dense .sec-l{columns:3;column-gap:clamp(26px,3vw,44px)}
-  .dense .star{grid-template-columns:minmax(0,1.9fr) minmax(240px,1fr);grid-template-areas:"rail rail" "head head" "body abs"}
-  .dense .s-rail{position:static;flex-direction:row;align-items:center;gap:12px;margin-bottom:8px}
-  .dense .s-rail .ord{font-size:40px}.dense .s-rail .em{font-size:30px}
-}
+
+/* ── 试看：纸色。选定之后把那一组值写进 :root，删掉这一段和页面底部的色条。只在日间生效。 ── */
+#try{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:2px;background:#1b1916;color:#f4f0e6;padding:5px 6px 5px 14px;font:500 12.5px/1 var(--sans);letter-spacing:.06em;box-shadow:0 14px 30px -12px rgba(0,0,0,.55);white-space:nowrap;max-width:calc(100vw - 16px);overflow-x:auto}
+#try span{opacity:.6;margin-right:6px}
+#try button{display:flex;align-items:center;gap:7px;padding:7px 9px;color:#f4f0e6;opacity:.75;transition:opacity .2s,background .2s}
+#try button i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.35)}
+#try button:hover{opacity:1}
+#try button.on{opacity:1;background:#c4351c}
+:root[data-theme=dark] #try{display:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) #try{display:none}}
+:root[data-paper="1"]{--paper:#f6f4ee;--paper2:#eeebe3;--hair:#d8d3c7;--plate:#faf8f3}
+:root[data-paper="2"]{--paper:#faf9f5;--paper2:#f1efe9;--hair:#dcd8ce;--plate:#fdfcf9}
+:root[data-paper="3"]{--paper:#f1f3f0;--paper2:#e6e9e5;--hair:#cfd4cd;--plate:#f7f8f5;--grain:var(--grain-n)}
+:root[data-paper="4"]{--paper:#f2f1ef;--paper2:#e8e7e4;--hair:#d3d1cc;--plate:#f8f7f5;--grain:var(--grain-n)}
+:root[data-paper="5"]{--paper:#ffffff;--paper2:#f3f3f1;--hair:#dddcd8;--plate:#ffffff;--grain:none}
 
 /* ── 窄屏 ─────────────────────────────────────────────── */
 @media(max-width:1100px){
@@ -500,13 +451,8 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   .lede{grid-template-columns:minmax(0,1fr)}.idx{margin-top:26px}
 }
 @media(max-width:900px){
-  .cover{min-height:0}
   .c-top{flex-wrap:wrap;row-gap:10px}.rail{order:5;flex:1 0 100%;margin:0 -10px;justify-content:flex-start}
-  .c-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"day" "disc" "info";padding-top:22px}
   .lock{--ns:clamp(104px,30vw,180px)}
-  .c-disc{margin:14px auto 0;width:min(100%,520px)}
-  .c-info{max-width:none}
-  .c-hint{display:none}
   .bar{flex-wrap:wrap}
   .nav{order:5;flex:1 0 100%;margin:0 -14px}
   .when{margin-right:auto}
@@ -528,9 +474,8 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
-  .c-hint{display:none}
 }
-@media print{.rv{opacity:1!important;transform:none!important}.bar,#prog,.c-hint{display:none}}
+@media print{.rv{opacity:1!important;transform:none!important}.bar,#prog,#try{display:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter></svg>
@@ -541,13 +486,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
     <div class="c-top c-fade"><h1 class="np" lang="en">arXiv Daily</h1><span class="seal" id="issue"></span><nav class="rail" id="rail" aria-label="各期"></nav><a href="index.html" id="skin" title="换回「报纸」版面">版面：纸墨 ⇄ 报纸</a><select id="topic" aria-label="主题"></select></div>
     <div class="c-grid" id="cgrid">
       <div class="c-day" id="cday"></div>
-      <figure class="c-disc c-fade">
-        <div class="sq"><canvas id="disc" role="img" aria-label="今日论文一览：每一粒是一篇当天公布的论文"></canvas><div id="dtip" aria-hidden="true"></div></div>
-        <figcaption><span class="k0"><i></i>每一粒是今天公布的一篇论文</span><span class="k1"><i></i>入选，按方向着色</span><span class="k2"><i></i>精读</span></figcaption>
-      </figure>
-      <div class="c-info c-fade" id="cinfo"></div>
     </div>
-    <span class="c-hint" aria-hidden="true"></span>
   </header>
 
   <div id="stick"></div>
@@ -575,7 +514,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
-<div id="try" role="group" aria-label="试看布局"><span>试看</span><button data-lay="0">现</button><button data-lay="a">A</button><button data-lay="b">B</button><button data-lay="c">C</button><i></i><button data-dense="1">紧凑</button></div>
+<div id="try" role="group" aria-label="试看纸色"><span>纸色</span><button data-paper="0"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="1"><i style="background:#f6f4ee"></i>米白</button><button data-paper="2"><i style="background:#faf9f5"></i>宣白</button><button data-paper="3"><i style="background:#f1f3f0"></i>月白</button><button data-paper="4"><i style="background:#f2f1ef"></i>灰白</button><button data-paper="5"><i style="background:#ffffff"></i>纯白</button></div>
 <div id="turn" aria-hidden="true"><div class="td"></div></div>
 
 <script>
@@ -586,10 +525,9 @@ const root=document.documentElement;
 const RM=matchMedia('(prefers-reduced-motion:reduce)');
 const WK='日一二三四五六',CD='〇一二三四五六七八九',ORD='壹贰叁肆伍陆柒捌玖拾';
 const S={topics:[],topic:null,date:null,day:null,dir:null,star:false,q:''};
-/* 试看用的布局开关：lay = 0 / a / b / c，dense = 紧凑 */
-const T={lay:'b',dense:true};try{const l=localStorage.getItem('lay'),d=localStorage.getItem('dense');if(/^[0abc]$/.test(l||''))T.lay=l;if(d!=null)T.dense=d==='1'}catch(e){}
-function applyTry(){for(const k of 'abc')root.classList.toggle('lay-'+k,T.lay===k);root.classList.toggle('dense',T.dense);
-  document.querySelectorAll('#try [data-lay]').forEach(b=>b.classList.toggle('on',b.dataset.lay===T.lay));document.querySelector('#try [data-dense]').classList.toggle('on',T.dense)}
+/* 试看用的纸色开关 */
+let PAPER='0';try{const v=localStorage.getItem('paper');if(/^[0-5]$/.test(v||''))PAPER=v}catch(e){}
+function applyPaper(){if(PAPER==='0')delete root.dataset.paper;else root.dataset.paper=PAPER;document.querySelectorAll('#try [data-paper]').forEach(b=>b.classList.toggle('on',b.dataset.paper===PAPER))}
 const dir=c=>S.topic.directions.find(d=>d.code===c)||{code:c,name:c};
 const full=n=>n.replace(/（.*?）/,'');
 const short=n=>full(n).split(' / ')[0];
@@ -677,94 +615,24 @@ const match=p=>!(S.dir&&p.direction!==S.dir)&&!(S.star&&!p.star);
 
 /* ── 落墨：IntersectionObserver，同一批进入的元素依次错开 ── */
 const IO='IntersectionObserver' in window?new IntersectionObserver(es=>{
-  es.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top||a.boundingClientRect.left-b.boundingClientRect.left).forEach((e,i)=>{
-    const el=e.target;IO.unobserve(el);el.style.transitionDelay=(T.dense?0:Math.min(i*70,420))+'ms';el.classList.add('in');setTimeout(()=>{el.style.transitionDelay=''},1500)})
+  es.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top||a.boundingClientRect.left-b.boundingClientRect.left).forEach(e=>{
+    const el=e.target;IO.unobserve(el);el.classList.add('in')})
 },{rootMargin:'0px 0px -6% 0px',threshold:.02}):null;
 if(!IO)root.classList.add('norv');
 const watch=el=>{if(IO)el.querySelectorAll('.rv:not(.in)').forEach(x=>IO.observe(x))};
 function countUp(el){el.querySelectorAll('b[data-n]').forEach(b=>{const n=+b.dataset.n;if(RM.matches||!n){b.textContent=n;return}
   const t0=performance.now()+500,D=1100;b.textContent=0;(function f(t){const k=Math.min(1,Math.max(0,(t-t0)/D));b.textContent=Math.round(n*(1-Math.pow(1-k,4)));if(k<1)requestAnimationFrame(f)})(t0)})}
 
-/* ── 葵花盘 ───────────────────────────────────────────────
-   当天公布的每篇论文是一粒，按黄金角从中心往外排：精读在花心，入选的按分数围着它，没收录的在外圈。
-   每粒占的面积和它的大小成正比，所以花心的大粒不会挤在一起。周一的盘最大，因为周一论文最多。 */
-const disc=(()=>{
-  const c=$('disc'),x=c.getContext('2d'),tip=$('dtip'),GA=Math.PI*(3-Math.sqrt(5));
-  let N=[],Ru=1,W=0,dpr=1,sc=1,raf=0,t0=0,until=0,mx=-1e5,my=-1e5,hov=null,armed=null,col={},day=null;
-  const h=s=>{let v=2166136261;for(let i=0;i<s.length;i++)v=Math.imul(v^s.charCodeAt(i),16777619);return ((v>>>0)%1000)/1000};
-  function colors(){const cs=getComputedStyle(root),g=k=>cs.getPropertyValue(k).trim();col={ink:g('--ink'),paper:g('--paper'),accent:g('--accent')};for(const k of 'ABCDEFGHZ')col[k]=g('--d'+k)}
-  function set(d,replay){
-    const fresh=d!==day;day=d;
-    if(fresh){
-      const ps=[...(d.papers||[])].sort((a,b)=>(b.star-a.star)||(b.score-a.score));
-      N=[...ps.map(p=>({k:p.star?2:1,p,r:p.star?8.6:3.9+4.2*(+p.score||.4),pad:p.star?3:1.5})),
-         ...(d.excluded||[]).map(p=>{const j=h(p.id);return {k:0,p,r:1.45+.8*j,pad:1.95,a:.2+.34*h(p.id+'a')}})];
-      let acc=0;N.forEach((n,i)=>{const w=(n.r+n.pad)**2;const rr=1.13*Math.sqrt(acc+w/2),th=i*GA-Math.PI/2;acc+=w;n.ux=rr*Math.cos(th);n.uy=rr*Math.sin(th);n.rr=rr;n.ls=0;n.al=1;n.s=0});
-      Ru=1.13*Math.sqrt(acc)+4;N.forEach(n=>n.dl=260+1250*Math.pow(n.rr/Ru,1.35));
-    }
-    if(fresh||replay){t0=performance.now();N.forEach(n=>n.s=RM.matches?1:0)}
-    hide();size();kick(2400)
-  }
-  function size(){W=c.clientWidth;if(!W)return;dpr=Math.min(devicePixelRatio||1,2.5);const px=Math.round(W*dpr);if(c.width!==px){c.width=px;c.height=px}sc=Math.min((W/2-8)/Ru,(W/2-8)/128);kick(300)}
-  const kick=ms=>{until=Math.max(until,performance.now()+ms);if(!raf)raf=requestAnimationFrame(frame)};
-  function frame(now){
-    raf=0;if(!W||!N.length)return;
-    x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,W);x.translate(W/2,W/2);
-    const lx=(mx-W/2)/sc,ly=(my-W/2)/sc,LR=64/sc;let live=now<until;
-    for(const n of N){
-      if(n.s<1){const k=Math.min(1,Math.max(0,(now-t0-n.dl)/520));n.s=k>=1?1:k<=0?0:1+2.2*Math.pow(k-1,3)+1.2*Math.pow(k-1,2);if(k<1)live=true}
-      const dd=Math.hypot(n.ux-lx,n.uy-ly),lt=dd<LR?Math.pow(1-dd/LR,2)*(n.k?.28:1.5):0;n.ls+=(lt-n.ls)*.2;
-      const at=n.k&&((S.dir&&n.p.direction!==S.dir)||(S.star&&n.k<2))?.14:(!n.k&&(S.dir||S.star)?.45:1);n.al+=(at-n.al)*.14;
-      if(Math.abs(lt-n.ls)>.01||Math.abs(at-n.al)>.01)live=true;
-    }
-    for(const n of N){if(n.k)continue;const r=n.r*sc*n.s*(1+n.ls);if(r<=0)continue;x.globalAlpha=Math.min(.9,n.a*n.al*(1+n.ls*.9));x.fillStyle=col.ink;x.beginPath();x.arc(n.ux*sc,n.uy*sc,r,0,6.2832);x.fill()}
-    for(const n of N){if(!n.k)continue;const r=n.r*sc*n.s*(1+n.ls),px=n.ux*sc,py=n.uy*sc;if(r<=0)continue;x.globalAlpha=n.al;
-      x.fillStyle=n.k===2?col.accent:col[dc(n.p.direction)];x.beginPath();x.arc(px,py,r,0,6.2832);x.fill();
-      if(n.k===2){x.strokeStyle=col.accent;x.lineWidth=1.2;x.beginPath();x.arc(px,py,r+3.4*Math.min(1,sc/2),0,6.2832);x.stroke()}}
-    if(hov){const r=hov.r*sc*(1+hov.ls)+(hov.k===2?7:3.5);x.globalAlpha=1;x.strokeStyle=col.ink;x.lineWidth=1.4;x.beginPath();x.arc(hov.ux*sc,hov.uy*sc,r,0,6.2832);x.stroke()}
-    x.globalAlpha=1;if(live)raf=requestAnimationFrame(frame)
-  }
-  function pick(){let best=null,bd=1e9;const lx=(mx-W/2)/sc,ly=(my-W/2)/sc;for(const n of N){if(n.s<.5)continue;const dd=Math.hypot(n.ux-lx,n.uy-ly)-n.r;if(dd<bd){bd=dd;best=n}}return bd*sc<(best&&best.k?5:7)?best:null}
-  function show(n,quiet){
-    hov=n;c.style.cursor=n?'pointer':'default';if(!quiet)fromDisc(n&&n.k?n:null,n&&pt(n));if(!n){tip.classList.remove('on');return}
-    tip.textContent='';const sm=document.createElement('small');
-    if(n.k){const i=document.createElement('i');i.style.background=n.k===2?col.accent:col[dc(n.p.direction)];sm.append(i,(n.k===2?'★ 精读 · ':'')+short(dir(n.p.direction).name))}
-    else sm.append('未收录'+(n.p.reason?' · '+n.p.reason:'')+' ↗');
-    tip.append(sm,n.p.title_zh||n.p.title);
-    const tw=tip.offsetWidth,th=tip.offsetHeight,px=W/2+n.ux*sc,py=W/2+n.uy*sc,r=n.r*sc+10;
-    tip.style.left=Math.max(-8,Math.min(px-tw/2,W-tw+8))+'px';tip.style.top=(py-r-th<-40?py+r:py-r-th)+'px';tip.classList.add('on')
-  }
-  const pt=n=>{const b=c.getBoundingClientRect();return {x:b.left+W/2+n.ux*sc,y:b.top+W/2+n.uy*sc,r:n.r*sc}};
-  /* 从导读里指过来：点亮对应的那一粒，返回它在页面上的位置 */
-  function focus(id){const n=N.find(v=>v.k&&v.p.id===id);if(!n||!W)return null;show(n,true);kick(600);return pt(n)}
-  const blur=()=>{if(hov){show(null,true);kick(400)}};
-  const hide=()=>{armed=null;if(hov){show(null)}};
-  const act=n=>{if(n.k)jump(n.p.id);else window.open('https://arxiv.org/abs/'+encodeURIComponent(n.p.id),'_blank','noopener')};
-  const at=e=>{const b=c.getBoundingClientRect();mx=e.clientX-b.left;my=e.clientY-b.top};
-  c.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;at(e);const n=pick();if(n!==hov)show(n);kick(500)});
-  c.addEventListener('pointerleave',e=>{if(e.pointerType==='touch')return;mx=my=-1e5;show(null);kick(600)});
-  c.addEventListener('click',e=>{at(e);const n=pick();const touch=!matchMedia('(hover:hover)').matches;
-    if(!n){hide();mx=my=-1e5;kick(500);return}
-    if(touch&&armed!==n){armed=n;show(n);kick(500);return}
-    act(n)});
-  if('ResizeObserver' in window)new ResizeObserver(size).observe(c);else addEventListener('resize',size);
-  return {set,colors:()=>{colors();kick(100)},dim:()=>kick(900),hide,focus,blur};
-})();
-
-/* ── 导读 ↔ 葵花盘：指着论文名，盘里那一粒亮起来；指着那一粒，文中的名字亮起来 ── */
-const nearDisc=a=>innerWidth>900&&(a.closest('#cinfo')||(T.lay==='b'&&a.closest('#lede')));
-const coverRefs=id=>[...document.querySelectorAll('#cinfo a.pref,#lede a.pref')].filter(a=>a.dataset.ref===id&&nearDisc(a));
-function fromDisc(n,p){document.querySelectorAll('a.pref.hot').forEach(a=>a.classList.remove('hot'));const as=n?coverRefs(n.p.id):[];as.forEach(a=>a.classList.add('hot'))}
+/* ── 导读里的论文名：指上去弹一张小卡片（方向、机构、中文标题） ── */
 const pc=document.createElement('div');pc.id='pcard';pc.hidden=true;document.body.append(pc);
 function refOn(a){
-  if(nearDisc(a)){disc.focus(a.dataset.ref);return}
   const p=(S.day?.papers||[]).find(v=>v.id===a.dataset.ref);if(!p)return;
   pc.textContent='';const sm=document.createElement('small'),i=document.createElement('i');i.style.background=p.star?'var(--accent)':`var(--d${dc(p.direction)})`;
   sm.append(i,(p.star?'★ 精读 · ':'')+short(dir(p.direction).name)+(p.affiliation?' · '+p.affiliation:''));pc.append(sm,p.title_zh||p.title);
   pc.hidden=true;pc.hidden=false;const r=a.getClientRects()[0],w=pc.offsetWidth,h=pc.offsetHeight,vw=root.clientWidth;
   pc.style.left=Math.max(16,Math.min(r.left,vw-16-w))+scrollX+'px';pc.style.top=(r.top-8-h>0?r.top-8-h:r.bottom+8)+scrollY+'px';
 }
-function refOff(){pc.hidden=true;disc.blur()}
+function refOff(){pc.hidden=true}
 const prefOf=e=>e.target.closest?.('a.pref');
 document.addEventListener('mouseover',e=>{const a=prefOf(e);if(a&&!a.contains(e.relatedTarget))refOn(a)});
 document.addEventListener('mouseout',e=>{const a=prefOf(e);if(a&&!a.contains(e.relatedTarget))refOff()});
@@ -809,35 +677,29 @@ function render(fresh){
   $('cday').innerHTML=`<div class="lock" aria-label="${esc(cn(S.date))}"><span class="num" aria-hidden="true">${[...String(t.d)].map(c=>`<span class="m"><i>${c}</i></span>`).join('')}</span><span class="dv" aria-hidden="true"><span class="v">${cnN(t.m)}月</span><span class="v w">星期${WK[t.w]}</span></span></div>`+tally;
   $('issue').textContent=`第${cnN(issueNo())}期`;
   /* 封面的正文是导读第一段；没有导读的日子退回精读标题列表 */
-  const L=T.lay,fig=document.querySelector('.c-disc');
-  if(fig.parentElement.id!=='cgrid')$('cgrid').insertBefore(fig,$('cinfo'));   /* 葵花盘先放回封面，免得被下面的 innerHTML 冲掉 */
-  $('cinfo').innerHTML=L==='a'||L==='b'?'':gd.length?`<h2 class="kick">今日导读</h2>${L==='c'?`<div class="gc">${gd.map(v=>`<p class="g">${rich(v)}</p>`).join('')}</div>`:`<p class="g">${rich(gd[0])}</p>`}`
-    :`<ol class="c-stars">${allStars.map((p,i)=>`<li><a href="#p-${esc(p.id)}" data-ref="${esc(p.id)}"><b>${ORD[i]||i+1}</b><span>${esc(p.title_zh)}</span><u>→</u></a></li>`).join('')||'<li class="no">今天没有精读</li>'}</ol>`;
   if(fresh)countUp($('cday'));
-  disc.set(d,fresh);
 
   $('date').innerHTML=`${t.y}年${t.m}月${t.d}日<small>星期${WK[t.w]}</small>`;
   $('nav').innerHTML=navHTML(dirs,cnt,nStar);
   {const nv=$('nav'),on=nv.querySelector('.on');if(on)nv.scrollLeft=Math.max(0,on.getBoundingClientRect().left-nv.getBoundingClientRect().left+nv.scrollLeft-nv.clientWidth/2+on.offsetWidth/2)}
 
   /* 导读 + 算珠索引 */
-  const more=L==='0'?gd.slice(1):L==='c'?[]:gd;$('lede').classList.toggle('solo',!more.length&&L!=='b');
-  $('lede').innerHTML=`<section class="guide">${more.length?`<h2 class="kick rv">${L==='0'?'其余值得看':'今日导读'}</h2><div class="cols${more.length===1?' one':''}">${more.map(v=>`<p class="rv">${rich(v)}</p>`).join('')}</div>`:''}</section><div id="dslot"></div>
+  const more=gd;
+  $('lede').innerHTML=`<section class="guide">${more.length?`<h2 class="kick rv">今日导读</h2><div class="cols${more.length===1?' one':''}">${more.map(v=>`<p class="rv">${rich(v)}</p>`).join('')}</div>`:''}</section>
     <nav class="idx" aria-label="各版索引"><h2 class="kick rv">各版</h2>${dirs.map(v=>{const g=by(v.code);
       return `<div class="row rv${S.dir===v.code?' on':''}${g.length?'':' off'}" ${cv(v.code)}>${emblem(v.code)}<button data-k="d" data-d="${esc(v.code)}" ${g.length?'':'disabled'}>${esc(short(v.name))}</button><span class="beads">${g.map(p=>`<a class="${p.star?'s':''}" href="#p-${esc(p.id)}" data-ref="${esc(p.id)}" title="${esc(p.title_zh)}" aria-label="${esc(p.title_zh)}"></a>`).join('')}</span><span class="n">${g.length||''}</span></div>`}).join('')}</nav>`;
 
-  /* 导读里的论文名染上它在葵花盘里的颜色 */
-  {const byId=new Map(ps.map(p=>[p.id,p]));for(const box of [$('cinfo'),$('lede')])box.querySelectorAll('a.pref').forEach((a,i)=>{const p=byId.get(a.dataset.ref);if(!p)return;
+  /* 导读里的论文名染上它在各版索引里的颜色 */
+  {const byId=new Map(ps.map(p=>[p.id,p]));for(const box of [$('lede')])box.querySelectorAll('a.pref').forEach((a,i)=>{const p=byId.get(a.dataset.ref);if(!p)return;
     a.style.setProperty('--c',p.star?'var(--accent)':`var(--d${dc(p.direction)})`);a.style.setProperty('--i',i);if(p.star)a.classList.add('s');if(a.textContent.length<=14)a.style.whiteSpace='nowrap'})}
 
   /* 精读 */
   const f=ps.filter(match).sort((a,b)=>(b.star-a.star)||(b.score-a.score));
   const stars=f.filter(p=>p.star);
-  const top=L==='b'?stars.slice(0,1):[];
+  const top=stars.slice(0,1);$('main').classList.toggle('nolead',!top.length);
   $('lead').innerHTML=top.map(p=>story(p,allStars.indexOf(p))).join('');
   $('stars').innerHTML=stars.slice(top.length).map(p=>story(p,allStars.indexOf(p))).join('');
   fillSvgs($('lead'));fillSvgs($('stars'));
-  if(L==='b')$('dslot').append(fig);
 
   /* 各版 */
   const rest=f.filter(p=>!p.star);
@@ -856,7 +718,7 @@ function render(fresh){
   requestAnimationFrame(()=>root.classList.add('ready'));
 }
 /* 换版面：有 View Transitions 就淡入淡出 */
-function rerender(){if(document.startViewTransition&&!RM.matches)document.startViewTransition(()=>render());else render();disc.dim()}
+function rerender(){if(document.startViewTransition&&!RM.matches)document.startViewTransition(()=>render());else render()}
 function jump(id){
   refOff();
   let el=$('p-'+id);
@@ -949,7 +811,7 @@ async function loadDay(){
     h+=`<button data-cal="${esc(v)}" class="${v===S.date?'on':''}" aria-label="${esc(cn(v))}"${v===S.date?' aria-current="date"':''}><b>${t.d}</b><small>周${WK[t.w]}</small></button>`}
    const rl=$('rail');rl.innerHTML=h;const on=rl.querySelector('.on');if(on)rl.scrollLeft=on.offsetLeft-rl.clientWidth/2+on.offsetWidth/2}
   try{S.day=await getDay(S.topic.id,S.date);render(true)}
-  catch(e){S.day=null;$('cday').innerHTML='';$('cinfo').innerHTML='<p class="none">本期数据缺失</p>';['lede','lead','stars','inside','foot','nav'].forEach(k=>$(k).innerHTML='');root.classList.add('ready')}
+  catch(e){S.day=null;$('cday').innerHTML='<p class="none">本期数据缺失</p>';['lede','lead','stars','inside','foot','nav'].forEach(k=>$(k).innerHTML='');root.classList.add('ready')}
   try{history.replaceState(null,'',`#${S.topic.id}-${S.date}`)}catch(e){}
 }
 const step=d=>{const ds=S.topic.dates,v=ds[ds.indexOf(S.date)+d];if(v)go(v)};
@@ -957,7 +819,7 @@ const step=d=>{const ds=S.topic.dates,v=ds[ds.indexOf(S.date)+d];if(v)go(v)};
 /* ── 主题：从按钮处一圈墨晕开 ─────────────────────────── */
 function setTheme(e){
   const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches,next=dark?'light':'dark';
-  const apply=()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}disc.colors()};
+  const apply=()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}};
   if(!document.startViewTransition||RM.matches){apply();return}
   const b=$('theme').getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,r=Math.hypot(Math.max(cx,innerWidth-cx),Math.max(cy,innerHeight-cy));
   root.classList.add('vt-theme');
@@ -965,7 +827,6 @@ function setTheme(e){
   vt.ready.then(()=>root.animate({clipPath:[`circle(0 at ${cx}px ${cy}px)`,`circle(${r}px at ${cx}px ${cy}px)`]},{duration:700,easing:'cubic-bezier(.5,0,.2,1)',pseudoElement:'::view-transition-new(root)'})).catch(()=>{});
   vt.finished.finally(()=>root.classList.remove('vt-theme'));
 }
-matchMedia('(prefers-color-scheme:dark)').addEventListener?.('change',()=>disc.colors());
 
 /* ── 事件 ─────────────────────────────────────────────── */
 document.addEventListener('click',e=>{
@@ -977,8 +838,7 @@ document.addEventListener('click',e=>{
   if($('cal')&&!e.target.closest('#cal'))closeCal();
   if(e.target.closest('#brand')){e.preventDefault();scrollTo({top:0,behavior:RM.matches?'auto':'smooth'});return}
   if(e.target.closest('#theme')){setTheme(e);return}
-  const tb=e.target.closest('#try button');if(tb){if(tb.dataset.lay)T.lay=tb.dataset.lay;else T.dense=!T.dense;try{localStorage.setItem('lay',T.lay);localStorage.setItem('dense',T.dense?'1':'0')}catch(_){}
-    applyTry();$('cgrid').style.cssText='';if(S.day){render();scrollTo(0,0)}return}
+  const tb=e.target.closest('#try button');if(tb){PAPER=tb.dataset.paper;try{localStorage.setItem('paper',PAPER)}catch(_){}applyPaper();return}
   if(e.target.closest('#skin')){e.preventDefault();try{localStorage.setItem('skin','paper')}catch(_){}location.href='index.html'+location.hash;return}
   const mt=e.target.closest('button.more-th');if(mt){mt.parentElement.querySelectorAll('.th[hidden]').forEach(v=>v.hidden=false);mt.remove();return}
   const zb=e.target.closest('button.zoom');if(zb){lbOpen(zb.dataset.pid,+zb.dataset.i,zb);return}
@@ -1011,10 +871,9 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowRight'&&S.topic)step(-1);
 });
 
-/* 滚动：顶部朱线是阅读进度；封面往上走时慢半拍、淡一点 */
+/* 滚动：顶部朱线是阅读进度 */
 let sT=0;
-function onScroll(){sT=0;const y=scrollY,H=root.scrollHeight-innerHeight;$('prog').style.transform=`scaleX(${H>0?Math.min(1,y/H):0})`;
-  if(!RM.matches&&innerWidth>900&&(T.lay==='0'||T.lay==='c')){const c=$('cover'),h=c.offsetHeight||1,k=Math.min(1,y/h);c.querySelector('.c-grid').style.cssText=k>0&&k<1?`transform:translateY(${y*.07}px);opacity:${1-k*.8}`:''}}
+function onScroll(){sT=0;const y=scrollY,H=root.scrollHeight-innerHeight;$('prog').style.transform=`scaleX(${H>0?Math.min(1,y/H):0})`}
 addEventListener('scroll',()=>{if(!sT)sT=requestAnimationFrame(onScroll)},{passive:true});
 if(IO)new IntersectionObserver(([e])=>root.classList.toggle('stuck',!e.isIntersecting&&e.boundingClientRect.top<0)).observe($('stick'));
 
@@ -1025,8 +884,8 @@ function route(){
   $('topic').value=S.topic.id;
 }
 async function boot(){
-  applyTry();disc.colors();
-  try{S.topics=(await (await fetch('data/topics.json')).json()).topics}catch(e){$('cinfo').innerHTML='<p class="none">无法加载数据</p>';root.classList.add('ready');return}
+  applyPaper();
+  try{S.topics=(await (await fetch('data/topics.json')).json()).topics}catch(e){$('cday').innerHTML='<p class="none">无法加载数据</p>';root.classList.add('ready');return}
   try{const r=await fetch('data/glossary.json');if(r.ok)for(const g of (await r.json()).terms||[])if(g&&g.id)G.set(String(g.id),g)}catch(e){}
   $('topic').innerHTML=S.topics.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
   route();
@@ -1035,7 +894,6 @@ async function boot(){
   let qT=0;$('q').oninput=e=>{clearTimeout(qT);qT=setTimeout(()=>{const was=S.q;S.q=e.target.value.trim();if(S.day&&was!==S.q){render();if(S.q&&!was)scrollTo(0,0)}},180)};
   addEventListener('hashchange',()=>{const t=S.topic,dt=S.date;route();if(t!==S.topic){loadDay()}else if(dt!==S.date){const v=S.date;S.date=dt;go(v)}});
   await loadDay();
-  document.fonts?.ready.then(()=>disc.colors());
 }
 boot();
 }
