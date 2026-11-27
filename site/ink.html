@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="color-scheme" content="light dark">
-<script>try{const t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;if(localStorage.getItem('paper')==='w')document.documentElement.dataset.paper='w'}catch(e){}</script>
+<script>try{const t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;const p=localStorage.getItem('paper');if(p==='w'||p==='x')document.documentElement.dataset.paper=p}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..600&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -424,7 +424,9 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   #stars .s-body .fig.side{float:none;width:100%;margin:1.2em 0 1.3em}
 }
 
-/* ── 纸色：暖黄（默认，淡纸纹）和纯白（无纸纹）。只在日间生效，夜间两种都是同一套深色。 ── */
+/* ── 纸色：暖黄（默认，淡纸纹）、宣白和纯白（都无纸纹）。只在日间生效，夜间都是同一套深色。 ── */
+@media(prefers-color-scheme:light){:root[data-paper=x]:not([data-theme=dark]){--paper:#faf9f5;--paper2:#f1efe9;--hair:#dcd8ce;--plate:#fdfcf9;--grain:none}}
+:root[data-paper=x][data-theme=light]{--paper:#faf9f5;--paper2:#f1efe9;--hair:#dcd8ce;--plate:#fdfcf9;--grain:none}
 @media(prefers-color-scheme:light){:root[data-paper=w]:not([data-theme=dark]){--paper:#fff;--paper2:#f3f3f1;--hair:#dddcd8;--plate:#fff;--grain:none}}
 :root[data-paper=w][data-theme=light]{--paper:#fff;--paper2:#f3f3f1;--hair:#dddcd8;--plate:#fff;--grain:none}
 
@@ -508,7 +510,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
       <div id="set" role="dialog" aria-label="设置" hidden>
         <h2>设置</h2>
         <div class="srow" id="set-skin"><span>版面</span><p><button data-skin="paper">报纸</button><button data-skin="ink" class="on">纸墨</button></p></div>
-        <div class="srow"><span>纸色</span><p><button data-paper="y"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="w"><i style="background:#fff"></i>纯白</button></p><small>只在日间生效</small></div>
+        <div class="srow"><span>纸色</span><p><button data-paper="y"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="x"><i style="background:#faf9f5"></i>宣白</button><button data-paper="w"><i style="background:#fff"></i>纯白</button></p><small>只在日间生效</small></div>
         <div class="srow"><span>明暗</span><p><button data-mode="auto">跟随系统</button><button data-mode="light">日间</button><button data-mode="dark">夜间</button></p></div>
       </div>
     </div>
@@ -533,10 +535,10 @@ const root=document.documentElement;
 const RM=matchMedia('(prefers-reduced-motion:reduce)');
 const WK='日一二三四五六',CD='〇一二三四五六七八九',ORD='壹贰叁肆伍陆柒捌玖拾';
 const S={topics:[],topic:null,date:null,day:null,dir:null,star:false,q:''};
-/* 设置：纸色（y 暖黄 / w 纯白）和明暗（auto / light / dark），都记在 localStorage */
-let PAPER='y';try{if(localStorage.getItem('paper')==='w')PAPER='w'}catch(e){}
+/* 设置：纸色（y 暖黄 / x 宣白 / w 纯白）和明暗（auto / light / dark），都记在 localStorage */
+let PAPER='y';try{const v=localStorage.getItem('paper');if(v==='w'||v==='x')PAPER=v}catch(e){}
 function syncSet(){
-  if(PAPER==='w')root.dataset.paper='w';else delete root.dataset.paper;
+  if(PAPER==='y')delete root.dataset.paper;else root.dataset.paper=PAPER;
   const mode=root.dataset.theme||'auto';
   document.querySelectorAll('#set [data-paper]').forEach(b=>b.classList.toggle('on',b.dataset.paper===PAPER));
   document.querySelectorAll('#set [data-mode]').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
