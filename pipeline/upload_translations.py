@@ -23,7 +23,9 @@ def tongtu_workdir(pid):
 def put(url, data, ctype):
     token = os.environ.get("DAILYPAPERS_UPLOAD_TOKEN", "injected-by-proxy")
     req = urllib.request.Request(url, data=data, method="PUT",
-                                 headers={"Authorization": f"Bearer {token}", "Content-Type": ctype})
+                                 headers={"Authorization": f"Bearer {token}", "Content-Type": ctype,
+                                          # Cloudflare blocks the default Python-urllib UA (error 1010)
+                                          "User-Agent": "dailypapers-pipeline/1.0"})
     with urllib.request.urlopen(req, timeout=300) as r:
         return json.load(r)
 
