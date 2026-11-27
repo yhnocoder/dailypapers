@@ -7,7 +7,7 @@
     "2026-11-24",
     "2026-11-23"
    ],
-   "name": "搜索与推荐",
+   "name": "Search & Rec",
    "taxonomy_version": "v1",
    "directions": [
     {
@@ -162,7 +162,7 @@
    "dates": [
     "2026-11-25"
    ],
-   "name": "VLM / 多模态",
+   "name": "VLM",
    "taxonomy_version": "v1",
    "directions": [
     {
@@ -215,7 +215,7 @@
    "dates": [
     "2026-11-25"
    ],
-   "name": "Diffusion / 生成",
+   "name": "Diffusion",
    "taxonomy_version": "v1",
    "directions": [
     {
@@ -264,7 +264,7 @@
    "dates": [
     "2026-11-25"
    ],
-   "name": "具身智能与 VLA",
+   "name": "Embodied AI",
    "taxonomy_version": "v1",
    "directions": [
     {

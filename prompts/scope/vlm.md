@@ -1,4 +1,4 @@
-# Scope: VLM / 多模态 (vlm)
+# Scope: VLM (vlm)
 
 ## Is it relevant? (`relevant`)
 TRUE when the research object is models that understand vision (images/video/documents/screens) together with language:

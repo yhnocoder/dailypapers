@@ -1,4 +1,4 @@
-# Scope: Diffusion / 生成 (diffusion)
+# Scope: Diffusion (diffusion)
 
 ## Is it relevant? (`relevant`)
 TRUE when the research object is *visual* generative modelling: diffusion, flow matching, autoregressive or other generators of images, video, 3D/4D content and world models.

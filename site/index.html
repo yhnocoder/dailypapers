@@ -174,11 +174,9 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
    指上去整块填满，并弹出一张小卡片。 */
 a.pref{--c:var(--accent);font-weight:700;color:var(--ink);margin:0 .12em;padding:.06em .22em .04em .16em;-webkit-box-decoration-break:clone;box-decoration-break:clone;
   background:linear-gradient(var(--c),var(--c)) no-repeat 0 100%/100% 1.5px;transition:background-size .42s var(--ease),color .25s}
-a.pref::before{content:"";display:inline-block;width:.46em;height:.46em;border-radius:50%;background:var(--c);margin-right:.34em;vertical-align:.1em;transition:background .25s,box-shadow .25s,transform .5s var(--ease)}
-a.pref.s::before{margin:0 .46em 0 .1em;box-shadow:0 0 0 1.5px var(--paper),0 0 0 2.6px var(--c)}
+a.pref.s::before{content:"★";color:var(--c);font-size:.82em;margin-right:.3em;vertical-align:.06em;transition:color .25s}
+a.pref.s:hover::before,a.pref.s:focus-visible::before,a.pref.s.hot::before{color:var(--paper)}
 a.pref:hover,a.pref:focus-visible,a.pref.hot{background-size:100% 100%;color:var(--paper)}
-a.pref:hover::before,a.pref:focus-visible::before,a.pref.hot::before{background:var(--paper);transform:scale(1.25)}
-a.pref.s:hover::before,a.pref.s:focus-visible::before,a.pref.s.hot::before{box-shadow:0 0 0 1.5px var(--c),0 0 0 2.6px var(--paper)}
 #pcard{position:absolute;z-index:44;width:max-content;max-width:min(320px,calc(100vw - 32px));background:var(--ink);color:var(--paper);padding:8px 12px 9px;font:600 14px/1.5 var(--song);pointer-events:none;box-shadow:0 14px 30px -14px rgba(0,0,0,.5);animation:pop .22s var(--ease)}
 #pcard small{display:block;font:400 11.5px/1.5 var(--sans);letter-spacing:.06em;opacity:.72;margin-bottom:2px}
 #pcard small i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
@@ -570,15 +568,15 @@ const emblem=c=>`<svg class="em" viewBox="0 0 48 48" aria-hidden="true"><circle 
 
 /* 论文链接：arXiv 页、英文 PDF、中文 PDF（通途译文，Access 保护）、代码、复制编号 */
 const CP='<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
-const links=p=>`<span class="lk">${[['links',p.links?.abs],['en',p.links?.pdf],['zh',p.translation?.pdf,1],['code',p.links?.code]].filter(x=>url(x[1])).map(([t,u,nw])=>`<a href="${url(u)}" rel="noopener"${nw?' target="_blank"':''}>${t}</a>`).join('')}<button class="cp" type="button" data-copy="${esc(p.id)}" title="复制 arXiv 编号 ${esc(p.id)}" aria-label="复制 arXiv 编号 ${esc(p.id)}">${CP}</button></span>`;
+const links=p=>`<span class="lk">${[['links',p.links?.abs],['en',p.links?.pdf],['zh',p.translation?.pdf],['code',p.links?.code]].filter(x=>url(x[1])).map(([t,u])=>`<a href="${url(u)}" target="_blank" rel="noopener">${t}</a>`).join('')}<button class="cp" type="button" data-copy="${esc(p.id)}" title="复制 arXiv 编号 ${esc(p.id)}" aria-label="复制 arXiv 编号 ${esc(p.id)}">${CP}</button></span>`;
 /* 先转义，再转换行内标记 */
 const G=new Map();
 const rich=t=>esc(t).replace(/\[\[@([\w.-]+)\|([^\]]*?)\]\]/g,(m,id,tx)=>`<a class="pref" href="#p-${id}" data-ref="${id}">${tx}</a>`).replace(/\[\[([\w.-]+)(?:\|([^\]]*?))?\]\]/g,(m,id,tx)=>{const g=G.get(id);
     return g?`<span class="term" tabindex="0" role="button" aria-expanded="false" data-g="${id}">${tx||esc(g.term||id)}</span>`:(tx||id)})
   .replace(/==(.+?)==/g,'<mark>$1</mark>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
 const en=p=>p.abstract_en?`<details><summary>Abstract</summary><p class="en" lang="en">${esc(p.abstract_en)}</p></details>`:'';
-const title=p=>url(p.links?.abs)?`<a href="${url(p.links.abs)}" rel="noopener" lang="en">${esc(p.title)}</a>`:esc(p.title);
-const tl=p=>url(p.translation?.zip)?`<a href="${url(p.translation.zip)}" rel="noopener" title="tongtu 输出目录（out.zip）">通途</a>`:'';
+const title=p=>url(p.links?.abs)?`<a href="${url(p.links.abs)}" target="_blank" rel="noopener" lang="en">${esc(p.title)}</a>`:esc(p.title);
+const tl=p=>url(p.translation?.zip)?`<a href="${url(p.translation.zip)}" target="_blank" rel="noopener" title="tongtu 输出目录（out.zip）">通途</a>`:'';
 
 /* 配图直接引用论文的 arXiv HTML 版。after:n 表示插在第 n 段之后；没有 after 的进缩略图条。
    TikZ 图没有图片文件：arXiv HTML 把它画成页面里的 <svg>。arXiv 的 HTML 带 CORS *，
@@ -616,7 +614,7 @@ const art=p=>`<article class="art rv" id="p-${esc(p.id)}"><h3>${esc(p.title_zh)}
 const DAYS=new Map();
 const getDay=async(t,dt)=>{const k=t+'/'+dt;if(!DAYS.has(k)){const r=await fetch(`data/${encodeURIComponent(t)}/${encodeURIComponent(dt)}.json`);if(!r.ok)throw 0;DAYS.set(k,await r.json())}return DAYS.get(k)};
 const one=p=>p.summary_zh||(p.abstract_zh||'').split(/(?<=。)/)[0];
-const hitArt=(p,dt,out)=>`<article class="art hit rv${out?' out':''}"><h3>${p.star?'<span class="st">★</span> ':''}${out?esc(p.title_zh||p.title):`<a href="#p-${esc(p.id)}" data-go="${esc(dt)}" data-p="${esc(p.id)}">${esc(p.title_zh||p.title)}</a>`}</h3><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(p.id)}" rel="noopener" lang="en">${esc(p.title)}</a></p><p class="x">${out?`<span class="tag">${out===true?'未收录':esc(out)}</span>`:''}${rich(one(p))}</p></article>`;
+const hitArt=(p,dt,out)=>`<article class="art hit rv${out?' out':''}"><h3>${p.star?'<span class="st">★</span> ':''}${out?esc(p.title_zh||p.title):`<a href="#p-${esc(p.id)}" data-go="${esc(dt)}" data-p="${esc(p.id)}">${esc(p.title_zh||p.title)}</a>`}</h3><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(p.id)}" target="_blank" rel="noopener" lang="en">${esc(p.title)}</a></p><p class="x">${out?`<span class="tag">${out===true?'未收录':esc(out)}</span>`:''}${rich(one(p))}</p></article>`;
 function hit(p){
   const hay=[p.title,p.title_zh,p.abstract_zh,p.abstract_en,p.summary_zh,p.affiliation,p.id,...(p.analysis||[])].join(' ').replace(/\[\[@?([\w.-]+)(?:\|([^\]]*?))?\]\]/g,(m,id,tx)=>tx||G.get(id)?.term||id).toLowerCase();
   /* 拉丁词从词首匹配（co → CO-GRAFT、contrastive，不匹配 decode）；中文任意位置匹配 */
@@ -716,7 +714,7 @@ function render(fresh){
     ${d.others?.length?`<details class="xl" id="ol"><summary>其他相关 ${d.others.length} 篇</summary><div class="xg"></div></details>`:''}
     ${d.excluded?.length?`<details class="xl" id="xl"><summary>未收录 ${d.excluded.length} 篇</summary><div class="xg"></div></details>`:''}`;
   /* 未收录和其他相关各有几百条，展开时才生成 */
-  for(const [id,list] of [['ol',d.others],['xl',d.excluded]])$(id)?.addEventListener('toggle',e=>{const g=e.target.querySelector('.xg');if(e.target.open&&!g.childElementCount)g.innerHTML=list.map(v=>`<article><h4>${esc(v.title_zh||v.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(v.id)}" rel="noopener" lang="en">${esc(v.title)}</a> · ${esc(v.cat)}</p>${v.summary_zh?`<p class="x">${rich(v.summary_zh)}</p>`:''}</article>`).join('')});
+  for(const [id,list] of [['ol',d.others],['xl',d.excluded]])$(id)?.addEventListener('toggle',e=>{const g=e.target.querySelector('.xg');if(e.target.open&&!g.childElementCount)g.innerHTML=list.map(v=>`<article><h4>${esc(v.title_zh||v.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(v.id)}" target="_blank" rel="noopener" lang="en">${esc(v.title)}</a> · ${esc(v.cat)}</p>${v.summary_zh?`<p class="x">${rich(v.summary_zh)}</p>`:''}</article>`).join('')});
   watch($('main'));watch($('foot'));
   requestAnimationFrame(()=>root.classList.add('ready'));
 }

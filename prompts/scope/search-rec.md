@@ -1,4 +1,4 @@
-# Scope: 搜索与推荐 (search-rec)
+# Scope: Search & Rec (search-rec)
 
 ## Is it relevant? (`relevant`: true/false)
 TRUE when the paper's OWN research object is search or recommendation:
