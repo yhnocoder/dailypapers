@@ -1,0 +1,4050 @@
+{
+ "topic": "search-rec",
+ "date": "2026-11-25",
+ "batch": "arXiv 公布批次 2026-11-25（周三）",
+ "rules_version": "v2",
+ "overview": {
+  "guide": [
+   "[[@2611.34366|ConTra]] 说明给 chunk 加的上下文最好以文本前缀存进索引：只把上下文编进向量的 PPLX-4B，接上读原文的重排器后 nDCG@10 反而从 0.821 掉到 0.731；读的时候注意**它的训练奖励和评测用的是同一对 Qwen3 嵌入与重排模型**，在没训练过的 RealContextBench 上只领先 0.56 点。[[@2611.33628|CAMAR]] 在网易云音乐上线后三个域都涨，但消融里去掉多模态语义 ID，歌曲和歌单就落到最强基线以下，收益更多来自内容特征而不是因果解耦。[[@2611.33653|OneQuery]] 的打标提升几乎全在 GRPO 阶段（+2.07 点，SFT 阶段只有 +0.15），而且二值精确匹配奖励比直接用 F1 当奖励更好。",
+   "[[@2611.33844|异构重排器组合]]在 CrossEncoder 或上下文剪枝模型 Provence 前插一个可缓存的轻量打分器，NoLiMa 32K 上答案准确率涨 4.02–9.43 个点、剪枝快 1.57–1.88 倍；它还发现级联可能胜过末级重排器，却输给自己的粗排。[[@2611.34852|DRBench Pro]] 用 Wikipedia 知识树生成 44,102 条评分细则，按广度和深度计算报告的知识覆盖率，16 个深度研究 Agent 里最好的只有 57.04%。[[@2611.33368|DeLoVi]] 用只输出相关分、不生成文本的预训练决策模型给超长视频的片段字幕排序，在 EgoLifeQA 上比此前最好的方法更准、快 3 倍以上。[[@2611.33497|CA-RAG]] 把本体约束和知识图谱关系拼进分节 query，k=6 时 Recall@k 从 0.540 升到 0.595。"
+  ]
+ },
+ "funnel": [
+  [
+   "当日公布新论文（cs.IR / CL / AI / LG / DB 全量 + cs.CV 短语过滤）",
+   464
+  ],
+  [
+   "判定搜索与推荐相关",
+   21
+  ],
+  [
+   "⭐ 精读",
+   3
+  ]
+ ],
+ "papers": [
+  {
+   "id": "2611.34366",
+   "title": "ConTra: A Training Framework for Effective Contextual Retrieval via Prefix Generation",
+   "title_zh": "小模型给 chunk 写前缀，向量检索和重排都受益，建索引快 7.7 倍",
+   "affiliation": "香港中文大学（深圳）",
+   "primary_cat": "cs.IR",
+   "direction": "B",
+   "star": true,
+   "score": 0.65,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34366",
+    "pdf": "https://arxiv.org/pdf/2611.34366",
+    "code": "https://github.com/SStan1/ConTra"
+   },
+   "summary_zh": "ConTra 用强化学习训练轻量前缀生成器,在建索引时给 chunk 加上下文前缀,同时服务向量检索和重排",
+   "abstract_zh": "数据管理系统组织大型文本集合,用于查找相关研究、抽取合同条款等任务。系统把长文档切成独立索引的 chunk 使其可检索,但切块会把文本与其标识性细节分开。索引的难点在于让每个 chunk 能独立被检索,同时保留找到并排序它所需的上下文。现有方法要么把上下文编码进 chunk 向量,要么作为文本前缀附加。只编码在向量中的上下文无法被文本重排器使用;提示生成的前缀既能服务向量检索又能服务重排,但建索引时生成成本高,效果也可能不及上下文编码器。我们提出 ConTra(Context That Travels),一个训练轻量==前缀生成器==的强化学习框架,其奖励结合了冻结的 embedding 与重排模型的反馈、事实核验和长度控制。ConTra 在索引构建时为每个 chunk 生成一个前缀,并存储增强后的文本及其 embedding 供所有查询复用。为评测不同负载及干扰下的上下文检索,我们提出 RealContextBench,包含五个应用集合和三种隔离干扰文本影响的受控条件。在 ConTEB 和 RealContextBench 上,**ConTra-2B 优于使用 Anthropic 方法的提示式 9B 基线和 PPLX-4B 上下文编码器,领先其最佳总分最多 3.15 分,对短文档的索引速度分别是二者的 7.74 倍和 2.15 倍**。仅在 ConTEB 上后训练,它在重排后的 RealContextBench 上领先各独立方法,并且比提示式 2B 基线更不易受随机和主题相近的干扰文本影响。代码、数据集和训练好的模型见 https://github.com/SStan1/ConTra。",
+   "abstract_en": "Data management systems organize large text collections for tasks such as finding relevant studies and extracting contract clauses. Systems make long documents searchable by splitting them into independently indexed chunks. Chunking can separate text from its identifying details. The indexing challenge is to keep each chunk independently searchable while preserving the context needed to find and rank it. Existing methods either encode that context in chunk vectors or attach it as a text prefix. Context encoded only in vectors is unavailable to text rerankers. Prompted prefixes serve both vector search and reranking, but are costly to generate at indexing time and can underperform contextual encoders. We propose ConTra (Context That Travels), a reinforcement learning framework for training lightweight prefix generators. Its reward combines feedback from frozen embedding and reranking models with factual verification and length control. ConTra generates one prefix per chunk during index construction and stores the augmented text and its embedding for reuse across queries. To evaluate contextual retrieval across workloads and under interference, we introduce RealContextBench, a benchmark with five application collections and three controlled conditions that isolate the effect of distracting text. On ConTEB and RealContextBench, ConTra-2B outperforms the prompted 9B baseline using Anthropic's method and the PPLX-4B contextual encoder, with a margin of up to 3.15 points over their best overall scores, while indexing short documents 7.74 times and 2.15 times as fast as those baselines, respectively. Post-trained only on ConTEB, it leads the standalone methods on RealContextBench after reranking and is less sensitive than the prompted 2B baseline to random and topically similar distractors. Code, datasets, and trained models are available at https://github.com/SStan1/ConTra.",
+   "analysis": [
+    "ConTra-2B 在 ConTEB 八个任务上重排后 nDCG@10 达 0.8525，比用 Anthropic 提示词的 Qwen3.5-9B 高 2.46 点，比上下文编码器 PPLX-4B 的最好成绩高 3.15 点；短文档建索引 3.75 秒，是 9B 的 1/7.7。它追问的是：切块把表格和写着公司、年份的标题分开后，能否让小模型给每个 chunk 写一句可读前缀，同时供向量检索和重排器使用。",
+    "先做对照：同一份未训练 2B 前缀只加在检索侧，最终 nDCG@10 从 0.6483 到 0.6924，只给重排器看到 0.6940，两侧都加到 0.7585，**收益互补**。ConTra 用 [[dapo|DAPO]] 训练前缀生成器，奖励四项：==嵌入增益==（加前缀后与 query 的余弦相似度减去原 chunk 的）、==重排 logit 增益==、事实核验（冻结 Qwen3.5-4B 判断前缀有无原文支持）、长度惩罚（超过 16 token 线性扣分）。训练数据是 ConTEB 训练集筛出的 5,760 对，只跑一个 epoch。",
+    "长度控制最关键：4B 去掉它，前缀从 17.7 涨到 239.2 token，nDCG@10 从 0.8465 掉到 0.7084，相邻 chunk 写进同一段背景，开始抢同一个 query。去掉事实核验分数只降 2.3 点，但人工审 200 条前缀，事实错误率从 4.5% 升到 16.0%。**PPLX-4B 向量检索 0.8210，交给只读原文的重排器反而掉到 0.7310**；把 ConTra 前缀贴到它的候选上，FinanceBench 从 0.4446 升到 0.5250。",
+    "保留意见：**训练奖励用的 Qwen3 嵌入和重排模型就是评测用的那一对，数据也来自 ConTEB**；在没训练过的 RealContextBench 上，重排后 0.6692 只比 Voyage-context-3 高 0.56 点。速度只在 1,027 个 chunk 以内的小集合上测过，也没和 BM25 混合检索比。已经用大模型给 chunk 生成上下文的 RAG 团队，可换成 2B 模型加这套奖励，把离线成本降一个量级；用了重排器的，上下文要以文本形式存进索引。"
+   ],
+   "star_reasons": [
+    "2B 前缀生成器重排后超过 9B 提示基线和 PPLX-4B",
+    "对照实验拆出前缀在检索、重排两侧的互补收益",
+    "奖励含事实核验和长度控制，逐项消融",
+    "代码、数据集和模型开源"
+   ],
+   "figures": [
+    {
+     "src": "https://arxiv.org/html/2611.34366v1/context_travels.svg",
+     "ref": "Figure 1",
+     "after": 2,
+     "caption_zh": "上半是文本前缀路线：前缀和 chunk 一起被编码、一起交给重排器；下半是[[late-chunking|晚分块]]式上下文编码器：上下文只进了向量，重排器读到的仍是原始 chunk。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.34366v1/case_context_travel.svg",
+     "ref": "Figure 2",
+     "caption_zh": "两个案例：NQ 中前缀把作曲者名字补进相邻 chunk，使它排到第 1；NanoMSMARCO 中前缀重述 chunk 里已有的定义，金标段落在 PPLX 候选里从第 4 升到第 1。"
+    }
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.34366v1/2611.34366v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.34366v1/2611.34366v1_out.zip"
+   }
+  },
+  {
+   "id": "2611.33653",
+   "title": "OneQuery: Unified Sequence-to-Structure Generation for Multilingual E-commerce Query Understanding",
+   "title_zh": "多语言 Query 理解并成一次 LLM 生成，打标 F1 比流水线高 2.4 点",
+   "affiliation": "阿里巴巴 AliExpress",
+   "primary_cat": "cs.IR",
+   "direction": "D",
+   "star": true,
+   "score": 0.6,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33653",
+    "pdf": "https://arxiv.org/pdf/2611.33653",
+    "code": null
+   },
+   "summary_zh": "把语种识别、纠错、翻译、打标统一为生成任务用于电商Query理解",
+   "abstract_zh": "多语言电商搜索需要稳健的 Query 理解，把跨语言、句式多样的用户 query 转换为标准化语义表示，以支撑检索与排序。然而传统 Query 理解系统存在误差累积、各子任务独立优化而忽略彼此关联、维护成本高等问题。为此，本文提出 OneQuery，一个基于电商领域大语言模型的统一多语言 Query 理解生成框架。我们把语种识别、拼写纠错、翻译和 Query 打标四个子任务重构为受预定义 schema 约束的==统一序列到结构自回归生成==过程，并设计了带多任务强化学习对齐的三阶段渐进训练流程。OneQuery 在所有任务上均稳定优于基线，并在不同规模的骨干模型上保持有效；在 AliExpress 电商搜索场景的**在线实验**进一步验证了其工业部署价值。",
+   "abstract_en": "Multilingual e-commerce search requires robust query understanding to convert cross-lingual user queries with varied linguistic patterns into standardized semantic representations that support retrieval and ranking. However, traditional Query Understanding systems suffer from error accumulation, separately optimized subtasks that ignore their mutual correlations, and high maintenance costs. To address these issues, this paper proposes OneQuery, a unified generative framework for multilingual query understanding based on domain-specific large language models in e-commerce. We reformulate four subtasks, namely Language Recognition, Spelling Correction, Translation, and Query Tagging, into a unified Sequenceto-Structure autoregressive generation process constrained by predefined schemas, and design a three-stage progressive training pipeline with multi-task reinforcement learning alignment. OneQuery demonstrates consistent gains over baselines across all tasks and remains effective across different backbone sizes, and online experiments in the AliExpress e-commerce search scenario further confirm its practical value for industrial deployment.",
+   "analysis": [
+    "把语种识别、拼写纠错、翻译、[[query-tagging|Query 打标]]四个串联模型换成一个 14B 电商 LLM 一次生成 JSON 后，19,087 条 AliExpress 标注 query 上打标 F1 从 0.8128 升到 0.8366，线上 L2P（搜索列表到支付的转化率）+0.5%。它要解决的是流水线里语种判错就跳过翻译、翻错就打错标的误差传递。",
+    "Stage 1 混合四类单任务数据做 SFT。Stage 2 用 ==Iterative Field Completion==：让 Stage 1 模型逐字段补全缺失标注，已有人工标签的保留，过滤后得 360 万条伪数据，加 31 万条人工数据联合 SFT。Stage 3 用 [[grpo|GRPO]] 和规则奖励：语种、翻译、打标要求精确匹配，纠错按编辑距离给部分分，权重按生成顺序递减（0.35/0.25/0.25/0.15）。",
+    "**打标的提升主要来自 RL**：Stage 1→2 只涨 0.15 个点，Stage 2→3 涨 2.07 个点。直接拿 F1、ROUGE 当奖励反而最差，作者认为组内分数太接近，归一化后噪声被放大。few-shot 的 Qwen3.8-Max、GPT-5.6 Luna 打标 F1 只有约 0.64，因为不认识平台标签体系，补标注只能靠自蒸馏。",
+    "保留意见：对比的“流水线”是同一个 LLM 分任务微调后串起来，不是线上原有的小模型，相对真实线上链路的离线增益不清楚；**线上头部 query 用 14B 离线缓存、长尾用蒸馏的 0.3B 小模型**，A/B 没拆开两部分收益，也没报延迟。4B、8B 上纠错 F1 仍低于流水线；底座和代码都未公开。对维护多语言 QU 链路的跨境电商搜索团队，字段补全造数和精确匹配奖励可以直接搬到自己的底座上。"
+   ],
+   "star_reasons": [
+    "AliExpress 多国 A/B：L2P +0.5%，人工并排评测相关性 +0.8 pt",
+    "四个 QU 子任务合并为一次 JSON 生成，打标 F1 +2.4 点",
+    "用 Stage 1 模型补全缺失字段，合成 360 万条训练数据",
+    "奖励消融：二值精确匹配优于直接用 F1/ROUGE"
+   ],
+   "figures": [
+    {
+     "src": "https://arxiv.org/html/2611.33653v1/three_stages.png",
+     "ref": "Figure 2",
+     "after": 2,
+     "caption_zh": "三段训练：左边 Stage 1 混合四种单任务数据做 SFT；中间用 Stage 1 模型依次补全拼写、翻译、打标字段，得到 360 万条伪数据，再加 31 万条人工数据联合 SFT；右边 Stage 3 用 [[grpo|GRPO]] 组采样，四个子任务各自的规则奖励加权求和。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33653v1/pipeline.svg",
+     "ref": "Figure 1",
+     "caption_zh": "被替换掉的线上流水线：语种识别、拼写纠错、翻译、打标四个模型串行调用，每一步只看上一步的输出，看不到原始 query。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33653v1/stage1_prompt.svg",
+     "ref": "Figure 3",
+     "caption_zh": "Stage 1 的指令模板：四个任务共用同一段角色说明和输出格式，只用 ==Active Subtask== 字段切换当前任务，右侧是四个任务各自的输出示例。"
+    }
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.33653v1/2611.33653v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.33653v1/2611.33653v1_out.zip"
+   }
+  },
+  {
+   "id": "2611.33628",
+   "title": "Multi-Modal Causal Disentanglement for Multi-Domain Sequential Audio Recommendation",
+   "title_zh": "网易云三域联合召回，播客 Hit@5 涨 30%，大头来自多模态语义 ID",
+   "affiliation": "网易云音乐、杭州电子科技大学",
+   "primary_cat": "cs.IR",
+   "direction": "F",
+   "star": true,
+   "score": 0.6,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33628",
+    "pdf": "https://arxiv.org/pdf/2611.33628",
+    "code": null
+   },
+   "summary_zh": "多模态因果解耦框架缓解多领域音频推荐的负迁移，网易云音乐A/B有效",
+   "abstract_zh": "现代音乐平台向用户提供歌曲、歌单、播客等异构音频内容领域。多领域序列推荐（MDSR）试图利用这类跨领域行为，但实践中仍有两个障碍。其一，异构领域的联合优化容易发生[[negative-transfer|负迁移]]，高流量领域主导共享参数空间并压制弱势领域。其二，传统基于 ID 的协同信号无法连接语义相关但行为重叠很少的领域。本文提出 CAMAR，一个面向多领域音频推荐的==多模态因果解耦==框架。从因果视角，用户行为被建模为领域不变偏好与领域特定偏好的共同结果。据此，CAMAR 把用户表示分解为领域不变和领域特定两部分，施加领域对抗不变性和正交约束，将跨领域交互限制在不变子空间，抑制有害的迁移路径。为加强跨领域语义耦合，CAMAR 通过残差量化，从预训练的文本、视觉和音频特征中得到可训练的 ==[[semantic-id|semantic-ID]] embedding==，实现面向推荐的端到端多模态适配。迁移网络为不活跃领域补全用户表示，缓解跨领域冷启动。公开和工业数据集上的实验显示其稳定优于强基线。在中国最大的音乐流媒体平台之一网易云音乐的**在线 A/B 测试**中，CAMAR 在三个领域的主流量场景均取得稳定提升：歌曲和播客的播放时长分别提升 1.0% 和 1.6%，歌单点赞率提升 3.0%，验证了其在大规模多领域音频推荐中的有效性。",
+   "abstract_en": "Modern music platforms expose users to heterogeneous audio content domains such as songs, playlists, and podcasts. Multi-domain sequential recommendation (MDSR) seeks to exploit such cross-domain behavior, yet two obstacles persist in practice. First, joint optimization across heterogeneous domains is prone to negative transfer, with high-traffic domains dominating the shared parameter space and suppressing weaker domains. Second, conventional ID-based collaborative signals fail to bridge domains that are semantically related but exhibit little behavioral overlap. This paper presents CAMAR, a multi-modal causal disentanglement framework for multi-domain audio recommendation. From a causal perspective, user behavior is modeled as the joint outcome of a domain-invariant preference and domain-specific preferences. Guided by this view, CAMAR factorizes user representations into domain-invariant and domain-specific components and enforces domain adversarial invariance together with orthogonality, restricting cross-domain interaction to the invariant subspace and suppressing harmful transfer paths. To strengthen cross-domain semantic coupling, CAMAR derives trainable semantic-ID embeddings from pre-trained text, vision, and audio features through residual quantization, yielding an end-to-end multi-modal adaptation tailored to recommendation. A transfer network imputes user representations for inactive domains, mitigating cross-domain cold start. Experiments on both public and industrial datasets demonstrate consistent gains over strong baselines. In online A/B tests on NetEase Cloud Music, one of China's largest music streaming platforms, CAMAR delivers consistent gains across all three domains in their main traffic scenarios, validating its effectiveness in multi-domain audio recommendation at scale.",
+   "analysis": [
+    "CAMAR 在网易云音乐三域数据上把最稀疏的播客域 Hit@5 从最强基线 0.2022 提到 0.2622（+29.7%），歌曲域只涨 5.9%；线上作为新增召回通道，歌曲、播客播放时长 +1.0%、+1.6%，歌单点赞率 +3.0%。它针对两件事：歌曲域梯度主导共享参数、压低弱域（[[negative-transfer|负迁移]]）；多域活跃用户少，只靠物品 ID 连不起各域。",
+    "==多模态语义 ID==：文本、封面、音频特征拼接后，用各域共享的 RQ-VAE（残差量化自编码器）离线量化成 3 层码字的[[semantic-id|语义 ID]]，码本 embedding 在推荐模型里可训练。==因果解耦==：用户表示拆成域不变和域特定两部分，加正交约束，并经[[gradient-reversal-layer|梯度反转层]]做域对抗；只有不变部分参与跨域注意力。无行为的域由 TransNet 从其他域补全。",
+    "去掉多模态损失最大：播客 Hit@5 跌到 0.2063，**歌曲、歌单两域反而低于最强基线**；去掉两项因果约束跌到 0.2281。AutoCDSR、CGRec 在播客上不如单域的 Mamba4Rec，负迁移确实存在。目标域历史全遮掉时，播客 Hit@10 约 22.8%，基线约 18%。",
+    "保留意见：**九个基线都只用 ID，没有接入同样多模态特征的对照**，“因果解耦胜过现有方法”证据不足；离线数据只留三域都活跃的用户，避开了多域用户稀少的场景；代码未开源。对有歌曲、播客、有声书等多种内容形态的平台，召回团队先接共享码本的语义 ID 收益最确定，弱域受益最多。"
+   ],
+   "star_reasons": [
+    "网易云音乐三域在线 A/B，三域核心指标均涨",
+    "稀疏播客域离线 Hit@5 +29.7%",
+    "多模态语义 ID 共享码本跨域对齐，消融贡献最大",
+    "TransNet 补全无行为域，覆盖跨域冷启动"
+   ],
+   "figures": [
+    {
+     "src": "https://arxiv.org/html/2611.33628v1/1.png",
+     "ref": "Figure 1",
+     "after": 2,
+     "caption_zh": "左半是多模态偏好编码：三种模态特征量化成[[semantic-id|语义 ID]]，与域内 ID 融合后按域编码，TransNet 补全无行为的域；右半是==因果解耦==：拆出不变和特定两部分，只有不变部分进共享注意力，最后用门控融合打分。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33628v1/3.png",
+     "ref": "Figure 3",
+     "after": 3,
+     "caption_zh": "跨域冷启动：目标域历史全部遮掉，只用另外两个域的行为召回。看右侧播客，红色柱 Hit@10 约 22.8%，四个多域基线都在 16%–18% 之间；歌曲、歌单上差距小得多。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33628v1/2.png",
+     "ref": "Figure 2",
+     "caption_zh": "论文的因果图（以 A、B 两域为例）：实线是期望的生成路径，虚线是要切断的三条路径，分别对应正交约束、域对抗训练和只让不变部分跨域交互。"
+    }
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.33628v1/2611.33628v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.33628v1/2611.33628v1_out.zip"
+   }
+  },
+  {
+   "id": "2611.34436",
+   "title": "Grounding User Preferences in Shared Multimodal Concepts for Recommendation",
+   "title_zh": "在共享多模态概念中落地用户偏好的推荐",
+   "affiliation": "",
+   "primary_cat": "cs.IR",
+   "direction": "F",
+   "star": false,
+   "score": 0.55,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34436",
+    "pdf": "https://arxiv.org/pdf/2611.34436",
+    "code": "https://github.com/Garden1a-X/MKGE"
+   },
+   "summary_zh": "MKGE 用多模态知识图谱把用户偏好落到可共享的规范概念上,三个公开数据集上全面超过现有推荐方法",
+   "abstract_zh": "多模态推荐已能利用丰富的图像和文本内容理解物品,但用户偏好通常仍被编码为绑定在单个物品上的隐式信号,反复出现的语义因素没有可跨物品共享的持久标识。我们提出 MKGE,一个多模态知识图谱框架,把这些因素表示为规范的、可寻址的概念。MKGE 从物品图像和标题中归纳出适应领域的==概念词表==,把每个用户的交互历史落到有依据的概念上,并联合建模用户-物品直接证据和经概念中介的偏好信号。通过把反复出现的语义变成共享坐标,MKGE 让来自不同物品的证据能够累积到同一个偏好因素上。在三个公开基准上的大量实验表明,MKGE 在全部六项指标上**一致优于协同过滤、知识图谱、多模态以及近期基于 LLM/MLLM 的推荐方法**。对照研究进一步说明规范概念标识和个性化用户-概念对应的重要性,去掉或改写用户图时,低活跃用户的性能下降尤为明显。这些结果表明规范的多模态概念是偏好建模与迁移的有效单元。代码、构建的知识图谱和提示词见 https://github.com/Garden1a-X/MKGE。",
+   "abstract_en": "Multimodal recommendation has substantially advanced item understanding by incorporating rich visual and textual content. Yet user preferences are still commonly encoded as implicit signals tied to individual items, leaving recurring semantic factors without persistent identities that can be shared across items. We introduce MKGE, a multimodal knowledge graph framework that represents these factors as canonical, addressable concepts. MKGE induces a domain-adaptive concept vocabulary from item images and titles, grounds each user's interaction history in supported concepts, and jointly models direct user-item evidence and concept-mediated preference signals. By turning recurring semantics into shared coordinates, MKGE enables evidence from different items to accumulate around the same preference factors. Extensive experiments on three public benchmarks demonstrate that MKGE consistently outperforms collaborative, knowledge-graph, multimodal, and recent LLM/MLLM-based recommenders across all six reported metrics. Controlled studies further demonstrate the importance of canonical concept identities and personalized user-concept correspondence, with especially pronounced gains over removing or rewiring the user graph for low-activity users. These results establish canonical multimodal concepts as effective units for preference modeling and transfer. Code, constructed knowledge graphs, and prompts are available at https://github.com/Garden1a-X/MKGE."
+  },
+  {
+   "id": "2611.33844",
+   "title": "When Rerankers Work Together: Better and Faster Reranking without Joint Training",
+   "title_zh": "当重排器协同工作：无需联合训练的更好更快重排",
+   "affiliation": "",
+   "primary_cat": "cs.CL",
+   "direction": "C",
+   "star": false,
+   "score": 0.55,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33844",
+    "pdf": "https://arxiv.org/pdf/2611.33844",
+    "code": null
+   },
+   "summary_zh": "无需联合训练组合异构重排器，提高RAG重排的精度与速度。",
+   "abstract_zh": "**独立重排器的质量并不决定其在多阶段RAG流水线中的价值**。我们系统研究了无需联合训练而组合的异构重排器，涵盖词法、单向量、late-interaction和联合query-context打分。两个轻量语义粗排打分器Cache-Pointwise和Cache-Shapley从段落相关性标签中学习，共享可缓存表示并支持线性时间的单例推理。在匹配候选和预算的条件下，我们将级联与去阶段参照比较，衡量证据保留、修复与破坏、reader准确率和在线剪枝成本。在NoLiMa 32K与Gemma上，把这些打分器插到CrossEncoder或Provence之前，**答案准确率提升4.02-9.43个百分点**，在线剪枝相对单独的对应重排器加速1.57-1.88倍。Cache-Pointwise通过==倒数排名融合==与ColBERTv2组合，准确率提升4.60点，相对直接用ColBERTv2加速1.36倍。去阶段比较揭示了一种不对称：级联可以优于其最终重排器单独使用，却差于其粗排选择器单独使用。两个reader、第二个多跳数据集和三阶段扩展表明，收益取决于reader、重排器搭配和阶段配置。这些发现展示了无需联合训练实现更好更快重排的可行路径，并提示应研究阶段顺序、候选预算和排名融合对组合质量的决定作用。",
+   "abstract_en": "Standalone reranker quality does not determine its value in a multistage RAG pipeline. We systematically study heterogeneous rerankers composed without joint training, spanning lexical, single-vector, late-interaction, and joint query-context scoring. Two lightweight semantic coarse scorers, Cache-Pointwise and Cache-Shapley, learn from passage relevance labels and share cacheable representations and linear-time singleton inference. Under matched candidates and budgets, we compare cascades with stage-removal references to measure evidence retention, repair and breakage, reader accuracy, and online pruning cost. On NoLiMa 32K with Gemma, inserting these scorers before CrossEncoder or Provence improves answer accuracy by 4.02-9.43 percentage points while accelerating online pruning by 1.57-1.88x relative to the corresponding reranker alone. Cache-Pointwise composed with ColBERTv2 through reciprocal rank fusion improves accuracy by 4.60 points at 1.36x speedup over direct ColBERTv2. The stage-removal comparisons reveal an asymmetry: a cascade can outperform its final reranker alone while underperforming its coarse selector alone. Two readers, a second multi-hop dataset, and three-stage extensions show that the gains depend on the reader, reranker pairing, and stage configuration. These findings demonstrate a practical route to better and faster reranking without joint training and motivate studying stage order, candidate budgets, and rank fusion as determinants of composition quality."
+  },
+  {
+   "id": "2611.34852",
+   "title": "DRBench Pro: A Knowledge-Centric Benchmark for Professional Deep Research Agents",
+   "title_zh": "DRBench Pro：面向专业深度研究智能体的知识中心基准",
+   "affiliation": "",
+   "primary_cat": "cs.CL",
+   "direction": "H",
+   "star": false,
+   "score": 0.5,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34852",
+    "pdf": "https://arxiv.org/pdf/2611.34852",
+    "code": "https://github.com/ZJU-REAL/DRBenchPro"
+   },
+   "summary_zh": "以知识覆盖的广度和深度评测深度研究智能体，144个案例、44102条rubric。",
+   "abstract_zh": "深度研究智能体从多个来源收集信息，并把它们综合成针对复杂开放问题的报告。现有基准从多个维度评估报告质量，但缺少一个专门的、以知识为中心的评测，来衡量报告覆盖了哪些研究方向、对每个方向挖得多深。我们提出 DRBench Pro，一个以==结构化知识覆盖==为主要评测目标的基准。自动化流程从 Wikipedia 构建局部知识树，并用采样的子图生成研究 query 和有证据支撑的 rubric。每条 rubric 对应知识树中的一条关系，保留了被评测知识的结构。智能体只接收研究 query。这一结构使我们能够衡量跨主要研究方向的==广度==和沿相关知识链的==深度==，两者的几何平均即为整体覆盖率。基准包含 24 个领域的 144 个案例和 44,102 条 rubric。对 16 个深度研究智能体的评测显示它们在广度和深度上各有所长，**表现最好的智能体整体覆盖率为 57.04%**。rubric 判定与人工标注高度一致，且在不同指标配置下智能体排名保持稳定。",
+   "abstract_en": "Deep research agents gather information from multiple sources and synthesize it into reports on complex, open-ended questions. Existing benchmarks assess report quality along several dimensions, but lack a dedicated knowledge-centric evaluation of which research directions a report covers and how deeply it explores them. We introduce DRBench Pro, a benchmark that makes structured knowledge coverage the primary evaluation target. Our automated pipeline builds local knowledge trees from Wikipedia and uses sampled subgraphs to generate research queries and evidence-grounded rubrics. Each rubric corresponds to a relation in the tree, preserving the structure of the knowledge being evaluated. Agents receive only the research query. This structure allows us to measure breadth across major research directions and depth along related knowledge chains, with their geometric mean giving overall coverage. The benchmark includes 144 cases across 24 domains and 44,102 rubrics. Evaluating 16 deep research agents reveals different strengths in breadth and depth, with the best-performing agent reaching 57.04% overall coverage. Rubric judgments agree closely with human annotations, and agent rankings remain stable across the tested metric configurations."
+  },
+  {
+   "id": "2611.34407",
+   "title": "Agentic Waterfall: An Intent-Driven Information Discovery Framework for Reclaiming User Control in the Attention Economy",
+   "title_zh": "Agentic Waterfall:在注意力经济中夺回用户控制权的意图驱动信息发现框架",
+   "affiliation": "",
+   "primary_cat": "cs.AI",
+   "direction": "F",
+   "star": false,
+   "score": 0.5,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34407",
+    "pdf": "https://arxiv.org/pdf/2611.34407",
+    "code": null
+   },
+   "summary_zh": "提出由 LLM 控制器维护用户状态的 Agentic Waterfall 推荐信息流,并给出数据集与回放评测协议",
+   "abstract_zh": "我们形式化了 Agentic Waterfall Feed 这一新的个性化信息发现问题:用户主动引导推荐,系统根据显式请求和浏览行为推断不断变化的需求。我们用 Agentic Waterfall 框架来解决该问题,其==语言模型控制器==维护持久的用户状态,并协调内容检索、排序和状态更新。为评测这类系统,我们贡献了 Agentic Waterfall 数据集和一套==基于回放的评测协议==。数据集将真实内容元数据与模拟的交互历史结合。协议在共享历史下,用相关性分数和对推荐是否满足用户当前目标与约束的盲评来比较系统。Agentic Waterfall 在五个公开基准的常规推荐任务上与强基线保持竞争力;在 Agentic Waterfall 数据集上,它在两种评测中都超过最强基线,**相对提升最高达 16.1%**。",
+   "abstract_en": "We formalize Agentic Waterfall Feed, a new problem of personalized information discovery in which users actively direct recommendations and the system adapts to evolving needs inferred from both explicit requests and browsing behavior. We address this problem with the Agentic Waterfall framework, whose language-model controller maintains persistent user state and coordinates content retrieval, ranking, and state updates. To evaluate systems on this task, we contribute the Agentic Waterfall Dataset and a replay-based evaluation protocol. The dataset combines real content metadata with simulated interaction histories. The protocol compares systems under shared histories using relevance scores and blind judgments of how well recommendations satisfy current user goals and constraints. Agentic Waterfall remains competitive with strong baselines on conventional recommendation tasks across five public benchmarks. On the Agentic Waterfall Dataset, it outperforms the strongest baseline in both evaluations, with relative improvements of up to 16.1%."
+  },
+  {
+   "id": "2611.33497",
+   "title": "CA-RAG: Constraint-Aligned Retrieval for Structurally Faithful Long-Form Generation",
+   "title_zh": "CA-RAG：面向结构忠实的长文本生成的约束对齐检索",
+   "affiliation": "",
+   "primary_cat": "cs.AI",
+   "direction": "E",
+   "star": false,
+   "score": 0.5,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33497",
+    "pdf": "https://arxiv.org/pdf/2611.33497",
+    "code": null
+   },
+   "summary_zh": "用本体约束和知识图谱关系改写 section 级 query，提升合规长文生成的证据召回。",
+   "abstract_zh": "检索增强生成（RAG）通常按语义相关性优化证据选择，而合规敏感的长文本生成还需要支持显式结构性义务的证据。语义相关的检索因此可能遗漏后续必选条款所需的信息。我们提出 Constraint-Aligned RAG（CA-RAG），一种检索条件化框架：在证据选择之前，用 ==本体导出的结构约束== 和 ==基于政策的知识图谱关系== 扩充各章节级 query。基于人工标注证据的纯检索评测显示，各检索预算下均有一致提升。在 $k=6$ 时，相比标准 RAG，CA-RAG 将 Precision@$k$ 从 0.5268 提升到 0.5692，汇总 Recall@$k$ 从 0.5402 提升到 0.5950，F1@$k$ 从 0.5389 提升到 0.5672。生成实验进一步显示，在若干模型-领域设置下合规性和可靠性有所改善；而仅在生成端加约束时，条款覆盖率更高，但整体合规性和可靠性更低。这些结果表明，结构对齐的检索可以改善合规敏感长文本生成中的证据充分性。",
+   "abstract_en": "Retrieval-augmented generation (RAG) typically optimises evidence selection for semantic relevance, whereas compliance-sensitive long-form generation also requires evidence supporting explicit structural obligations. Semantically relevant retrieval may therefore omit information needed for mandatory downstream clauses. We propose Constraint-Aligned RAG (CA-RAG), a retrieval-conditioning framework that augments section-specific queries with ontology-derived structural constraints and policy-grounded knowledge-graph relations before evidence selection. Retrieval-only evaluation with manually annotated evidence shows consistent improvements across retrieval budgets. At $k=6$, CA-RAG increases Precision@$k$ from $0.5268$ to $0.5692$, pooled Recall@$k$ from $0.5402$ to $0.5950$, and F1@$k$ from $0.5389$ to $0.5672$ over standard RAG. Generation experiments further show improvements in compliance and reliability in several model--domain settings, while generation-only constraints achieve higher clause coverage but lower overall compliance and reliability. These results indicate that structurally aligned retrieval can improve evidence sufficiency in compliance-sensitive long-form generation."
+  },
+  {
+   "id": "2611.34188",
+   "title": "MINE: A Training-Free Defense against Indirect Prompt Injection via Mutual Information and Embedding Variance",
+   "title_zh": "MINE:基于互信息与 embedding 方差的免训练间接提示注入防御",
+   "affiliation": "",
+   "primary_cat": "cs.CL",
+   "direction": "E",
+   "star": false,
+   "score": 0.45,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34188",
+    "pdf": "https://arxiv.org/pdf/2611.34188",
+    "code": null
+   },
+   "summary_zh": "MINE 以最大化相关性代替检测攻击来防御 RAG 间接提示注入,同时可作为 query 条件的重排器",
+   "abstract_zh": "现有针对 RAG 中间接提示注入的防御本质上是被动的:提示工程方法常被注入的指令覆盖,而有监督检测器需要针对每种新攻击风格重新训练。我们提出另一种范式:通过最大化相关性而非检测攻击来防御。我们的方法 MINE 无需训练、与攻击类型无关,同时可作为==query 条件重排器==使用。为了在真实条件下评测防御,我们提出平均上下文长度 4,032 词的长上下文基准 LC-Inj-SQuAD。我们在四个数据集上评测,涵盖短上下文问答(Inj-SQuAD、Inj-TriviaQA)、长上下文问答(LC-Inj-SQuAD)和 Agent 工具调用注入(InjecAgent)。在全部四个数据集上,MINE 在免训练防御中取得**最佳的准确率-安全性权衡**。它也是唯一在完全自适应攻击者面前仍可用、可推广到 Agent 工具调用注入、并在长上下文上推理延迟最低的防御。",
+   "abstract_en": "Existing defenses against indirect prompt injection in retrieval-augmented generation (RAG) are inherently reactive: prompt-engineering methods are often overridden by the injected instructions, while supervised detectors must be retrained for each new attack style. We propose a different paradigm: defend by maximizing relevance, not by detecting attacks. Our method, MINE, is training-free and attack-agnostic, and it also serves as a query-conditioned reranker. To evaluate defenses under realistic conditions, we introduce LC-Inj-SQuAD, a long-context benchmark with an average of 4,032 words per context. We evaluate on four datasets spanning short-context QA (Inj-SQuAD, Inj-TriviaQA), long-context QA (LC-Inj-SQuAD), and agent tool-call injection (InjecAgent). Across all four, MINE achieves the best accuracy--security trade-off among training-free defenses. It is also the only defense that stays usable against a fully adaptive attacker, generalizes to agent tool-call injection, and achieves the lowest inference latency on long contexts."
+  },
+  {
+   "id": "2611.33627",
+   "title": "Welfare-Enhancing Mechanism Design for Agent Ecosystems",
+   "title_zh": "面向智能体生态的福利提升机制设计",
+   "affiliation": "",
+   "primary_cat": "cs.MA",
+   "direction": "H",
+   "star": false,
+   "score": 0.45,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33627",
+    "pdf": "https://arxiv.org/pdf/2611.33627",
+    "code": null
+   },
+   "summary_zh": "在agentic search中研究内容智能体优化profile的博弈并设计平台机制",
+   "abstract_zh": "新兴的 Agentic Web 构成一个多智能体生态：去中心化的服务市场中，用户智能体在看到任何文档之前，根据内容智能体提交的 profile 选择查询哪些内容智能体。因此 profile 成为新的优化对象。现有生成式引擎优化（GEO）研究的是单个供应商改写引擎本来就能检索到的文档以提高被引用率。在 Agentic Web 中，多个内容智能体优化 profile，竞争有限的文档投递机会。为研究这种重复交互，我们基于真实的 agentic search 请求流构建了模拟框架和基准 WildRegistry，并将其建模为私有监测下的动态博弈。长程实验表明，这种竞争会降低网站选择质量，并稳定在有害的稳定点，我们的经验判据将其识别为近似的==改写均衡==。为此我们设计了提升福利的机制 DEC（Delivery-Evidence Credit），这是一种平台侧策略，利用记录下来的投递结果重新分配后续机会，减少信息不对称。DEC 改善了这一终点，提升网站选择质量，同时保留大部分供应商的曝光收益，**Welfare Gain 为 +2.01 分**，长期结果更健康。更广义地看，我们的发现强调了智能体生态中机制设计的重要性：把记录的投递结果转化为内生塑造后续用户智能体选择与内容智能体适应的证据，可以把长程适应引向真正被交付的能力。",
+   "abstract_en": "The emerging Agentic Web forms a multi-agent ecosystem: a decentralized service market where the user agent selects which content agents to query from their submitted profiles, before seeing any documents. Profiles therefore become a new target of optimization. Existing Generative Engine Optimization studies how a single supplier rewrites documents the engine can already retrieve, to improve their citation. In the Agentic Web, multiple content agents optimize profiles to compete for limited opportunities to deliver documents. To study this repeated interaction, we build WildRegistry, a simulation framework and benchmark based on a real agentic-search request stream, and model it as a dynamic game under private monitoring. Long-horizon experiments show that this competition lowers website-selection quality and settles at a harmful stable point, which our empirical criterion identifies as an approximate rewriting equilibrium. We therefore design a welfare-enhancing mechanism, DEC (Delivery-Evidence Credit), a platform-side policy that uses recorded delivery outcomes to reallocate later opportunities and reduce information asymmetry. DEC improves this endpoint, raising website-selection quality while preserving most of providers' exposure gains, for a Welfare Gain of +2.01 points and a healthier long-horizon outcome. More broadly, our findings highlight the importance of mechanism design in agent ecosystems: turning recorded delivery outcomes into evidence that endogenously shapes later user-agent selection and content-agent adaptation can steer long-horizon adaptation toward delivered capabilities."
+  },
+  {
+   "id": "2611.34877",
+   "title": "Towards Closing the Performance Gap in Cross-Modal Place Recognition",
+   "title_zh": "缩小跨模态场景识别的性能差距",
+   "affiliation": "",
+   "primary_cat": "cs.CV",
+   "direction": "B",
+   "star": false,
+   "score": 0.45,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34877",
+    "pdf": "https://arxiv.org/pdf/2611.34877",
+    "code": "https://github.com/oferidan1/CrossPlace"
+   },
+   "summary_zh": "CrossPlace 用全局检索加 token 级 reranker，做文本到地理标注图像的检索。",
+   "abstract_zh": "跨模态场景识别（CMPR）把自然语言描述与带地理标注的参考图像库进行匹配，无需视觉 query 即可定位。尽管在语言引导导航上潜力很大，现有视觉-语言模型即便经过任务适配，仍远落后于视觉场景识别（VPR）基线。与通用文本到图像检索不同，场景识别依赖细微的局部线索来区分视觉上相似的地点。因此我们假设，CMPR 的主要瓶颈在于捕捉图像区域与文本细节之间的细粒度对应，这需要更高的视觉 token 粒度、更强的文本表示能力和局部跨模态匹配。为此我们提出 CrossPlace，一个两阶段 CMPR 框架。第一阶段用联合对齐的 DINOv2-B/14 视觉 backbone 配合逐步微调的 BGE-Large 文本编码器做全局检索；第二阶段用轻量的 ==token 级 cross-attention reranker== 对 top 候选重排。通过系统分析，我们厘清了检索精度的驱动因素：**视觉 token 密度带来最大提升**，文本编码器容量和任务微调则提供互补增益。为评估真实条件下的鲁棒性，我们还把 CMPR 评测扩展到城市规模以及恶劣天气和光照场景。在所有现有和新增基准上，CrossPlace 的 Recall@1 比先前跨模态方法提升了两位数，缩小了与单模态文本检索的差距，并拉近了与单模态 VPR 的差距。代码和基准见 https://github.com/oferidan1/CrossPlace",
+   "abstract_en": "Cross-modal place recognition (CMPR) matches natural language descriptions against databases of geo-tagged reference images, enabling localization without visual queries. Despite its potential for language-guided navigation, existing vision-language models lag far behind visual place recognition (VPR) baselines, even after task adaptation. Unlike general-purpose text-to-image retrieval, place recognition relies on subtle local cues to distinguish visually similar locations. We therefore hypothesize that a primary bottleneck in CMPR is capturing fine-grained correspondences between image regions and text details, which requires higher visual token granularity, strong text representation capacity, and local cross-modal matching. To address this challenge, we propose CrossPlace, a two-stage CMPR framework. Stage 1 performs global retrieval by pairing a jointly aligned DINOv2-B/14 visual backbone with a progressively fine-tuned BGE-Large text encoder, while Stage 2 refines top candidates using a lightweight token-level cross-attention reranker. Through systematic analysis, we isolate the drivers of retrieval accuracy and show that visual token density provides the largest performance improvement, while text encoder capacity and task fine-tuning offer complementary gains. To evaluate robustness under realistic conditions, we also extend CMPR evaluation to city-scale and severe weather and illumination settings. Across all existing and new benchmarks, CrossPlace achieves double-digit Recall@1 improvements over prior cross-modal methods, closes the gap to unimodal text retrieval, and narrows it to unimodal VPR. Code and benchmarks are available at https://github.com/oferidan1/CrossPlace"
+  },
+  {
+   "id": "2611.34330",
+   "title": "RecField: Embedding Recommendations into Spatial Movie Organization as Affordances for Serendipitous Encounters",
+   "title_zh": "RecField:把推荐嵌入空间化电影整理中,作为偶遇式发现的可供性",
+   "affiliation": "",
+   "primary_cat": "cs.IR",
+   "direction": "F",
+   "star": false,
+   "score": 0.4,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34330",
+    "pdf": "https://arxiv.org/pdf/2611.34330",
+    "code": null
+   },
+   "summary_zh": "RecField 把推荐嵌入电影空间整理界面,用 57 人实验研究推荐对偶遇式发现的影响",
+   "abstract_zh": "关于惊喜性(serendipity)推荐系统的研究主要集中在推荐意外而有用物品的算法上。然而,惊喜性越来越被视为由算法输出和系统功能共同塑造的用户体验。本研究不把推荐看作用户追求的主要目标,而是看作在其他活动中创造发现机会的环境可供性(affordance)。我们提出 RecField,一个用户可自由把电影排布到各集合区域的==空间化电影整理界面==,并为每个集合提供按推荐视角标注的基于属性的推荐列表。一项被试间实验(N = 57)考察了在创建并整理个人电影档案这一前台任务中,推荐对发现的影响。尽管推荐对环境层面的感知惊喜性没有显著影响,与偶遇相关方面的评分呈偏高趋势,效应量较小。在单部电影层面,推荐条件下的喜爱电影在激发观看欲望和拓宽偏好方面得分显著更高,但在新颖性和意外性上没有差异。值得一提的是,**推荐条件下仅 14% 被评价的喜爱电影直接来自推荐列表**。即使仅分析通过其他途径加入的喜爱电影,评分差异的效应量也相近。这些结果表明,嵌入式推荐既可通过直接被接受、也可通过促使用户自行探索与重新评估间接促成惊喜体验。它们也凸显了在环境和物品两个层面评估惊喜性的价值,以及只依赖直接接受率的局限。",
+   "abstract_en": "Research on serendipity-oriented recommender systems has focused on algorithms that recommend unexpected yet useful items. However, serendipity is increasingly viewed as a user experience shaped by both algorithmic outputs and system features. This study positions recommendations not as the primary goal users pursue but as an environmental affordance that creates opportunities for discovery during other activities. We propose RecField, a spatial movie organization interface where users freely arrange movies into collection zones. For each collection, RecField provides attribute-based recommendation lists labeled according to their recommendation perspectives. A between-subjects experiment ($N$ = 57) examined the effects of recommendations on discoveries made during a foreground task of creating and organizing personal movie profiles. Although recommendations did not significantly affect environment-level perceived serendipity, ratings of encounter-related aspects tended to be higher, with small effect sizes. At the individual-movie level, favorites in the recommendation condition received significantly higher ratings for stimulating the desire to watch and broadening preferences, but not for novelty or unexpectedness. Notably, only 14\\% of evaluated favorites in the recommendation condition were added directly from recommendation lists. Differences in ratings showed similar effect sizes even when the analysis was restricted to favorites added through other routes. These findings suggest that embedded recommendations can contribute to serendipitous experiences both directly through item acceptance and indirectly by prompting users' own exploration and re-evaluation. They also highlight the value of evaluating serendipity at both the environment and item levels and the limitations of relying solely on direct recommendation acceptance rates."
+  },
+  {
+   "id": "2611.33649",
+   "title": "Structure-Aware Multimodal Retrieval Under Data Scarcity, Privacy Constraints and Out-of-Domain Content",
+   "title_zh": "数据稀缺、隐私约束与域外内容下的结构感知多模态检索",
+   "affiliation": "",
+   "primary_cat": "cs.IR",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33649",
+    "pdf": "https://arxiv.org/pdf/2611.33649",
+    "code": null
+   },
+   "summary_zh": "用版面几何配对加本地VLM，无需训练即可检索专业图集中的图像",
+   "abstract_zh": "目的：法医病理、牙科、地质等专业领域的图集图像检索必须在没有标注和训练对的情况下工作，内容往往不能离开本地硬件，且图像超出图文编码器的训练分布。本文提出一个满足这三点的==结构感知流水线==，通过版面几何恢复的页面结构和本地开源 8B VLM 来检索图像。方法：提出基于几何的配对方法，模型接收检测框的示意图，在不接触像素和文本的情况下为每张图选择图注。在三个私有语料（29 本书、10,421 张图、218 条 query）上，用盲评人工打分评估图注检索，对比词汇基线、生成描述和五个图文编码器。结果：三个领域中几何配对的正确率为 96%、92%、77%，而两种文档解析器中较好者为 76%、45%、53%。给定示意图的托管模型同样准确，而把坐标作为文本输入则损失 22 个点。图注检索的 nDCG@5 为 0.85、0.87、0.76，**最好的跨模态编码器仅为 0.54、0.51、0.27**，生成描述为 0.41、0.28、0.30。配对错误会传递到检索环节。结论：该流水线用小型本地模型且无需领域内训练即可实现准确的图像检索，而通用和生物医学图文编码器远远落后。其纯几何配对是五种方法中最准确的，且不向托管模型暴露任何内容。代码和提示词已开源。",
+   "abstract_en": "Purpose: Figure retrieval from reference atlases in expert domains like forensic pathology, dentistry and geology must work without labels or training pairs, on content that often cannot leave local hardware, and on images outside the training data of image-text encoders. This work proposes a structure-aware pipeline that satisfies all three, retrieving figures through the page structure recovered by layout geometry and a local open-weight 8B VLM. Methods: A geometry-based pairing method is introduced, in which the model receives a schematic of the detected boxes and selects each picture's caption without access to pixels or text. Caption retrieval is evaluated on three private corpora (29 books, 10,421 figures, 218 queries) with blind human grading, against a lexical baseline, generated descriptions and five image-text encoders. Results: Geometric pairing was correct for 96%, 92% and 77% of pictures in the three domains, against 76%, 45% and 53% for the better of two document parsers. A hosted model given the schematic was equally accurate, while coordinates as text lost 22 points. Caption retrieval obtained an nDCG@5 of 0.85, 0.87 and 0.76, against 0.54, 0.51 and 0.27 for the best cross-modal encoder and 0.41, 0.28 and 0.30 for generated descriptions. Pairing errors carried over to retrieval. Conclusion: The proposed pipeline achieves accurate figure retrieval with small local models and no in-domain training, where general and biomedical image-text encoders fall far behind. Its geometry-only pairing is the most accurate of five methods and exposes no content, even to a hosted model. Code and prompts are released."
+  },
+  {
+   "id": "2611.33368",
+   "title": "Searching Ultra-Long Videos with Decision Models",
+   "title_zh": "用决策模型搜索超长视频",
+   "affiliation": "",
+   "primary_cat": "cs.CV",
+   "direction": "B",
+   "star": false,
+   "score": 0.4,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33368",
+    "pdf": "https://arxiv.org/pdf/2611.33368",
+    "code": "https://github.com/CeeZh/DeLoVi"
+   },
+   "summary_zh": "用预训练决策模型直接输出相关性分数，从超长视频中快速检索证据以回答问题",
+   "abstract_zh": "理解超长视频需要从漫长的视频历史中检索稀疏的、与问题相关的证据。现有基于相似度的检索方法效率高，但分别编码问题和视频内容，常常漏掉需要同时对二者推理才能判断相关性的证据。生成式大语言模型（LLM）可以做这种推理，但通常要经过多轮搜索生成文本，使每次查询既慢又贵。本文提出 DeLoVi（Decision Models for Long Video），利用预训练的==决策模型==从超长视频中检索证据。与 LLM 一样，决策模型同时读取问题和候选证据，因此能对二者联合推理；与 LLM 不同，它不生成文本，直接输出相关性分数，因而快速且廉价。我们先提出 DeLoVi-S：为短视频片段生成字幕，用决策模型按与问题的相关性对字幕排序，再由生成式 LLM 基于排名靠前的字幕回答问题。该方法虽然简单，却在 EgoLifeQA、EgoMemReason 和 MM-Lifelong 三个超长视频理解基准上达到最优，并能泛化到 VideoMME-L 和 LVBench。但 DeLoVi-S 要对每个问题给所有字幕打分，成本随视频长度线性增长。为降低成本，我们提出==自动策略演化==框架，围绕固定的预训练决策模型迭代优化记忆构建和检索策略。所得方法 DeLoVi-E 性能相当，**输入 token 平均减少 34 倍**，并在 EgoLifeQA 上比此前最好方法快 3 倍以上且准确率更高。",
+   "abstract_en": "Understanding ultra-long videos requires retrieving sparse, query-relevant evidence from extensive video histories. Existing similarity-based retrieval methods are efficient, but they encode the question and the video content independently and thus often miss evidence whose relevance requires reasoning over both. Generative large language models (LLMs) can perform such reasoning, but they typically generate text over multiple rounds of search, which makes each query slow and costly. In this work, we introduce DeLoVi (Decision Models for Long Video), a framework that leverages pretrained decision models to retrieve evidence from ultra-long videos. Like an LLM, a decision model reads the question together with the candidate evidence, so it can reason over both. Unlike an LLM, it directly outputs a relevance score without generating text, which makes it fast and inexpensive. We first present DeLoVi-S, a simple method that generates captions for short video clips and uses a decision model to rank those captions by their relevance to a question. A generative LLM then answers the question using the top-ranked captions. Despite its simplicity, DeLoVi-S achieves state-of-the-art performance on three ultra-long video understanding benchmarks, EgoLifeQA, EgoMemReason, and MM-Lifelong, and generalizes effectively to long-video understanding benchmarks, VideoMME-L and LVBench. However, DeLoVi-S scores every caption for every question, so its cost grows linearly with video length. To reduce this cost, we propose an automated policy evolution framework that iteratively refines the memory construction and retrieval policies around a fixed pretrained decision model. The resulting method, DeLoVi-E, maintains comparable performance while reducing input tokens by 34x on average compared with DeLoVi-S. It also runs over 3x faster than the best prior method on EgoLifeQA while achieving higher accuracy."
+  },
+  {
+   "id": "2611.34427",
+   "title": "Mitigating Hallucinations in Medical Question Answering on ESC Cardiology Guidelines: Evaluation and Retrieval Optimization",
+   "title_zh": "缓解 ESC 心脏病指南医学问答中的幻觉:评估与检索优化",
+   "affiliation": "",
+   "primary_cat": "cs.CL",
+   "direction": "E",
+   "star": false,
+   "score": 0.35,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34427",
+    "pdf": "https://arxiv.org/pdf/2611.34427",
+    "code": "https://github.com/ilkinmasimov/esc-hallucination-qa"
+   },
+   "summary_zh": "在 ESC 心脏病指南问答上逐条人工审计验证-修正式 RAG 流水线,发现验证器可靠性是瓶颈",
+   "abstract_zh": "背景:大语言模型在医学问答中会产生幻觉。先把原子断言与检索到的指南证据核对、再修订的 verify-and-revise 流水线是常见缓解手段,但评测几乎都把验证器的输出当作真值,这一假设很少被检验。目的:对照人工判断,逐条断言地衡量这类流水线在基于指南的临床场景中如何失败。方法:我们基于四份近期 ESC 心脏病指南构建了含 160 个问题(100 个来自 89 个去标识病例的患者情景,60 个事实类问题)的数据集,全部由一位执业内科医生审核,并构建了 627 条人工核实的指南记录检索语料,提供两种切块粒度。五阶段流水线在四种检索配置、三次独立运行下共运行 1920 次;所有 606 条首轮被驳回的断言都经人工审计,独立评判者重新评判了 906 个决定,专家对 100 条被接受的断言做了盲审。结果:**被标记的断言中只有 44.7-50.6% 是真正的幻觉**。修正循环在 85.2-95.1% 的情况下收敛,但**35% 的真实最终错误是修正引入的**。单次运行对真实幻觉的召回为 35.6-41.2%,三次运行取并集为 71-80%;验证器一致性中等(kappa = 0.505)。盲审估计被接受断言的漏检率为 3.2%(95% CI 0.7-6.7%)。最终真实错误率为 1.7% 的答案。结论:断言级验证可将幻觉内容降低一个数量级,但限制效果的是验证器的可靠性而非生成,这一点必须测量而不能假设。",
+   "abstract_en": "Background: Large language models produce hallucinations in medical question answering (QA). Verify-and-revise pipelines that check atomic claims against retrieved guideline evidence are a standard mitigation, but evaluations almost universally treat the verifier's output as ground truth, an assumption rarely tested. Objective: To measure, claim by claim against human judgement, how such a pipeline fails in a guideline-grounded clinical setting. Methods: We built a dataset of 160 questions (100 patient vignettes from 89 de-identified cases, 60 fact-based) over four recent ESC cardiology guidelines, all approved by a practising internist, and a retrieval corpus of 627 hand-verified guideline records at two chunk granularities. A five-stage pipeline was run under four retrieval configurations and three independent runs (1920 arm-runs); all 606 first-pass refuted claims were manually audited, an independent judge re-judged 906 decisions, and the expert blindly reviewed 100 accepted claims. Results: Only 44.7-50.6% of flagged claims were true hallucinations. Correction loops converged in 85.2-95.1% of cases, yet 35% of genuine final errors were introduced by correction. Single-run true-hallucination recall was 35.6-41.2%, the three-run union 71-80%; verifier agreement was moderate (kappa = 0.505). The blind probe estimated the accepted-claim miss rate at 3.2% (95% CI 0.7-6.7%). Final genuine-error rate: 1.7% of answers. Conclusion: Claim-level verification reduces hallucinated content by an order of magnitude, but verifier reliability, not generation, is the limiting factor and must be measured, not assumed."
+  },
+  {
+   "id": "2611.33594",
+   "title": "Aligned Machine: A Benchmark for Evaluating Multimodal Embedding Similarity via Human Comparative Judgements",
+   "title_zh": "Aligned Machine：基于人类比较判断评测多模态嵌入相似度的基准",
+   "affiliation": "",
+   "primary_cat": "cs.AI",
+   "direction": "H",
+   "star": false,
+   "score": 0.35,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33594",
+    "pdf": "https://arxiv.org/pdf/2611.33594",
+    "code": null
+   },
+   "summary_zh": "用人类两两比较判断评测文本与多模态嵌入相似度的对齐程度",
+   "abstract_zh": "嵌入模型越来越多地影响人们搜索、推荐和检索信息的方式，但我们缺少可靠的方法检验这些相似度判断是否符合人类对语义的理解。现有基准通常依赖静态的专家标注对和粗粒度的 Likert 式标注，难以扩展，也很难获得一致且高置信度的标注。我们提出 Aligned Machine，一个交互式的公开平台，把广泛的公众参与转化为持续增长的==人类对齐相似度基准（HASB）==，用于评估基于嵌入系统的语义对齐。参与者完成符合认知习惯的强制选择任务：比较两对条目（文本或图像），选出更相似的一对。这种比较式设计非专家也能完成，得到干净的偏好数据，并支持稳健聚合。我们报告了首次部署的结果：115 名参与者贡献了 2,875 条标注，涉及 872 个不同的对。用 HASB 评估 12 个常用嵌入模型，发现**嵌入相似度与人类判断只有部分一致**。纯文本模型整体一致性始终高于多模态模型，而多模态模型的表现随任务类型系统性变化：图-图比较一致性最强，图-文较弱，文-文最低。Aligned Machine 设计为随参与增长而持续演进，支持纵向分析、特定领域研究、偏见检测和跨模型版本的概念漂移度量。通过结合公众参与和严格的比较评估，HASB 为审计嵌入模型的语义对齐提供了可扩展、可问责的框架。",
+   "abstract_en": "Embedding models increasingly inform how people search, recommend, and retrieve information, yet we lack credible ways to test whether these similarity judgments reflect how humans understand meaning. Existing benchmarks typically rely on static, expert-labeled pairs with coarse Likert-style annotations, limiting scalability and making it difficult to obtain consistent, high-confidence annotations. We introduce Aligned Machine, an interactive, public-facing platform that transforms broad participation into a continuously growing Human-Aligned Similarity Benchmark (HASB) for evaluating semantic alignment in embedding-based systems. Participants complete a cognitively-natural, forced-choice task, comparing two pairs of items (text or images) and selecting which pair is more similar. This comparative design is accessible to non-experts, yields clean preference data, and supports robust aggregation. We report results from an initial deployment with 115 participants contributing 2,875 total labeled pairs and 872 unique pairs. Using HASB, we evaluated 12 widely used embedding models and found only partial alignment between embedding similarity and human judgments. Text-only models consistently achieve higher overall agreement than multimodal models, while multimodal performance varies systematically by task type: alignment is strongest for image-image comparisons, weaker for image-text comparisons, and lowest for text-text comparisons. Aligned Machine is designed to evolve over time as participation grows, supporting longitudinal analysis, domain-specific studies, bias detection, and measurement of concept drift across model versions. By combining accessible public participation with rigorous comparative evaluation, HASB provides a scalable and accountable framework for auditing semantic alignment in embedding models."
+  },
+  {
+   "id": "2611.34083",
+   "title": "MulCLIP: A Multi-level Alignment Framework for Enhancing Fine-grained Long-context CLIP",
+   "title_zh": "MulCLIP：增强细粒度长文本CLIP的多层级对齐框架",
+   "affiliation": "",
+   "primary_cat": "cs.IR",
+   "direction": "B",
+   "star": false,
+   "score": 0.3,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34083",
+    "pdf": "https://arxiv.org/pdf/2611.34083",
+    "code": "https://github.com/truongchau2602/MulCLIP"
+   },
+   "summary_zh": "无需区域提议，用多粒度文本对齐改进CLIP的长文本图文匹配",
+   "abstract_zh": "CLIP等视觉语言模型擅长图文对齐，但因训练时使用短caption，难以处理冗长详细的描述。近期方法借助区域提议把视觉区域与句子对齐，但部署成本很高。我们提出MulCLIP，一个端到端的==多层级对齐框架==，无需区域提议，直接利用自然长文本的结构。MulCLIP不是简单堆叠目标，而是通过相容的训练信号对齐不同粒度的文本：对长caption和短摘要做全局对比对齐，在局部校准特征上做==Word-Patch Reconstruction==以学习样本内词与图像块的语义，以及用Subcaption-Aggregated Patch对齐实现富含上下文的子caption定位。在涵盖不同caption长度的基准上，**实验显示持续的提升**，消融实验确认各目标互补并共同改进整体框架。代码将发布于 https://github.com/truongchau2602/MulCLIP。",
+   "abstract_en": "Vision-language models such as CLIP excel at image-text alignment but struggle with long, detailed descriptions due to training on short captions. Recent methods address this limitation using region proposals to align visual regions with sentences, but at substantial deployment cost. We present MulCLIP, an end-to-end multi-level alignment framework that directly exploits natural long-text structure without region proposals. Instead of simply stacking objectives, MulCLIP aligns different textual granularities through compatible training signals: global contrastive alignment for long captions and short summaries, Word-Patch Reconstruction over locally calibrated features for within-sample word-patch semantics, and Subcaption-Aggregated Patch alignment for context-rich subcaption grounding. Experiments on benchmarks spanning varying caption lengths show consistent gains, and ablations confirm that the proposed objectives are complementary and jointly improve the overall framework. Code will be released at https://github.com/truongchau2602/MulCLIP."
+  },
+  {
+   "id": "2611.33890",
+   "title": "Privacy-Aware Adaptive Client Selection for Federated Retrieval-Augmented Generation",
+   "title_zh": "联邦RAG的隐私感知自适应客户端选择",
+   "affiliation": "",
+   "primary_cat": "cs.IR",
+   "direction": "E",
+   "star": false,
+   "score": 0.3,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33890",
+    "pdf": "https://arxiv.org/pdf/2611.33890",
+    "code": null
+   },
+   "summary_zh": "在线选择联邦RAG的检索客户端，减少查询暴露与检索开销。",
+   "abstract_zh": "==联邦RAG==从分布式语料中检索证据，但向所有客户端广播查询会增加检索负担并暴露查询。我们提出面向联邦RAG的隐私感知自适应客户端选择（PACS-FedRAG），这是一个在线选择器，综合考虑扰动后的语义画像、证据反馈、延迟、负载成本和探索。在十个客户端选三个的设置下，存档的端到端基准给出证据重叠0.372、答案准确率0.287。而仅检索的评估复用了全广播基线，其融合平局处理策略不同。对不相交的客户端语料做排名融合会带来0.375的重叠上限，限制了它作为相关性度量的解释力。答案准确率低于固定标签诊断值0.645，且无法获取原始生成器输出来验证解析器。需要修正基线并引入新的答案级评估，才能判断质量是否得以保持。选择三个客户端使**查询接收方减少70%**。**画像扰动并不能为查询和段落提供保密性**。",
+   "abstract_en": "Federated retrieval-augmented generation retrieves evidence from distributed corpora. However, broadcasting queries to all clients increases the retrieval burden and query exposure. We present Privacy-Aware Adaptive Client Selection for Federated Retrieval-Augmented Generation (PACS-FedRAG), an online selector that takes into account perturbed semantic profiles along with evidence feedback, latency, payload cost, and exploration. In a ten-client setting where three clients are chosen, the archived end-to-end benchmark reports an evidence overlap of 0.372 and an answer accuracy of 0.287. The retrieval-only evaluation, on the other hand, reuses a full-broadcast baseline with a different fusion tie-breaking policy. Rank fusion across disjoint client corpora imposes an overlap ceiling of 0.375, limiting its interpretation as a relevance measure. Answer accuracy is below the fixed-label diagnostic of 0.645, and raw generator responses are unavailable for parser verification. Corrected baselines and a new answer-level evaluation are needed to assess whether quality is preserved. Selecting three clients reduces the number of query recipients by 70%. Profile perturbation does not provide confidentiality of queries or passages."
+  },
+  {
+   "id": "2611.34640",
+   "title": "PRAM: Activating Latent Multimodal Knowledge through Partwise Reasoning",
+   "title_zh": "PRAM：通过分部分推理激活潜在多模态知识",
+   "affiliation": "",
+   "primary_cat": "cs.CV",
+   "direction": "B",
+   "star": false,
+   "score": 0.3,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34640",
+    "pdf": "https://arxiv.org/pdf/2611.34640",
+    "code": "https://github.com/Luo1Yan/PRAM"
+   },
+   "summary_zh": "经共享枢纽模态组合分部分统计关系，做跨模态分类与检索。",
+   "abstract_zh": "涌现的跨模态分类与检索使模态间无需直接配对监督即可迁移。然而现有方法往往优先考虑样本级对齐，忽略了局部判别信息和分部分的统计关系。为此我们提出跨模态分部分推理（PRAM），通过共享的枢纽模态组合 ==分部分统计关系==，激活冻结编码器中的潜在多模态知识。具体而言，首先提出多粒度协方差正则化模块，从两组模态-枢纽对的全局和局部向量估计协方差，并通过与跨部分均值的自适应混合来稳定局部估计。其次设计基于枢纽的谱关系推理模块，通过正则化协方差组合推断目标模态之间的全局和分部分统计关系，并借助白化和谱分解提取成对投影方向及其相关强度。最后引入多粒度得分融合模块，对全局和局部关系的匹配得分做标准化并融合，同时纳入枢纽关联和类别语义的任务特定信息，用于类别预测和候选排序。在十个数据集上的大量实验表明，PRAM 在 16 个分类设置和 19 个检索设置中达到 SOTA，并在三个传感场景中表现很有竞争力。",
+   "abstract_en": "Emergent cross-modal classification and retrieval enable transfer between modalities without direct paired supervision. However, existing methods often prioritize sample-level alignment, overlooking local discriminative information and partwise statistical relations. To this end, we propose partwise reasoning across modalities (PRAM), which activates latent multimodal knowledge in frozen encoders by composing partwise statistical relations through a shared pivot modality. Specifically, we first present a multi-granularity covariance regularization module that estimates covariances from global and local vectors in two collections of modality-pivot pairs, stabilizing local estimates through adaptive blending with their cross-part means. Second, we devise a pivot-based spectral relational reasoning module that infers global and partwise statistical relations between target modalities through regularized covariance composition and extracts paired projection directions and their correlation strengths via whitening and spectral decomposition. Finally, we introduce a multi-granularity score fusion module that standardizes and fuses matching scores from global and local relations, incorporating task-specific information on pivot associations and class semantics for class prediction and candidate ranking. Extensive experiments across ten datasets demonstrate that PRAM achieves state-of-the-art performance in 16 classification settings and 19 retrieval settings, while exhibiting highly competitive performance in three sensing scenarios."
+  },
+  {
+   "id": "2611.34344",
+   "title": "SPARC: Semantic Calibration with Latent Multimodal Knowledge for Robust Image-Text Retrieval",
+   "title_zh": "SPARC：基于潜在多模态知识的语义校准，用于鲁棒图文检索",
+   "affiliation": "",
+   "primary_cat": "cs.CV",
+   "direction": "B",
+   "star": false,
+   "score": 0.3,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34344",
+    "pdf": "https://arxiv.org/pdf/2611.34344",
+    "code": null
+   },
+   "summary_zh": "在图像或文本查询不完整时，校准特征以提升图文检索的候选区分和排序稳定性",
+   "abstract_zh": "鲁棒图文检索旨在图像或文本查询不完整时保持准确的跨模态匹配，为真实应用提供可靠的信息获取。现有方法通常只关注适应分布偏移，没有充分解决不完整查询下的候选区分和排序不稳定问题。为此，我们提出语义投影与关系约束对齐（SPARC），从冻结的编码器中挖掘==潜在多模态知识==，以提升候选区分度和排序稳定性。具体地，我们首先设计了球面乘积上的语义校准模块，通过切空间更新来修正不完整的视觉和文本特征，同时保持余弦相似度所依赖的单位球面结构。其次，引入鲁棒语义引导模块，把完整图文特征中编码的潜在多模态知识与跨模态语义锚点结合，促进校准后特征的语义对齐。最后，引入==匹配关系约束==模块，将原始查询特征与校准后的特征融合，并用软排序约束惩罚初始正确匹配间隔的缩小，从而限制排序扰动。在 Flickr30K 和 COCO 上的大量实验表明，SPARC 在各种图像遮挡和词删除设置下均优于对比方法，并且**在不同预训练骨干上都取得一致提升**。",
+   "abstract_en": "Robust image-text retrieval aims to maintain accurate cross-modal matching when image or text queries are incomplete, supporting reliable information access in real-world applications. However, existing methods typically focus on adapting to distribution shifts, without adequately addressing candidate discrimination for incomplete queries and ranking instability. To this end, we propose semantic projection and alignment with relational constraints (SPARC), which elicits latent multimodal knowledge from frozen encoders to improve candidate discrimination and ranking stability. Specifically, we first devise a semantic calibration module on a product of spheres that refines incomplete visual and textual features through tangent-space updates, maintaining the unit-sphere structure used for cosine similarity. Second, we introduce a robust semantic guidance module that combines latent multimodal knowledge encoded in complete image-text features with cross-modal semantic anchors to promote semantic alignment of the calibrated features. Finally, we introduce a matching relation constraint module that fuses original query features with their calibrated counterparts and applies a soft ranking constraint to penalize reductions in initially positive matching margins, thereby limiting ranking perturbations. Extensive experiments on Flickr30K and COCO demonstrate that SPARC outperforms competing methods under various image occlusion and word deletion settings, while achieving consistent gains across different pretrained backbones."
+  },
+  {
+   "id": "2611.33322",
+   "title": "Brand Recall and Category Accuracy in Language Models: An Audit of 1,000 B2B SaaS Brands",
+   "title_zh": "语言模型的品牌召回与类别准确率：对 1000 个 B2B SaaS 品牌的审计",
+   "affiliation": "",
+   "primary_cat": "cs.AI",
+   "direction": "H",
+   "star": false,
+   "score": 0.25,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33322",
+    "pdf": "https://arxiv.org/pdf/2611.33322",
+    "code": null
+   },
+   "summary_zh": "在无检索下分别度量 LLM 对 1000 个 B2B SaaS 品牌的召回和类别判断。",
+   "abstract_zh": "语言模型可以说出一个品牌的名字，却未必能把它分对类别。本研究分别度量这两种结果，对象为 333 个产品类别下的 1000 个 B2B SaaS 品牌。在 Gemma 4 12B 上、不使用外部检索时，类别提示能引出 510 个品牌（51.0%）。另一个五候选类别探测把参考标签排在第一的有 787 个品牌，干扰项排第一的有 194 个，区分度很小的有 19 个。在 981 个可区分的排序中，错误率为 19.8%；对 547 个 winner 与 runner-up 的对数概率差超过 0.6 的品牌，错误率降到 3.5%。这些是队列内的度量，并非校准过的置信度估计。探索性回归显示技术覆盖度与召回相关，自有渠道综合指标与类别准确率相关，但各综合指标的调整集不同，不能确立因果效应。在四代 Gemma 上，实测召回率分别为 39.8%、44.3%、51.1% 和 51.0%。另一个基于表征的情感度量与客户评分几乎没有线性关联（r=0.03，n=921）。这些发现支持把召回和类别准确率分开报告。未能引出某个品牌，并不能说明它不存在于模型参数或训练数据中。",
+   "abstract_en": "A language model can name a brand without classifying it correctly. This study measures these outcomes separately for 1,000 B2B SaaS brands across 333 product categories. On Gemma 4 12B, with no external retrieval, category prompts elicit 510 brands (51.0%). A separate five-candidate category probe ranks the reference label first for 787 brands, a distractor first for 194, and yields little separation for 19. Among the 981 separated rankings, the error rate is 19.8%. It falls to 3.5% for the 547 brands with a winner-to-runner-up log-probability margin above 0.6. These are within-cohort measurements, not calibrated confidence estimates. Exploratory regressions associate technical coverage with recall and an owned-properties composite with category accuracy, but the composites use different adjustment sets and do not establish causal effects. Across four Gemma generations, measured recall is 39.8%, 44.3%, 51.1% and 51.0%. A separate representation-based sentiment measure has little linear association with customer ratings (r=0.03, n=921). The findings support reporting recall and category accuracy separately. Failure to elicit a brand does not establish its absence from model parameters or training data."
+  }
+ ],
+ "excluded": [
+  {
+   "id": "2611.34942",
+   "title": "Spectrum Adaptation of AI-Native Autoencoder Communications with Transfer Learning",
+   "title_zh": "基于迁移学习的AI原生自编码器通信频谱自适应",
+   "cat": "cs.NI",
+   "summary_zh": "用迁移学习让自编码器通信适应不同频谱。",
+   "reason": "非搜推，通信领域"
+  },
+  {
+   "id": "2611.34938",
+   "title": "Tokenisation is not in APX",
+   "title_zh": "分词不在APX中",
+   "cat": "cs.CL",
+   "summary_zh": "讨论分词问题的近似复杂度类。",
+   "reason": "理论NLP，非搜推"
+  },
+  {
+   "id": "2611.34935",
+   "title": "Can image generation help visual reasoning? An empirical study",
+   "title_zh": "图像生成能否帮助视觉推理？一项实证研究",
+   "cat": "cs.LG",
+   "summary_zh": "实证检验图像生成对视觉推理的帮助。",
+   "reason": "视觉推理，非搜推"
+  },
+  {
+   "id": "2611.34934",
+   "title": "Attack Policy Selection can Mislead Monitor Evaluators",
+   "title_zh": "攻击策略选择会误导监控器评估",
+   "cat": "cs.LG",
+   "summary_zh": "指出攻击策略选择会让监控器评估产生偏差。",
+   "reason": "AI安全评估，非搜推"
+  },
+  {
+   "id": "2611.34930",
+   "title": "A gene informed benchmark for BioScoring of pathology foundation models",
+   "title_zh": "面向病理基础模型BioScoring的基因信息基准",
+   "cat": "cs.LG",
+   "summary_zh": "用基因信息构建病理基础模型评测基准。",
+   "reason": "病理模型评测"
+  },
+  {
+   "id": "2611.34928",
+   "title": "Diverse Alternative Reasoning Traces for Hard Math Problems",
+   "title_zh": "面向难题数学的多样化替代推理轨迹",
+   "cat": "cs.CL",
+   "summary_zh": "为数学难题生成多样的替代推理轨迹。",
+   "reason": "数学推理，非搜推"
+  },
+  {
+   "id": "2611.34925",
+   "title": "One Ocean, Many Tasks: A Data-Grounded Simulation Suite and Benchmark for Marine Robotics",
+   "title_zh": "一片海洋多种任务：海洋机器人数据驱动仿真套件与基准",
+   "cat": "cs.RO",
+   "summary_zh": "构建面向海洋机器人的仿真套件和基准。",
+   "reason": "机器人，非搜推"
+  },
+  {
+   "id": "2611.34923",
+   "title": "Mixture-of-Loops Transformer",
+   "title_zh": "Mixture-of-Loops Transformer",
+   "cat": "cs.LG",
+   "summary_zh": "提出循环混合结构的Transformer。",
+   "reason": "通用模型架构"
+  },
+  {
+   "id": "2611.34920",
+   "title": "$μ$-Bench: Benchmarking Multi-User Task Completion in Shared Interaction Voice Agents",
+   "title_zh": "μ-Bench：共享交互语音智能体中多用户任务完成的基准",
+   "cat": "cs.CL",
+   "summary_zh": "评测语音智能体在多用户共享场景下完成任务的能力。",
+   "reason": "语音智能体基准"
+  },
+  {
+   "id": "2611.34899",
+   "title": "Enhancing Maritime Domain Awareness using Latent Space Representations",
+   "title_zh": "用潜空间表示增强海事态势感知",
+   "cat": "cs.CV",
+   "summary_zh": "用潜空间表示提升海事态势感知。",
+   "reason": "海事视觉，非搜推"
+  },
+  {
+   "id": "2611.34894",
+   "title": "What a Drop Reveals: Sim-to-Real Material Estimation for Deformable Objects from Video",
+   "title_zh": "一滴水揭示了什么：从视频估计可变形物体材质的仿真到真实方法",
+   "cat": "cs.CV",
+   "summary_zh": "从视频估计可变形物体的材质参数。",
+   "reason": "计算机视觉"
+  },
+  {
+   "id": "2611.34887",
+   "title": "Interpretable and Accurate Hybrid Decision Trees with Selective Case-Based Splits",
+   "title_zh": "带选择性案例分裂的可解释且准确的混合决策树",
+   "cat": "cs.LG",
+   "summary_zh": "在决策树中引入基于案例的分裂以兼顾可解释性与精度。",
+   "reason": "决策树，非搜推"
+  },
+  {
+   "id": "2611.34881",
+   "title": "Stranger Things: When Objects Appear Without Their Typical Neighbors",
+   "title_zh": "怪异事物：当物体脱离其典型邻居出现时",
+   "cat": "cs.CV",
+   "summary_zh": "研究物体在非典型上下文中出现时的模型表现。",
+   "reason": "计算机视觉"
+  },
+  {
+   "id": "2611.34875",
+   "title": "How Much Do Coding Agents Over-Edit, and Why? An Empirical Study of Unneeded Edits in Repository-Level Agent Patches",
+   "title_zh": "编码智能体过度编辑多少，为什么？仓库级补丁中不必要编辑的实证研究",
+   "cat": "cs.SE",
+   "summary_zh": "实证分析编码智能体补丁中不必要的编辑。",
+   "reason": "代码智能体"
+  },
+  {
+   "id": "2611.34870",
+   "title": "Shape-Aware Three-Way Merge for RDF Knowledge Graphs: The schema defines the conflict: an implementation and evaluation",
+   "title_zh": "面向RDF知识图谱的形状感知三方合并",
+   "cat": "cs.DB",
+   "summary_zh": "基于schema形状实现RDF知识图谱的三方合并。",
+   "reason": "知识图谱合并，非检索"
+  },
+  {
+   "id": "2611.34868",
+   "title": "A Survey of Security, Privacy, and Ethics of Large Language Models in Telecom",
+   "title_zh": "电信领域大语言模型的安全、隐私与伦理综述",
+   "cat": "cs.CR",
+   "summary_zh": "综述电信场景下LLM的安全隐私与伦理问题。",
+   "reason": "LLM安全综述"
+  },
+  {
+   "id": "2611.34864",
+   "title": "RePace: Reasoning about Demonstration Speedup for Faster Vision-Language-Action Policies",
+   "title_zh": "RePace：基于演示加速推理的更快视觉语言动作策略",
+   "cat": "cs.RO",
+   "summary_zh": "通过推理演示加速比来加快VLA策略。",
+   "reason": "机器人VLA"
+  },
+  {
+   "id": "2611.34863",
+   "title": "Focus Only on What's Important: Training-Free Focus Maps for Frozen Vision Transformers in Long-Video Object Segmentation",
+   "title_zh": "只关注重点：面向长视频目标分割的冻结ViT免训练聚焦图",
+   "cat": "cs.CV",
+   "summary_zh": "为冻结ViT提供免训练聚焦图以改进长视频目标分割。",
+   "reason": "视频分割"
+  },
+  {
+   "id": "2611.34862",
+   "title": "BOP-Refer: Benchmark for Monocular 3D and 2D Object Grounding",
+   "title_zh": "BOP-Refer：单目3D与2D物体定位基准",
+   "cat": "cs.CV",
+   "summary_zh": "提供单目3D和2D物体指代定位基准。",
+   "reason": "计算机视觉基准"
+  },
+  {
+   "id": "2611.34859",
+   "title": "Model Weights, Airlocks and Sandboxes: A Call for Technical Validation of Re-identification Tests under the EDPB Anonymisation Guidelines",
+   "title_zh": "模型权重、气闸与沙箱：呼吁对EDPB匿名化指南下的重识别测试做技术验证",
+   "cat": "cs.CR",
+   "summary_zh": "主张对重识别测试进行技术验证。",
+   "reason": "隐私合规"
+  },
+  {
+   "id": "2611.34858",
+   "title": "From Prediction to Decision: Decision-Focused Fine-Tuning of Autoregressive Tabular Transformers for Cost-Sensitive Financial Events",
+   "title_zh": "从预测到决策：面向代价敏感金融事件的自回归表格Transformer决策导向微调",
+   "cat": "cs.LG",
+   "summary_zh": "用决策导向微调改进表格Transformer的金融事件预测。",
+   "reason": "金融表格预测"
+  },
+  {
+   "id": "2611.34848",
+   "title": "Put the World Back: Timestamps Matter in Time Series Reasoning",
+   "title_zh": "把世界放回去：时间戳在时间序列推理中的作用",
+   "cat": "cs.LG",
+   "summary_zh": "说明时间戳对时间序列推理的重要性。",
+   "reason": "时间序列"
+  },
+  {
+   "id": "2611.34843",
+   "title": "Probing Visual Idiosyncrasies in Text-to-Image Models",
+   "title_zh": "探查文生图模型的视觉特质",
+   "cat": "cs.CV",
+   "summary_zh": "探查文生图模型各自的视觉特征。",
+   "reason": "图像生成"
+  },
+  {
+   "id": "2611.34841",
+   "title": "Knowledge-Base Gradient Descent: Self-Structuring Learning through Question Answering",
+   "title_zh": "知识库梯度下降：通过问答实现自结构化学习",
+   "cat": "cs.AI",
+   "summary_zh": "用问答信号迭代编辑知识库结构以提高答题F1。",
+   "reason": "KB构建，检索非重点"
+  },
+  {
+   "id": "2611.34840",
+   "title": "Provably Efficient Offline Discounted Reinforcement Learning under Recursive Entropic Risk",
+   "title_zh": "递归熵风险下可证高效的离线折扣强化学习",
+   "cat": "cs.LG",
+   "summary_zh": "给出递归熵风险下离线折扣RL的可证高效算法。",
+   "reason": "强化学习理论"
+  },
+  {
+   "id": "2611.34832",
+   "title": "Proverbs As A Window On Collective Prescriptions",
+   "title_zh": "谚语：集体规范的窗口",
+   "cat": "cs.CL",
+   "summary_zh": "用谚语分析集体层面的规范性观念。",
+   "reason": "计算社会科学"
+  },
+  {
+   "id": "2611.34831",
+   "title": "Repairing the Trustworthiness of Distilled Language Models",
+   "title_zh": "修复蒸馏语言模型的可信度",
+   "cat": "cs.CL",
+   "summary_zh": "修复蒸馏后语言模型损失的可信度。",
+   "reason": "LLM可信度"
+  },
+  {
+   "id": "2611.34830",
+   "title": "Not all world models can doubt: how training objective and architecture shape epistemic uncertainty in JEPA and RSSM world models",
+   "title_zh": "并非所有世界模型都能怀疑：训练目标与架构如何塑造JEPA和RSSM的认知不确定性",
+   "cat": "cs.LG",
+   "summary_zh": "比较JEPA与RSSM世界模型的认知不确定性。",
+   "reason": "世界模型"
+  },
+  {
+   "id": "2611.34826",
+   "title": "Gradient TD($λ$) for Non-Linear Function Approximation",
+   "title_zh": "非线性函数逼近的梯度TD(λ)",
+   "cat": "cs.LG",
+   "summary_zh": "提出非线性逼近下的梯度TD(λ)。",
+   "reason": "强化学习"
+  },
+  {
+   "id": "2611.34825",
+   "title": "Routeability Before Routing: Routeability Audit Protocol (RAP) and RouteabilityBench for Audited LLM Model Selection",
+   "title_zh": "路由前先看可路由性：面向LLM模型选择的可路由性审计协议与基准",
+   "cat": "cs.LG",
+   "summary_zh": "提出审计LLM模型选择可路由性的协议和基准。",
+   "reason": "LLM路由，非搜推"
+  },
+  {
+   "id": "2611.34823",
+   "title": "The Linguistic Knowledge Benchmark: Do Language Models Know the Foundations of Early-Grade Literacy?",
+   "title_zh": "语言知识基准：语言模型是否掌握低年级识字的基础",
+   "cat": "cs.CL",
+   "summary_zh": "评测语言模型对早期识字基础知识的掌握。",
+   "reason": "教育NLP基准"
+  },
+  {
+   "id": "2611.34821",
+   "title": "LoopTitan: What Does Parameter Revisit Buy a Mixture-of-Experts?",
+   "title_zh": "LoopTitan：参数重访给MoE带来什么",
+   "cat": "cs.LG",
+   "summary_zh": "研究MoE中参数重复访问的收益。",
+   "reason": "模型架构"
+  },
+  {
+   "id": "2611.34819",
+   "title": "VulnSafe: Measuring Vulnerability-Aware Relational Safety in Large Language Models",
+   "title_zh": "VulnSafe：衡量大语言模型的脆弱性感知关系安全",
+   "cat": "cs.CL",
+   "summary_zh": "评测LLM在脆弱人群关系场景下的安全性。",
+   "reason": "LLM安全"
+  },
+  {
+   "id": "2611.34818",
+   "title": "Deep Reinforcement Learning for Multi-UAV Data Harvesting Under Variable Team Sizes and Agent Loss",
+   "title_zh": "可变队伍规模与智能体损失下多无人机数据采集的深度强化学习",
+   "cat": "cs.LG",
+   "summary_zh": "用深度RL做队伍规模可变的多无人机数据采集。",
+   "reason": "无人机RL"
+  },
+  {
+   "id": "2611.34816",
+   "title": "Transferring Architecture as an Optimization Prior",
+   "title_zh": "把架构作为优化先验进行迁移",
+   "cat": "cs.LG",
+   "summary_zh": "把架构信息作为优化先验迁移到新模型。",
+   "reason": "通用深度学习"
+  },
+  {
+   "id": "2611.34813",
+   "title": "Solve Vision with Code: Coding Agents Are Stronger Visual Reasoners Than Video Models",
+   "title_zh": "用代码解决视觉：编码智能体比视频模型更擅长视觉推理",
+   "cat": "cs.CV",
+   "summary_zh": "表明编码智能体在视觉推理上强于视频模型。",
+   "reason": "视觉推理"
+  },
+  {
+   "id": "2611.34811",
+   "title": "HOG-WAM: Improving Visual Robustness through Future Gradient Prediction",
+   "title_zh": "HOG-WAM：通过未来梯度预测提升视觉鲁棒性",
+   "cat": "cs.CV",
+   "summary_zh": "预测未来梯度以提高视觉鲁棒性。",
+   "reason": "计算机视觉"
+  },
+  {
+   "id": "2611.34805",
+   "title": "Barron Smoothness for Layers in Deep Neural Networks",
+   "title_zh": "深度神经网络各层的Barron光滑性",
+   "cat": "cs.LG",
+   "summary_zh": "分析深层网络各层的Barron光滑性。",
+   "reason": "深度学习理论"
+  },
+  {
+   "id": "2611.34801",
+   "title": "Guidance as Variance Matching",
+   "title_zh": "作为方差匹配的引导",
+   "cat": "cs.CV",
+   "summary_zh": "把扩散引导解释为方差匹配。",
+   "reason": "扩散模型"
+  },
+  {
+   "id": "2611.34799",
+   "title": "Split-RL: Local Conflict Resolution in Reinforcement Learning",
+   "title_zh": "Split-RL：强化学习中的局部冲突消解",
+   "cat": "cs.LG",
+   "summary_zh": "在RL中拆分以消解局部冲突。",
+   "reason": "强化学习"
+  },
+  {
+   "id": "2611.34785",
+   "title": "PersonaFactory: Stylistic User Prompt Augmentation with Synthetic Persona Bank",
+   "title_zh": "PersonaFactory：用合成人设库做风格化用户提示增强",
+   "cat": "cs.CL",
+   "summary_zh": "用合成人设库增强用户提示的风格多样性。",
+   "reason": "提示增强，非搜推"
+  },
+  {
+   "id": "2611.34781",
+   "title": "Comparative Study of Deep Learning Architectures for Brain Tumour Classification",
+   "title_zh": "脑肿瘤分类的深度学习架构比较研究",
+   "cat": "cs.CV",
+   "summary_zh": "比较多种深度学习架构的脑肿瘤分类效果。",
+   "reason": "医学影像"
+  },
+  {
+   "id": "2611.34779",
+   "title": "Adaptive Reliability Reserves for Residential Battery Fleets",
+   "title_zh": "住宅电池机群的自适应可靠性储备",
+   "cat": "cs.LG",
+   "summary_zh": "为住宅电池机群自适应设置可靠性储备。",
+   "reason": "能源调度"
+  },
+  {
+   "id": "2611.34777",
+   "title": "When Every Rollout Fails: Splicing Learner-Conditioned Options into Long-Horizon Agent RL",
+   "title_zh": "当所有rollout都失败：在长程智能体RL中拼接学习者条件选项",
+   "cat": "cs.LG",
+   "summary_zh": "拼接选项帮助长程智能体RL克服全失败rollout。",
+   "reason": "智能体RL"
+  },
+  {
+   "id": "2611.34776",
+   "title": "DFly2: Turbocharging Long-Context Speculative Decoding by Sharing the Target's Sparsity",
+   "title_zh": "DFly2：共享目标模型稀疏性加速长上下文推测解码",
+   "cat": "cs.CL",
+   "summary_zh": "共享目标模型稀疏性加速长上下文推测解码。",
+   "reason": "推理加速，非搜推"
+  },
+  {
+   "id": "2611.34770",
+   "title": "Make the Adversary Spend More: Stateful Deception as a Cost-Exchange Primitive for AI-Era Cyber Defense",
+   "title_zh": "让对手付出更多：作为成本交换原语的有状态欺骗",
+   "cat": "cs.CR",
+   "summary_zh": "用有状态欺骗增加攻击者成本的网络防御。",
+   "reason": "网络安全"
+  },
+  {
+   "id": "2611.34767",
+   "title": "When to Trust a PFN: Detecting Harmful Shift in Tabular Foundation Models",
+   "title_zh": "何时信任PFN：检测表格基础模型中的有害分布偏移",
+   "cat": "cs.LG",
+   "summary_zh": "检测表格基础模型遇到的有害分布偏移。",
+   "reason": "表格模型"
+  },
+  {
+   "id": "2611.34763",
+   "title": "InterConRank: Joint Node Centrality in Interconnected Heterogeneous Networks",
+   "title_zh": "InterConRank：互联异质网络中的联合节点中心性",
+   "cat": "cs.SI",
+   "summary_zh": "提出为互联网络各层分别计算节点中心性的算法。",
+   "reason": "网络中心性，非搜推"
+  },
+  {
+   "id": "2611.34762",
+   "title": "TASK Memory: Beyond Text-Only Memory with Activation Steering and Knowledge Editing against Memory Hallucination",
+   "title_zh": "TASK Memory：用激活引导与知识编辑超越纯文本记忆以对抗记忆幻觉",
+   "cat": "cs.AI",
+   "summary_zh": "用激活引导和知识编辑缓解记忆幻觉。",
+   "reason": "智能体记忆，非检索"
+  },
+  {
+   "id": "2611.34760",
+   "title": "One Model, Many Modes: Evolving System Prompt Ensembles for Creative Generation",
+   "title_zh": "一个模型多种模式：为创意生成演化系统提示集成",
+   "cat": "cs.LG",
+   "summary_zh": "演化系统提示集成以提升创意生成多样性。",
+   "reason": "创意生成"
+  },
+  {
+   "id": "2611.34758",
+   "title": "Reading Fine-Tuning Diffs Through Lenses: Model Diffing for Backdoor Detection",
+   "title_zh": "用透镜读微调差异：用于后门检测的模型差分",
+   "cat": "cs.LG",
+   "summary_zh": "用模型差分检测微调引入的后门。",
+   "reason": "模型安全"
+  },
+  {
+   "id": "2611.34756",
+   "title": "Collect for Coverage, Replay with Evidence: Adaptive and Efficient On-Policy Distillation for Long-Horizon Agents",
+   "title_zh": "为覆盖而收集，凭证据回放：面向长程智能体的自适应高效在线策略蒸馏",
+   "cat": "cs.CL",
+   "summary_zh": "自适应在线策略蒸馏用于长程智能体。",
+   "reason": "智能体蒸馏"
+  },
+  {
+   "id": "2611.34751",
+   "title": "What Is a Theory Worth to an LLM Solver? Measuring, Inducing, and Merging Theories in Context",
+   "title_zh": "理论对LLM求解器价值几何：在上下文中度量、归纳与合并理论",
+   "cat": "cs.AI",
+   "summary_zh": "衡量并合并上下文中提供的理论对LLM的帮助。",
+   "reason": "LLM推理"
+  },
+  {
+   "id": "2611.34746",
+   "title": "BRIAR: Martingale Belief Smoothing on Bifurcation-Guided Reasoning Trees",
+   "title_zh": "BRIAR：分叉引导推理树上的鞅信念平滑",
+   "cat": "cs.LG",
+   "summary_zh": "在推理树上用鞅信念平滑改进推理。",
+   "reason": "LLM推理"
+  },
+  {
+   "id": "2611.34745",
+   "title": "How Well Do Vision-Language Scene Graphs Serve as Memory for Embodied Question Answering?",
+   "title_zh": "视觉语言场景图作为具身问答记忆效果如何",
+   "cat": "cs.RO",
+   "summary_zh": "评估场景图作为具身问答记忆的表现。",
+   "reason": "具身问答"
+  },
+  {
+   "id": "2611.34739",
+   "title": "Was the Model Given the Right Action? Auditing and Repairing Action Interfaces in Navigation World Models",
+   "title_zh": "模型得到正确动作了吗：导航世界模型动作接口的审计与修复",
+   "cat": "cs.CV",
+   "summary_zh": "审计并修复导航世界模型的动作接口。",
+   "reason": "世界模型"
+  },
+  {
+   "id": "2611.34734",
+   "title": "From NP-Hardness to Exact Tractability Through Sample Abundance",
+   "title_zh": "通过样本充裕从NP难到精确可解",
+   "cat": "cs.LG",
+   "summary_zh": "说明样本充足时NP难问题可精确求解。",
+   "reason": "理论"
+  },
+  {
+   "id": "2611.34726",
+   "title": "Hierarchical Graph Metanetworks",
+   "title_zh": "层次图元网络",
+   "cat": "cs.LG",
+   "summary_zh": "提出层次化的图元网络。",
+   "reason": "图神经网络"
+  },
+  {
+   "id": "2611.34725",
+   "title": "Bigger Model or Bigger Table? How Much Backbone a Chorus N-gram Module Replaces",
+   "title_zh": "更大的模型还是更大的表：Chorus N-gram模块能替代多少骨干",
+   "cat": "cs.CL",
+   "summary_zh": "衡量N-gram模块可替代多少骨干模型容量。",
+   "reason": "语言模型架构"
+  },
+  {
+   "id": "2611.34724",
+   "title": "LiDAR Intensity Reconstruction with Limited Real Data: An Architecture Benchmark under Fixed-Epoch Training",
+   "title_zh": "有限真实数据下的LiDAR强度重建：固定轮数训练的架构基准",
+   "cat": "cs.CV",
+   "summary_zh": "比较多种架构在LiDAR强度重建上的表现。",
+   "reason": "LiDAR视觉"
+  },
+  {
+   "id": "2611.34723",
+   "title": "Robust Recourse under Causal Graph Ambiguity",
+   "title_zh": "因果图不确定下的鲁棒补救",
+   "cat": "cs.LG",
+   "summary_zh": "在因果图不确定时给出鲁棒的算法补救方案。",
+   "reason": "算法补救"
+  },
+  {
+   "id": "2611.34721",
+   "title": "Privileged On-Policy Distillation for Calibrated Alzheimer's Diagnosis With Missing Modalities",
+   "title_zh": "面向缺失模态下校准阿尔茨海默诊断的特权在线策略蒸馏",
+   "cat": "cs.LG",
+   "summary_zh": "用特权蒸馏处理缺失模态的阿尔茨海默诊断。",
+   "reason": "医学诊断"
+  },
+  {
+   "id": "2611.34711",
+   "title": "Spec2Weights: Certifying Networks that a Language Model Writes from a Specification",
+   "title_zh": "Spec2Weights：认证语言模型根据规约写出的网络",
+   "cat": "cs.LG",
+   "summary_zh": "验证LLM按规约生成的神经网络是否正确。",
+   "reason": "网络验证"
+  },
+  {
+   "id": "2611.34708",
+   "title": "From Shared Patterns to Individual Evidence: Two-Stage Reasoning for Emerging Entities in Temporal Knowledge Graphs",
+   "title_zh": "从共享模式到个体证据：时序知识图谱中新兴实体的两阶段推理",
+   "cat": "cs.AI",
+   "summary_zh": "提出两阶段框架INSPIRE，预测时序知识图谱中新兴实体的事件",
+   "reason": "时序知识图谱推理，非搜推"
+  },
+  {
+   "id": "2611.34707",
+   "title": "When the Proxy Is Wrong: Mismatch-Corrected Bandits for Adaptive Data Sampling",
+   "title_zh": "当代理模型出错时：用于自适应数据采样的失配校正Bandit",
+   "cat": "cs.LG",
+   "summary_zh": "建模代理模型与目标模型的排序失配，用bandit调整训练数据配比",
+   "reason": "数据采样，非搜推"
+  },
+  {
+   "id": "2611.34703",
+   "title": "Maco-RL: Scaling Agent Capabilities with Mixed-Task Reinforcement Learning",
+   "title_zh": "Maco-RL：用混合任务强化学习扩展智能体能力",
+   "cat": "cs.LG",
+   "summary_zh": "用混合任务强化学习训练统一策略，稳定扩展智能体能力",
+   "reason": "通用智能体RL"
+  },
+  {
+   "id": "2611.34702",
+   "title": "Effect of class proportion shifts on classifier curvature",
+   "title_zh": "类别比例变化对分类器曲率的影响",
+   "cat": "cs.LG",
+   "summary_zh": "在CIFAR-10上测量类别配比变化对输出层损失Hessian迹的影响",
+   "reason": "图像分类理论"
+  },
+  {
+   "id": "2611.34698",
+   "title": "A Failure-Driven Data Flywheel for Post-Training Vision-Language-Action Models",
+   "title_zh": "面向视觉-语言-动作模型后训练的失败驱动数据飞轮",
+   "cat": "cs.AI",
+   "summary_zh": "用失败案例驱动数据采集，对VLA模型做新平台后训练",
+   "reason": "机器人VLA"
+  },
+  {
+   "id": "2611.34690",
+   "title": "PoVi: Agentic Poetry-to-Video Generation with Knowledge Grounding and Figurative Understanding",
+   "title_zh": "PoVi：结合知识落地与比喻理解的智能体式诗歌转视频生成",
+   "cat": "cs.CL",
+   "summary_zh": "用智能体加知识落地把诗歌转成视频，处理比喻与意象",
+   "reason": "视频生成"
+  },
+  {
+   "id": "2611.34687",
+   "title": "Evacuation Traffic Prediction for Dynamic Transportation Networks over Multiple Hurricanes: A Generalized Graph Learning Approach",
+   "title_zh": "多次飓风下动态交通网络的疏散交通预测：一种通用图学习方法",
+   "cat": "cs.LG",
+   "summary_zh": "用图学习预测飓风疏散期间的高速公路交通",
+   "reason": "交通预测"
+  },
+  {
+   "id": "2611.34686",
+   "title": "Technical Report MEG2text: Beyond Alignment in Non-Invasive Brain-to-Text",
+   "title_zh": "技术报告 MEG2text：超越对齐的非侵入式脑到文本",
+   "cat": "cs.CL",
+   "summary_zh": "用MEG信号解码语言，把脑-语言表示转成词预测",
+   "reason": "脑机接口"
+  },
+  {
+   "id": "2611.34681",
+   "title": "Find the Clue, Not the Scene: Rethinking Reasoning for Entity Recognition in Vision-Language Models",
+   "title_zh": "找线索而非场景：重新思考视觉语言模型中实体识别的推理",
+   "cat": "cs.CV",
+   "summary_zh": "研究思考型VLM在实体识别上的推理，提出聚焦线索而非场景",
+   "reason": "视觉问答，非搜推"
+  },
+  {
+   "id": "2611.34680",
+   "title": "Neural Rendering Compiler: Generative Video Models as Programmable Renderers",
+   "title_zh": "神经渲染编译器：把生成式视频模型作为可编程渲染器",
+   "cat": "cs.CV",
+   "summary_zh": "为生成式视频模型提供类似渲染引擎的可编程控制接口",
+   "reason": "视频生成"
+  },
+  {
+   "id": "2611.34678",
+   "title": "Provably Efficient Concave Utility Reinforcement Learning with Linear Function Approximation",
+   "title_zh": "线性函数逼近下可证明高效的凹效用强化学习",
+   "cat": "cs.LG",
+   "summary_zh": "给出线性函数逼近下凹效用强化学习的可证明高效算法",
+   "reason": "RL理论"
+  },
+  {
+   "id": "2611.34675",
+   "title": "RoboEvo$^2$: Recursive Robot Self-Improvement via Harness-Policy Co-Evolution",
+   "title_zh": "RoboEvo²：通过外壳与策略协同进化实现机器人递归自我改进",
+   "cat": "cs.RO",
+   "summary_zh": "让机器人通过harness与策略协同进化自我改进",
+   "reason": "机器人"
+  },
+  {
+   "id": "2611.34671",
+   "title": "DemoFoundry: Toward Scalable Photorealistic Robot Data with Coding Agents and Generative Rendering",
+   "title_zh": "DemoFoundry：用编程智能体与生成式渲染扩展照片级机器人数据",
+   "cat": "cs.RO",
+   "summary_zh": "用编程智能体和生成式渲染合成带动作标注的机器人演示",
+   "reason": "机器人数据合成"
+  },
+  {
+   "id": "2611.34667",
+   "title": "Learning to Be Truncated: Preparing LLM Checkpoints for SVD Compression",
+   "title_zh": "学会被截断：为SVD压缩准备LLM检查点",
+   "cat": "cs.LG",
+   "summary_zh": "训练时让LLM权重适应SVD截断，免去压缩后再微调",
+   "reason": "LLM压缩，非搜推"
+  },
+  {
+   "id": "2611.34662",
+   "title": "Multi-Party Authorization of Maintenance Prescriptions on a Permissioned Blockchain",
+   "title_zh": "基于许可链的维护处方多方授权",
+   "cat": "cs.SE",
+   "summary_zh": "用许可链记录并授权工业预测性维护处方的多方审批",
+   "reason": "区块链维护"
+  },
+  {
+   "id": "2611.34656",
+   "title": "Do We Still Need Reinforcement Learning When We Can Read the World Model?",
+   "title_zh": "能读懂世界模型时，我们还需要强化学习吗？",
+   "cat": "cs.LG",
+   "summary_zh": "探讨直接读取世界模型能否替代强化学习获得策略",
+   "reason": "RL理论"
+  },
+  {
+   "id": "2611.34649",
+   "title": "Atunda: Building an Afrogenic Dance Movement Dataset for AI-Driven Classification",
+   "title_zh": "Atunda：用于AI舞蹈动作分类的非洲裔舞蹈动作数据集",
+   "cat": "cs.CV",
+   "summary_zh": "发布首个非洲裔舞蹈动作视频数据集，约400段视频",
+   "reason": "舞蹈动作分类"
+  },
+  {
+   "id": "2611.34646",
+   "title": "REE: A Scientific Research Entrance Exam for AI Agents",
+   "title_zh": "REE：面向AI智能体的科研入学考试",
+   "cat": "cs.AI",
+   "summary_zh": "构建评测科研智能体迭代改进解法能力的基准",
+   "reason": "科研智能体评测"
+  },
+  {
+   "id": "2611.34645",
+   "title": "A Hard Background Pairing Transfers across Classifiers and Images",
+   "title_zh": "一种可跨分类器与图像迁移的困难背景配对",
+   "cat": "cs.CV",
+   "summary_zh": "找出能迁移到多种分类器的困难背景，用于测试物体分类鲁棒性",
+   "reason": "图像分类鲁棒性"
+  },
+  {
+   "id": "2611.34644",
+   "title": "Motion Beyond Pixels: Learning Future Visual Representations for Object-Centric Dynamics",
+   "title_zh": "超越像素的运动：为以物体为中心的动力学学习未来视觉表示",
+   "cat": "cs.CV",
+   "summary_zh": "提出MotionRep，在物体语义和几何层面预测未来视觉表示",
+   "reason": "具身世界模型"
+  },
+  {
+   "id": "2611.34641",
+   "title": "Distractor-Robust Reinforcement Learning via Variational Bisimulation",
+   "title_zh": "基于变分互模拟的抗干扰强化学习",
+   "cat": "cs.LG",
+   "summary_zh": "提出VIBES，让世界模型忽略任务无关的干扰物",
+   "reason": "RL世界模型"
+  },
+  {
+   "id": "2611.34637",
+   "title": "Carrying Feature Ablations Across Sparse Autoencoder Seeds",
+   "title_zh": "跨稀疏自编码器种子迁移特征消融",
+   "cat": "cs.CV",
+   "summary_zh": "研究视觉编码器SAE特征消融能否在不同随机种子间迁移",
+   "reason": "视觉可解释性"
+  },
+  {
+   "id": "2611.34635",
+   "title": "ZeroHero: Training Small Language Agents from Scratch",
+   "title_zh": "ZeroHero：从零训练小型语言智能体",
+   "cat": "cs.AI",
+   "summary_zh": "提出从零训练小型语言智能体的框架，探究所需模型容量",
+   "reason": "通用智能体训练"
+  },
+  {
+   "id": "2611.34634",
+   "title": "LatentRL-QAS: Transfer via Latent Reinforcement Learning for Quantum Architecture Search",
+   "title_zh": "LatentRL-QAS：用于量子架构搜索的潜在强化学习迁移",
+   "cat": "quant-ph",
+   "summary_zh": "用潜在RL在不同比特数间迁移量子电路架构搜索策略",
+   "reason": "量子架构搜索"
+  },
+  {
+   "id": "2611.34629",
+   "title": "Predicting acute food crises and discovering actionable drivers with causal machine learning",
+   "title_zh": "用因果机器学习预测急性粮食危机并发现可操作驱动因素",
+   "cat": "cs.LG",
+   "summary_zh": "基于80国月度数据预测粮食危机并识别因果驱动因素",
+   "reason": "粮食危机预测"
+  },
+  {
+   "id": "2611.34627",
+   "title": "DecisionReplay: A Corpus and Offline Simulator for Ensembling Decision Models",
+   "title_zh": "DecisionReplay：用于集成决策模型的语料与离线模拟器",
+   "cat": "cs.LG",
+   "summary_zh": "提供可离线评测集成、路由和级联方法的逐选项概率数据集",
+   "reason": "模型路由数据集"
+  },
+  {
+   "id": "2611.34624",
+   "title": "HoMe: Toward Practical Harness Optimization of Memory Systems for AI Assistants",
+   "title_zh": "HoMe：面向AI助手记忆系统的实用harness优化",
+   "cat": "cs.AI",
+   "summary_zh": "自动优化长期助手记忆系统的代码、提示和配置",
+   "reason": "智能体记忆，非搜推"
+  },
+  {
+   "id": "2611.34623",
+   "title": "From Models to Services: Systematizing Security Assurance for Model-as-a-Service",
+   "title_zh": "从模型到服务：系统化梳理模型即服务的安全保障",
+   "cat": "cs.CR",
+   "summary_zh": "梳理LLM云服务各参与方的安全威胁与保障",
+   "reason": "LLM安全"
+  },
+  {
+   "id": "2611.34618",
+   "title": "Automated Batch-Variable Selection for ComBat-Based Radiomic Harmonization",
+   "title_zh": "基于ComBat的影像组学协调的自动批次变量选择",
+   "cat": "cs.LG",
+   "summary_zh": "提出ParsiComBat，自动选择ComBat所用的采集参数",
+   "reason": "医学影像"
+  },
+  {
+   "id": "2611.34616",
+   "title": "Conditional Independence Graph Learning from Dependent Data Via Time-Delay Embedding",
+   "title_zh": "基于时间延迟嵌入的相依数据条件独立图学习",
+   "cat": "stat.ML",
+   "summary_zh": "在短/长程相依平稳高斯时间序列上推断条件独立图",
+   "reason": "时间序列统计"
+  },
+  {
+   "id": "2611.34612",
+   "title": "Do We Really Need an LLM for Weight-Space Programming? A Deterministic Forward-Only Paradigm and Its Capability Boundaries",
+   "title_zh": "权重空间编程真的需要LLM吗？确定性前向方法及其能力边界",
+   "cat": "cs.AI",
+   "summary_zh": "证明核心结构化编辑场景无需LLM优化器，给出确定性前向方法",
+   "reason": "LLM权重编辑"
+  },
+  {
+   "id": "2611.34603",
+   "title": "VisualMontage: Manipulating the Beliefs of Vision-Language Agents with Authentic Image Sequences",
+   "title_zh": "VisualMontage：用真实图像序列操纵视觉语言智能体的信念",
+   "cat": "cs.CV",
+   "summary_zh": "用真实图像序列误导VLM智能体，研究视觉认知合谋",
+   "reason": "VLM安全"
+  },
+  {
+   "id": "2611.34602",
+   "title": "Learning from Crowds with Unsupervised Item Response Models",
+   "title_zh": "基于无监督项目反应模型的众包学习",
+   "cat": "cs.LG",
+   "summary_zh": "把众包标注建模为无监督项目反应理论问题",
+   "reason": "众包标注"
+  },
+  {
+   "id": "2611.34597",
+   "title": "$μ$MPC: Microsecond-Scale Nonlinear and World Model Control from Edge to GPU via Koopman-Linearized Precompilation",
+   "title_zh": "μMPC：基于Koopman线性化预编译的微秒级非线性与世界模型控制",
+   "cat": "cs.RO",
+   "summary_zh": "用Koopman线性化预计算控制映射，实现微秒级MPC",
+   "reason": "机器人控制"
+  },
+  {
+   "id": "2611.34581",
+   "title": "ChemoMAE: Self-Supervised Spectral Representation Learning Reveals Chemical Heterogeneity in Historical Wood",
+   "title_zh": "ChemoMAE：揭示历史木材化学异质性的自监督光谱表示学习",
+   "cat": "cs.LG",
+   "summary_zh": "用自监督光谱表示分析历史木结构的化学降解",
+   "reason": "光谱分析"
+  },
+  {
+   "id": "2611.34579",
+   "title": "Tune for Retention, Not Just Gain: SFT Forgets Far Less than You Think",
+   "title_zh": "为保留而调，不只为增益：SFT遗忘远少于你的想象",
+   "cat": "cs.LG",
+   "summary_zh": "研究SFT灾难性遗忘，认为其被高估",
+   "reason": "LLM微调，非搜推"
+  },
+  {
+   "id": "2611.34576",
+   "title": "Procedure Inference as Memory: Learning Recruiter Decision Procedures from OKF-Structured Episodes in Multi-Session Hiring Assistants",
+   "title_zh": "以记忆做程序推断：在多会话招聘助手中从OKF结构化事件学习招聘者决策流程",
+   "cat": "cs.AI",
+   "summary_zh": "用OKF索引的情景记忆让招聘助手推断招聘者偏好",
+   "reason": "招聘助手记忆"
+  },
+  {
+   "id": "2611.34575",
+   "title": "Sage-Med: Scaling Medical Multimodal Intelligence",
+   "title_zh": "Sage-Med：扩展医学多模态智能",
+   "cat": "cs.CV",
+   "summary_zh": "研究医学多模态大模型的scaling，缩小与通用前沿模型差距",
+   "reason": "医学MLLM"
+  },
+  {
+   "id": "2611.34573",
+   "title": "Investigating the efficacy of vortex beam speckle patterns for the recognition of atmospheric turbulence and fractional topological charge with a deep learning model",
+   "title_zh": "用涡旋光束散斑图识别大气湍流与分数拓扑荷的深度学习研究",
+   "cat": "cs.LG",
+   "summary_zh": "用深度学习从散斑图读取湍流后的分数拓扑荷",
+   "reason": "光学"
+  },
+  {
+   "id": "2611.34563",
+   "title": "On Utilization of Edge-AI for condition monitoring towards predictive maintenance: A use case in dairy processing using explainable AI",
+   "title_zh": "面向预测性维护状态监测的边缘AI：乳制品加工案例与可解释AI",
+   "cat": "cs.AI",
+   "summary_zh": "构建边缘AI状态监测框架并用于乳制品加工",
+   "reason": "工业监测"
+  },
+  {
+   "id": "2611.34550",
+   "title": "An Information-Theoretic Analysis of Information Hiding in Semantic Communication",
+   "title_zh": "语义通信中信息隐藏的信息论分析",
+   "cat": "cs.IT",
+   "summary_zh": "对语义层信息隐藏做信息论刻画",
+   "reason": "通信理论"
+  },
+  {
+   "id": "2611.34545",
+   "title": "Recalling the Past to Answer the Present: Context-Aware Multi-Evidence Reasoning for Streaming Video Question Answering",
+   "title_zh": "回忆过去回答现在：流式视频问答的上下文感知多证据推理",
+   "cat": "cs.CV",
+   "summary_zh": "面向流式视频问答，检索历史多段证据来回答",
+   "reason": "视频问答，非搜推"
+  },
+  {
+   "id": "2611.34544",
+   "title": "HAS: Hierarchical Adaptive Frame Sampling for Video Understanding",
+   "title_zh": "HAS：用于视频理解的分层自适应帧采样",
+   "cat": "cs.CV",
+   "summary_zh": "分层自适应选帧，缓解MLLM处理长视频的上下文限制",
+   "reason": "视频帧采样"
+  },
+  {
+   "id": "2611.34539",
+   "title": "EPPC-CARE: Staged Hierarchical Annotation of Communication Behaviors in Secure Patient-Provider Messages",
+   "title_zh": "EPPC-CARE：安全医患消息中沟通行为的分阶段层次标注",
+   "cat": "cs.CL",
+   "summary_zh": "自动标注患者门户消息中的医患沟通行为",
+   "reason": "医疗文本标注"
+  },
+  {
+   "id": "2611.34536",
+   "title": "Kant-Q: A Q-Learning Algorithm for Kantian Equilibrium in Symmetric Markov Games",
+   "title_zh": "Kant-Q：对称马尔可夫博弈中康德均衡的Q学习算法",
+   "cat": "cs.LG",
+   "summary_zh": "提出学习康德均衡的Q学习算法，用于混合动机博弈",
+   "reason": "多智能体RL"
+  },
+  {
+   "id": "2611.34529",
+   "title": "AliceAI-Foundation-80B-A3B-Base",
+   "title_zh": "AliceAI-Foundation-80B-A3B-Base",
+   "cat": "cs.CL",
+   "summary_zh": "Yandex从零训练的80B总参数、3B激活MoE基座模型，Apache 2.0开源",
+   "reason": "通用基座模型"
+  },
+  {
+   "id": "2611.34527",
+   "title": "Resilience Analysis Through Automated Stage Identification and Quantitative Assessment",
+   "title_zh": "通过自动阶段识别与定量评估进行韧性分析",
+   "cat": "cs.LG",
+   "summary_zh": "用ML自动识别系统性能时间序列中的PARA韧性阶段",
+   "reason": "系统韧性分析"
+  },
+  {
+   "id": "2611.34521",
+   "title": "PURA: Video Token Pruning via Unified Spatiotemporal Redundancy Assessment",
+   "title_zh": "PURA：基于统一时空冗余评估的视频token剪枝",
+   "cat": "cs.CV",
+   "summary_zh": "统一评估时空冗余，对视频LLM的视觉token做剪枝",
+   "reason": "视频token压缩"
+  },
+  {
+   "id": "2611.34516",
+   "title": "Feasibility-Aware Deep Reinforcement Learning for O-CU and O-DU Mapping in 6G O-RAN",
+   "title_zh": "面向6G O-RAN中O-CU与O-DU映射的可行性感知深度强化学习",
+   "cat": "cs.NI",
+   "summary_zh": "用可行性感知DRL把O-RAN虚拟网络功能映射到虚拟机",
+   "reason": "通信网络"
+  },
+  {
+   "id": "2611.34511",
+   "title": "SMOTE 25 Years of Magic: What Has Been Done, What the Evidence Shows, and Whom It Reached",
+   "title_zh": "SMOTE 25年：做了什么、证据如何、影响了谁",
+   "cat": "cs.LG",
+   "summary_zh": "综述SMOTE发表25年来的方法、证据与传播",
+   "reason": "SMOTE综述"
+  },
+  {
+   "id": "2611.34509",
+   "title": "Long-Horizon Planning with Latent World Models via Graph Anchors",
+   "title_zh": "通过图锚点用潜在世界模型做长程规划",
+   "cat": "cs.RO",
+   "summary_zh": "指出潜在距离规划的两类失效，用图锚点改进长程规划",
+   "reason": "机器人规划"
+  },
+  {
+   "id": "2611.34508",
+   "title": "Angular Interpolation in Sparse-View Low-Dose CT Reconstruction: Placement Effects and Data-Consistency Step-Size Scaling",
+   "title_zh": "稀疏视角低剂量CT重建中的角度插值：放置位置效应与数据一致性步长缩放",
+   "cat": "cs.CV",
+   "summary_zh": "量化角度插值在双域CT重建网络中的作用",
+   "reason": "医学影像"
+  },
+  {
+   "id": "2611.34505",
+   "title": "Know the Design, Pick the Attack: Sentence-Keyed Watermarks for LLMs",
+   "title_zh": "知晓设计，择定攻击：LLM的句子密钥水印",
+   "cat": "cs.CL",
+   "summary_zh": "提出句子密钥水印，让模型提供方识别自家生成文本",
+   "reason": "LLM水印"
+  },
+  {
+   "id": "2611.34495",
+   "title": "Efficient Data Fusion in Distributionally Robust Optimization",
+   "title_zh": "分布鲁棒优化中的高效数据融合",
+   "cat": "math.OC",
+   "summary_zh": "在分布鲁棒优化中融合多来源碎片化证据",
+   "reason": "优化理论"
+  },
+  {
+   "id": "2611.34493",
+   "title": "Auditing Identity and Timing Signals in Operational Logs",
+   "title_zh": "审计运营日志中的身份与时间信号",
+   "cat": "cs.LG",
+   "summary_zh": "提出WhoWhen库，检测日志预测模型是否靠身份或时间捷径",
+   "reason": "日志预测审计"
+  },
+  {
+   "id": "2611.34492",
+   "title": "FlyingStart: Learned Cross-Token Warm Starts for Fixed-Point Decoding in Recurrent-Depth Language Models",
+   "title_zh": "FlyingStart：递归深度语言模型定点解码的跨token学习式热启动",
+   "cat": "cs.CL",
+   "summary_zh": "用学到的热启动加速递归深度LM的逐token迭代",
+   "reason": "LM推理加速"
+  },
+  {
+   "id": "2611.34491",
+   "title": "Where Does the Asymmetry Enter? Staging a Fairness Audit Across a Fused Multimodal Moderation Pipeline",
+   "title_zh": "不对称从何而来？在融合多模态审核流水线中分阶段做公平性审计",
+   "cat": "cs.CL",
+   "summary_zh": "分阶段审计短视频多模态审核流水线的跨语言公平性",
+   "reason": "内容审核公平性"
+  },
+  {
+   "id": "2611.34479",
+   "title": "Backpropagation as Dirac-bracket dynamics of dissipative training",
+   "title_zh": "反向传播作为耗散训练的Dirac括号动力学",
+   "cat": "math-ph",
+   "summary_zh": "用Bateman-Galley方法把梯度流写成Dirac括号动力学",
+   "reason": "物理理论"
+  },
+  {
+   "id": "2611.34474",
+   "title": "Noise threshold for learning with quantum memory",
+   "title_zh": "带量子记忆学习的噪声阈值",
+   "cat": "quant-ph",
+   "summary_zh": "给出量子记忆噪声下学习优势消失的阈值条件",
+   "reason": "量子学习"
+  },
+  {
+   "id": "2611.34472",
+   "title": "DiversePlace: Diversity-Seeking Curriculum Reinforcement Learning for Macro Placement",
+   "title_zh": "DiversePlace：面向宏单元布局的多样性驱动课程强化学习",
+   "cat": "cs.LG",
+   "summary_zh": "用多样性课程RL做芯片宏单元布局",
+   "reason": "芯片布局"
+  },
+  {
+   "id": "2611.34466",
+   "title": "EgoUseBench: Benchmarking Computer-Use Agents under Evolving First-Person Contexts",
+   "title_zh": "EgoUseBench：在演化的第一人称情境下评测计算机使用智能体",
+   "cat": "cs.AI",
+   "summary_zh": "评测智能眼镜场景下计算机使用智能体的基准",
+   "reason": "智能体评测，非搜推"
+  },
+  {
+   "id": "2611.34457",
+   "title": "ProxyGenBench: Benchmarking Proxy-Guided Video Generation",
+   "title_zh": "ProxyGenBench：代理引导视频生成基准",
+   "cat": "cs.CV",
+   "summary_zh": "评测以3D粗模等结构代理引导视频生成的基准",
+   "reason": "视频生成评测"
+  },
+  {
+   "id": "2611.34451",
+   "title": "Decision-Aligned Value Learning for Selective Adoption of EEG Fusion in Human-Robot Collaboration",
+   "title_zh": "面向人机协作中EEG融合选择性采用的决策对齐价值学习",
+   "cat": "cs.HC",
+   "summary_zh": "学习何时在人机协作中采用EEG融合信息",
+   "reason": "人机协作"
+  },
+  {
+   "id": "2611.34452",
+   "title": "Global Convergence of Second-Order Methods for Physics-Informed Neural Networks in the Overparameterized Limit",
+   "title_zh": "过参数化极限下物理信息神经网络二阶方法的全局收敛",
+   "cat": "math.NA",
+   "summary_zh": "证明二阶方法在过参数化PINN中全局收敛",
+   "reason": "PDE数值"
+  },
+  {
+   "id": "2611.34440",
+   "title": "vSFT: Learning to Verbally Tune Agents at Test Time",
+   "title_zh": "vSFT:在测试时用语言反馈微调智能体",
+   "cat": "cs.AI",
+   "summary_zh": "用超网络把语言监督转成低秩权重更新,在测试时调优 Agent",
+   "reason": "通用 Agent 训练"
+  },
+  {
+   "id": "2611.34435",
+   "title": "Most of the Way There: Turning a Strong Video Prior into an Action-Conditioned World Model",
+   "title_zh": "差不多已经到了:把强视频先验变成动作条件世界模型",
+   "cat": "cs.CV",
+   "summary_zh": "冻结视频大模型主干,仅训练 0.34% 参数得到动作条件世界模型",
+   "reason": "视频世界模型"
+  },
+  {
+   "id": "2611.34432",
+   "title": "Evaluating Aviation Safety Knowledge Extraction with SmolLM2: From Zero-Shot to Retrieval-Grounded Prompting",
+   "title_zh": "用 SmolLM2 评估航空安全知识抽取:从零样本到检索增强提示",
+   "cat": "cs.AI",
+   "summary_zh": "比较多种提示策略在航空事故叙述知识抽取上的表现",
+   "reason": "仅应用现成检索"
+  },
+  {
+   "id": "2611.34430",
+   "title": "One Representation to Rule Them All -- Open-Vocabulary Change Detection from Text or Visual Examples",
+   "title_zh": "一个表示通吃:基于文本或视觉示例的开放词表变化检测",
+   "cat": "cs.CV",
+   "summary_zh": "在 DINOv3 表示空间中统一实现免训练的开放词表变化检测",
+   "reason": "计算机视觉"
+  },
+  {
+   "id": "2611.34428",
+   "title": "Calibration of Neuromusculoskeletal Models Using Differentiable Physics: Recommendations for Improving Model Accuracy",
+   "title_zh": "用可微物理校准神经肌肉骨骼模型:提升模型精度的建议",
+   "cat": "cs.RO",
+   "summary_zh": "在同一上肢模型上比较多个校准模块的效果",
+   "reason": "生物力学"
+  },
+  {
+   "id": "2611.34426",
+   "title": "A Head-Level Investigative Study of Self-Supervised Backbones for Synthetic Speech Detection",
+   "title_zh": "自监督骨干网络合成语音检测的注意力头级研究",
+   "cat": "cs.SD",
+   "summary_zh": "逐头消融发现仅少数注意力头决定合成语音判别",
+   "reason": "语音检测"
+  },
+  {
+   "id": "2611.34420",
+   "title": "DocSEAM: Bidirectional Cross-Page Encoding for Multi-Page Document Understanding",
+   "title_zh": "DocSEAM:多页文档理解的双向跨页编码",
+   "cat": "cs.CV",
+   "summary_zh": "在视觉编码器与语言模型间插入跨页上下文融合模块",
+   "reason": "多页文档 VQA"
+  },
+  {
+   "id": "2611.34419",
+   "title": "Decision-Focused Learning for Multistage Stochastic Programs, with Application to Power Network Repair Scheduling",
+   "title_zh": "多阶段随机规划的决策导向学习及其在电网修复调度中的应用",
+   "cat": "math.OC",
+   "summary_zh": "用决策导向学习求解多阶段随机规划并用于电网修复调度",
+   "reason": "运筹优化"
+  },
+  {
+   "id": "2611.34416",
+   "title": "CHASE: Curiosity-Guided Skill Acquisition for Embodied Task Execution",
+   "title_zh": "CHASE:面向具身任务执行的好奇心引导技能习得",
+   "cat": "cs.RO",
+   "summary_zh": "机器人在任务中提出假设、取证并按需习得缺失技能",
+   "reason": "机器人"
+  },
+  {
+   "id": "2611.34414",
+   "title": "SemProxy: Semantic 3D Proxies for Controllable Agentic 3D Modeling",
+   "title_zh": "SemProxy:面向可控 Agent 3D 建模的语义 3D 代理",
+   "cat": "cs.CV",
+   "summary_zh": "用带标签 3D 包围盒让用户控制编码 Agent 的 3D 建模",
+   "reason": "3D 建模"
+  },
+  {
+   "id": "2611.34403",
+   "title": "Recoverability policy editing for closed-loop safety in autonomous driving",
+   "title_zh": "面向闭环安全的自动驾驶可恢复性策略编辑",
+   "cat": "cs.RO",
+   "summary_zh": "编辑可恢复区域内的策略输出以保证闭环安全",
+   "reason": "自动驾驶"
+  },
+  {
+   "id": "2611.34402",
+   "title": "Any-Rate: Half-Bit Multi-Precision LLM Quantization with Coded Bit-Planes",
+   "title_zh": "Any-Rate:基于编码位平面的半比特多精度 LLM 量化",
+   "cat": "cs.LG",
+   "summary_zh": "一个检查点支持 2-8 比特,2-4 比特按半比特步进",
+   "reason": "LLM 权重量化"
+  },
+  {
+   "id": "2611.34400",
+   "title": "EvoLink-Bench: A Benchmark for Evaluating Self-Evolving Agents in Long-Horizon Interdependent Task Streams",
+   "title_zh": "EvoLink-Bench:长程相互依赖任务流中自进化 Agent 的评测基准",
+   "cat": "cs.AI",
+   "summary_zh": "评测 Agent 在相互依赖任务流中复用经验的能力",
+   "reason": "通用 Agent 评测"
+  },
+  {
+   "id": "2611.34398",
+   "title": "When Skills Fail to Compose: Compatibility and Retention in Language Models",
+   "title_zh": "技能无法组合时:语言模型中的兼容性与保留",
+   "cat": "cs.CL",
+   "summary_zh": "研究独立学得的软提示技能为何难以组合",
+   "reason": "通用 LLM 技能"
+  },
+  {
+   "id": "2611.34397",
+   "title": "Strong Starts, Simple Recipes: Unified Multi-Teacher On-Policy Distillation from Multimodal Specialists",
+   "title_zh": "强起点与简单配方:来自多模态专家的统一多教师在线蒸馏",
+   "cat": "cs.LG",
+   "summary_zh": "用专家均匀合并初始化学生,再做短程多教师在线蒸馏",
+   "reason": "模型蒸馏"
+  },
+  {
+   "id": "2611.34393",
+   "title": "Plausible Is Not Proven: Testing Failure Explanations in Monocular Depth Estimation",
+   "title_zh": "似是而非不等于已证实:检验单目深度估计中的失败解释",
+   "cat": "cs.CV",
+   "summary_zh": "检验单目深度估计失败原因标签是否可靠",
+   "reason": "计算机视觉"
+  },
+  {
+   "id": "2611.34381",
+   "title": "Decoupling the clocks of learning and computing in spiking neural networks",
+   "title_zh": "脉冲神经网络中学习与计算时钟的解耦",
+   "cat": "cs.NE",
+   "summary_zh": "ChronoProp 按时间窗内脉冲计数计算权重更新,降低训练开销",
+   "reason": "脉冲神经网络"
+  },
+  {
+   "id": "2611.34373",
+   "title": "Under the Influence -- of What? A Controlled Evaluation of Influence Functions",
+   "title_zh": "影响来自何处?影响函数的受控评估",
+   "cat": "cs.CL",
+   "summary_zh": "通过受控重训练评估影响函数找出的样本是否真有影响",
+   "reason": "影响函数"
+  },
+  {
+   "id": "2611.34363",
+   "title": "Single-Database Rewards Are Hackable: Counterfactual Execution for Trustworthy Text-to-SQL RL",
+   "title_zh": "单数据库奖励可被攻破:面向可信 Text-to-SQL 强化学习的反事实执行",
+   "cat": "cs.LG",
+   "summary_zh": "用隐藏的反事实数据库副本校验 SQL 奖励以减少奖励作弊",
+   "reason": "Text-to-SQL 强化学习"
+  },
+  {
+   "id": "2611.34359",
+   "title": "RAWPrism: A Three-Task Dataset and a Unified Model for RAW-Domain Image Fusion",
+   "title_zh": "RAWPrism:RAW 域图像融合的三任务数据集与统一模型",
+   "cat": "cs.LG",
+   "summary_zh": "提出 RAW 域多曝光/多焦点/红外可见光融合数据集与统一网络",
+   "reason": "图像融合"
+  },
+  {
+   "id": "2611.34351",
+   "title": "Inverse Reinforcement Learning with State-Dependent Foresight for Human Decision-Making",
+   "title_zh": "面向人类决策的状态依赖前瞻逆强化学习",
+   "cat": "cs.LG",
+   "summary_zh": "在 AIRL 中引入有限且依赖状态的前瞻深度",
+   "reason": "逆强化学习"
+  },
+  {
+   "id": "2611.34346",
+   "title": "Music Similarity Estimation from Jukebox Embeddings",
+   "title_zh": "基于 Jukebox 嵌入的音乐相似度估计",
+   "cat": "cs.SD",
+   "summary_zh": "用 Jukebox 生成式嵌入估计音乐相似度,效果与现有学习方法相当",
+   "reason": "音乐相似度,非推荐本身"
+  },
+  {
+   "id": "2611.34341",
+   "title": "Learning from Unreliable Operator References: Claim-Level Rewards for Customer Support Agents",
+   "title_zh": "从不可靠的运营回复中学习:面向客服 Agent 的断言级奖励",
+   "cat": "cs.CL",
+   "summary_zh": "把运营回复拆成断言验证,作为客服 Agent GRPO 奖励",
+   "reason": "客服 Agent 应用"
+  },
+  {
+   "id": "2611.34332",
+   "title": "Scaling and Cross-Simulation Generalization of Graph Neural Networks for Cosmic-Web Classification in CAMELS",
+   "title_zh": "CAMELS 宇宙网分类中图神经网络的扩展性与跨模拟泛化",
+   "cat": "astro-ph.CO",
+   "summary_zh": "评测 GNN 在不同宇宙学模拟间对星系环境分类的迁移",
+   "reason": "天体物理"
+  },
+  {
+   "id": "2611.34331",
+   "title": "Puzzling-Bench: Evaluating Language Models on 23,777 Human-Written Puzzles with Community-Verified Answers",
+   "title_zh": "Puzzling-Bench:基于 23,777 道人工谜题的语言模型评测",
+   "cat": "cs.CL",
+   "summary_zh": "构建含社区验证答案的大规模谜题基准评测 9 个模型",
+   "reason": "通用 LLM 评测"
+  },
+  {
+   "id": "2611.34328",
+   "title": "LUDIUS: A Benchmark for Embodied Social Intelligence in Everyday Human-Robot Interactions",
+   "title_zh": "LUDIUS:日常人机交互中具身社交智能的评测基准",
+   "cat": "cs.RO",
+   "summary_zh": "评测视觉语言模型在机器人社交场景中的判断能力",
+   "reason": "机器人评测"
+  },
+  {
+   "id": "2611.34327",
+   "title": "MeterRouter: Budget-Aware Dynamic Routing for Multi-Agent Systems",
+   "title_zh": "MeterRouter:多智能体系统的预算感知动态路由",
+   "cat": "cs.AI",
+   "summary_zh": "按每个查询的预算逐步合成多 Agent 协作图",
+   "reason": "多智能体路由"
+  },
+  {
+   "id": "2611.34322",
+   "title": "The cost of being seen as AI in group bargaining",
+   "title_zh": "被视为 AI 的代价:群体议价中的实验",
+   "cat": "cs.CY",
+   "summary_zh": "三人议价实验显示被标为 AI 的玩家收益约低 18%",
+   "reason": "社会科学"
+  },
+  {
+   "id": "2611.34314",
+   "title": "Variational Principles and Machine Learning: a Numerical Analysis and PDE perspective",
+   "title_zh": "变分原理与机器学习:数值分析与偏微分方程视角",
+   "cat": "math.NA",
+   "summary_zh": "从变分与数值分析角度讲解机器学习算法",
+   "reason": "数学讲义"
+  },
+  {
+   "id": "2611.34310",
+   "title": "Interpretable identification of constitutive parameter field for three-dimensional heterogeneous and graded hyperelastic materials from full-field displacements",
+   "title_zh": "由全场位移识别三维非均质超弹性材料本构参数场的可解释方法",
+   "cat": "cs.LG",
+   "summary_zh": "直接优化有限元级本构参数,识别非均质材料参数场",
+   "reason": "材料力学"
+  },
+  {
+   "id": "2611.34303",
+   "title": "IRTIQA: Evolving in English, Evaluated in Urdu -- Does Agent Self-Evolution Transfer from English to Urdu and Code-Switched Input?",
+   "title_zh": "IRTIQA:英语中进化、乌尔都语中评测——Agent 自进化能否迁移",
+   "cat": "cs.CL",
+   "summary_zh": "评测 Agent 自进化能力从英语到乌尔都语的迁移",
+   "reason": "通用 Agent 评测"
+  },
+  {
+   "id": "2611.34298",
+   "title": "RAP: Radial-Angular Random Projection for Hyperbolic Representations",
+   "title_zh": "RAP:面向双曲表示的径向-角向随机投影",
+   "cat": "cs.LG",
+   "summary_zh": "保留径向坐标、仅对角向做随机投影的双曲降维",
+   "reason": "双曲几何降维"
+  },
+  {
+   "id": "2611.34296",
+   "title": "LatENSO v1.0: a learned latent state of the tropical Pacific for seasonal ENSO operators and forecasting",
+   "title_zh": "LatENSO v1.0:用于季节 ENSO 算子与预报的热带太平洋学习潜状态",
+   "cat": "physics.ao-ph",
+   "summary_zh": "用 32 维学习状态构建 ENSO 预报系统",
+   "reason": "气象预报"
+  },
+  {
+   "id": "2611.34292",
+   "title": "WebVibe: Multimodal Interactive Website Generation via Reverse Synthesis and Visual Self-Distillation",
+   "title_zh": "WebVibe:基于反向合成与视觉自蒸馏的多模态交互式网站生成",
+   "cat": "cs.CV",
+   "summary_zh": "反向合成数据并用自蒸馏训练交互式网站生成模型",
+   "reason": "网站代码生成"
+  },
+  {
+   "id": "2611.34290",
+   "title": "StateWeaver: Multi-Agent Coordination of Story-State Transitions for Long-Horizon Video Generation",
+   "title_zh": "StateWeaver:面向长视频生成的故事状态转移多智能体协调",
+   "cat": "cs.CV",
+   "summary_zh": "用状态管理多 Agent 保证长视频跨镜头一致",
+   "reason": "视频生成"
+  },
+  {
+   "id": "2611.34278",
+   "title": "Latent-in-the-Middle: On the Security of Cross-Model Latent Communication in Multi-Agent Systems",
+   "title_zh": "Latent-in-the-Middle:多智能体跨模型潜通信的安全性",
+   "cat": "cs.CR",
+   "summary_zh": "研究跨模型 KV 缓存传递带来的安全对齐失效",
+   "reason": "LLM 安全"
+  },
+  {
+   "id": "2611.34277",
+   "title": "Beat This! Live - Online Beat and Downbeat Tracking by Predicting the Future",
+   "title_zh": "Beat This! Live:通过预测未来实现在线节拍与强拍跟踪",
+   "cat": "cs.SD",
+   "summary_zh": "把 Beat This 改为因果模型,用前移标签做实时节拍跟踪",
+   "reason": "音乐信号处理"
+  },
+  {
+   "id": "2611.34276",
+   "title": "Scaling Looped MoE Language Models under Matched Budgets: Information Flow and Parameter Allocation",
+   "title_zh": "匹配预算下循环 MoE 语言模型的扩展:信息流与参数分配",
+   "cat": "cs.LG",
+   "summary_zh": "研究等参数等算力下循环 MoE 的信息流与专家分配",
+   "reason": "LLM 架构"
+  },
+  {
+   "id": "2611.34275",
+   "title": "LatentCP-DPO: Conformal Pessimism for DPO with Finite-Sample Guarantees",
+   "title_zh": "LatentCP-DPO:带有限样本保证的 DPO 保形悲观方法",
+   "cat": "cs.LG",
+   "summary_zh": "用保形预测构造不确定集合做悲观偏好优化",
+   "reason": "偏好优化理论"
+  },
+  {
+   "id": "2611.34273",
+   "title": "Libtt: A Compiler and Runtime for Tenstorrent Processors",
+   "title_zh": "Libtt:面向 Tenstorrent 处理器的编译器与运行时",
+   "cat": "cs.DC",
+   "summary_zh": "让 JAX 和 PyTorch 通过 PJRT 运行在 Tenstorrent 硬件上",
+   "reason": "系统软件"
+  },
+  {
+   "id": "2611.34270",
+   "title": "LLM-coupled interpretable tool wear monitoring with multi-evidence reasoning in CNC machining",
+   "title_zh": "CNC 加工中结合 LLM 与多证据推理的可解释刀具磨损监测",
+   "cat": "cs.LG",
+   "summary_zh": "GRU 磨损分类加 LLM 生成可解释维护建议",
+   "reason": "工业监测"
+  },
+  {
+   "id": "2611.34258",
+   "title": "Train-Only-Constrained LM for Synthetic Clinical Trajectories: Leak-Safe Calibration and Auditable Dynamics",
+   "title_zh": "训练集约束的合成临床轨迹语言模型:无泄漏校准与可审计动态",
+   "cat": "cs.LG",
+   "summary_zh": "用约束语言模型生成可审计的合成临床时间序列",
+   "reason": "医疗数据生成"
+  },
+  {
+   "id": "2611.34254",
+   "title": "Crucible: Evaluating LLM Agents in Executable Chemistry Research Environments",
+   "title_zh": "Crucible:在可执行化学研究环境中评测 LLM Agent",
+   "cat": "cs.AI",
+   "summary_zh": "含 1,078 个任务、75 个工具的化学研究 Agent 基准",
+   "reason": "化学 Agent 评测"
+  },
+  {
+   "id": "2611.34250",
+   "title": "MedSkill-E$^{2}$: Evaluating and Evolving Skills for Medical Agents",
+   "title_zh": "MedSkill-E²:评测并进化医疗 Agent 的技能",
+   "cat": "cs.AI",
+   "summary_zh": "量化 Agent 有技能却不用的差距并通过进化改进技能",
+   "reason": "医疗 Agent"
+  },
+  {
+   "id": "2611.34249",
+   "title": "Navigent: A Geometry-Grounded Agentic Framework for Vision Language Navigation",
+   "title_zh": "Navigent:基于几何的视觉语言导航 Agent 框架",
+   "cat": "cs.AI",
+   "summary_zh": "用几何一致性检查器提升 MLLM 导航的可靠性",
+   "reason": "机器人导航"
+  },
+  {
+   "id": "2611.34248",
+   "title": "EXPOSURE: Explaining Sources of Uncertainty in Reinforcement Learning",
+   "title_zh": "EXPOSURE:解释强化学习中的不确定性来源",
+   "cat": "cs.AI",
+   "summary_zh": "用掩码感知信念网络做回报方差的 Shapley 解释",
+   "reason": "强化学习可解释性"
+  },
+  {
+   "id": "2611.34247",
+   "title": "Did the Model Forecast It, or Already Know It? Evaluating Large Language Models for Novel Drug-Target Prioritisation with a Temporal Knowledge-Graph Oracle",
+   "title_zh": "模型是预测还是早已知道?用时序知识图谱评估药物靶点优先级",
+   "cat": "cs.AI",
+   "summary_zh": "用带日期的知识图谱检验 LLM 能否预测新靶点进入临床",
+   "reason": "生物医药评测"
+  },
+  {
+   "id": "2611.34230",
+   "title": "Weakly Conditioned Diffusion Model Augmentation for Prostate Segmentation",
+   "title_zh": "用于前列腺分割的弱条件扩散模型数据增强",
+   "cat": "eess.IV",
+   "summary_zh": "用掩码条件扩散模型合成 MRI 以减少过分割",
+   "reason": "医学影像"
+  },
+  {
+   "id": "2611.34228",
+   "title": "Change Point Detection with Generative Models",
+   "title_zh": "基于生成模型的变点检测",
+   "cat": "cs.LG",
+   "summary_zh": "用生成模型扩充窗口样本以稳定变点检测分数",
+   "reason": "时间序列"
+  },
+  {
+   "id": "2611.34222",
+   "title": "The Socratic PAUSE: safeguarding scientific judgement at AI speed",
+   "title_zh": "苏格拉底式暂停:在 AI 速度下守护科学判断",
+   "cat": "cs.CY",
+   "summary_zh": "提出 PAUSE 协议在科研决策点审查 AI 贡献",
+   "reason": "科研方法论"
+  },
+  {
+   "id": "2611.34218",
+   "title": "GeoCAM: Self-Supervised Sonar-Optical Representation Learning via Geographic Overlap Supervision",
+   "title_zh": "GeoCAM:基于地理重叠监督的声呐-光学自监督表示学习",
+   "cat": "cs.CV",
+   "summary_zh": "用 GPS 重叠作软监督学习声呐与光学图像共享嵌入",
+   "reason": "海洋遥感"
+  },
+  {
+   "id": "2611.34215",
+   "title": "PROVE: Mitigating Long-Horizon LLM Collusion with Reinforcement Learning from Verified Evidence",
+   "title_zh": "PROVE:用验证证据强化学习缓解长程 LLM 共谋",
+   "cat": "cs.AI",
+   "summary_zh": "按证据而非结果奖励验证行为,将共谋率从 65.0% 降到 1.0%",
+   "reason": "多智能体对齐"
+  },
+  {
+   "id": "2611.34211",
+   "title": "Compute-Aware Submodular Online Learning in Open Multi-Agent Systems",
+   "title_zh": "开放多智能体系统中计算感知的次模在线学习",
+   "cat": "cs.LG",
+   "summary_zh": "限制查询预算的次模任务分配在线学习算法",
+   "reason": "在线学习理论"
+  },
+  {
+   "id": "2611.34207",
+   "title": "Beyond Logits: Coherent Hallucination Mitigation via Attention Contrastive Decoding",
+   "title_zh": "超越 logits:基于注意力对比解码的连贯幻觉缓解",
+   "cat": "cs.CV",
+   "summary_zh": "把对比解码部分移到注意力层以缓解视觉语言模型幻觉",
+   "reason": "多模态幻觉"
+  },
+  {
+   "id": "2611.34206",
+   "title": "Text-Conditioned Low-Rank Adaptation of Time-Series Foundation Models for Multimodal Forecasting",
+   "title_zh": "时间序列基础模型的文本条件低秩适配用于多模态预测",
+   "cat": "cs.LG",
+   "summary_zh": "由文本生成临时 LoRA 更新来调整冻结的时序基础模型",
+   "reason": "时间序列预测"
+  },
+  {
+   "id": "2611.34190",
+   "title": "SOLO: Towards Sample-Faithful and Detectable LLM Watermarking under Repeated Sampling via Content-Anchored Single-Owner Contexts",
+   "title_zh": "SOLO:重复采样下样本忠实且可检测的 LLM 水印",
+   "cat": "cs.AI",
+   "summary_zh": "用内容锚定的单一所有者上下文解决重复采样中的水印耦合",
+   "reason": "LLM 水印"
+  },
+  {
+   "id": "2611.34184",
+   "title": "Hierarchical Semantic Learning for Multimodal Sentiment Analysis with Missing Modalities",
+   "title_zh": "缺失模态下多模态情感分析的层次语义学习",
+   "cat": "cs.MM",
+   "summary_zh": "利用语义层次逐级重建缺失模态做情感分析",
+   "reason": "多模态情感分析"
+  },
+  {
+   "id": "2611.34183",
+   "title": "Lightweight Reasoning Transfer via Chain-of-Thought Vector Projection",
+   "title_zh": "通过思维链向量投影实现轻量推理迁移",
+   "cat": "cs.CL",
+   "summary_zh": "用线性投影器把教师的 CoT 向量迁移到更小学生模型",
+   "reason": "LLM 推理迁移"
+  },
+  {
+   "id": "2611.34181",
+   "title": "Agentic-Level Adversarial Purification: Revisiting Diffusion Purifiers on Native-Resolution Agentic Inputs",
+   "title_zh": "智能体层面的对抗净化：重新审视原生分辨率智能体输入上的扩散净化器",
+   "cat": "cs.CR",
+   "summary_zh": "在原生分辨率下评测扩散净化器对VLM网页智能体的防御效果",
+   "reason": "非搜推，对抗防御"
+  },
+  {
+   "id": "2611.34179",
+   "title": "Familiar Words, Unfamiliar Minds: Conventionalization without Calibration in the Vocabulary of Mind",
+   "title_zh": "熟悉的词，陌生的心：心智词汇中的惯例化与校准缺失",
+   "cat": "cs.CL",
+   "summary_zh": "研究语言模型对心智词汇的使用是否与人类校准一致",
+   "reason": "非搜推，语言学"
+  },
+  {
+   "id": "2611.34169",
+   "title": "Multi-view fnirs identifies neurophysiological subtypes in post-stroke aphasia",
+   "title_zh": "多视角fNIRS识别卒中后失语症的神经生理亚型",
+   "cat": "q-bio.NC",
+   "summary_zh": "用多视角fNIRS划分卒中后失语症的神经生理亚型",
+   "reason": "非搜推，神经科学"
+  },
+  {
+   "id": "2611.34166",
+   "title": "Cell-Type-Specific Expression Is Hard to Predict from Bulk, but It Is Still Useful",
+   "title_zh": "细胞类型特异性表达难以从bulk数据预测，但仍然有用",
+   "cat": "cs.LG",
+   "summary_zh": "评估从bulk数据预测细胞类型特异表达的难度与价值",
+   "reason": "非搜推，生物医药"
+  },
+  {
+   "id": "2611.34158",
+   "title": "Strategic and Robust Task Allocation for Combat Objectives in Adversarial Multi-Agent Environments",
+   "title_zh": "对抗性多智能体环境中作战目标的策略性鲁棒任务分配",
+   "cat": "cs.MA",
+   "summary_zh": "面向对抗环境的多智能体鲁棒任务分配方法",
+   "reason": "非搜推，多智能体"
+  },
+  {
+   "id": "2611.34154",
+   "title": "When High Capacity Becomes Undeployable: Pore-Filling Constraints for Multi-Objective Optimization of Direct Air Capture Sorbents",
+   "title_zh": "容量过高而无法部署：直接空气捕集吸附剂多目标优化中的孔填充约束",
+   "cat": "cs.LG",
+   "summary_zh": "在吸附剂多目标优化中加入孔填充约束",
+   "reason": "非搜推，材料优化"
+  },
+  {
+   "id": "2611.34152",
+   "title": "Lost in the Grid: Where Multimodal LLMs Fail Between Seeing and Planning",
+   "title_zh": "迷失在网格中：多模态LLM在看到与规划之间的失败",
+   "cat": "cs.CV",
+   "summary_zh": "探查多模态LLM在网格任务中从感知到规划的失败点",
+   "reason": "非搜推，多模态推理"
+  },
+  {
+   "id": "2611.34147",
+   "title": "Letting Models Manage Their Own Context: Where We Stand",
+   "title_zh": "让模型管理自己的上下文：现状",
+   "cat": "cs.AI",
+   "summary_zh": "比较模型自主压缩上下文与harness压缩在文档研究任务上的效果",
+   "reason": "非搜推，上下文管理"
+  },
+  {
+   "id": "2611.34142",
+   "title": "Reproducer Synthesis for AI-Reported Bugs in the Linux Kernel",
+   "title_zh": "为AI报告的Linux内核漏洞合成复现程序",
+   "cat": "cs.OS",
+   "summary_zh": "为AI上报的内核bug自动合成可复现程序",
+   "reason": "非搜推，系统安全"
+  },
+  {
+   "id": "2611.34137",
+   "title": "How resampling method can help us: Improving the Delta model",
+   "title_zh": "重采样方法如何帮助我们：改进Delta模型",
+   "cat": "cs.CL",
+   "summary_zh": "用重采样方法改进Delta模型",
+   "reason": "非搜推，一般NLP"
+  },
+  {
+   "id": "2611.34136",
+   "title": "SOC-Net: Second-Order-Cone-Constrained Neural Networks",
+   "title_zh": "SOC-Net：二阶锥约束神经网络",
+   "cat": "cs.LG",
+   "summary_zh": "在神经网络中嵌入二阶锥约束",
+   "reason": "非搜推，优化网络"
+  },
+  {
+   "id": "2611.34132",
+   "title": "Agent-as-a-Verifier: From Scores to Evidence for General Verification",
+   "title_zh": "Agent-as-a-Verifier：从打分到证据的通用验证",
+   "cat": "cs.LG",
+   "summary_zh": "用智能体基于证据做通用验证而非单纯打分",
+   "reason": "非搜推，通用验证"
+  },
+  {
+   "id": "2611.34131",
+   "title": "Is Sara Omar the true author of Dødevaskeren (The Dead Washer)? Authorship attribution in Danish literature",
+   "title_zh": "Sara Omar是《Dødevaskeren》的真正作者吗？丹麦文学中的作者归属分析",
+   "cat": "cs.CL",
+   "summary_zh": "对丹麦文学作品做作者归属鉴定",
+   "reason": "非搜推，文体分析"
+  },
+  {
+   "id": "2611.34130",
+   "title": "WorldPhy: Benchmarking Fine-Grained Physical Plausibility of World Models in Robotics",
+   "title_zh": "WorldPhy：机器人领域世界模型细粒度物理合理性基准",
+   "cat": "cs.RO",
+   "summary_zh": "评测机器人世界模型的细粒度物理合理性",
+   "reason": "非搜推，世界模型"
+  },
+  {
+   "id": "2611.34128",
+   "title": "FoundSurface: Feedforward Ray-Based 3D Scene Surface Reconstruction from Unposed Images",
+   "title_zh": "FoundSurface：从无位姿图像前馈式基于射线的3D场景表面重建",
+   "cat": "cs.CV",
+   "summary_zh": "从无位姿图像前馈重建3D场景表面",
+   "reason": "非搜推，3D视觉"
+  },
+  {
+   "id": "2611.34126",
+   "title": "Out of Sight, Not Out of Clues: Can Video LLMs Guess from Partial Evidence?",
+   "title_zh": "线索未现，亦非无迹：视频LLM能否从部分证据中猜测？",
+   "cat": "cs.CV",
+   "summary_zh": "评测视频LLM在证据不完整时的推断能力",
+   "reason": "非搜推，视频理解"
+  },
+  {
+   "id": "2611.34122",
+   "title": "MUSE: Multi-Task Uncertainty-Aware Self-Supervised Encoder for mmWave ISAC",
+   "title_zh": "MUSE：面向毫米波ISAC的多任务不确定性感知自监督编码器",
+   "cat": "cs.LG",
+   "summary_zh": "用于毫米波ISAC的多任务自监督编码器",
+   "reason": "非搜推，无线通信"
+  },
+  {
+   "id": "2611.34121",
+   "title": "Unstable Action Boundaries in Lethal Drone Agents",
+   "title_zh": "致命无人机智能体中不稳定的行动边界",
+   "cat": "cs.LG",
+   "summary_zh": "分析无人机智能体行动决策边界的不稳定性",
+   "reason": "非搜推，无人机"
+  },
+  {
+   "id": "2611.34120",
+   "title": "From Data Room to Report: End-to-End AI Support for M&A Legal Due Diligence",
+   "title_zh": "从数据室到报告：并购法律尽职调查的端到端AI支持",
+   "cat": "cs.CL",
+   "summary_zh": "用LLM串联尽职调查文档分类、抽取与报告生成",
+   "reason": "非搜推，法律应用"
+  },
+  {
+   "id": "2611.34112",
+   "title": "Not Every Input Needs Everything: Unifying Expert Gating, Model Cascades, and Agent Orchestration",
+   "title_zh": "并非每个输入都需要全部：统一专家门控、模型级联与智能体编排",
+   "cat": "cs.AI",
+   "summary_zh": "统一MoE门控、模型级联和智能体编排的路由视角",
+   "reason": "非搜推，路由框架"
+  },
+  {
+   "id": "2611.34106",
+   "title": "SysBio-SR: Benchmarking Symbolic Regression for Trajectory Fidelity and Mechanism Recovery in Systems Biology",
+   "title_zh": "SysBio-SR：系统生物学中符号回归的轨迹保真与机制恢复基准",
+   "cat": "cs.LG",
+   "summary_zh": "评测符号回归在系统生物学轨迹上的表现",
+   "reason": "非搜推，符号回归"
+  },
+  {
+   "id": "2611.34104",
+   "title": "Do Machine Learning Ensembles Beat Published Quotas? Target Parameterization, Censored Baselines, and Conformal Intervals Under Admissions Reform",
+   "title_zh": "机器学习集成能否击败公布的配额？招生改革下的目标参数化、删失基线与共形区间",
+   "cat": "cs.LG",
+   "summary_zh": "评估录取改革下ML集成对公布配额的预测",
+   "reason": "非搜推，教育预测"
+  },
+  {
+   "id": "2611.34101",
+   "title": "AlignPre: Skill-Aligned Post-Training for Latent-Free Generative Precipitation Nowcasting",
+   "title_zh": "AlignPre：面向无潜变量生成式降水临近预报的技能对齐后训练",
+   "cat": "cs.LG",
+   "summary_zh": "用技能对齐后训练改进生成式降水临近预报",
+   "reason": "非搜推，气象预报"
+  },
+  {
+   "id": "2611.34099",
+   "title": "Will AI Replace Juniors? How Task Complexity Reduces Automation Risk",
+   "title_zh": "AI会取代初级员工吗？任务复杂度如何降低自动化风险",
+   "cat": "econ.GN",
+   "summary_zh": "分析任务复杂度如何影响初级岗位被自动化的风险",
+   "reason": "非搜推，经济学"
+  },
+  {
+   "id": "2611.34098",
+   "title": "Whose Side Are You On? A Framework and Benchmark for Assessing LLM Political Stances through Politicians Social Media Posts",
+   "title_zh": "你站在哪一边？基于政客社交媒体帖子评估LLM政治立场的框架与基准",
+   "cat": "cs.SI",
+   "summary_zh": "用政客帖子构建评测LLM政治立场的基准",
+   "reason": "非搜推，立场评测"
+  },
+  {
+   "id": "2611.34093",
+   "title": "Exploring the Design Factors of Pixel-space Diffusion",
+   "title_zh": "探索像素空间扩散的设计因素",
+   "cat": "cs.CV",
+   "summary_zh": "系统研究像素空间扩散模型的设计选择",
+   "reason": "非搜推，扩散模型"
+  },
+  {
+   "id": "2611.34092",
+   "title": "Improving Tail-Augmented Speculative Drafting with Hidden State Mixing and Gradient Detach",
+   "title_zh": "通过隐状态混合与梯度分离改进尾部增强推测式草稿",
+   "cat": "cs.LG",
+   "summary_zh": "改进推测解码中尾部增强的草稿模型",
+   "reason": "非搜推，推测解码"
+  },
+  {
+   "id": "2611.34090",
+   "title": "Disciplined Anthropomorphism: How to Extend Cognitive Language to Artificial Intelligence",
+   "title_zh": "有纪律的拟人化：如何将认知语言扩展到人工智能",
+   "cat": "cs.CL",
+   "summary_zh": "讨论如何有分寸地用认知词汇描述AI",
+   "reason": "非搜推，哲学讨论"
+  },
+  {
+   "id": "2611.34088",
+   "title": "Feature Engineered Reinforcement Learning for S-pair Selection in Buchberger's Algorithm",
+   "title_zh": "面向Buchberger算法S对选择的特征工程强化学习",
+   "cat": "cs.LG",
+   "summary_zh": "用强化学习选择Buchberger算法中的S对",
+   "reason": "非搜推，符号计算"
+  },
+  {
+   "id": "2611.34079",
+   "title": "WorldBridge: Bridging Scattered Views for Coherent 3D World Generation",
+   "title_zh": "WorldBridge：桥接分散视角实现连贯的3D世界生成",
+   "cat": "cs.CV",
+   "summary_zh": "把分散视角桥接起来生成连贯的3D世界",
+   "reason": "非搜推，3D生成"
+  },
+  {
+   "id": "2611.34075",
+   "title": "Hijacking 3D Generation: Targeted Adversarial Attacks against Image-to-3D Models via Prefix Trajectory Alignment",
+   "title_zh": "劫持3D生成：通过前缀轨迹对齐对图像到3D模型的定向对抗攻击",
+   "cat": "cs.CV",
+   "summary_zh": "对图像到3D模型做定向对抗攻击",
+   "reason": "非搜推，对抗攻击"
+  },
+  {
+   "id": "2611.34073",
+   "title": "Accelerated Proximal Gradient Methods for Multiobjective Optimization over Probability Measures via Hilbert-Space Lifting",
+   "title_zh": "通过Hilbert空间提升求解概率测度上多目标优化的加速近端梯度法",
+   "cat": "stat.ML",
+   "summary_zh": "概率测度上多目标优化的加速近端梯度法",
+   "reason": "非搜推，优化理论"
+  },
+  {
+   "id": "2611.34068",
+   "title": "Budget, Readout or Reasoning? Where Small Reasoning Models Lose Value in Auction Bidding",
+   "title_zh": "预算、读出还是推理？小型推理模型在拍卖竞价中损失价值的位置",
+   "cat": "cs.AI",
+   "summary_zh": "分析小推理模型在拍卖竞价中价值损失的来源",
+   "reason": "非搜推，竞价博弈"
+  },
+  {
+   "id": "2611.34054",
+   "title": "CARE-WM: Same-Horizon Self-Conditioning with Constraint-Adaptive Regularization for Latent World Models",
+   "title_zh": "CARE-WM：潜在世界模型的同视野自条件与约束自适应正则",
+   "cat": "cs.LG",
+   "summary_zh": "为潜在世界模型加入同视野自条件和自适应正则",
+   "reason": "非搜推，世界模型"
+  },
+  {
+   "id": "2611.34051",
+   "title": "Stable Gated DeltaNet-2: Understanding and Mitigating Recurrent State Instability",
+   "title_zh": "Stable Gated DeltaNet-2：理解并缓解循环状态不稳定",
+   "cat": "cs.CL",
+   "summary_zh": "分析并缓解Gated DeltaNet的循环状态不稳定",
+   "reason": "非搜推，线性注意力"
+  },
+  {
+   "id": "2611.34049",
+   "title": "Decentralized Clustered Federated Learning for Cellular Traffic Forecasting over LEO Constellations",
+   "title_zh": "低轨星座上用于蜂窝流量预测的去中心化聚类联邦学习",
+   "cat": "cs.LG",
+   "summary_zh": "在LEO星座上做去中心化聚类联邦流量预测",
+   "reason": "非搜推，联邦学习"
+  },
+  {
+   "id": "2611.34044",
+   "title": "Reliable User Simulation in Complex Multi-Step Workflows",
+   "title_zh": "复杂多步工作流中的可靠用户模拟",
+   "cat": "cs.CL",
+   "summary_zh": "提高多步工作流中LLM用户模拟的可靠性",
+   "reason": "非搜推，用户模拟"
+  },
+  {
+   "id": "2611.34042",
+   "title": "Too Smart for Its Own Good? Cognitive Fidelity and Competence Leakage in LLM Simulations of Young Learners",
+   "title_zh": "聪明过头？LLM模拟年轻学习者中的认知保真与能力泄漏",
+   "cat": "cs.CL",
+   "summary_zh": "评估LLM扮演年幼学习者时的认知保真与能力泄漏",
+   "reason": "非搜推，教育模拟"
+  },
+  {
+   "id": "2611.34036",
+   "title": "Few-Shot Adaptation of Vision-Language Models via Agentic Model Editing",
+   "title_zh": "通过智能体式模型编辑实现视觉语言模型的少样本适配",
+   "cat": "cs.AI",
+   "summary_zh": "用智能体对VLM做少样本模型编辑适配",
+   "reason": "非搜推，VLM适配"
+  },
+  {
+   "id": "2611.34035",
+   "title": "Post-Training Policy Replication for Strategy-Following Multi-Agent Deep Reinforcement Learning across Team Sizes",
+   "title_zh": "跨团队规模、遵循策略的多智能体深度强化学习的后训练策略复制",
+   "cat": "cs.MA",
+   "summary_zh": "在不同团队规模间复制多智能体策略",
+   "reason": "非搜推，多智能体RL"
+  },
+  {
+   "id": "2611.34032",
+   "title": "Counter-DECEIVR: Counterfactual Explanations for Deepfake Detectors using Detector-Guided Rectified Flow Inversion",
+   "title_zh": "Counter-DECEIVR：基于检测器引导整流流反演的深伪检测器反事实解释",
+   "cat": "cs.CV",
+   "summary_zh": "为深伪检测器生成反事实解释",
+   "reason": "非搜推，深伪检测"
+  },
+  {
+   "id": "2611.34025",
+   "title": "Incorporating the Knowledge Distillation to Improve the EfficientNet Transfer Learning Capability",
+   "title_zh": "引入知识蒸馏提升EfficientNet的迁移学习能力",
+   "cat": "cs.CV",
+   "summary_zh": "用知识蒸馏提升EfficientNet迁移学习",
+   "reason": "非搜推，图像分类"
+  },
+  {
+   "id": "2611.34024",
+   "title": "JHealthBench-L: Clinician-Reviewed Localization of HealthBench for Rubric-Based Medical LLM Evaluation in Japan",
+   "title_zh": "JHealthBench-L：面向日本基于评分细则的医疗LLM评测的临床医师审核版HealthBench本地化",
+   "cat": "cs.CL",
+   "summary_zh": "把HealthBench本地化为日本临床医师审核的版本",
+   "reason": "非搜推，医疗评测"
+  },
+  {
+   "id": "2611.34019",
+   "title": "Assessing the Physical Interpretability of AlphaEarth Foundation Embeddings Through Multi-Sensor Satellite Time-Series Benchmarking for Agricultural Mapping",
+   "title_zh": "通过多传感器卫星时间序列基准评估AlphaEarth基础嵌入的物理可解释性",
+   "cat": "cs.LG",
+   "summary_zh": "评估AlphaEarth嵌入在农业制图中的物理可解释性",
+   "reason": "非搜推，遥感"
+  },
+  {
+   "id": "2611.34016",
+   "title": "Evaluating Ukrainian Grammatical Competence in Language Models: Probability Versus Prompting",
+   "title_zh": "评估语言模型的乌克兰语语法能力：概率与提示的对比",
+   "cat": "cs.CL",
+   "summary_zh": "比较概率打分与提示两种方式评测乌克兰语语法",
+   "reason": "非搜推，语言评测"
+  },
+  {
+   "id": "2611.34015",
+   "title": "Residual Cross-Model Narrative Convergence under Shared Prompts: Auditing Prompt Controls and Narrative Measurement",
+   "title_zh": "共享提示下的残余跨模型叙事趋同：审计提示控制与叙事度量",
+   "cat": "cs.CL",
+   "summary_zh": "审计不同模型在相同提示下叙事趋同现象",
+   "reason": "非搜推，叙事分析"
+  },
+  {
+   "id": "2611.34014",
+   "title": "Hetero-Associative Visuomotor Memory: Soft Recall as a Base for Learned Residuals in Few-Demonstration Imitation",
+   "title_zh": "异联想视觉运动记忆：作为少样本模仿学习中学习残差基础的软回忆",
+   "cat": "cs.RO",
+   "summary_zh": "用软回忆记忆机制支持少样本模仿学习",
+   "reason": "非搜推，机器人"
+  },
+  {
+   "id": "2611.34012",
+   "title": "CARROT: Competitive Adaptive Graph Clustering via Semi-Relaxed Optimal Transport",
+   "title_zh": "CARROT：基于半松弛最优传输的竞争自适应图聚类",
+   "cat": "cs.LG",
+   "summary_zh": "用半松弛最优传输做图聚类",
+   "reason": "非搜推，图聚类"
+  },
+  {
+   "id": "2611.34011",
+   "title": "Honest but Wrong: Formalizing Retraction in the Ethics of Speech Acts",
+   "title_zh": "诚实但错误：言语行为伦理中撤回的形式化",
+   "cat": "cs.AI",
+   "summary_zh": "形式化言语行为伦理中的撤回",
+   "reason": "非搜推，伦理逻辑"
+  },
+  {
+   "id": "2611.34008",
+   "title": "DosePET: An Open-Source Dataset with 2100 Radiation Dose Maps for PET/CT",
+   "title_zh": "DosePET：含2100张PET/CT辐射剂量图的开源数据集",
+   "cat": "physics.med-ph",
+   "summary_zh": "发布2100张PET/CT剂量图数据集",
+   "reason": "非搜推，医学影像"
+  },
+  {
+   "id": "2611.33998",
+   "title": "The Reference Matters: Displacement Probing for Weight-Space Learning",
+   "title_zh": "参照很重要：权重空间学习的位移探测",
+   "cat": "cs.LG",
+   "summary_zh": "研究权重空间学习中参考点选择的影响",
+   "reason": "非搜推，权重空间"
+  },
+  {
+   "id": "2611.33993",
+   "title": "Aegis-VLA: Reliability-Gated Action Refinement via a Trajectory World Model for Dynamic Object Manipulation",
+   "title_zh": "Aegis-VLA：通过轨迹世界模型实现动态物体操作的可靠性门控动作精修",
+   "cat": "cs.RO",
+   "summary_zh": "用轨迹世界模型对VLA动作做可靠性门控精修",
+   "reason": "非搜推，机器人"
+  },
+  {
+   "id": "2611.33985",
+   "title": "MolGPAO: Molecular Generative Pre-trained Autoregressive Octree with Speculative Decoding and Sub-Millisecond Seam Healing for 3D Molecules",
+   "title_zh": "MolGPAO：带推测解码与亚毫秒接缝修复的分子生成式预训练自回归八叉树",
+   "cat": "cs.LG",
+   "summary_zh": "用八叉树自回归模型生成3D分子",
+   "reason": "非搜推，分子生成"
+  },
+  {
+   "id": "2611.33983",
+   "title": "Quaternion-Tucker ZigZag Networks: Halving Transformer Backbone Parameters and Enabling Exact 2D Zero-Loss Continual Scaling",
+   "title_zh": "Quaternion-Tucker ZigZag网络：减半Transformer主干参数并支持精确2D零损失持续扩展",
+   "cat": "cs.LG",
+   "summary_zh": "用四元数Tucker分解压缩Transformer主干参数",
+   "reason": "非搜推，模型压缩"
+  },
+  {
+   "id": "2611.33977",
+   "title": "Cache Replacement in Direct-Access Cloud OLAP-An Experimental Comparison and Practical Guidance",
+   "title_zh": "直接访问云OLAP中的缓存替换：实验比较与实践指南",
+   "cat": "cs.DB",
+   "summary_zh": "实验比较云OLAP中的缓存替换策略",
+   "reason": "非搜推，数据库缓存"
+  },
+  {
+   "id": "2611.33974",
+   "title": "Auto-Features: An LLM-Assisted Corpus for Contextual Recognition of Standard and Optional Car Features",
+   "title_zh": "Auto-Features：用于汽车标准与选装特征上下文识别的LLM辅助语料",
+   "cat": "cs.CL",
+   "summary_zh": "构建汽车广告中特征识别的NER语料",
+   "reason": "非搜推，信息抽取"
+  },
+  {
+   "id": "2611.33973",
+   "title": "Kolpona: An Agentic Framework with Gradient-Free Neuron Programming for RTL Generation",
+   "title_zh": "Kolpona：基于无梯度神经元编程的RTL生成智能体框架",
+   "cat": "cs.LG",
+   "summary_zh": "用智能体框架生成RTL代码",
+   "reason": "非搜推，硬件生成"
+  },
+  {
+   "id": "2611.33972",
+   "title": "Fine-Tuning Without Gradients? Closed-Form, LLM-Written Classifiers on a Frozen Encoder",
+   "title_zh": "不用梯度微调？冻结编码器上由LLM编写的闭式分类器",
+   "cat": "cs.CL",
+   "summary_zh": "在冻结编码器上用LLM写闭式分类器",
+   "reason": "非搜推，文本分类"
+  },
+  {
+   "id": "2611.33966",
+   "title": "PatternMiner: Automated Mathematical Discovery Through LLM-Guided Training and Interpretation of Small Models",
+   "title_zh": "PatternMiner：通过LLM引导训练与解读小模型实现自动数学发现",
+   "cat": "cs.AI",
+   "summary_zh": "用LLM引导小模型训练来发现数学规律",
+   "reason": "非搜推，数学发现"
+  },
+  {
+   "id": "2611.33964",
+   "title": "Embodied-VGGT: Preserving Reliable Local Geometry for Long-Sequence Reconstruction",
+   "title_zh": "Embodied-VGGT：为长序列重建保留可靠的局部几何",
+   "cat": "cs.CV",
+   "summary_zh": "改进VGGT在长序列重建中的局部几何",
+   "reason": "非搜推，3D重建"
+  },
+  {
+   "id": "2611.33962",
+   "title": "DLaR: Dynamic Stochasticity Control for Latent Reasoning in Large Language Models",
+   "title_zh": "DLaR：大语言模型潜在推理的动态随机性控制",
+   "cat": "cs.LG",
+   "summary_zh": "动态控制潜在推理中的随机性",
+   "reason": "非搜推，潜在推理"
+  },
+  {
+   "id": "2611.33961",
+   "title": "AI Buckingham: Agentic Discovery of Dimensionless Scaling Laws Across Physical Regimes",
+   "title_zh": "AI Buckingham：跨物理区间的无量纲标度律智能体式发现",
+   "cat": "physics.comp-ph",
+   "summary_zh": "用智能体发现物理无量纲标度律",
+   "reason": "非搜推，物理发现"
+  },
+  {
+   "id": "2611.33957",
+   "title": "RefMix: Expanding Endpoint Proposals for Diversity-Preserving Reward Fine-Tuning",
+   "title_zh": "RefMix：扩展端点提案以实现保持多样性的奖励微调",
+   "cat": "cs.CV",
+   "summary_zh": "通过扩展端点提案在奖励微调中保持多样性",
+   "reason": "非搜推，扩散微调"
+  },
+  {
+   "id": "2611.33953",
+   "title": "PINN-Slicer: Exploiting Rotational Symmetry to Solve the Photon Orbit Equation Around a Black Hole",
+   "title_zh": "PINN-Slicer：利用旋转对称性求解黑洞周围的光子轨道方程",
+   "cat": "cs.CL",
+   "summary_zh": "用单个PINN逐片递推求解二阶自治ODE，应用于黑洞光子轨道。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33952",
+   "title": "DuoMI: Dual Mutual Information Regularization for Expert Reuse in Looped Transformers",
+   "title_zh": "DuoMI：循环Transformer中专家复用的双重互信息正则",
+   "cat": "cs.LG",
+   "summary_zh": "用双重互信息正则约束循环MoE Transformer跨轮的专家路由。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33951",
+   "title": "BReD: Block Replay Dithering for Stable Low-Bit EMA Optimizer States",
+   "title_zh": "BReD：面向稳定低比特EMA优化器状态的块重放抖动",
+   "cat": "cs.LG",
+   "summary_zh": "通过块重放抖动缓解低比特优化器状态反复量化带来的误差。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33950",
+   "title": "A Graphical Criterion for Linear Causal Bounds",
+   "title_zh": "线性因果界的图准则",
+   "cat": "stat.ML",
+   "summary_zh": "给出判断线性因果界可用性的图准则。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33946",
+   "title": "Should Service Requirements Be Scalarized or Constrained When Minimizing Costs? A Case Study on HVAC Control",
+   "title_zh": "最小化成本时服务要求应标量化还是作为约束？以HVAC控制为例",
+   "cat": "cs.AI",
+   "summary_zh": "比较标量化与约束两种方式处理服务要求，案例为HVAC控制。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33943",
+   "title": "What Does Skill Lift Actually Measure? A Source-Code-Level Audit and Noise-Aware Reanalysis of SkillsBench",
+   "title_zh": "Skill提升究竟衡量了什么？SkillsBench的源码级审计与噪声感知重分析",
+   "cat": "cs.AI",
+   "summary_zh": "审计SkillsBench源码并重新分析技能带来的提升。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33939",
+   "title": "CondUQ: Calibrated Conditional Uncertainty Quantification Using Distribution Matching",
+   "title_zh": "CondUQ：基于分布匹配的校准条件不确定性量化",
+   "cat": "cs.LG",
+   "summary_zh": "用分布匹配实现校准的条件不确定性量化。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33937",
+   "title": "InstructTTS-OPD: On-Policy Distillation for Multi-Objective Instruction-Following TTS",
+   "title_zh": "InstructTTS-OPD：面向多目标指令跟随TTS的在线策略蒸馏",
+   "cat": "cs.LG",
+   "summary_zh": "用on-policy蒸馏同时优化指令跟随TTS的多个目标。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33934",
+   "title": "Towards 360$^\\circ$ Embodied UAV Tracking Without Turning",
+   "title_zh": "无需转向的360度具身无人机跟踪",
+   "cat": "cs.CV",
+   "summary_zh": "利用全景感知让无人机无需转向即可跟踪目标。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33926",
+   "title": "Connecting AI Agents to Live Discrete Element Simulations via the Model Context Protocol",
+   "title_zh": "通过模型上下文协议将AI智能体连接到实时离散元模拟",
+   "cat": "cs.CE",
+   "summary_zh": "用MCP服务器让通用AI智能体在运行中操控离散元引擎。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33925",
+   "title": "Beyond the Happy Path: Generalizing Robot World Models from Simulated Failures",
+   "title_zh": "走出理想路径：从模拟失败中泛化机器人世界模型",
+   "cat": "cs.RO",
+   "summary_zh": "用模拟的失败数据提升机器人世界模型在失败场景的预测。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33919",
+   "title": "DiCALM: Converting Autoregressive Convolution-Attention Language Models into Discrete Diffusion Language Models",
+   "title_zh": "DiCALM：将自回归卷积-注意力语言模型转换为离散扩散语言模型",
+   "cat": "cs.CL",
+   "summary_zh": "把混合卷积-注意力自回归模型转换为离散扩散语言模型。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33909",
+   "title": "EGSE: Evidence-Grounded Skill Evolution for Medical Reasoning Agents",
+   "title_zh": "EGSE：面向医学推理智能体的证据落地技能演化",
+   "cat": "cs.AI",
+   "summary_zh": "用证据落地方式演化医学推理智能体的可复用技能。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33900",
+   "title": "Correlation-Aware Evidential Fusion for Trusted Multi-View Classification",
+   "title_zh": "面向可信多视图分类的相关性感知证据融合",
+   "cat": "cs.LG",
+   "summary_zh": "在证据融合中考虑视图间相关性以改进多视图分类。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33897",
+   "title": "EATS: Scaling Tool-Use Experience for Medical Reasoning Agents",
+   "title_zh": "EATS：扩展医学推理智能体的工具使用经验",
+   "cat": "cs.AI",
+   "summary_zh": "扩大医学工具使用经验以训练医学推理智能体。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33896",
+   "title": "Looped Models are Fast Multi-Token Predictors",
+   "title_zh": "循环模型是快速的多token预测器",
+   "cat": "cs.LG",
+   "summary_zh": "利用循环语言模型实现快速多token预测。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33893",
+   "title": "When Are Parallel Subagents Effective for Coding? An Empirical Study on Repository Construction",
+   "title_zh": "并行子智能体何时对编码有效？仓库构建的实证研究",
+   "cat": "cs.MA",
+   "summary_zh": "实证研究并行子智能体在整仓库构建任务中的效果。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33889",
+   "title": "On the Learnability of Model Reprogramming: A Reachability and Relabeling Perspective",
+   "title_zh": "模型重编程的可学习性：可达性与重标注视角",
+   "cat": "cs.LG",
+   "summary_zh": "从可达性与重标注角度分析模型重编程的可学习性。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33887",
+   "title": "The Gradient Difference Induced by Detaching the Denominator in QK Normalization",
+   "title_zh": "QK归一化中分母detach引起的梯度差异",
+   "cat": "cs.LG",
+   "summary_zh": "推导QK归一化中分母detach带来的梯度差异闭式。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33879",
+   "title": "FORK: Co-Evolving Safe Disclosure and Decision Skills Against Attackers Who Read Every Refusal",
+   "title_zh": "FORK：针对读取每次拒绝的攻击者，协同演化安全披露与决策技能",
+   "cat": "cs.AI",
+   "summary_zh": "研究护栏拒绝信息的安全披露，协同演化披露与决策技能。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33875",
+   "title": "Random Voronoi Networks",
+   "title_zh": "随机Voronoi网络",
+   "cat": "cs.LG",
+   "summary_zh": "提出可微的随机Voronoi网络，替代内存开销大的最近邻方法。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33872",
+   "title": "Normalizing Flows are Capable World Models",
+   "title_zh": "归一化流是有能力的世界模型",
+   "cat": "cs.LG",
+   "summary_zh": "提出基于归一化流的世界模型NFWM。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33871",
+   "title": "Contextual language representations link narrative processing to language and literacy in children",
+   "title_zh": "上下文语言表征将儿童的叙事加工与语言和读写能力联系起来",
+   "cat": "cs.CL",
+   "summary_zh": "用fMRI研究粤语故事聆听中语境表征与儿童读写能力的关系。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33850",
+   "title": "Mitigating Overgeneralization in RND via Spectral Target Design",
+   "title_zh": "通过谱目标设计缓解RND的过度泛化",
+   "cat": "cs.LG",
+   "summary_zh": "用谱目标设计缓解随机网络蒸馏的新颖性过度泛化。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33848",
+   "title": "ChemDeduce: Benchmarking LLMs for Unknown Chemical Identification through Interactive Simulated Experiments",
+   "title_zh": "ChemDeduce：通过交互式模拟实验基准测试LLM识别未知化学品",
+   "cat": "cs.CL",
+   "summary_zh": "构建交互式实验基准，测试LLM识别未知化学品的能力。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33841",
+   "title": "The Missing Root: Geometric Imagination Without Images in Large Language Models",
+   "title_zh": "缺失的根：大语言模型中无需图像的几何想象",
+   "cat": "cs.CV",
+   "summary_zh": "提出让LLM在连续空间中获得几何想象的新范式。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33836",
+   "title": "Can Its Own Misses Teach an MLLM to Find Small Brain Metastases?",
+   "title_zh": "自身的漏检能教会MLLM发现微小脑转移瘤吗？",
+   "cat": "cs.AI",
+   "summary_zh": "用MLLM自身漏检样本提升对微小脑转移瘤的定位。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33831",
+   "title": "Teaching a Multilingual Translation Model Regional Varieties: Castilian and Latin American Spanish, Asturian, Aragonese and Aranese with MADLAD-400-3B-MT",
+   "title_zh": "教多语言翻译模型地区变体：用MADLAD-400-3B-MT处理卡斯蒂利亚与拉美西班牙语、阿斯图里亚斯语、阿拉贡语和阿兰语",
+   "cat": "cs.CL",
+   "summary_zh": "微调MADLAD-400-3B-MT以支持西班牙语地区变体及小语种。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33829",
+   "title": "VoroPlex: A Python Framework for Multi-Threaded and Differentiable Voronoi Tessellation",
+   "title_zh": "VoroPlex：支持多线程与可微的Voronoi剖分Python框架",
+   "cat": "cs.CG",
+   "summary_zh": "开源的多线程可微Voronoi剖分Python包。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33828",
+   "title": "Learning a Whole-Body Pivot-Walking Gait for Heavy-Box Transport with a Humanoid",
+   "title_zh": "学习人形机器人搬运重箱的全身枢轴步态",
+   "cat": "cs.RO",
+   "summary_zh": "学习人形机器人通过枢轴行走搬运重箱的步态。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33827",
+   "title": "FEAST: Fair and Efficient Adaptive Sampling for Task-Free On-Policy Learning",
+   "title_zh": "FEAST：面向无任务在线策略学习的公平高效自适应采样",
+   "cat": "cs.LG",
+   "summary_zh": "在有限rollout预算下为语言智能体公平高效地分配能力采样。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33825",
+   "title": "On Grokking and the Dynamics of Generalization",
+   "title_zh": "论grokking与泛化动力学",
+   "cat": "cs.LG",
+   "summary_zh": "扩展grokking的信号通道理论，关联训练耗散与总体风险。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33823",
+   "title": "Pitfalls of Dependency-Ready Decoding for Masked Diffusion Language Models",
+   "title_zh": "掩码扩散语言模型中依赖就绪解码的陷阱",
+   "cat": "cs.CL",
+   "summary_zh": "分析掩码扩散模型依赖就绪解码的问题。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33822",
+   "title": "MetaDecomp: Adaptive Task Decomposition via Meta-Learned Procedural Memory",
+   "title_zh": "MetaDecomp：基于元学习过程记忆的自适应任务分解",
+   "cat": "cs.AI",
+   "summary_zh": "用上下文元学习复用过程记忆，实现自适应任务分解。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33821",
+   "title": "RadOncGym: An Agent-Based Framework for Radiotherapy Dose-Mimicking Optimization",
+   "title_zh": "RadOncGym：面向放疗剂量模仿优化的智能体框架",
+   "cat": "cs.AI",
+   "summary_zh": "构建智能体框架完成放疗剂量预测后的优化。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33818",
+   "title": "Spectral Optimal Transport for Dynamics-Aware Sign Language Generation",
+   "title_zh": "面向动力学感知手语生成的谱最优传输",
+   "cat": "cs.AI",
+   "summary_zh": "用谱最优传输改进基于流的手语生成。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33813",
+   "title": "Ensuring Deployment-Time Safety of Neural Network Controlled Systems via Localized Certificate Repair",
+   "title_zh": "通过局部证书修复保证神经网络控制系统的部署期安全",
+   "cat": "cs.AI",
+   "summary_zh": "局部修复障碍证书以应对部署后出现的新障碍。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33812",
+   "title": "KnitNet: Learning to Search at Inference Time for Exact RNA Inverse Design",
+   "title_zh": "KnitNet：为精确RNA逆设计学习推理时搜索",
+   "cat": "q-bio.BM",
+   "summary_zh": "用推理时搜索实现精确的RNA逆设计。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33806",
+   "title": "QPAT: A Universal Quantum Machine Learning Framework for Quantum-Assisted Training and Classical Inference",
+   "title_zh": "QPAT：量子辅助训练与经典推理的通用量子机器学习框架",
+   "cat": "quant-ph",
+   "summary_zh": "提出量子辅助训练、经典推理的通用QML框架。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33794",
+   "title": "Keep or Roll Back? Out-of-Loop Judges for Self-Improving VLA and End-to-End Embodied Policies",
+   "title_zh": "保留还是回滚？自改进VLA与端到端具身策略的环外评判器",
+   "cat": "cs.AI",
+   "summary_zh": "用独立于训练循环的评判器决定具身策略自改进是否保留。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33793",
+   "title": "LSRP*-LA: Scalable and Anytime Multi-Agent Path Finding for Large Agents with Asynchronous Actions",
+   "title_zh": "LSRP*-LA：面向大型智能体与异步动作的可扩展随时多智能体路径规划",
+   "cat": "cs.RO",
+   "summary_zh": "面向大尺寸智能体和异步动作的可扩展MAPF算法。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33791",
+   "title": "ExtractBench Pro: The Long Tail of Document Extraction",
+   "title_zh": "ExtractBench Pro：文档抽取的长尾",
+   "cat": "cs.AI",
+   "summary_zh": "提出覆盖六类困难模式的模式引导文档抽取基准。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33789",
+   "title": "Multimodal Safety Evaluation of Vision-Language Models in Japanese",
+   "title_zh": "日语视觉语言模型的多模态安全评测",
+   "cat": "cs.CL",
+   "summary_zh": "将MSTS多模态安全测试扩展到日语并评测VLM。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33788",
+   "title": "InterGenEHR$^+$: An Interactive Framework for Natural Language-Conditioned Generation of Longitudinal Patient Trajectories",
+   "title_zh": "InterGenEHR+：自然语言条件生成纵向患者轨迹的交互框架",
+   "cat": "cs.AI",
+   "summary_zh": "用自然语言交互生成合成表格EHR与纵向患者轨迹。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33775",
+   "title": "CHD-Bench: Diagnosing Congenital Heart Disease through Interactive Examination",
+   "title_zh": "CHD-Bench：通过交互式检查诊断先天性心脏病",
+   "cat": "cs.AI",
+   "summary_zh": "构建交互式检查式的先天性心脏病诊断基准。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33773",
+   "title": "Robust Adaptive Channel Estimation for RIS-Assisted mmWave Massive MIMO via a Stochastic Shannon Entropy Criterion",
+   "title_zh": "基于随机香农熵准则的RIS辅助毫米波大规模MIMO鲁棒自适应信道估计",
+   "cat": "eess.SP",
+   "summary_zh": "用随机香农熵准则做RIS辅助mmWave MIMO的鲁棒信道估计。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33772",
+   "title": "Triage Before Fine-Tuning: Feasibility-Gated Selection and Monitored Adaptation of Embodied Foundation Models for a Fixed Physical Platform",
+   "title_zh": "微调之前先分诊：面向固定物理平台的具身基础模型可行性门控选择与监控适配",
+   "cat": "cs.RO",
+   "summary_zh": "对具身基础模型做可行性门控选择与监控式适配。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33767",
+   "title": "RHOPE: LLM-Augmented Adaptive Experimental Design with Complex Contextual Information",
+   "title_zh": "RHOPE：利用LLM增强、含复杂上下文信息的自适应实验设计",
+   "cat": "stat.ML",
+   "summary_zh": "用LLM利用复杂上下文信息改进自适应实验设计。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33766",
+   "title": "Don't Waste the Population: Post-Anneal Refinement for Combinatorial Optimization",
+   "title_zh": "别浪费种群：组合优化的退火后精炼",
+   "cat": "cs.LG",
+   "summary_zh": "对并行退火的整个种群做路径重连式精炼，而非只精炼最优解。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33765",
+   "title": "EMMA: Efficient and Effective Cooperative Multi-Modal Analytics over Embodied AI Data",
+   "title_zh": "EMMA：面向具身AI数据的高效协同多模态分析",
+   "cat": "cs.DB",
+   "summary_zh": "面向具身AI多模态数据的算子化查询处理框架。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33764",
+   "title": "Improving Building Energy Efficiency with an Indoor Environmental World Model and Counterfactual Adaptive Learning",
+   "title_zh": "基于室内环境世界模型与反事实自适应学习提升建筑能效",
+   "cat": "cs.AI",
+   "summary_zh": "用室内环境世界模型和反事实学习优化建筑能耗。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33763",
+   "title": "Data Agents Need a Map: Evolving, Demand-Driven Knowledge of Large Collections",
+   "title_zh": "数据智能体需要地图：面向大型数据集合的演化式按需知识",
+   "cat": "cs.DB",
+   "summary_zh": "提出持久化数据集语义图谱供数据智能体使用的愿景。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33761",
+   "title": "ScanAR: Parallel Row-Scan Decoding for Efficient Image Generation in Unified Autoregressive Models",
+   "title_zh": "ScanAR：统一自回归模型中面向高效图像生成的并行逐行扫描解码",
+   "cat": "cs.CV",
+   "summary_zh": "按行并行解码加速统一自回归模型的图像生成。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33759",
+   "title": "Understanding Double Descent through Universal Compression",
+   "title_zh": "通过通用压缩理解双下降",
+   "cat": "stat.ML",
+   "summary_zh": "用通用压缩视角解释双下降现象。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33757",
+   "title": "TransHarness: From Benchmark Overfitting to Transferable Harness Evolution",
+   "title_zh": "TransHarness：从基准过拟合到可迁移的harness演化",
+   "cat": "cs.AI",
+   "summary_zh": "让编码智能体的harness演化能迁移到新任务而非过拟合基准。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33749",
+   "title": "Teaching Students to Stand on Their Own: Distilling Vision Foundation Models for Fine-Grained Few-Shot Class-Incremental Learning",
+   "title_zh": "教学生独立站立：蒸馏视觉基础模型用于细粒度少样本类增量学习",
+   "cat": "cs.CV",
+   "summary_zh": "蒸馏视觉基础模型以做细粒度少样本类增量学习。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33748",
+   "title": "REFORGE: LLM-Assisted RTL Bug Repair with Structured Context and Verification Feedback",
+   "title_zh": "REFORGE：基于结构化上下文与验证反馈的LLM辅助RTL缺陷修复",
+   "cat": "cs.AI",
+   "summary_zh": "用结构化上下文和验证反馈让LLM修复RTL缺陷。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33747",
+   "title": "Tells of a Lying Machine: Analyzing LLM-Generated Strategic Dialogue in Chinese Werewolf",
+   "title_zh": "说谎机器的破绽：分析LLM在中文狼人杀中生成的策略对话",
+   "cat": "cs.CL",
+   "summary_zh": "分析12个模型在中文狼人杀中的5404条发言。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33745",
+   "title": "WhatIf: Counterfactual World Models over Action-Grounded Causal Graphs for Robotic Manipulation",
+   "title_zh": "WhatIf：面向机器人操作的动作接地因果图上的反事实世界模型",
+   "cat": "cs.AI",
+   "summary_zh": "在因果图上构建反事实世界模型，比较机器人动作的结果。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33743",
+   "title": "OrbACE: Orbital and Atomic Cluster Expansion",
+   "title_zh": "OrbACE：轨道与原子簇展开",
+   "cat": "physics.chem-ph",
+   "summary_zh": "在等变簇展开势中加入轨道信息以从少量数据学习。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33741",
+   "title": "FlashProve-Next: Verifiable Inference for Production LLM APIs",
+   "title_zh": "FlashProve-Next：面向生产级LLM API的可验证推理",
+   "cat": "cs.CR",
+   "summary_zh": "让客户端验证闭源LLM API是否运行了宣称的模型与配置。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33735",
+   "title": "JOVE ICE: Intent Guided Cloud Edge Device Collaboration for AI Glasses",
+   "title_zh": "JOVE ICE：面向AI眼镜的意图引导云边端协同",
+   "cat": "cs.AI",
+   "summary_zh": "用意图引导AI眼镜的云-边-端协同推理。",
+   "reason": "非搜索推荐研究对象"
+  },
+  {
+   "id": "2611.33732",
+   "title": "CovNovBench: A Benchmark for Evaluating Time Series Foundation Models under Covariate Novelty",
+   "title_zh": "CovNovBench：协变量新颖性下时间序列基础模型评测基准",
+   "cat": "cs.LG",
+   "summary_zh": "评测时间序列基础模型在未见处理变量下的预测可靠性",
+   "reason": "非搜推：时序预测"
+  },
+  {
+   "id": "2611.33728",
+   "title": "Asset4D-Bench: Benchmarking Coding Agents for Editable 3D and 4D Reconstruction",
+   "title_zh": "Asset4D-Bench：评测编码智能体的可编辑3D/4D重建能力",
+   "cat": "cs.AI",
+   "summary_zh": "用 Blender 场景评测编码智能体从视觉参考重建3D/4D资产",
+   "reason": "非搜推：3D重建"
+  },
+  {
+   "id": "2611.33726",
+   "title": "NORMCRAFT: Cultural Norm Generation for Context-Aware Language Model Alignment",
+   "title_zh": "NORMCRAFT：面向语境感知语言模型对齐的文化规范生成",
+   "cat": "cs.CL",
+   "summary_zh": "生成文化规范以改进语言模型的文化对齐",
+   "reason": "非搜推：文化对齐"
+  },
+  {
+   "id": "2611.33722",
+   "title": "Practice Makes Fluent: Learning to Use Earlier Predictions in Looped Models",
+   "title_zh": "熟能生巧：让循环模型学会利用早期预测",
+   "cat": "cs.RO",
+   "summary_zh": "通过训练让循环模型用更少迭代完成任务",
+   "reason": "非搜推：循环模型"
+  },
+  {
+   "id": "2611.33719",
+   "title": "Understanding Mode Collapse in Diffusion Models under Classifier-Free Guidance",
+   "title_zh": "理解无分类器引导下扩散模型的模式坍缩",
+   "cat": "cs.LG",
+   "summary_zh": "分析无分类器引导导致扩散模型模式坍缩的机理",
+   "reason": "非搜推：扩散模型"
+  },
+  {
+   "id": "2611.33716",
+   "title": "Flipping the Coins: Training Physical Simulators through Hard Switches",
+   "title_zh": "抛硬币：通过硬切换训练物理模拟器",
+   "cat": "cs.LG",
+   "summary_zh": "研究含硬切换的混合物理模拟器的训练方法",
+   "reason": "非搜推：物理模拟"
+  },
+  {
+   "id": "2611.33715",
+   "title": "KeyDeck: Multi-Paper-to-Slide Generation via Cross-Paper Synthesis and Reference-Guided Personalization",
+   "title_zh": "KeyDeck：跨论文综合与参考引导个性化的多论文幻灯片生成",
+   "cat": "cs.AI",
+   "summary_zh": "由多篇论文综合生成个性化演示幻灯片",
+   "reason": "非搜推：幻灯片生成"
+  },
+  {
+   "id": "2611.33713",
+   "title": "Nepali Currency Denomination Classification Using Convolutional Neural Networks (CNNs) and MobileNetV2: An Experimental Comparison",
+   "title_zh": "基于CNN与MobileNetV2的尼泊尔货币面额分类实验比较",
+   "cat": "cs.CV",
+   "summary_zh": "比较CNN与MobileNetV2对尼泊尔纸币面额的分类效果",
+   "reason": "非搜推：货币图像分类"
+  },
+  {
+   "id": "2611.33712",
+   "title": "PowerFix: Physics-Guided Iterative Repair for LLM-Assisted Power Converter Design",
+   "title_zh": "PowerFix：面向LLM辅助电源变换器设计的物理引导迭代修复",
+   "cat": "cs.AI",
+   "summary_zh": "用物理引导迭代修复LLM设计的电源变换器",
+   "reason": "非搜推：电路设计"
+  },
+  {
+   "id": "2611.33707",
+   "title": "P-FedSkill: A Personalized Federated Skill Learning Framework under Task Heterogeneity",
+   "title_zh": "P-FedSkill：任务异构下的个性化联邦技能学习框架",
+   "cat": "cs.AI",
+   "summary_zh": "在不共享轨迹的前提下联邦学习智能体技能",
+   "reason": "非搜推：联邦技能学习"
+  },
+  {
+   "id": "2611.33706",
+   "title": "EVA: Evidence-seeking Visual Agent for Hallucination-Resistant Multimodal Reasoning",
+   "title_zh": "EVA：抗幻觉多模态推理的取证式视觉智能体",
+   "cat": "cs.AI",
+   "summary_zh": "让视觉智能体主动取证以减少多模态幻觉",
+   "reason": "非搜推：多模态幻觉"
+  },
+  {
+   "id": "2611.33700",
+   "title": "Sports Agent: A Self-Evolving System for Conversational Data Analytics",
+   "title_zh": "Sports Agent：用于对话式数据分析的自进化系统",
+   "cat": "cs.CL",
+   "summary_zh": "体育对话式数据分析的自进化智能体系统",
+   "reason": "非搜推：体育数据分析"
+  },
+  {
+   "id": "2611.33692",
+   "title": "Rethinking Sequential Locate-Then-Edit: Optimality and Stability",
+   "title_zh": "重新审视序列式先定位后编辑：最优性与稳定性",
+   "cat": "cs.CL",
+   "summary_zh": "分析序列知识编辑中先定位后编辑的最优性与稳定性",
+   "reason": "非搜推：模型编辑"
+  },
+  {
+   "id": "2611.33690",
+   "title": "Refusal Is Not Scored: A Coverage Limit in Content-Based Bias Evaluation",
+   "title_zh": "拒答未被计分：基于内容的偏见评测中的覆盖局限",
+   "cat": "cs.CL",
+   "summary_zh": "指出偏见评测丢弃拒答会带来覆盖偏差",
+   "reason": "非搜推：偏见评测"
+  },
+  {
+   "id": "2611.33687",
+   "title": "Read Before You Use: Improving Visual Memory Utilization in Vision-Language Models",
+   "title_zh": "用前先读：提升视觉语言模型对视觉记忆的利用",
+   "cat": "cs.CV",
+   "summary_zh": "提升视觉语言模型对已检索视觉记忆的使用效果",
+   "reason": "非搜推：VLM记忆"
+  },
+  {
+   "id": "2611.33679",
+   "title": "Faster and Better Query (FBQ): Learning Future-Position Probes from the First Generated Token",
+   "title_zh": "更快更好的Query（FBQ）：从首个生成token学习未来位置探针",
+   "cat": "cs.AI",
+   "summary_zh": "用首个生成token学习探针以改进KV缓存淘汰",
+   "reason": "非搜推：KV缓存"
+  },
+  {
+   "id": "2611.33676",
+   "title": "Interactive Proofs as a Unified Framework for Evaluating and Leveraging Verifiable Proof Generation by LLM Agents",
+   "title_zh": "交互式证明：评估并利用LLM智能体可验证证明生成的统一框架",
+   "cat": "cs.AI",
+   "summary_zh": "用交互式证明框架评估LLM智能体的可验证证明生成",
+   "reason": "非搜推：定理证明"
+  },
+  {
+   "id": "2611.33672",
+   "title": "Node Differential Privacy via Node-Stable Graph Projections",
+   "title_zh": "基于节点稳定图投影的节点差分隐私",
+   "cat": "cs.CR",
+   "summary_zh": "用节点稳定图投影实现节点差分隐私算法",
+   "reason": "非搜推：差分隐私"
+  },
+  {
+   "id": "2611.33670",
+   "title": "Rethinking Knowledge Distillation for Diffusion Language Models",
+   "title_zh": "重新思考扩散语言模型的知识蒸馏",
+   "cat": "cs.CL",
+   "summary_zh": "系统研究扩散语言模型的知识蒸馏",
+   "reason": "非搜推：扩散语言模型"
+  },
+  {
+   "id": "2611.33668",
+   "title": "Verifiable but Not Predictable: What Sentence Embeddings Know About Propositional Decomposition",
+   "title_zh": "可验证但不可预测：句子嵌入对命题分解了解多少",
+   "cat": "cs.CL",
+   "summary_zh": "探究句子嵌入对命题分解的验证与预测能力差异",
+   "reason": "非搜推：命题分解"
+  },
+  {
+   "id": "2611.33664",
+   "title": "SlicePlanner: Logic-Guided Agentic AI for Online QoS-Aware Network Slicing in Open RAN",
+   "title_zh": "SlicePlanner：面向Open RAN在线QoS感知网络切片的逻辑引导智能体",
+   "cat": "cs.AI",
+   "summary_zh": "逻辑引导的智能体用于O-RAN网络切片决策",
+   "reason": "非搜推：网络切片"
+  },
+  {
+   "id": "2611.33656",
+   "title": "Online Identification Can Replace a Floor-Plan Prior on Unseen Buildings",
+   "title_zh": "在线辨识可替代未见建筑上的平面图先验",
+   "cat": "eess.SY",
+   "summary_zh": "用在线辨识替代平面图先验进行HVAC控制",
+   "reason": "非搜推：楼宇控制"
+  },
+  {
+   "id": "2611.33652",
+   "title": "Self-supervised Clipped-objective Reinforcement Leaning Framework for Risk-aware Portfolio Management",
+   "title_zh": "面向风险感知投资组合管理的自监督截断目标强化学习框架",
+   "cat": "cs.LG",
+   "summary_zh": "用截断目标强化学习做风险感知的投资组合管理",
+   "reason": "非搜推：量化交易"
+  },
+  {
+   "id": "2611.33648",
+   "title": "PRIOR: Pre-Call Reasoning in SFT and Its Influence on Tool-Use Retention under RL",
+   "title_zh": "PRIOR：SFT中的调用前推理及其对RL下工具使用保持的影响",
+   "cat": "cs.LG",
+   "summary_zh": "研究SFT数据的调用前推理对RL阶段工具使用保持的影响",
+   "reason": "非搜推：工具使用"
+  },
+  {
+   "id": "2611.33647",
+   "title": "The Danger of Double Precision: Working Precision as a Hidden Constraint in Gaussian Process Maximum Likelihood",
+   "title_zh": "双精度的危险：高斯过程极大似然中作为隐藏约束的工作精度",
+   "cat": "cs.LG",
+   "summary_zh": "指出双精度会限制高斯过程极大似然的拟合",
+   "reason": "非搜推：高斯过程"
+  },
+  {
+   "id": "2611.33645",
+   "title": "Pretraining for Forecasting in Relational Databases",
+   "title_zh": "关系数据库中的预测预训练",
+   "cat": "cs.LG",
+   "summary_zh": "面向关系数据库交易日志的预测任务预训练",
+   "reason": "非搜推：关系数据库预测"
+  },
+  {
+   "id": "2611.33644",
+   "title": "Physics-Informed Learning for Multiplayer Differential Games",
+   "title_zh": "多人微分博弈的物理信息学习",
+   "cat": "cs.GT",
+   "summary_zh": "用物理信息学习求解多人微分博弈的反馈策略",
+   "reason": "非搜推：微分博弈"
+  },
+  {
+   "id": "2611.33640",
+   "title": "Sparse-to-Sparse Feature Learning for Cross-Layer Analysis and Steering",
+   "title_zh": "面向跨层分析与引导的稀疏到稀疏特征学习",
+   "cat": "cs.CL",
+   "summary_zh": "用稀疏到稀疏特征学习做跨层分析和模型引导",
+   "reason": "非搜推：SAE可解释性"
+  },
+  {
+   "id": "2611.33639",
+   "title": "How Much Effort Does an AI Code Reviewer Need? Evidence from Claude 5.5 Models on Plausible-but-Wrong Patches",
+   "title_zh": "AI代码审查需要多大力度？Claude 5.5模型在似是而非补丁上的证据",
+   "cat": "cs.AI",
+   "summary_zh": "测试推理力度设置对AI代码审查发现错误补丁的影响",
+   "reason": "非搜推：代码审查"
+  },
+  {
+   "id": "2611.33636",
+   "title": "What Is Redundant at High Resolution? Efficient Attention and Feed-Forward Design for All-in-One Image Restoration",
+   "title_zh": "高分辨率下什么是冗余的？面向一体化图像复原的高效注意力与前馈设计",
+   "cat": "cs.CV",
+   "summary_zh": "精简高分辨率阶段的注意力与前馈以做高效图像复原",
+   "reason": "非搜推：图像复原"
+  },
+  {
+   "id": "2611.33632",
+   "title": "Interpreting Speckle Effects Through Neuron Interventions",
+   "title_zh": "通过神经元干预解释散斑效应",
+   "cat": "eess.IV",
+   "summary_zh": "用神经元干预分析SAR预训练模型中的散斑影响",
+   "reason": "非搜推：SAR解释性"
+  },
+  {
+   "id": "2611.33625",
+   "title": "State Space Attention: Learning Context-Dependent Memory Retention",
+   "title_zh": "状态空间注意力：学习上下文相关的记忆保留",
+   "cat": "cs.LG",
+   "summary_zh": "学习长上下文中保留哪些KV的注意力机制",
+   "reason": "非搜推：长上下文注意力"
+  },
+  {
+   "id": "2611.33617",
+   "title": "Controllable CAD Generation and Interactive Editing of Fluid Rotors",
+   "title_zh": "流体转子的可控CAD生成与交互式编辑",
+   "cat": "cs.AI",
+   "summary_zh": "可控生成并交互编辑流体转子CAD模型",
+   "reason": "非搜推：CAD生成"
+  },
+  {
+   "id": "2611.33615",
+   "title": "Learning from Natural Images Untangles Number Sense",
+   "title_zh": "从自然图像学习解开数感",
+   "cat": "cs.AI",
+   "summary_zh": "用自然图像训练改善视觉语言模型的数感",
+   "reason": "非搜推：数感"
+  },
+  {
+   "id": "2611.33612",
+   "title": "Failure Broadens, Success Sharpens: Continual Adaptation of Tool-Use Agents Across Diverse Tasks with Dual-Polarity Memory",
+   "title_zh": "失败拓宽，成功锐化：基于双极性记忆的工具使用智能体跨任务持续适应",
+   "cat": "cs.CL",
+   "summary_zh": "分别利用成功与失败轨迹记忆让工具智能体持续适应",
+   "reason": "非搜推：智能体记忆"
+  },
+  {
+   "id": "2611.33605",
+   "title": "The Detour Is the Danger: Preserving Security During LLM Agent Recovery",
+   "title_zh": "绕路即危险：LLM智能体恢复过程中的安全保持",
+   "cat": "cs.CR",
+   "summary_zh": "研究智能体失败恢复重规划时的安全问题",
+   "reason": "非搜推：智能体安全"
+  },
+  {
+   "id": "2611.33592",
+   "title": "Improved Sample Complexity of Robust Reinforcement Learning with KL Uncertainty Sets",
+   "title_zh": "带KL不确定集的鲁棒强化学习的改进样本复杂度",
+   "cat": "stat.ML",
+   "summary_zh": "改进KL不确定集下鲁棒RL的样本复杂度界",
+   "reason": "非搜推：鲁棒RL"
+  },
+  {
+   "id": "2611.33589",
+   "title": "Amortizing Exact Orthogonality: Drift-Triggered Restoration for Orthogonal Fine-Tuning",
+   "title_zh": "摊销精确正交性：正交微调的漂移触发恢复",
+   "cat": "cs.LG",
+   "summary_zh": "用漂移触发恢复降低正交微调中精确正交化的开销",
+   "reason": "非搜推：参数高效微调"
+  },
+  {
+   "id": "2611.33588",
+   "title": "SEEL: Towards End-to-End 3D Sign Generation with Language Models",
+   "title_zh": "SEEL：基于语言模型的端到端3D手语生成",
+   "cat": "cs.CV",
+   "summary_zh": "用语言模型端到端从文本生成3D手语",
+   "reason": "非搜推：手语生成"
+  },
+  {
+   "id": "2611.33579",
+   "title": "DexEngine: Scaling Human Demonstrations into Physically Executable Whole-Robot Data",
+   "title_zh": "DexEngine：把人类演示扩展为物理可执行的全机器人数据",
+   "cat": "cs.RO",
+   "summary_zh": "将人类演示转换为物理可执行的全身机器人数据",
+   "reason": "非搜推：机器人"
+  },
+  {
+   "id": "2611.33576",
+   "title": "Symmetry-Aware Residual Learning of Few-Body Molecular Wave Functions",
+   "title_zh": "少体分子波函数的对称感知残差学习",
+   "cat": "physics.atom-ph",
+   "summary_zh": "用对称感知残差网络学习少体分子波函数",
+   "reason": "非搜推：分子物理"
+  },
+  {
+   "id": "2611.33571",
+   "title": "Trigger-Invariant Contrastive Unlearning for Backdoor Removal",
+   "title_zh": "用于后门移除的触发器不变对比遗忘",
+   "cat": "cs.LG",
+   "summary_zh": "用对比遗忘去除NLP模型后门",
+   "reason": "非搜推：后门防御"
+  },
+  {
+   "id": "2611.33563",
+   "title": "FIG-MAC: A Fine-grained Inspiration Graph Empowered Multi-Agent Collaboration for Automated Scientific Hypothesis Generation",
+   "title_zh": "FIG-MAC：细粒度灵感图驱动的多智能体协作科学假设生成",
+   "cat": "cs.AI",
+   "summary_zh": "用灵感图和多智能体协作生成科学假设",
+   "reason": "非搜推：假设生成"
+  },
+  {
+   "id": "2611.33557",
+   "title": "DiffER$^2$: Diffusion Ensembles for Retrosynthesis Prediction with SMILES Adapted Particle Guidance",
+   "title_zh": "DiffER²：基于SMILES适配粒子引导的扩散集成逆合成预测",
+   "cat": "cs.LG",
+   "summary_zh": "用扩散集成做逆合成预测",
+   "reason": "非搜推：逆合成"
+  },
+  {
+   "id": "2611.33555",
+   "title": "PeerReveal: Learning to Generalize in AI Peer Review Detection",
+   "title_zh": "PeerReveal：学习泛化的AI同行评审检测",
+   "cat": "cs.AI",
+   "summary_zh": "检测完全由AI生成的评审与仅AI润色的评审",
+   "reason": "非搜推：评审检测"
+  },
+  {
+   "id": "2611.33549",
+   "title": "FokasNets: Completing missing boundary data in Physics-Informed Neural Networks and Operators via the Global Relation",
+   "title_zh": "FokasNets：通过全局关系补全PINN与算子中缺失的边界数据",
+   "cat": "math.NA",
+   "summary_zh": "用Fokas全局关系补全PINN缺失边界数据",
+   "reason": "非搜推：PINN"
+  },
+  {
+   "id": "2611.33546",
+   "title": "Community Notes Across Platforms: Evaluating the Feasibility of Re-using Crowd-sourced Context Notes",
+   "title_zh": "跨平台Community Notes：复用众包情境笔记的可行性评估",
+   "cat": "cs.SI",
+   "summary_zh": "评估把X上的Community Notes复用到Bluesky的可行性",
+   "reason": "非搜推：事实核查"
+  },
+  {
+   "id": "2611.33542",
+   "title": "RankCast: Phase-Aware Rank Balancing in MoE Serving",
+   "title_zh": "RankCast：MoE服务中的阶段感知rank均衡",
+   "cat": "cs.DC",
+   "summary_zh": "在预填充-解码分离的MoE推理中均衡专家并行rank",
+   "reason": "非搜推：LLM推理服务"
+  },
+  {
+   "id": "2611.33531",
+   "title": "Adversarial Bandit Convex Optimization with $d^{3/2}\\sqrt{n}$ Regret",
+   "title_zh": "遗憾为d^{3/2}√n的对抗式赌博机凸优化",
+   "cat": "stat.ML",
+   "summary_zh": "给出对抗式赌博机凸优化的新遗憾界",
+   "reason": "非搜推：在线优化"
+  },
+  {
+   "id": "2611.33527",
+   "title": "Casper: A Projection-Based Neurosymbolic Layer for Scalable & Guaranteed Constraint Satisfaction",
+   "title_zh": "Casper：基于投影的可扩展且有保证的神经符号约束满足层",
+   "cat": "cs.LG",
+   "summary_zh": "用投影层保证神经网络输出满足约束",
+   "reason": "非搜推：神经符号"
+  },
+  {
+   "id": "2611.33525",
+   "title": "Deletion You Can Check: Auditing LLM Unlearning",
+   "title_zh": "可核查的删除：审计LLM遗忘",
+   "cat": "cs.LG",
+   "summary_zh": "审计LLM遗忘是否真正删除记录",
+   "reason": "非搜推：LLM遗忘"
+  },
+  {
+   "id": "2611.33523",
+   "title": "A Perturbation-Driven Framework for Sensitivity Analysis of Dimensionality Reduction",
+   "title_zh": "降维敏感性分析的扰动驱动框架",
+   "cat": "cs.LG",
+   "summary_zh": "用扰动分析降维方法的敏感性",
+   "reason": "非搜推：降维"
+  },
+  {
+   "id": "2611.33519",
+   "title": "PRECEPT: Security Self-Improvement of Coding Agents via Evolving Principles",
+   "title_zh": "PRECEPT：通过演化原则实现编码智能体的安全自我改进",
+   "cat": "cs.CR",
+   "summary_zh": "用演化原则让编码智能体写出更安全的代码",
+   "reason": "非搜推：代码安全"
+  },
+  {
+   "id": "2611.33515",
+   "title": "Evaluation and Restoration of Safety in Reasoning-Tuned LLMs",
+   "title_zh": "推理调优LLM的安全评估与恢复",
+   "cat": "cs.LG",
+   "summary_zh": "评估并恢复推理调优开源LLM的安全性",
+   "reason": "非搜推：LLM安全"
+  },
+  {
+   "id": "2611.33514",
+   "title": "Model Predictive Control of a Multirotor UAV with a Cable-Suspended Payload: A Comparison of Shifted and Transformer-Based Warm Starts",
+   "title_zh": "带缆绳悬挂载荷的多旋翼无人机MPC：平移与Transformer热启动比较",
+   "cat": "cs.RO",
+   "summary_zh": "比较平移与Transformer热启动在无人机MPC中的效果",
+   "reason": "非搜推：无人机控制"
+  },
+  {
+   "id": "2611.33513",
+   "title": "Learning to Reason in Real-Time",
+   "title_zh": "学习实时推理",
+   "cat": "cs.AI",
+   "summary_zh": "让智能体学会在时间约束下推理",
+   "reason": "非搜推：实时推理"
+  },
+  {
+   "id": "2611.33510",
+   "title": "LogToPersona: New Benchmark and Efficient Persona Prediction through Semantic Log Filtering",
+   "title_zh": "LogToPersona：新基准与基于语义日志过滤的高效画像预测",
+   "cat": "cs.CL",
+   "summary_zh": "",
+   "reason": "非搜推：用户画像"
+  },
+  {
+   "id": "2611.33503",
+   "title": "Using AI to Simulate the Behaviour of European Populations",
+   "title_zh": "用AI模拟欧洲人群行为",
+   "cat": "cs.CL",
+   "summary_zh": "用语言模型从群体数据学习模拟欧洲人群调查回答",
+   "reason": "非搜推：人群模拟"
+  },
+  {
+   "id": "2611.33499",
+   "title": "Evaluating Large Language Models on conversational African American English: Feature classification and next-turn generation",
+   "title_zh": "评估大语言模型在对话式非裔美国英语上的特征分类与下一轮生成",
+   "cat": "cs.CL",
+   "summary_zh": "评估LLM对非裔美国英语的理解与生成",
+   "reason": "非搜推：方言评测"
+  },
+  {
+   "id": "2611.33493",
+   "title": "Joint Estimation of Abilities and Item Parameters for Large Language Models Using Probability and Binary Responses: A Fractional-Response IRT Framework",
+   "title_zh": "基于概率与二元响应联合估计 LLM 能力和题目参数：分数响应 IRT 框架",
+   "cat": "stat.ME",
+   "summary_zh": "把概率和对错两类评测响应放进同一个两参数 IRT 模型联合估计。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33489",
+   "title": "Data-free continuous-time physics-informed neural networks for vortex shedding: a consistent pressure across time windows",
+   "title_zh": "涡脱落的无数据连续时间物理信息神经网络：跨时间窗口一致的压力",
+   "cat": "physics.flu-dyn",
+   "summary_zh": "分时间窗口训练连续时间 PINN，在无数据下得到 Re=100 的圆柱涡脱落。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33487",
+   "title": "The Geometry Is the Memory: Task-Density Routing for Continual LoRA",
+   "title_zh": "几何即记忆：面向持续 LoRA 的任务密度路由",
+   "cat": "cs.LG",
+   "summary_zh": "ContLoRA 用紧凑类别统计替代存储样本，在推理时路由到对应 adapter。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33486",
+   "title": "Benchmarking Open-Ended Vulnerability Discovery in Windows Kernel Binaries",
+   "title_zh": "Windows 内核二进制文件中开放式漏洞发现的基准评测",
+   "cat": "cs.CR",
+   "summary_zh": "评测前沿模型在闭源 Windows 内核二进制中发现未知漏洞的能力。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33479",
+   "title": "On the Impact of Extra Information in Bandit Learning: More is Not Always Merrier",
+   "title_zh": "论 Bandit 学习中额外信息的影响：多并不总是更好",
+   "cat": "stat.ML",
+   "summary_zh": "证明在随机 bandit 中免费且无偏的额外奖励样本也可能增大 regret。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33475",
+   "title": "Memory as the Backbone: A Dual-Store Associative Memory Architecture for Visual Recognition",
+   "title_zh": "以记忆为骨干：用于视觉识别的双存储联想记忆架构",
+   "cat": "cs.CV",
+   "summary_zh": "DuSAM 用工作记忆与长期记忆耦合构成记忆原生的视觉 backbone。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33470",
+   "title": "Dynamic Reasoning in Next-Gen Detection and Response: An Empirical Study of LLM Triage, Reinforcement Tuning, and Adversarial Evasion",
+   "title_zh": "下一代检测与响应中的动态推理：LLM 分诊、强化调优与对抗规避的实证研究",
+   "cat": "cs.AI",
+   "summary_zh": "在分析师告警预算下比较静态分类器、图融合和 LLM 分诊 agent。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33469",
+   "title": "Differentially Private Policy Optimization in Linear MDPs with Adversarial Rewards",
+   "title_zh": "对抗奖励线性 MDP 中的差分隐私策略优化",
+   "cat": "cs.LG",
+   "summary_zh": "研究未知转移、对抗线性奖励的线性 MDP 中的差分隐私策略优化。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33468",
+   "title": "Learning from Recurrence: Internalizing Depth-Induced Preferences in Looped Language Models",
+   "title_zh": "从递归中学习：在循环语言模型中内化深度诱导的偏好",
+   "cat": "cs.CL",
+   "summary_zh": "让循环语言模型的共享块从更大递归深度下的预测中学习。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33467",
+   "title": "SplatWAM: Splatting World Action Models for Real-Time 3D Imagination",
+   "title_zh": "SplatWAM：用于实时 3D 想象的 Splatting 世界动作模型",
+   "cat": "cs.CV",
+   "summary_zh": "在紧凑 3D 高斯基元上学习动作条件动力学的生成式世界模型。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33464",
+   "title": "PAC Learning to Sample: On Computational Aspects of Language Generation",
+   "title_zh": "PAC 学习采样：语言生成的计算方面",
+   "cat": "stat.ML",
+   "summary_zh": "在 Kleinberg–Mullainathan 极限语言生成框架下研究采样学习的计算复杂性。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33460",
+   "title": "Fast Muscle-Driven Whole-Body Motion Tracking with a Differentiable World Model",
+   "title_zh": "基于可微世界模型的快速肌肉驱动全身运动跟踪",
+   "cat": "cs.LG",
+   "summary_zh": "通过学习到的世界模型反向传播，加速肌肉骨骼全身模型的动作跟踪训练。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33459",
+   "title": "AI-human hybrid conversations: Can AI Agents Improve Discourse Quality?",
+   "title_zh": "AI 与人混合对话：AI agent 能提升讨论质量吗？",
+   "cat": "cs.CL",
+   "summary_zh": "考察 AI agent 参与对话能否改善参与不均、无人回应等问题。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33454",
+   "title": "A Realistic End-to-End Runtime Crossover Estimation for Quantum-Enhanced Training of Large-Scale Machine Learning Models",
+   "title_zh": "量子增强大规模机器学习训练的现实端到端运行时交叉点估计",
+   "cat": "quant-ph",
+   "summary_zh": "估算用量子线性求解器训练线性化神经网络的端到端运行时交叉点。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33453",
+   "title": "SecID: An LLM-Guided Framework for Threat-Aware Secondary Asset Identification with Quantitative RTL Analysis",
+   "title_zh": "SecID：基于 LLM 引导、带定量 RTL 分析的威胁感知次级资产识别框架",
+   "cat": "cs.CR",
+   "summary_zh": "用 LLM 引导识别硬件设计中可能被用于攻击的次级安全资产。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33452",
+   "title": "HumblePRM: Improving VLM Abstention in Ambiguous Situations through Process Reward Modeling",
+   "title_zh": "HumblePRM：用过程奖励建模改进 VLM 在模糊情境下的弃答",
+   "cat": "cs.CV",
+   "summary_zh": "用过程奖励模型让 VLM 在视觉证据模糊时学会不确定并弃答。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33447",
+   "title": "Centered Kernel Distance: Dimension-Free Error Bounds for Comparing Neural Representations",
+   "title_zh": "中心化核距离：比较神经表征的无维度误差界",
+   "cat": "stat.ML",
+   "summary_zh": "给出 CKA/RSA 类表征相似度估计同时依赖神经元数和实验条件数的误差界。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33437",
+   "title": "ViCARD: Visual Credit Assignment with Reward-Gated Distillation for Multimodal Reasoning",
+   "title_zh": "ViCARD：用于多模态推理的奖励门控蒸馏视觉信用分配",
+   "cat": "cs.CV",
+   "summary_zh": "针对结果型 RL 的视觉推理，用奖励门控蒸馏做 token 级信用分配。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33432",
+   "title": "Open-Source FUTO Keyboard Layouts and Predictive Text for a Few Endangered Languages",
+   "title_zh": "面向若干濒危语言的开源 FUTO 键盘布局与预测输入",
+   "cat": "cs.CL",
+   "summary_zh": "为五种乌拉尔濒危语言构建 FUTO 键盘布局和加权预测词典。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33428",
+   "title": "When the Knowledge Runs Out: A Part-Level Pilot Evaluation of How Language Models Handle Partially Covered Questions",
+   "title_zh": "当知识耗尽时：语言模型如何处理部分覆盖问题的分部分试点评测",
+   "cat": "cs.CL",
+   "summary_zh": "对问题的每个部分分别评分，评估参考材料只覆盖部分问题时的回答。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33426",
+   "title": "Scalpel and Brush: Pruning and Targeted Weight Editing of a Small Language Model by a Single LLM Agent",
+   "title_zh": "手术刀与画笔：单个 LLM agent 对小语言模型的剪枝和定向权重编辑",
+   "cat": "cs.LG",
+   "summary_zh": "把修复和剪枝统一为稀疏权重编辑，拆分 agent 与随机编辑的贡献。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33424",
+   "title": "Yet Another Concept Drift Benchmark? A Principled Framework for Evaluating Drift Detectors",
+   "title_zh": "又一个概念漂移基准？评估漂移检测器的原则性框架",
+   "cat": "cs.LG",
+   "summary_zh": "基于漂移可观测性和告警语义提出概念漂移检测器评测基准。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33417",
+   "title": "Temporal Selective Exploration for Reinforcement Learning-Guided Continuous-Discrete Flow Matching in 3D Molecular Design",
+   "title_zh": "用于 3D 分子设计的强化学习引导连续-离散流匹配的时间选择性探索",
+   "cat": "cs.LG",
+   "summary_zh": "为 RL 优化连续-离散混合 flow matching 提出时间选择性探索。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33411",
+   "title": "Collaborative Language Models for Semantic IoT Data Processing: Validation through Zero-Shot Human Activity Recognition",
+   "title_zh": "用于语义 IoT 数据处理的协作语言模型：零样本人体活动识别验证",
+   "cat": "cs.AI",
+   "summary_zh": "用协作语言模型把传感器观测零样本抽象成高层事件和活动。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33409",
+   "title": "A Semantics-First Approach to Multimodal Video Captioning with Frozen Encoders and Stabilized Reinforcement Learning",
+   "title_zh": "基于冻结编码器和稳定强化学习的语义优先多模态视频描述",
+   "cat": "cs.CV",
+   "summary_zh": "AVQFormer 用固定长度语义对齐模块和 ASCST 训练视频描述。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33407",
+   "title": "An Adversarial Multi-Agent Pursuit Game for Locomotor Agility Pretraining",
+   "title_zh": "用于运动敏捷性预训练的对抗式多智能体追逐博弈",
+   "cat": "cs.RO",
+   "summary_zh": "通过对抗追逐博弈预训练人形机器人的敏捷运动控制器。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33402",
+   "title": "Partial Routing: Trace-Tuned Delegation for Resource-Efficient Agentic Workflows",
+   "title_zh": "部分路由：面向资源高效 agent 工作流的轨迹调优委派",
+   "cat": "cs.AI",
+   "summary_zh": "让前沿主模型把适合的子任务委派给更便宜的模型。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33400",
+   "title": "Gaussian priors from nonlinear PDEs with the semiclassical approximation",
+   "title_zh": "基于半经典近似的非线性 PDE 高斯先验",
+   "cat": "stat.ML",
+   "summary_zh": "用半经典近似从非线性 PDE 构造概率数值方法所需的高斯先验。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33399",
+   "title": "Sequentially Acquiring Concept Knowledge to Guide Continual Learning",
+   "title_zh": "顺序获取概念知识以指导持续学习",
+   "cat": "cs.LG",
+   "summary_zh": "研究概念学习的顺序和性质对持续学习稳定性与可塑性的影响。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33398",
+   "title": "Best-of-$N$ Test-Time Steering Can Lead to Reward Hacking in Vision-Language-Action Models",
+   "title_zh": "Best-of-N 测试时引导可能导致视觉-语言-动作模型的奖励投机",
+   "cat": "cs.RO",
+   "summary_zh": "指出 VLA 模型的 best-of-N 测试时引导会出现 reward hacking。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33395",
+   "title": "Federated Learning with Uncertainty Quantification on Pseudo Label Exchange",
+   "title_zh": "基于伪标签交换的带不确定性量化的联邦学习",
+   "cat": "cs.LG",
+   "summary_zh": "面向 SPDE 的联邦随机算子学习，处理异构客户端并量化不确定性。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33394",
+   "title": "Confidence scores for gated automation of large language models",
+   "title_zh": "用于大语言模型门控自动化的置信度分数",
+   "cat": "cs.AI",
+   "summary_zh": "研究如何给 LLM 决策提供可靠置信度以门控自动化。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33393",
+   "title": "Can a Short Video Clip Verify a Model Fix?",
+   "title_zh": "一段短视频片段能验证模型修复吗？",
+   "cat": "cs.MM",
+   "summary_zh": "在 CG-Bench 上检验短片段回放能否可靠验证视频模型更新后的修复。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33390",
+   "title": "RoboARC: Physical Puzzles for Robotic Manipulation under Spatial Constraints",
+   "title_zh": "RoboARC：空间约束下机器人操作的物理谜题",
+   "cat": "cs.RO",
+   "summary_zh": "构建依赖精确几何的物理谜题基准，考察机器人操作的空间约束问题。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33388",
+   "title": "Measuring and Predicting Image-Token Repair Boundaries in Vision-Language Models",
+   "title_zh": "度量和预测视觉-语言模型中的图像 token 修复边界",
+   "cat": "cs.CV",
+   "summary_zh": "追踪哪些干净图像 token 能修复退化图像造成的 VLM 错误。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33385",
+   "title": "Poisoning Self-Evolving Security Policies in LLM Agents",
+   "title_zh": "投毒 LLM agent 的自进化安全策略",
+   "cat": "cs.CR",
+   "summary_zh": "一个提示注入样本即可让自进化防御学到过宽策略，形成新攻击面。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33379",
+   "title": "Probabilistic Machine Learning for Total Kinetic Energy Distributions in Neutron-Induced Fission",
+   "title_zh": "中子诱发裂变总动能分布的概率机器学习",
+   "cat": "nucl-th",
+   "summary_zh": "比较 GEF 和基于 GEF 训练的概率模型对 TKE 分布宽度的复现。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33375",
+   "title": "Evaluating Ensemble Methods for Algorithmic Stability Under Data Perturbations",
+   "title_zh": "评估数据扰动下集成方法的算法稳定性",
+   "cat": "stat.ML",
+   "summary_zh": "指出集成可能破坏本已稳定分类器的稳定性。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33369",
+   "title": "Benchmarking Segmentation Models for Scalable Mangrove Mapping with Sentinel-1/2 Imagery",
+   "title_zh": "基于 Sentinel-1/2 影像的大规模红树林制图分割模型基准",
+   "cat": "cs.CV",
+   "summary_zh": "评测多种分割模型用免费卫星影像做红树林制图。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33364",
+   "title": "Discovering Explicit Magnetic Core-Loss Equations via Symbolic Sparse Identification",
+   "title_zh": "通过符号稀疏辨识发现显式磁芯损耗方程",
+   "cat": "cs.LG",
+   "summary_zh": "用符号稀疏辨识得到兼顾精度与可解释性的紧凑磁芯损耗公式。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33353",
+   "title": "The Marauder's Map: Bézier Manifolds Reveal Hidden Surfaces for Model Merging and Ensembling",
+   "title_zh": "Marauder 地图：贝塞尔流形揭示模型合并与集成的隐藏曲面",
+   "cat": "cs.LG",
+   "summary_zh": "用贝塞尔流形刻画网络参数空间的退化性，用于模型合并与集成。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33351",
+   "title": "Understanding Failure Patterns in LLM-Based Mathematical Optimization Modeling",
+   "title_zh": "理解基于 LLM 的数学优化建模中的失败模式",
+   "cat": "cs.LG",
+   "summary_zh": "分析 LLM 从自然语言生成优化模型时的不可执行、不可行等失败类型。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33339",
+   "title": "Temporal Weight Surgery: Repairing Video Grounding with LLM Editors",
+   "title_zh": "时间权重手术：用 LLM 编辑器修复视频定位",
+   "cat": "cs.CV",
+   "summary_zh": "让通用 LLM 读取模型权重与激活，定位并修复视频定位的时间错误。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33335",
+   "title": "FlowersBench: A FluidFlower-Inspired Dataset for Benchmarking Carbon Storage Surrogates Across Geological Structures",
+   "title_zh": "FlowersBench：受 FluidFlower 启发的、跨地质结构的碳封存代理模型基准数据集",
+   "cat": "cs.LG",
+   "summary_zh": "构建改变地质结构的碳封存代理模型基准数据集。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33333",
+   "title": "A Hierarchy of Risk Certificates for Representation-Based Prediction",
+   "title_zh": "基于表征的预测的风险证书层级",
+   "cat": "cs.LG",
+   "summary_zh": "研究固定表征上 Lipschitz 解码器的最优总体 MSE 及风险证书。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33332",
+   "title": "Online Prediction System for Proactive Autoscaling",
+   "title_zh": "面向主动式自动扩缩容的在线预测系统",
+   "cat": "cs.LG",
+   "summary_zh": "面向大规模分布式系统的低延迟短期时间序列在线预测系统。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33331",
+   "title": "Do Not Let the Prior Heal the Anomaly: Selective Anchoring for Detection from Incomplete Measurements",
+   "title_zh": "别让先验治愈异常：不完整测量下检测的选择性锚定",
+   "cat": "cs.CV",
+   "summary_zh": "选择性锚定保护可靠测量成分，避免生成先验抹掉病灶。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33327",
+   "title": "Who Attributes a Mind to Whom? Mutual Theory of Mind in Simulated User-Assistant Conversation",
+   "title_zh": "谁把心智归于谁？模拟用户-助手对话中的相互心智理论",
+   "cat": "cs.CL",
+   "summary_zh": "在模拟对话中研究用户如何以及为何把心智状态归于 AI。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33325",
+   "title": "Sparse Adaptation for In-Context Learning on Data Streams",
+   "title_zh": "数据流上上下文学习的稀疏自适应",
+   "cat": "cs.LG",
+   "summary_zh": "面向 IoT 数据流，为表格基础模型的上下文学习做稀疏自适应。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33318",
+   "title": "What Must LLM Agents Communicate? From Information Loss to Communication Failures",
+   "title_zh": "LLM agent 必须交流什么？从信息丢失到沟通失败",
+   "cat": "cs.MA",
+   "summary_zh": "分析分布式证据下 agent 间有效沟通所需的信息充分性等条件。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33316",
+   "title": "What Does RL Post-Training Teach Text-to-Image Models? A Skill-Wise Analysis of Flow-GRPO",
+   "title_zh": "RL 后训练教会文生图模型什么？Flow-GRPO 的分技能分析",
+   "cat": "cs.CV",
+   "summary_zh": "用 pass@k 衡量 Flow-GRPO 的提升有多少已存在于基础模型采样中。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33315",
+   "title": "Large-scale Model Merging via Recovery-aware Task Weighting",
+   "title_zh": "基于恢复感知任务加权的大规模模型合并",
+   "cat": "cs.CV",
+   "summary_zh": "在大规模模型合并中用恢复感知加权缓解各任务能力保留不均。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33314",
+   "title": "Building a Unified Inline Code Editing Model for GitHub Copilot",
+   "title_zh": "为 GitHub Copilot 构建统一的行内代码编辑模型",
+   "cat": "cs.SE",
+   "summary_zh": "统一预测光标处与远处下一处编辑的行内代码编辑模型。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33308",
+   "title": "Change Partners at Every Layer: Balanced Random Regrouping for Model Merging",
+   "title_zh": "每层更换伙伴：用于模型合并的平衡随机重分组",
+   "cat": "cs.LG",
+   "summary_zh": "在每层随机重新分组专家再合并，降低多专家合并的精度损失。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33307",
+   "title": "Lost in Translation, Not in Confidence: Benchmarking and Calibrating Multilingual Decision Models",
+   "title_zh": "迷失于翻译而非置信度：多语言决策模型的基准评测与校准",
+   "cat": "cs.CL",
+   "summary_zh": "评测 25 个决策模型在 14 种语言上的表现并做校准。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33304",
+   "title": "The Platonic Representation Hypothesis in Jacobian-Space: Language and Vision Models Agree Approximately Up to a Rotation",
+   "title_zh": "雅可比空间中的柏拉图表征假说：语言与视觉模型在旋转意义下近似一致",
+   "cat": "cs.AI",
+   "summary_zh": "在雅可比空间检验语言与视觉模型的行为是否也近似一致。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33303",
+   "title": "Certify What You Plant: Shortcut-Free Proof Depth in Logical Reasoning Data",
+   "title_zh": "证明你所植入的：逻辑推理数据中无捷径的证明深度",
+   "cat": "cs.AI",
+   "summary_zh": "检验程序生成逻辑题中植入证明是否是最短证明并加以认证。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.33302",
+   "title": "Two Timescales of Forgetting in Fine-tuning of Language Models: Fast Behavioral Suppression and Slow Representational Drift",
+   "title_zh": "语言模型微调中遗忘的两种时间尺度：快速行为抑制与缓慢表征漂移",
+   "cat": "cs.LG",
+   "summary_zh": "区分微调中快速的行为抑制和缓慢的表征漂移。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.34591",
+   "title": "ADClaw: A Programmable Visual Agent for Industrial Anomaly Detection and Understanding",
+   "title_zh": "ADClaw：用于工业异常检测与理解的可编程视觉 agent",
+   "cat": "cs.CV",
+   "summary_zh": "可编程视觉 agent，支持工业异常检测中多步复查。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.34549",
+   "title": "CADENCE: Sensor-GroundedWorld-Consistent Gaussian SLAM for Collaborative Mobile Reconstruction",
+   "title_zh": "CADENCE：用于协作式移动重建的传感器接地、世界一致的高斯 SLAM",
+   "cat": "cs.CV",
+   "summary_zh": "多手机协作高斯 SLAM，防止单个劣质贡献者污染共享地图。",
+   "reason": "与搜推无关"
+  },
+  {
+   "id": "2611.34476",
+   "title": "TACC: Target-Aware Carrier Compression for Dense-Context Novel View Synthesis",
+   "title_zh": "TACC：面向稠密上下文新视角合成的目标感知载体压缩",
+   "cat": "cs.CV",
+   "summary_zh": "通过目标感知的载体压缩降低稠密上下文新视角合成的开销",
+   "reason": "非搜推：新视角合成"
+  },
+  {
+   "id": "2611.34153",
+   "title": "HSTTA: Hierarchical Selective Test-Time Adaptation for Label-Free Cross-Subject EEG-to-Image Retrieval",
+   "title_zh": "HSTTA：面向无标签跨被试EEG到图像检索的分层选择性测试时自适应",
+   "cat": "cs.CV",
+   "summary_zh": "用测试时自适应做跨被试 EEG 到图像的检索",
+   "reason": "脑信号解码，非搜推"
+  },
+  {
+   "id": "2611.34100",
+   "title": "When Position Favors the Wrong Part: Evaluating Left-Right Discrimination in Semantic Correspondence",
+   "title_zh": "位置偏向错误部位时：语义对应中的左右判别评测",
+   "cat": "cs.CV",
+   "summary_zh": "评测语义对应模型区分左右部位的能力",
+   "reason": "非搜推：语义对应"
+  },
+  {
+   "id": "2611.34064",
+   "title": "SPARC: Geometry-Guided Attention Pruning for Long-Horizon Camera-Controlled Video Generation",
+   "title_zh": "SPARC：面向长时程相机控制视频生成的几何引导注意力剪枝",
+   "cat": "cs.CV",
+   "summary_zh": "用几何引导的注意力剪枝加速长视频生成",
+   "reason": "非搜推：视频生成"
+  },
+  {
+   "id": "2611.34006",
+   "title": "Manga Page Parser: Comprehensive Visual Parsing through Local Story Understanding",
+   "title_zh": "漫画页面解析器：基于局部故事理解的综合视觉解析",
+   "cat": "cs.CV",
+   "summary_zh": "结合局部故事理解对漫画页面做视觉解析",
+   "reason": "非搜推：漫画解析"
+  },
+  {
+   "id": "2611.33947",
+   "title": "A Computational Model of Continuous Recognition Memory for Natural Images",
+   "title_zh": "自然图像连续识别记忆的计算模型",
+   "cat": "cs.CV",
+   "summary_zh": "建立自然图像连续识别记忆的计算模型",
+   "reason": "认知建模，非搜推"
+  },
+  {
+   "id": "2611.33885",
+   "title": "LayoutRecall: Preserving Appearance in Multi-Round 3D Layout-Controlled Image Editing",
+   "title_zh": "LayoutRecall：多轮3D布局控制图像编辑中保持外观",
+   "cat": "cs.CV",
+   "summary_zh": "在多轮 3D 布局控制编辑中保持物体外观",
+   "reason": "非搜推：图像编辑"
+  },
+  {
+   "id": "2611.33835",
+   "title": "3D CoCa v3: Contrastive Learners with Scene Graphs for Urban Scene Understanding",
+   "title_zh": "3D CoCa v3：用场景图的对比学习器理解城市场景",
+   "cat": "cs.CV",
+   "summary_zh": "用场景图增强城市场景的 3D 理解",
+   "reason": "非搜推：3D 场景理解"
+  },
+  {
+   "id": "2611.33819",
+   "title": "MMotion: Collaborative Cross-Scale Memory for Text-to-Motion Generation",
+   "title_zh": "MMotion：面向文本到动作生成的协同跨尺度记忆",
+   "cat": "cs.CV",
+   "summary_zh": "用跨尺度记忆改进文本到动作生成",
+   "reason": "非搜推：动作生成"
+  },
+  {
+   "id": "2611.33654",
+   "title": "Fine-Grained Ego-Vehicle Action Recognition from Driving Video",
+   "title_zh": "基于驾驶视频的细粒度自车动作识别",
+   "cat": "cs.CV",
+   "summary_zh": "从驾驶视频识别细粒度自车动作",
+   "reason": "非搜推：动作识别"
+  },
+  {
+   "id": "2611.33650",
+   "title": "Linear-Time Online Visual Geometry Transformer with Hybrid Architecture",
+   "title_zh": "混合架构的线性时间在线视觉几何Transformer",
+   "cat": "cs.CV",
+   "summary_zh": "用混合架构实现线性时间的在线视觉几何估计",
+   "reason": "非搜推：视觉几何"
+  },
+  {
+   "id": "2611.33511",
+   "title": "ArtLang-4D: Articulation-Aware Dynamic Language Fields from Monocular Videos",
+   "title_zh": "ArtLang-4D：从单目视频学习关节感知的动态语言场",
+   "cat": "cs.CV",
+   "summary_zh": "从单目视频构建关节感知的动态语言场",
+   "reason": "非搜推：4D 语言场"
+  },
+  {
+   "id": "2611.33455",
+   "title": "Recovering What Matters, Transferring Only What Is Reliable: Toward Precise Reference-Based Super-Resolution",
+   "title_zh": "找回关键信息，只迁移可靠内容：精确的参考式超分辨率",
+   "cat": "cs.CV",
+   "summary_zh": "在参考式超分中只迁移可靠的参考信息",
+   "reason": "非搜推：超分辨率"
+  },
+  {
+   "id": "2611.33323",
+   "title": "StyleID++: Position-Decoupled and Structure-Coherent Style Retrieval across Diffusion Architectures",
+   "title_zh": "StyleID++：跨扩散架构的位置解耦、结构一致的风格检索",
+   "cat": "cs.CV",
+   "summary_zh": "消除风格迁移注意力注入中的位置泄漏",
+   "reason": "扩散风格迁移，非搜推"
+  }
+ ]
+}
