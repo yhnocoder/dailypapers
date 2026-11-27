@@ -2,11 +2,11 @@
 <html lang="zh-CN">
 <meta charset="utf-8">
 <title>论文日报</title>
-<!-- 主题「纸墨」。默认主题「报纸」在 index.html；两页读同一份 data/，用右上角的「版面」互相切换，选择记在 localStorage.skin。 -->
+<!-- 主题「纸墨」。默认主题「报纸」在 index.html；两页读同一份 data/，在「设置」里（报纸版是右上角的「版面」）互相切换，选择记在 localStorage.skin。 -->
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="color-scheme" content="light dark">
-<script>try{const t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>try{const t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;if(localStorage.getItem('paper')==='w')document.documentElement.dataset.paper='w'}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..600&family=Noto+Sans+SC:wght@400;500&family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -20,8 +20,7 @@
   --paper:#f4f0e6;--paper2:#ebe6d9;--ink:#1b1916;--body:#2a2722;--mute:#6f685c;--faint:#a8a091;
   --hair:#d9d2c3;--plate:#f8f5ee;--accent:#c4351c;--hl:#f4cdb8;--seal:#c4351c;--sealink:#f7efe2;
   --dA:#2f6a8f;--dB:#3a7d64;--dC:#a65f35;--dD:#987313;--dE:#3a548a;--dF:#a23a5c;--dG:#647539;--dH:#73528a;--dZ:#7a746a;
-  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .12 0 0 0 0 .06 0 0 0 .34 -.13'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --grain-n:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .12 0 0 0 0 .11 0 0 0 .3 -.115'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .12 0 0 0 0 .06 0 0 0 .17 -.065'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --serif:"Newsreader","Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
   --song:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
   --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
@@ -80,8 +79,7 @@ html:not(.norv) .rv:not(.in) .em .f{opacity:0;transition:none}
 .c-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;font:400 12.5px/1.6 var(--sans);color:var(--mute);letter-spacing:.14em}
 .c-top select{font:500 13px/1.6 var(--sans);color:var(--ink);letter-spacing:.1em;appearance:none;-webkit-appearance:none;text-align:right;text-align-last:right;padding:0 16px 0 4px;line-height:1;max-width:100%;
   background:no-repeat right 2px center/8px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5' fill='none' stroke='%23888' stroke-width='1.2'%3E%3Cpath d='m1 1 3 3 3-3'/%3E%3C/svg%3E")}
-.c-top>h1,.c-top>select,#skin{flex:none}
-#skin{font:400 12.5px/1 var(--sans);color:var(--mute);letter-spacing:.06em;transition:color .2s}#skin:hover{color:var(--accent)}
+.c-top>h1,.c-top>select{flex:none}
 .c-top{letter-spacing:0}
 .rail{flex:0 1 auto;display:flex;align-items:flex-end;gap:0;overflow-x:auto;scrollbar-width:none;letter-spacing:0;padding:6px 10px 0;-webkit-mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent);mask:linear-gradient(90deg,transparent,#000 18px,#000 calc(100% - 18px),transparent)}
 .rail::-webkit-scrollbar{display:none}
@@ -426,21 +424,24 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   #stars .s-body .fig.side{float:none;width:100%;margin:1.2em 0 1.3em}
 }
 
-/* ── 试看：纸色。选定之后把那一组值写进 :root，删掉这一段和页面底部的色条。只在日间生效。 ── */
-#try{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:2px;background:#1b1916;color:#f4f0e6;padding:5px 6px 5px 14px;font:500 12.5px/1 var(--sans);letter-spacing:.06em;box-shadow:0 14px 30px -12px rgba(0,0,0,.55);white-space:nowrap;max-width:calc(100vw - 16px);overflow-x:auto}
-#try span{opacity:.6;margin-right:6px}
-#try b{width:1px;height:16px;background:#f4f0e6;opacity:.25;margin:0 8px;flex:none}
-#try button{display:flex;align-items:center;gap:7px;padding:7px 9px;color:#f4f0e6;opacity:.75;transition:opacity .2s,background .2s}
-#try button i{width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.35)}
-#try button:hover{opacity:1}
-#try button.on{opacity:1;background:#c4351c}
-:root[data-theme=dark] #try{display:none}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]) #try{display:none}}
-:root[data-paper="1"]{--paper:#f6f4ee;--paper2:#eeebe3;--hair:#d8d3c7;--plate:#faf8f3}
-:root[data-paper="2"]{--paper:#faf9f5;--paper2:#f1efe9;--hair:#dcd8ce;--plate:#fdfcf9}
-:root[data-paper="3"]{--paper:#f1f3f0;--paper2:#e6e9e5;--hair:#cfd4cd;--plate:#f7f8f5;--grain:var(--grain-n)}
-:root[data-paper="4"]{--paper:#f2f1ef;--paper2:#e8e7e4;--hair:#d3d1cc;--plate:#f8f7f5;--grain:var(--grain-n)}
-:root[data-paper="5"]{--paper:#ffffff;--paper2:#f3f3f1;--hair:#dddcd8;--plate:#ffffff;--grain:var(--grain-n)}
+/* ── 纸色：暖黄（默认，淡纸纹）和纯白（无纸纹）。只在日间生效，夜间两种都是同一套深色。 ── */
+@media(prefers-color-scheme:light){:root[data-paper=w]:not([data-theme=dark]){--paper:#fff;--paper2:#f3f3f1;--hair:#dddcd8;--plate:#fff;--grain:none}}
+:root[data-paper=w][data-theme=light]{--paper:#fff;--paper2:#f3f3f1;--hair:#dddcd8;--plate:#fff;--grain:none}
+
+/* ── 设置面板 ─────────────────────────────────────────── */
+#gear{width:34px;height:36px;display:grid;place-items:center;color:var(--ink);transition:color .2s}
+#gear svg{width:17px;height:17px}
+#gear:hover,#gear[aria-expanded=true]{color:var(--accent)}
+#set{position:absolute;right:var(--pad);top:calc(100% + 8px);z-index:40;width:min(300px,calc(100vw - 32px));background:var(--paper);border:1px solid var(--ink);border-top-width:3px;padding:14px 16px 6px;box-shadow:0 18px 40px -18px rgba(0,0,0,.5);transform-origin:90% 0;animation:pop .28s var(--ease)}
+#set h2{font:700 15px/1 var(--song);color:var(--ink);letter-spacing:.3em;margin-bottom:6px}
+.srow{display:grid;grid-template-columns:3.4em minmax(0,1fr);align-items:center;gap:4px 10px;padding:11px 0;border-top:1px solid var(--hair)}
+.srow>span{font:500 12.5px/1 var(--sans);color:var(--mute);letter-spacing:.12em}
+.srow p{display:flex;flex-wrap:wrap;gap:6px}
+.srow button{display:flex;align-items:center;gap:7px;font:400 14px/1 var(--serif);color:var(--ink);padding:7px 10px;border:1px solid var(--hair);transition:border-color .2s,background .2s,color .2s}
+.srow button i{width:13px;height:13px;border-radius:50%;border:1px solid var(--faint)}
+.srow button:hover{border-color:var(--ink)}
+.srow button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.srow small{grid-column:2;font:400 11.5px/1.4 var(--sans);color:var(--faint);letter-spacing:.04em}
 
 /* ── 窄屏 ─────────────────────────────────────────────── */
 @media(max-width:1100px){
@@ -468,7 +469,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   .lk{margin-left:0}
   .brand{display:none}
   #date small{display:none}
-  #q{width:92px}#q:focus{width:132px}
+  #q{width:26px;padding-right:0;border-bottom-color:transparent}#q:focus{width:118px;border-bottom-color:var(--ink)}#q:not(:focus)::placeholder{color:transparent}
   .colo{grid-template-columns:minmax(0,1fr)}.colo .keys{display:none}
   #lb img{max-width:calc(100vw - 32px)}#lb img.vec{width:calc(100vw - 32px)}
   #cal{width:min(272px,calc(100vw - 32px))}
@@ -476,7 +477,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}
 }
-@media print{.rv{opacity:1!important;transform:none!important}.bar,#prog,#try{display:none}}
+@media print{.rv{opacity:1!important;transform:none!important}.bar,#prog{display:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="rough" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter></svg>
@@ -484,7 +485,7 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
 
 <div class="page">
   <header class="cover" id="cover">
-    <div class="c-top c-fade"><h1 class="np" lang="en">arXiv Daily</h1><span class="seal" id="issue"></span><nav class="rail" id="rail" aria-label="各期"></nav><a href="index.html" id="skin" title="换回「报纸」版面">版面：纸墨 ⇄ 报纸</a><select id="topic" aria-label="主题"></select></div>
+    <div class="c-top c-fade"><h1 class="np" lang="en">arXiv Daily</h1><span class="seal" id="issue"></span><nav class="rail" id="rail" aria-label="各期"></nav><select id="topic" aria-label="主题"></select></div>
     <div class="c-grid" id="cgrid">
       <div class="c-day" id="cday"></div>
     </div>
@@ -503,6 +504,13 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
       <label class="find"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="6.8" cy="6.8" r="4.8"/><path d="m10.5 10.5 4 4"/></svg>
         <input id="q" type="search" placeholder="检索全部" aria-label="检索全部期：标题、摘要、机构、解读"></label>
       <button id="theme" aria-label="切换日间 / 夜间" title="日 / 夜"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 2a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
+      <button id="gear" aria-haspopup="dialog" aria-expanded="false" aria-controls="set" aria-label="设置" title="设置"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M3 6h7M14 6h3M3 14h3M10 14h7"/><circle cx="12" cy="6" r="2"/><circle cx="8" cy="14" r="2"/></svg></button>
+      <div id="set" role="dialog" aria-label="设置" hidden>
+        <h2>设置</h2>
+        <div class="srow" id="set-skin"><span>版面</span><p><button data-skin="paper">报纸</button><button data-skin="ink" class="on">纸墨</button></p></div>
+        <div class="srow"><span>纸色</span><p><button data-paper="y"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="w"><i style="background:#fff"></i>纯白</button></p><small>只在日间生效</small></div>
+        <div class="srow"><span>明暗</span><p><button data-mode="auto">跟随系统</button><button data-mode="light">日间</button><button data-mode="dark">夜间</button></p></div>
+      </div>
     </div>
   </div>
 
@@ -515,7 +523,6 @@ strong .term{text-decoration:none;border-bottom:1px dotted var(--mute)}
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
-<div id="try" role="group" aria-label="试看纸色"><span>纸色</span><button data-paper="0"><i style="background:#f4f0e6"></i>暖黄</button><button data-paper="1"><i style="background:#f6f4ee"></i>米白</button><button data-paper="2"><i style="background:#faf9f5"></i>宣白</button><button data-paper="3"><i style="background:#f1f3f0"></i>月白</button><button data-paper="4"><i style="background:#f2f1ef"></i>灰白</button><button data-paper="5"><i style="background:#ffffff"></i>纯白</button><b></b><span>颗粒</span><button data-grain="0">无</button><button data-grain="0.5">淡</button><button data-grain="1">中</button><button data-grain="1.8">重</button><b></b><button data-size="0.85">细</button><button data-size="0.45">粗</button></div>
 <div id="turn" aria-hidden="true"><div class="td"></div></div>
 
 <script>
@@ -526,18 +533,15 @@ const root=document.documentElement;
 const RM=matchMedia('(prefers-reduced-motion:reduce)');
 const WK='日一二三四五六',CD='〇一二三四五六七八九',ORD='壹贰叁肆伍陆柒捌玖拾';
 const S={topics:[],topic:null,date:null,day:null,dir:null,star:false,q:''};
-/* 试看用的纸色开关 */
-let PAPER='0';try{const v=localStorage.getItem('paper');if(/^[0-5]$/.test(v||''))PAPER=v}catch(e){}
-let GRAIN=1,GSIZE=.85;try{const g=parseFloat(localStorage.getItem('grain')),z=parseFloat(localStorage.getItem('gsize'));if(g>=0&&g<=3)GRAIN=g;if(z>.2&&z<1.2)GSIZE=z}catch(e){}
-/* 纸纹是一张 feTurbulence 噪点的 SVG：强弱改透明度的斜率，粗细改噪点频率。按当前的日夜和纸色配颜色。 */
-function applyGrain(){
-  const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches,cool=/^[345]$/.test(PAPER);
-  const [rgb,k,o]=dark?['1 0 0 0 0 .95 0 0 0 0 .85',.2,-.08]:cool?['.12 0 0 0 0 .12 0 0 0 0 .11',.3,-.115]:['.16 0 0 0 0 .12 0 0 0 0 .06',.34,-.13],c=rgb.split(' ');
-  const m=`0 0 0 0 ${c[0]} 0 0 0 0 ${c[5]} 0 0 0 0 ${c[10]} 0 0 0 ${(k*GRAIN).toFixed(3)} ${(o*GRAIN).toFixed(3)}`;
-  root.style.setProperty('--grain',GRAIN?`url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='${GSIZE}' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='${m}'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`)}")`:'none');
-  document.querySelectorAll('#try [data-grain]').forEach(b=>b.classList.toggle('on',+b.dataset.grain===GRAIN));document.querySelectorAll('#try [data-size]').forEach(b=>b.classList.toggle('on',+b.dataset.size===GSIZE));
+/* 设置：纸色（y 暖黄 / w 纯白）和明暗（auto / light / dark），都记在 localStorage */
+let PAPER='y';try{if(localStorage.getItem('paper')==='w')PAPER='w'}catch(e){}
+function syncSet(){
+  if(PAPER==='w')root.dataset.paper='w';else delete root.dataset.paper;
+  const mode=root.dataset.theme||'auto';
+  document.querySelectorAll('#set [data-paper]').forEach(b=>b.classList.toggle('on',b.dataset.paper===PAPER));
+  document.querySelectorAll('#set [data-mode]').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
 }
-function applyPaper(){if(PAPER==='0')delete root.dataset.paper;else root.dataset.paper=PAPER;document.querySelectorAll('#try [data-paper]').forEach(b=>b.classList.toggle('on',b.dataset.paper===PAPER));applyGrain()}
+function closeSet(){$('set').hidden=true;$('gear').setAttribute('aria-expanded','false')}
 const dir=c=>S.topic.directions.find(d=>d.code===c)||{code:c,name:c};
 const full=n=>n.replace(/（.*?）/,'');
 const short=n=>full(n).split(' / ')[0];
@@ -672,7 +676,7 @@ function navHTML(dirs,cnt,nStar){
     +dirs.map(d=>`<button data-k="d" data-d="${esc(d.code)}" ${cv(d.code)} class="${S.dir===d.code?'on':''}" title="${esc(d.name)}" ${cnt(d.code)?'':'disabled'}>${esc(short(d.name))}</button>`).join('');
 }
 function render(fresh){
-  hideG();closeCal();
+  hideG();closeCal();closeSet();
   if(S.q){search();return}
   $('cover').hidden=false;$('lede').hidden=false;$('lead').hidden=false;$('stars').hidden=false;$('inside').hidden=false;$('foot').hidden=false;$('results').hidden=true;
   const d=S.day,ps=d.papers||[],t=ymd(S.date);
@@ -829,7 +833,7 @@ const step=d=>{const ds=S.topic.dates,v=ds[ds.indexOf(S.date)+d];if(v)go(v)};
 /* ── 主题：从按钮处一圈墨晕开 ─────────────────────────── */
 function setTheme(e){
   const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches,next=dark?'light':'dark';
-  const apply=()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}applyGrain()};
+  const apply=()=>{root.dataset.theme=next;try{localStorage.setItem('theme',next)}catch(_){}syncSet()};
   if(!document.startViewTransition||RM.matches){apply();return}
   const b=$('theme').getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2,r=Math.hypot(Math.max(cx,innerWidth-cx),Math.max(cy,innerHeight-cy));
   root.classList.add('vt-theme');
@@ -837,8 +841,6 @@ function setTheme(e){
   vt.ready.then(()=>root.animate({clipPath:[`circle(0 at ${cx}px ${cy}px)`,`circle(${r}px at ${cx}px ${cy}px)`]},{duration:700,easing:'cubic-bezier(.5,0,.2,1)',pseudoElement:'::view-transition-new(root)'})).catch(()=>{});
   vt.finished.finally(()=>root.classList.remove('vt-theme'));
 }
-
-matchMedia('(prefers-color-scheme:dark)').addEventListener?.('change',applyGrain);
 
 /* ── 事件 ─────────────────────────────────────────────── */
 document.addEventListener('click',e=>{
@@ -850,8 +852,15 @@ document.addEventListener('click',e=>{
   if($('cal')&&!e.target.closest('#cal'))closeCal();
   if(e.target.closest('#brand')){e.preventDefault();scrollTo({top:0,behavior:RM.matches?'auto':'smooth'});return}
   if(e.target.closest('#theme')){setTheme(e);return}
-  const tb=e.target.closest('#try button');if(tb){if(tb.dataset.paper)PAPER=tb.dataset.paper;else if(tb.dataset.grain)GRAIN=+tb.dataset.grain;else GSIZE=+tb.dataset.size;try{localStorage.setItem('paper',PAPER);localStorage.setItem('grain',GRAIN);localStorage.setItem('gsize',GSIZE)}catch(_){}applyPaper();return}
-  if(e.target.closest('#skin')){e.preventDefault();try{localStorage.setItem('skin','paper')}catch(_){}location.href='index.html'+location.hash;return}
+  if(e.target.closest('#gear')){const o=$('set').hidden;$('set').hidden=!o;$('gear').setAttribute('aria-expanded',o);return}
+  const sb=e.target.closest('#set button');
+  if(sb){
+    if(sb.dataset.skin){if(sb.dataset.skin==='paper'){try{localStorage.setItem('skin','paper')}catch(_){}location.href='index.html'+location.hash}return}
+    if(sb.dataset.paper){PAPER=sb.dataset.paper;try{localStorage.setItem('paper',PAPER)}catch(_){}}
+    else if(sb.dataset.mode==='auto'){delete root.dataset.theme;try{localStorage.removeItem('theme')}catch(_){}}
+    else{root.dataset.theme=sb.dataset.mode;try{localStorage.setItem('theme',sb.dataset.mode)}catch(_){}}
+    syncSet();return}
+  if(!$('set').hidden&&!e.target.closest('#set'))closeSet();
   const mt=e.target.closest('button.more-th');if(mt){mt.parentElement.querySelectorAll('.th[hidden]').forEach(v=>v.hidden=false);mt.remove();return}
   const zb=e.target.closest('button.zoom');if(zb){lbOpen(zb.dataset.pid,+zb.dataset.i,zb);return}
   const cp=e.target.closest('button[data-copy]');
@@ -875,7 +884,7 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{
   if(!lb.hidden){if(e.key==='Escape')lbClose();else if(e.key==='ArrowLeft')lbGo(-1);else if(e.key==='ArrowRight')lbGo(1);return}
-  if(e.key==='Escape'){if($('cal')){closeCal();$('date').focus();return}if(gEl){hideG();return}if(S.q||document.activeElement===$('q')){S.q='';$('q').value='';$('q').blur();if(S.day)render();return}}
+  if(e.key==='Escape'){if(!$('set').hidden){closeSet();$('gear').focus();return}if($('cal')){closeCal();$('date').focus();return}if(gEl){hideG();return}if(S.q||document.activeElement===$('q')){S.q='';$('q').value='';$('q').blur();if(S.day)render();return}}
   if((e.key==='Enter'||e.key===' ')&&termOf(e)){e.preventDefault();const t=termOf(e);if(gEl===t&&gPin)hideG();else showG(t,true);return}
   if(e.metaKey||e.ctrlKey||e.altKey||/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName))return;
   if(e.key==='/'){e.preventDefault();$('q').focus()}
@@ -896,7 +905,7 @@ function route(){
   $('topic').value=S.topic.id;
 }
 async function boot(){
-  applyPaper();
+  syncSet();
   try{S.topics=(await (await fetch('data/topics.json')).json()).topics}catch(e){$('cday').innerHTML='<p class="none">无法加载数据</p>';root.classList.add('ready');return}
   try{const r=await fetch('data/glossary.json');if(r.ok)for(const g of (await r.json()).terms||[])if(g&&g.id)G.set(String(g.id),g)}catch(e){}
   $('topic').innerHTML=S.topics.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
