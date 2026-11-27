@@ -676,7 +676,7 @@ function render(fresh){
 
   /* 封面 */
   const gd=d.overview?.guide||[];
-  const tally=`<p class="tally">${tot!=null?`<span><b data-n="${+tot||0}">${esc(tot)}</b>篇新论文</span><span><i>→</i>`:'<span>'}${rel!=null?`<b data-n="${+rel||0}">${esc(rel)}</b>篇相关</span><span><i>→</i>`:''}<b data-n="${ps.length}">${ps.length}</b>篇入选</span>${nStar?`<span><i>→</i><b class="st" data-n="${nStar}">${nStar}</b>篇精读</span>`:''}${sp?`<span class="sp">${esc(sp)} · ${issueOf(S.topic,S.date).length} 批</span>`:''}</p>`;
+  const tally=`<p class="tally">${tot!=null?`<span><b data-n="${+tot||0}">${esc(tot)}</b>篇新论文</span><span><i>→</i>`:'<span>'}${rel!=null?`<b data-n="${+rel||0}">${esc(rel)}</b>篇相关</span><span><i>→</i>`:''}<b data-n="${ps.length}">${ps.length}</b>篇入选</span>${nStar?`<span><i>→</i><b class="st" data-n="${nStar}">${nStar}</b>篇精读</span>`:''}${sp?`<span class="sp">${esc(sp)}</span>`:''}</p>`;
   $('cday').innerHTML=`<div class="lock" aria-label="${esc(cn(S.date))}"><span class="num" aria-hidden="true">${[...String(t.d)].map(c=>`<span class="m"><i>${c}</i></span>`).join('')}</span><span class="dv" aria-hidden="true"><span class="v">${cnN(t.m)}月</span><span class="v w">星期${WK[t.w]}</span></span></div>`+tally;
   $('issue').textContent=`第${cnN(issueNo())}期`;
   /* 封面的正文是导读第一段；没有导读的日子退回精读标题列表 */
@@ -708,9 +708,11 @@ function render(fresh){
       <header class="sec-h rv">${emblem(v.code)}<h2>${esc(full(v.name))}</h2><span class="ct"><b>${g.length}</b>篇</span></header>
       <div class="sec-l">${g.map(art).join('')}</div></section>`).join('')||(stars.length?'':'<p class="none">这一版今天没有论文</p>');
 
+  /* 来源说明里的 HF / HN 挂上各自的页面 */
+  const src=s=>esc(s).replace(/\bHF\b/,'<a href="https://huggingface.co/papers" target="_blank" rel="noopener">HF</a>').replace(/\bHN\b/,'<a href="https://news.ycombinator.com/" target="_blank" rel="noopener">HN</a>');
   const fsrc=(d.funnel?.[0]?.[0]||'').match(/（(.+)）/)?.[1]||'';
   $('foot').innerHTML=`<p class="fin rv"><i></i>本期完<i></i></p>
-    <div class="colo"><div>${esc(d.batch||d.date)}${fsrc?`<br>${esc(fsrc)}`:''}</div><div class="keys"><kbd>←</kbd><kbd>→</kbd> 翻期　<kbd>/</kbd> 检索　<kbd>Esc</kbd> 返回</div></div>
+    <div class="colo"><div>${esc(d.batch||d.date)}${fsrc?`<br>${src(fsrc)}`:''}</div><div class="keys"><kbd>←</kbd><kbd>→</kbd> 翻期　<kbd>/</kbd> 检索　<kbd>Esc</kbd> 返回</div></div>
     ${d.others?.length?`<details class="xl" id="ol"><summary>其他相关 ${d.others.length} 篇</summary><div class="xg"></div></details>`:''}
     ${d.excluded?.length?`<details class="xl" id="xl"><summary>未收录 ${d.excluded.length} 篇</summary><div class="xg"></div></details>`:''}`;
   /* 未收录和其他相关各有几百条，展开时才生成 */

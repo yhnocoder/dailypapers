@@ -19,7 +19,18 @@ A 训练系统（并行 / 显存 / 容错 / RL 训练） · B 推理服务（调
 Agents: systems / runtime / efficiency side → H here. Agent capability, planning, training methods belong to the LLM topic instead (a paper may be tagged in both).
 
 ## `score` (0–1, only if relevant): how much an AI-infra engineer should care.
-Weigh: measured on real hardware at meaningful scale (which GPUs, how many, which models); fair baselines (compared against strong mainstream implementations such as vLLM, SGLang, TensorRT-LLM, Megatron, DeepSpeed, FlashAttention — not a self-built weak baseline); production deployment; open-source system; findings that change common beliefs. Simulator-only or toy-scale ≈0.2–0.4; solid systems papers ≈0.5–0.7; ≥0.8 only for clearly outstanding ones.
+Weigh: measured on real hardware at meaningful scale (which GPUs, how many, which models); fair baselines (compared against strong mainstream implementations such as vLLM, SGLang, TensorRT-LLM, Megatron, DeepSpeed, FlashAttention — not a self-built weak baseline); production deployment; open-source system; findings that change common beliefs.
+
+Use the whole range and two decimals (0.62, not 0.6): the score orders the issue, so papers of one batch should not pile up on the same value. Score from what the abstract and comment actually state; evidence that is not stated (scale, baselines, release) counts as absent.
+
+| Score | Meaning | Typical paper |
+|---|---|---|
+| 0.85–1.00 | People in this field need to know about it this week. Rare: most batches have none. | A system running in production at a major lab or cloud, described with real numbers and open-sourced; or a measurement that overturns a common belief about training or serving. |
+| 0.70–0.84 | Strong: rigorous evidence at real scale plus something reusable or surprising. `star_candidate` starts at 0.75. | Real multi-GPU or cluster results on current models, beating vLLM / SGLang / Megatron-class baselines, with code released or a production deployment. |
+| 0.55–0.69 | Solid and complete, but incremental. | A complete system or kernel with real-hardware numbers and fair baselines, improving a known technique on a few models. |
+| 0.45–0.54 | Relevant, with narrow scope or thin evidence. Shown only if the issue has room. | Single-GPU or single-model evaluation, self-built or outdated baselines, or a quantization / pruning paper that reports accuracy but no measured speed-up. |
+| 0.20–0.44 | Marginal. Not shown as related. | Simulator-only or toy-scale results, position papers, surveys without new measurements. |
+
 `star_candidate`: true only if score ≥0.75 AND it's worth a full read; give `star_why` (≤40 Chinese chars, concrete).
 
 ## ⭐ (main session's final pick, 2–4 per day)

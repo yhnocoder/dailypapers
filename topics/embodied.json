@@ -2,7 +2,7 @@
  "id": "embodied",
  "name": "Embodied AI",
  "taxonomy_version": "v1",
- "rules_version": "v2",
+ "rules_version": "v3",
  "categories": [
   "cs.RO",
   "cs.CV",

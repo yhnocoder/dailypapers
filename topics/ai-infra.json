@@ -2,7 +2,7 @@
  "id": "ai-infra",
  "name": "AI Infra",
  "taxonomy_version": "v2",
- "rules_version": "v3",
+ "rules_version": "v4",
  "categories": [
   "cs.DC",
   "cs.AR",
