@@ -22,8 +22,9 @@ def window(d: date):
     return to_utc(prev), to_utc(d)
 
 
-def query(q: str):
-    url = API + "?" + urllib.parse.urlencode({"search_query": q, "max_results": 2000, "sortBy": "submittedDate"})
+def query(q: str, id_list: str = ""):
+    params = {"search_query": q, "max_results": 2000, "sortBy": "submittedDate"} if q else {"id_list": id_list, "max_results": 200}
+    url = API + "?" + urllib.parse.urlencode(params)
     for attempt, wait in enumerate((15, 45, 90, 180, None)):
         try:
             with urllib.request.urlopen(url, timeout=120) as r:

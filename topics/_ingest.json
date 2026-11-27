@@ -1,0 +1,15 @@
+{
+ "_note": "Shared daily ingest (paper pool). arXiv categories = union of every topic's `categories`.",
+ "branch_prefix": "daily/ingest",
+ "start_date": "2026-11-25",
+ "min_candidates": 150,
+ "lookback_days": 7,
+ "heat": {
+  "window_days": 14,
+  "sources": [
+   "hf",
+   "hn"
+  ]
+ },
+ "batch_size": 64
+}

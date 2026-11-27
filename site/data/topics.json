@@ -54,11 +54,11 @@
     "2026-11-25"
    ],
    "name": "AI Infra",
-   "taxonomy_version": "v1",
+   "taxonomy_version": "v2",
    "directions": [
     {
      "code": "A",
-     "name": "训练系统（并行 / 通信 / 容错 / RL 训练）"
+     "name": "训练系统（并行 / 显存 / 容错 / RL 训练）"
     },
     {
      "code": "B",
@@ -66,26 +66,30 @@
     },
     {
      "code": "C",
-     "name": "算子与编译（Kernel / 编译器）"
+     "name": "通信与网络"
     },
     {
      "code": "D",
-     "name": "量化与高效推理"
+     "name": "算子与编译（Kernel / 编译器）"
     },
     {
      "code": "E",
-     "name": "硬件与体系结构"
+     "name": "量化与高效推理"
     },
     {
      "code": "F",
-     "name": "集群与资源调度"
+     "name": "硬件与体系结构"
     },
     {
      "code": "G",
-     "name": "Agent 基础设施"
+     "name": "集群与资源调度"
     },
     {
      "code": "H",
+     "name": "Agent 基础设施"
+    },
+    {
+     "code": "I",
      "name": "评测与性能分析"
     },
     {

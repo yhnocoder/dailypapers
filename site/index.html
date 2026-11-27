@@ -318,6 +318,10 @@ const dir=c=>S.topic.directions.find(d=>d.code===c)||{code:c,name:c};
 const full=n=>n.replace(/（.*?）/,'');
 const short=n=>full(n).split(' / ')[0];
 const cn=d=>{const [y,m,dd]=d.split('-').map(Number),w=new Date(Date.UTC(y,m-1,dd)).getUTCDay();return `${y}年${m}月${dd}日 星期${WK[w]}`};
+/* an issue may cover several arXiv batches (topics.json → issues[key]); label it as a range */
+const issueOf=(t,k)=>(t?.issues&&t.issues[k])||[k];
+const md=d=>{const [,m,dd]=d.split('-').map(Number);return `${m}月${dd}日`};
+const span=(t,k)=>{const b=issueOf(t,k);return b.length>1?`${md(b[0])} – ${md(b[b.length-1])}`:''};
 const url=u=>/^https?:\/\//i.test(u||'')?esc(u):'';
 /* byline links: arXiv page, English PDF, Chinese PDF (tongtu, Access-protected), code, copy id */
 const CP='<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>';
@@ -370,7 +374,7 @@ const art=p=>`<article class="art" id="p-${esc(p.id)}"><h3>${esc(p.title_zh)}</h
 const DAYS=new Map();
 const getDay=async(t,dt)=>{const k=t+'/'+dt;if(!DAYS.has(k)){const r=await fetch(`data/${encodeURIComponent(t)}/${encodeURIComponent(dt)}.json`);if(!r.ok)throw 0;DAYS.set(k,await r.json())}return DAYS.get(k)};
 const one=p=>p.summary_zh||(p.abstract_zh||'').split(/(?<=。)/)[0];
-const hitArt=(p,dt,out)=>`<article class="art hit${out?' out':''}"><h3>${p.star?'<span class="st">★</span> ':''}${out?esc(p.title_zh||p.title):`<a href="#p-${esc(p.id)}" data-go="${esc(dt)}" data-p="${esc(p.id)}">${esc(p.title_zh||p.title)}</a>`}</h3><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(p.id)}" rel="noopener" lang="en">${esc(p.title)}</a></p><p class="x">${out?'<span class="tag">未收录</span>':''}${rich(one(p))}</p></article>`;
+const hitArt=(p,dt,out)=>`<article class="art hit${out?' out':''}"><h3>${p.star?'<span class="st">★</span> ':''}${out?esc(p.title_zh||p.title):`<a href="#p-${esc(p.id)}" data-go="${esc(dt)}" data-p="${esc(p.id)}">${esc(p.title_zh||p.title)}</a>`}</h3><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(p.id)}" rel="noopener" lang="en">${esc(p.title)}</a></p><p class="x">${out?`<span class="tag">${out===true?'未收录':esc(out)}</span>`:''}${rich(one(p))}</p></article>`;
 function hit(p){
   const hay=[p.title,p.title_zh,p.abstract_zh,p.abstract_en,p.summary_zh,p.affiliation,p.id,...(p.analysis||[])].join(' ').replace(/\[\[@?([\w.-]+)(?:\|([^\]]*?))?\]\]/g,(m,id,tx)=>tx||G.get(id)?.term||id).toLowerCase();
   /* Latin terms match at the start of a word (co → CO-GRAFT, contrastive; not decode); CJK matches anywhere */
@@ -394,9 +398,10 @@ async function search(){
   let n=0;
   const groups=days.map((d,i)=>{if(!d)return '';
     const ps=(d.papers||[]).filter(p=>match(p)&&hit(p)).sort((a,b)=>(b.star-a.star)||(b.score-a.score));
+    const os=S.star?[]:(d.others||[]).filter(e=>(!S.dir||e.direction===S.dir)&&hit(e));
     const xs=S.dir||S.star?[]:(d.excluded||[]).filter(hit);
-    if(!ps.length&&!xs.length)return '';n+=ps.length+xs.length;
-    return `<section class="rg"><h2><a href="#${esc(t.id)}-${esc(t.dates[i])}" data-go="${esc(t.dates[i])}">${esc(cn(t.dates[i]))}</a><span>${ps.length+xs.length} 篇</span></h2><div class="rgl">${ps.map(p=>hitArt(p,t.dates[i])).join('')}${xs.map(e=>hitArt(e,t.dates[i],true)).join('')}</div></section>`}).join('');
+    if(!ps.length&&!os.length&&!xs.length)return '';n+=ps.length+os.length+xs.length;
+    return `<section class="rg"><h2><a href="#${esc(t.id)}-${esc(t.dates[i])}" data-go="${esc(t.dates[i])}">${esc(cn(t.dates[i]))}</a><span>${ps.length+os.length+xs.length} 篇</span></h2><div class="rgl">${ps.map(p=>hitArt(p,t.dates[i])).join('')}${os.map(e=>hitArt(e,t.dates[i],'其他相关')).join('')}${xs.map(e=>hitArt(e,t.dates[i],true)).join('')}</div></section>`}).join('');
   R.innerHTML=`<p class="rh">“${esc(S.q)}” · ${t.dates.length} 期中找到 ${n} 篇</p>`+(n?groups:'<p class="none">没有找到匹配的论文</p>');
 }
 function render(){
@@ -421,7 +426,7 @@ function render(){
   $('more').innerHTML=stars.slice(1).map(p=>story(p,false)).join('');
   fillSvgs($('lead'));fillSvgs($('more'));
 
-  const tot=d.funnel?.[0]?.[1];
+  const tot=d.funnel?.[0]?.[1],rel=(d.funnel?.length>=4)?d.funnel[1][1]:null;
   const gd=d.overview?.guide||[];
   $('side').innerHTML=(gd.length?`<section class="guide"><h3 class="kick">今日导读</h3>${gd.map(t=>`<p${/^\[\[@/.test(t)?' class="l0"':''}>${rich(t)}</p>`).join('')}</section>`:'')
     +`<nav class="idx" aria-label="各版索引">${dirs.map(x=>{const n=cnt(x.code),s=sc(x.code);
@@ -434,8 +439,9 @@ function render(){
 
   const wk='日一二三四五六'[new Date(d.date+'T00:00:00Z').getUTCDay()];
   const fsrc=(d.funnel?.[0]?.[0]||'').match(/（(.+)）/)?.[1]||'';
-  $('foot').innerHTML=`<div class="fn"><p class="tally">${tot!=null?`<span><b>${esc(tot)}</b> 篇新论文</span><span><i>→</i>`:'<span>'}<b>${ps.length}</b> 篇入选</span>${nStar?`<span><i>→</i><b class="st">${nStar}</b> 篇精读</span>`:''}</p>${fsrc?`<p class="src">${esc(fsrc)}</p>`:''}</div>
+  $('foot').innerHTML=`<div class="fn"><p class="tally">${tot!=null?`<span><b>${esc(tot)}</b> 篇新论文</span><span><i>→</i>`:'<span>'}${rel!=null?`<b>${esc(rel)}</b> 篇相关</span><span><i>→</i>`:''}<b>${ps.length}</b> 篇入选</span>${nStar?`<span><i>→</i><b class="st">${nStar}</b> 篇精读</span>`:''}</p>${fsrc?`<p class="src">${esc(fsrc)}</p>`:''}</div>
     <div class="colo">${esc(d.date)}（周${wk}）</div>
+    ${d.others?.length?`<details class="xl"><summary>其他相关 ${d.others.length} 篇</summary><div class="xg">${d.others.map(e=>`<article><h4>${esc(e.title_zh||e.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(e.id)}" rel="noopener" lang="en">${esc(e.title)}</a> · ${esc(e.cat)}</p>${e.summary_zh?`<p class="x">${rich(e.summary_zh)}</p>`:''}</article>`).join('')}</div></details>`:''}
     ${d.excluded?.length?`<details class="xl"><summary>未收录 ${d.excluded.length} 篇</summary><div class="xg">${d.excluded.map(e=>`<article><h4>${esc(e.title_zh||e.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(e.id)}" rel="noopener" lang="en">${esc(e.title)}</a> · ${esc(e.cat)}</p>${e.summary_zh?`<p class="x">${rich(e.summary_zh)}</p>`:''}</article>`).join('')}</div></details>`:''}`;
 }
 
@@ -509,7 +515,7 @@ addEventListener('resize',hideG);
 
 async function loadDay(){
   const ds=S.topic.dates,i=ds.indexOf(S.date);
-  $('date').innerHTML=ds.map(x=>`<option value="${esc(x)}"${x===S.date?' selected':''}>${esc(cn(x))}</option>`).join('');
+  $('date').innerHTML=ds.map(x=>`<option value="${esc(x)}"${x===S.date?' selected':''}>${esc(span(S.topic,x)?span(S.topic,x)+'（'+issueOf(S.topic,x).length+' 批）':cn(x))}</option>`).join('');
   $('prev').disabled=i>=ds.length-1;$('next').disabled=i<=0;
   try{S.day=await getDay(S.topic.id,S.date);render()}
   catch(e){S.day=null;$('lead').innerHTML='<p class="none">本期数据缺失</p>';['more','inside','side','foot','nav'].forEach(k=>$(k).innerHTML='')}

@@ -19,7 +19,7 @@
 :root{
   --paper:#f4f0e6;--paper2:#ebe6d9;--ink:#1b1916;--body:#2a2722;--mute:#6f685c;--faint:#a8a091;
   --hair:#d9d2c3;--plate:#f8f5ee;--accent:#c4351c;--hl:#f4cdb8;--seal:#c4351c;--sealink:#f7efe2;
-  --dA:#2f6a8f;--dB:#3a7d64;--dC:#a65f35;--dD:#987313;--dE:#3a548a;--dF:#a23a5c;--dG:#647539;--dH:#73528a;--dZ:#7a746a;
+  --dA:#2f6a8f;--dB:#3a7d64;--dC:#a65f35;--dD:#987313;--dE:#3a548a;--dF:#a23a5c;--dG:#647539;--dH:#73528a;--dI:#2b7676;--dJ:#8c4a2c;--dZ:#7a746a;
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .12 0 0 0 0 .06 0 0 0 .34 -.13'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --serif:"Newsreader","Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
   --song:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
@@ -30,12 +30,12 @@
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){
   --paper:#16140f;--paper2:#1e1c16;--ink:#f1eadb;--body:#d9d2c3;--mute:#9b9383;--faint:#6b6557;
   --hair:#353128;--plate:#ddd6c6;--accent:#ee6b55;--hl:#6a3a2c;--seal:#d9482f;--sealink:#fbf3e4;
-  --dA:#7fb2d3;--dB:#7dc0a3;--dC:#dc9c6e;--dD:#e0bd5c;--dE:#93a9dc;--dF:#e08ca7;--dG:#aebc7a;--dH:#b99cd2;--dZ:#a29c90;
+  --dA:#7fb2d3;--dB:#7dc0a3;--dC:#dc9c6e;--dD:#e0bd5c;--dE:#93a9dc;--dF:#e08ca7;--dG:#aebc7a;--dH:#b99cd2;--dI:#7cc2bf;--dJ:#d9a07c;--dZ:#a29c90;
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .95 0 0 0 0 .85 0 0 0 .2 -.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}}
 :root[data-theme=dark]{
   --paper:#16140f;--paper2:#1e1c16;--ink:#f1eadb;--body:#d9d2c3;--mute:#9b9383;--faint:#6b6557;
   --hair:#353128;--plate:#ddd6c6;--accent:#ee6b55;--hl:#6a3a2c;--seal:#d9482f;--sealink:#fbf3e4;
-  --dA:#7fb2d3;--dB:#7dc0a3;--dC:#dc9c6e;--dD:#e0bd5c;--dE:#93a9dc;--dF:#e08ca7;--dG:#aebc7a;--dH:#b99cd2;--dZ:#a29c90;
+  --dA:#7fb2d3;--dB:#7dc0a3;--dC:#dc9c6e;--dD:#e0bd5c;--dE:#93a9dc;--dF:#e08ca7;--dG:#aebc7a;--dH:#b99cd2;--dI:#7cc2bf;--dJ:#d9a07c;--dZ:#a29c90;
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .95 0 0 0 0 .85 0 0 0 .2 -.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
 *{box-sizing:border-box;min-width:0}
@@ -506,13 +506,17 @@ const S={topics:[],topic:null,date:null,day:null,dir:null,star:false,q:''};
 const dir=c=>S.topic.directions.find(d=>d.code===c)||{code:c,name:c};
 const full=n=>n.replace(/（.*?）/,'');
 const short=n=>full(n).split(' / ')[0];
-const dc=c=>/^[A-HZ]$/.test(c)?c:'Z';
+const dc=c=>/^[A-JZ]$/.test(c)?c:'Z';
 const cv=c=>`style="--c:var(--d${dc(c)})"`;
 const ymd=d=>{const [y,m,dd]=d.split('-').map(Number);return {y,m,d:dd,w:new Date(Date.UTC(y,m-1,dd)).getUTCDay()}};
 const cn=d=>{const t=ymd(d);return `${t.y}年${t.m}月${t.d}日 星期${WK[t.w]}`};
 const cnN=n=>n<10?CD[n]:n<20?'十'+(n%10?CD[n%10]:''):n<100?CD[n/10|0]+'十'+(n%10?CD[n%10]:''):String(n).replace(/\d/g,c=>CD[c]);
 const cnY=y=>String(y).replace(/\d/g,c=>CD[c]);
 const issueNo=()=>S.topic.dates.length-S.topic.dates.indexOf(S.date);
+/* an issue may cover several arXiv batches (topics.json → issues[key]); label it as a range */
+const issueOf=(t,k)=>(t?.issues&&t.issues[k])||[k];
+const md=d=>{const [,m,dd]=d.split('-').map(Number);return `${m}月${dd}日`};
+const span=(t,k)=>{const b=issueOf(t,k);return b.length>1?`${md(b[0])} – ${md(b[b.length-1])}`:''};
 const url=u=>/^https?:\/\//i.test(u||'')?esc(u):'';
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 
@@ -580,7 +584,7 @@ const art=p=>`<article class="art rv" id="p-${esc(p.id)}"><h3>${esc(p.title_zh)}
 const DAYS=new Map();
 const getDay=async(t,dt)=>{const k=t+'/'+dt;if(!DAYS.has(k)){const r=await fetch(`data/${encodeURIComponent(t)}/${encodeURIComponent(dt)}.json`);if(!r.ok)throw 0;DAYS.set(k,await r.json())}return DAYS.get(k)};
 const one=p=>p.summary_zh||(p.abstract_zh||'').split(/(?<=。)/)[0];
-const hitArt=(p,dt,out)=>`<article class="art hit rv${out?' out':''}"><h3>${p.star?'<span class="st">★</span> ':''}${out?esc(p.title_zh||p.title):`<a href="#p-${esc(p.id)}" data-go="${esc(dt)}" data-p="${esc(p.id)}">${esc(p.title_zh||p.title)}</a>`}</h3><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(p.id)}" rel="noopener" lang="en">${esc(p.title)}</a></p><p class="x">${out?'<span class="tag">未收录</span>':''}${rich(one(p))}</p></article>`;
+const hitArt=(p,dt,out)=>`<article class="art hit rv${out?' out':''}"><h3>${p.star?'<span class="st">★</span> ':''}${out?esc(p.title_zh||p.title):`<a href="#p-${esc(p.id)}" data-go="${esc(dt)}" data-p="${esc(p.id)}">${esc(p.title_zh||p.title)}</a>`}</h3><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(p.id)}" rel="noopener" lang="en">${esc(p.title)}</a></p><p class="x">${out?`<span class="tag">${out===true?'未收录':esc(out)}</span>`:''}${rich(one(p))}</p></article>`;
 function hit(p){
   const hay=[p.title,p.title_zh,p.abstract_zh,p.abstract_en,p.summary_zh,p.affiliation,p.id,...(p.analysis||[])].join(' ').replace(/\[\[@?([\w.-]+)(?:\|([^\]]*?))?\]\]/g,(m,id,tx)=>tx||G.get(id)?.term||id).toLowerCase();
   /* 拉丁词从词首匹配（co → CO-GRAFT、contrastive，不匹配 decode）；中文任意位置匹配 */
@@ -605,12 +609,13 @@ const disc=(()=>{
   const c=$('disc'),x=c.getContext('2d'),tip=$('dtip'),GA=Math.PI*(3-Math.sqrt(5));
   let N=[],Ru=1,W=0,dpr=1,sc=1,raf=0,t0=0,until=0,mx=-1e5,my=-1e5,hov=null,armed=null,col={},day=null;
   const h=s=>{let v=2166136261;for(let i=0;i<s.length;i++)v=Math.imul(v^s.charCodeAt(i),16777619);return ((v>>>0)%1000)/1000};
-  function colors(){const cs=getComputedStyle(root),g=k=>cs.getPropertyValue(k).trim();col={ink:g('--ink'),paper:g('--paper'),accent:g('--accent')};for(const k of 'ABCDEFGHZ')col[k]=g('--d'+k)}
+  function colors(){const cs=getComputedStyle(root),g=k=>cs.getPropertyValue(k).trim();col={ink:g('--ink'),paper:g('--paper'),accent:g('--accent')};for(const k of 'ABCDEFGHIJZ')col[k]=g('--d'+k)}
   function set(d,replay){
     const fresh=d!==day;day=d;
     if(fresh){
       const ps=[...(d.papers||[])].sort((a,b)=>(b.star-a.star)||(b.score-a.score));
       N=[...ps.map(p=>({k:p.star?2:1,p,r:p.star?8.6:3.9+4.2*(+p.score||.4),pad:p.star?3:1.5})),
+         ...(d.others||[]).map(p=>({k:3,p,r:2.2+1.3*h(p.id),pad:1.7})),
          ...(d.excluded||[]).map(p=>{const j=h(p.id);return {k:0,p,r:1.45+.8*j,pad:1.95,a:.2+.34*h(p.id+'a')}})];
       let acc=0;N.forEach((n,i)=>{const w=(n.r+n.pad)**2;const rr=1.13*Math.sqrt(acc+w/2),th=i*GA-Math.PI/2;acc+=w;n.ux=rr*Math.cos(th);n.uy=rr*Math.sin(th);n.rr=rr;n.ls=0;n.al=1;n.s=0});
       Ru=1.13*Math.sqrt(acc)+4;N.forEach(n=>n.dl=260+1250*Math.pow(n.rr/Ru,1.35));
@@ -627,11 +632,11 @@ const disc=(()=>{
     for(const n of N){
       if(n.s<1){const k=Math.min(1,Math.max(0,(now-t0-n.dl)/520));n.s=k>=1?1:k<=0?0:1+2.2*Math.pow(k-1,3)+1.2*Math.pow(k-1,2);if(k<1)live=true}
       const dd=Math.hypot(n.ux-lx,n.uy-ly),lt=dd<LR?Math.pow(1-dd/LR,2)*(n.k?.28:1.5):0;n.ls+=(lt-n.ls)*.2;
-      const at=n.k&&((S.dir&&n.p.direction!==S.dir)||(S.star&&n.k<2))?.14:(!n.k&&(S.dir||S.star)?.45:1);n.al+=(at-n.al)*.14;
+      const at=n.k&&((S.dir&&n.p.direction!==S.dir)||(S.star&&n.k!==2))?.14:(!n.k&&(S.dir||S.star)?.45:1);n.al+=(at-n.al)*.14;
       if(Math.abs(lt-n.ls)>.01||Math.abs(at-n.al)>.01)live=true;
     }
     for(const n of N){if(n.k)continue;const r=n.r*sc*n.s*(1+n.ls);if(r<=0)continue;x.globalAlpha=Math.min(.9,n.a*n.al*(1+n.ls*.9));x.fillStyle=col.ink;x.beginPath();x.arc(n.ux*sc,n.uy*sc,r,0,6.2832);x.fill()}
-    for(const n of N){if(!n.k)continue;const r=n.r*sc*n.s*(1+n.ls),px=n.ux*sc,py=n.uy*sc;if(r<=0)continue;x.globalAlpha=n.al;
+    for(const n of N){if(!n.k)continue;const r=n.r*sc*n.s*(1+n.ls),px=n.ux*sc,py=n.uy*sc;if(r<=0)continue;x.globalAlpha=n.al*(n.k===3?.6:1);
       x.fillStyle=n.k===2?col.accent:col[dc(n.p.direction)];x.beginPath();x.arc(px,py,r,0,6.2832);x.fill();
       if(n.k===2){x.strokeStyle=col.accent;x.lineWidth=1.2;x.beginPath();x.arc(px,py,r+3.4*Math.min(1,sc/2),0,6.2832);x.stroke()}}
     if(hov){const r=hov.r*sc*(1+hov.ls)+(hov.k===2?7:3.5);x.globalAlpha=1;x.strokeStyle=col.ink;x.lineWidth=1.4;x.beginPath();x.arc(hov.ux*sc,hov.uy*sc,r,0,6.2832);x.stroke()}
@@ -639,9 +644,9 @@ const disc=(()=>{
   }
   function pick(){let best=null,bd=1e9;const lx=(mx-W/2)/sc,ly=(my-W/2)/sc;for(const n of N){if(n.s<.5)continue;const dd=Math.hypot(n.ux-lx,n.uy-ly)-n.r;if(dd<bd){bd=dd;best=n}}return bd*sc<(best&&best.k?5:7)?best:null}
   function show(n,quiet){
-    hov=n;c.style.cursor=n?'pointer':'default';if(!quiet)fromDisc(n&&n.k?n:null,n&&pt(n));if(!n){tip.classList.remove('on');return}
+    hov=n;c.style.cursor=n?'pointer':'default';if(!quiet)fromDisc(n&&(n.k===1||n.k===2)?n:null,n&&pt(n));if(!n){tip.classList.remove('on');return}
     tip.textContent='';const sm=document.createElement('small');
-    if(n.k){const i=document.createElement('i');i.style.background=n.k===2?col.accent:col[dc(n.p.direction)];sm.append(i,(n.k===2?'★ 精读 · ':'')+short(dir(n.p.direction).name))}
+    if(n.k){const i=document.createElement('i');i.style.background=n.k===2?col.accent:col[dc(n.p.direction)];sm.append(i,(n.k===2?'★ 精读 · ':'')+short(dir(n.p.direction).name)+(n.k===3?' · 其他相关 ↗':''))}
     else sm.append('未收录'+(n.p.reason?' · '+n.p.reason:'')+' ↗');
     tip.append(sm,n.p.title_zh||n.p.title);
     const tw=tip.offsetWidth,th=tip.offsetHeight,px=W/2+n.ux*sc,py=W/2+n.uy*sc,r=n.r*sc+10;
@@ -652,7 +657,7 @@ const disc=(()=>{
   function focus(id){const n=N.find(v=>v.k&&v.p.id===id);if(!n||!W)return null;show(n,true);kick(600);return pt(n)}
   const blur=()=>{if(hov){show(null,true);kick(400)}};
   const hide=()=>{armed=null;if(hov){show(null)}};
-  const act=n=>{if(n.k)jump(n.p.id);else window.open('https://arxiv.org/abs/'+encodeURIComponent(n.p.id),'_blank','noopener')};
+  const act=n=>{if(n.k===1||n.k===2)jump(n.p.id);else window.open('https://arxiv.org/abs/'+encodeURIComponent(n.p.id),'_blank','noopener')};
   const at=e=>{const b=c.getBoundingClientRect();mx=e.clientX-b.left;my=e.clientY-b.top};
   c.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;at(e);const n=pick();if(n!==hov)show(n);kick(500)});
   c.addEventListener('pointerleave',e=>{if(e.pointerType==='touch')return;mx=my=-1e5;show(null);kick(600)});
@@ -694,9 +699,10 @@ async function search(){
   let n=0;
   const groups=days.map((d,i)=>{if(!d)return '';
     const ps=(d.papers||[]).filter(p=>match(p)&&hit(p)).sort((a,b)=>(b.star-a.star)||(b.score-a.score));
+    const os=S.star?[]:(d.others||[]).filter(e=>(!S.dir||e.direction===S.dir)&&hit(e));
     const xs=S.dir||S.star?[]:(d.excluded||[]).filter(hit);
-    if(!ps.length&&!xs.length)return '';n+=ps.length+xs.length;
-    return `<section class="rg"><h2><a href="#${esc(t.id)}-${esc(t.dates[i])}" data-go="${esc(t.dates[i])}">${esc(cn(t.dates[i]))}</a><span>${ps.length+xs.length} 篇</span></h2><div class="rgl">${ps.map(p=>hitArt(p,t.dates[i])).join('')}${xs.map(e=>hitArt(e,t.dates[i],true)).join('')}</div></section>`}).join('');
+    if(!ps.length&&!os.length&&!xs.length)return '';n+=ps.length+os.length+xs.length;
+    return `<section class="rg"><h2><a href="#${esc(t.id)}-${esc(t.dates[i])}" data-go="${esc(t.dates[i])}">${esc(cn(t.dates[i]))}</a><span>${ps.length+os.length+xs.length} 篇</span></h2><div class="rgl">${ps.map(p=>hitArt(p,t.dates[i])).join('')}${os.map(e=>hitArt(e,t.dates[i],'其他相关')).join('')}${xs.map(e=>hitArt(e,t.dates[i],true)).join('')}</div></section>`}).join('');
   R.innerHTML=`<p class="rh"><b>“${esc(S.q)}”</b>${t.dates.length} 期中找到 ${n} 篇</p>`+(n?groups:'<p class="none">没有找到匹配的论文</p>');
   watch(R);
 }
@@ -713,11 +719,11 @@ function render(fresh){
   const dirs=S.topic.directions.filter(v=>v.code!=='Z'||ps.some(p=>p.direction==='Z'));
   const by=c=>ps.filter(p=>p.direction===c).sort((a,b)=>(b.star-a.star)||(b.score-a.score)),cnt=c=>by(c).length;
   const allStars=ps.filter(p=>p.star).sort((a,b)=>b.score-a.score),nStar=allStars.length;
-  const tot=d.funnel?.[0]?.[1];
+  const tot=d.funnel?.[0]?.[1],rel=(d.funnel?.length>=4)?d.funnel[1][1]:null;
 
   /* 封面 */
   const gd=d.overview?.guide||[];
-  const tally=`<p class="tally">${tot!=null?`<span><b data-n="${+tot||0}">${esc(tot)}</b>篇新论文</span><span><i>→</i>`:'<span>'}<b data-n="${ps.length}">${ps.length}</b>篇入选</span>${nStar?`<span><i>→</i><b class="st" data-n="${nStar}">${nStar}</b>篇精读</span>`:''}</p>`;
+  const tally=`<p class="tally">${tot!=null?`<span><b data-n="${+tot||0}">${esc(tot)}</b>篇新论文</span><span><i>→</i>`:'<span>'}${rel!=null?`<b data-n="${+rel||0}">${esc(rel)}</b>篇相关</span><span><i>→</i>`:''}<b data-n="${ps.length}">${ps.length}</b>篇入选</span>${nStar?`<span><i>→</i><b class="st" data-n="${nStar}">${nStar}</b>篇精读</span>`:''}</p>`;
   $('cday').innerHTML=`<div class="lock" aria-label="${esc(cn(S.date))}"><span class="num" aria-hidden="true">${[...String(t.d)].map(c=>`<span class="m"><i>${c}</i></span>`).join('')}</span><span class="dv" aria-hidden="true"><span class="v">${cnN(t.m)}月</span><span class="v w">星期${WK[t.w]}</span></span></div>`+tally;
   $('issue').textContent=`第${cnN(issueNo())}期`;
   /* 封面的正文是导读第一段；没有导读的日子退回精读标题列表 */
@@ -726,7 +732,7 @@ function render(fresh){
   if(fresh)countUp($('cday'));
   disc.set(d,fresh);
 
-  $('date').innerHTML=`${t.y}年${t.m}月${t.d}日<small>星期${WK[t.w]}</small>`;
+  $('date').innerHTML=span(S.topic,S.date)?`${esc(span(S.topic,S.date))}<small>${issueOf(S.topic,S.date).length} 批</small>`:`${t.y}年${t.m}月${t.d}日<small>星期${WK[t.w]}</small>`;
   $('nav').innerHTML=navHTML(dirs,cnt,nStar);
   {const nv=$('nav'),on=nv.querySelector('.on');if(on)nv.scrollLeft=Math.max(0,on.offsetLeft-nv.clientWidth/2+on.offsetWidth/2)}
 
@@ -756,8 +762,10 @@ function render(fresh){
   const fsrc=(d.funnel?.[0]?.[0]||'').match(/（(.+)）/)?.[1]||'';
   $('foot').innerHTML=`<p class="fin rv"><i></i>本期完<i></i></p>
     <div class="colo"><div>${esc(d.batch||d.date)}${fsrc?`<br>${esc(fsrc)}`:''}</div><div class="keys"><kbd>←</kbd><kbd>→</kbd> 翻期　<kbd>/</kbd> 检索　<kbd>Esc</kbd> 返回</div></div>
+    ${d.others?.length?`<details class="xl" id="ol"><summary>其他相关 ${d.others.length} 篇</summary><div class="xg"></div></details>`:''}
     ${d.excluded?.length?`<details class="xl" id="xl"><summary>未收录 ${d.excluded.length} 篇</summary><div class="xg"></div></details>`:''}`;
-  /* 未收录有几百条，展开时才生成 */
+  /* 未收录有几百条，展开时才生成；其他相关同理 */
+  $('ol')?.addEventListener('toggle',e=>{const g=e.target.querySelector('.xg');if(e.target.open&&!g.childElementCount)g.innerHTML=d.others.map(v=>`<article><h4>${esc(v.title_zh||v.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(v.id)}" rel="noopener" lang="en">${esc(v.title)}</a> · ${esc(v.cat)}</p>${v.summary_zh?`<p class="x">${rich(v.summary_zh)}</p>`:''}</article>`).join('')});
   $('xl')?.addEventListener('toggle',e=>{const g=e.target.querySelector('.xg');if(e.target.open&&!g.childElementCount)g.innerHTML=d.excluded.map(v=>`<article><h4>${esc(v.title_zh||v.title)}</h4><p class="t"><a href="https://arxiv.org/abs/${encodeURIComponent(v.id)}" rel="noopener" lang="en">${esc(v.title)}</a> · ${esc(v.cat)}</p>${v.summary_zh?`<p class="x">${rich(v.summary_zh)}</p>`:''}</article>`).join('')});
   watch($('main'));watch($('foot'));
   requestAnimationFrame(()=>root.classList.add('ready'));

@@ -223,7 +223,7 @@
    "title_zh": "MixMoMo：在移动设备上以混合精度GPU-NPU执行加速超大MoE推理",
    "affiliation": "",
    "primary_cat": "cs.AR",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.65,
    "links": {
@@ -331,7 +331,7 @@
    "title_zh": "Any-Rate：基于编码比特平面的半比特多精度 LLM 量化",
    "affiliation": "",
    "primary_cat": "cs.LG",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.5,
    "links": {
@@ -349,7 +349,7 @@
    "title_zh": "Libtt：面向 Tenstorrent 处理器的编译器与运行时",
    "affiliation": "Tenstorrent",
    "primary_cat": "cs.DC",
-   "direction": "C",
+   "direction": "D",
    "star": false,
    "score": 0.5,
    "links": {
@@ -367,7 +367,7 @@
    "title_zh": "让模型管理自己的上下文：现状如何",
    "affiliation": "NVIDIA",
    "primary_cat": "cs.AI",
-   "direction": "G",
+   "direction": "H",
    "star": false,
    "score": 0.5,
    "links": {
@@ -385,7 +385,7 @@
    "title_zh": "BReD：面向稳定低比特EMA优化器状态的块重放抖动",
    "affiliation": "",
    "primary_cat": "cs.LG",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.5,
    "links": {
@@ -403,7 +403,7 @@
    "title_zh": "LiveVAE：因果窗口注意力让流式视频 VAE 更高效",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.5,
    "links": {
@@ -457,7 +457,7 @@
    "title_zh": "SprintGS：消除冗余以加速 3D 高斯泼溅训练",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "C",
+   "direction": "D",
    "star": false,
    "score": 0.5,
    "links": {
@@ -493,7 +493,7 @@
    "title_zh": "利用比特切片跳变稀疏性的 LLM 推理差分计算加速器",
    "affiliation": "",
    "primary_cat": "cs.AR",
-   "direction": "E",
+   "direction": "F",
    "star": false,
    "score": 0.45,
    "links": {
@@ -529,7 +529,7 @@
    "title_zh": "SentryWard：warp特化GPU内核的形式化验证",
    "affiliation": "",
    "primary_cat": "cs.PL",
-   "direction": "C",
+   "direction": "D",
    "star": false,
    "score": 0.45,
    "links": {
@@ -565,7 +565,7 @@
    "title_zh": "L2C2：用稀疏与分布式注意力增强大规模 Chiplet 上的智能体长上下文 LLM 推理",
    "affiliation": "",
    "primary_cat": "cs.AR",
-   "direction": "E",
+   "direction": "F",
    "star": false,
    "score": 0.45,
    "links": {
@@ -583,7 +583,7 @@
    "title_zh": "Agentic LongLive：面向长视频生成的异步智能体记忆",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "G",
+   "direction": "H",
    "star": false,
    "score": 0.45,
    "links": {
@@ -619,7 +619,7 @@
    "title_zh": "TaCo：为边缘设备上的视觉跟踪重新思考相关操作",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "E",
+   "direction": "F",
    "star": false,
    "score": 0.45,
    "links": {
@@ -637,7 +637,7 @@
    "title_zh": "采用混合架构的线性时间在线视觉几何 Transformer",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.45,
    "links": {
@@ -691,7 +691,7 @@
    "title_zh": "Mixture-of-Loops Transformer",
    "affiliation": "",
    "primary_cat": "cs.LG",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.35,
    "links": {
@@ -727,7 +727,7 @@
    "title_zh": "DecisionReplay：用于集成决策模型的语料库与离线模拟器",
    "affiliation": "",
    "primary_cat": "cs.LG",
-   "direction": "H",
+   "direction": "I",
    "star": false,
    "score": 0.35,
    "links": {
@@ -745,7 +745,7 @@
    "title_zh": "同一种子，不同的最优预测：AlphaFold 3 推理在 TPU、GPU 与 CPU 上的跨平台可复现性",
    "affiliation": "",
    "primary_cat": "cs.DC",
-   "direction": "H",
+   "direction": "I",
    "star": false,
    "score": 0.35,
    "links": {
@@ -763,7 +763,7 @@
    "title_zh": "MeterRouter：面向多智能体系统的预算感知动态路由",
    "affiliation": "",
    "primary_cat": "cs.AI",
-   "direction": "G",
+   "direction": "H",
    "star": false,
    "score": 0.35,
    "links": {
@@ -781,7 +781,7 @@
    "title_zh": "JOVE ICE：面向 AI 眼镜的意图引导云边端协同",
    "affiliation": "",
    "primary_cat": "cs.AI",
-   "direction": "G",
+   "direction": "H",
    "star": false,
    "score": 0.35,
    "links": {
@@ -799,7 +799,7 @@
    "title_zh": "状态空间注意力：学习上下文相关的记忆保留",
    "affiliation": "",
    "primary_cat": "cs.LG",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.35,
    "links": {
@@ -853,7 +853,7 @@
    "title_zh": "学会被截断：为 SVD 压缩准备 LLM 检查点",
    "affiliation": "",
    "primary_cat": "cs.LG",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.3,
    "links": {
@@ -871,7 +871,7 @@
    "title_zh": "PURA：通过统一时空冗余评估的视频 Token 剪枝",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.3,
    "links": {
@@ -889,7 +889,7 @@
    "title_zh": "DiCALM：将自回归卷积-注意力语言模型转换为离散扩散语言模型",
    "affiliation": "",
    "primary_cat": "cs.CL",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.3,
    "links": {
@@ -925,7 +925,7 @@
    "title_zh": "高分辨率下什么是冗余的？面向一体化图像复原的高效注意力与前馈设计",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.3,
    "links": {
@@ -961,7 +961,7 @@
    "title_zh": "LogToPersona：新基准与基于语义日志过滤的高效画像预测",
    "affiliation": "",
    "primary_cat": "cs.CL",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.3,
    "links": {
@@ -979,7 +979,7 @@
    "title_zh": "WADJET：FPGA片上系统加速器上面向作业执行可信的整作业授权与分发",
    "affiliation": "",
    "primary_cat": "cs.AR",
-   "direction": "E",
+   "direction": "F",
    "star": false,
    "score": 0.3,
    "links": {
@@ -1015,7 +1015,7 @@
    "title_zh": "只关注重点：面向长视频目标分割的冻结视觉Transformer免训练聚焦图",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.25,
    "links": {
@@ -1051,7 +1051,7 @@
    "title_zh": "手术刀与画笔：由单个LLM智能体对小型语言模型做剪枝与定向权重编辑",
    "affiliation": "",
    "primary_cat": "cs.LG",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.25,
    "links": {
@@ -1087,7 +1087,7 @@
    "title_zh": "降低参考库压缩下决策稳定性的校准参照度量协议",
    "affiliation": "",
    "primary_cat": "cs.CV",
-   "direction": "D",
+   "direction": "E",
    "star": false,
    "score": 0.25,
    "links": {
@@ -1105,7 +1105,7 @@
    "title_zh": "路由之前先看可路由性：面向可审计LLM模型选择的可路由性审计协议RAP与RouteabilityBench",
    "affiliation": "",
    "primary_cat": "cs.LG",
-   "direction": "H",
+   "direction": "I",
    "star": false,
    "score": 0.2,
    "links": {

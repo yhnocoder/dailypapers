@@ -1,6 +1,8 @@
-# Classification + Chinese-writing rules (shared by all topics)
+# Ingest tagging rules (shared paper pool, all topics at once)
 
-Read the topic's scope file first (`scope_prompt` in `topics/<topic>.json`, e.g. `prompts/scope/search-rec.md`): it defines `relevant`, `direction`, `score` and `star_candidate` for that topic. This file defines everything else.
+Each paper in the pool is read once and tagged for every topic it belongs to. Before tagging, read every scope file in `prompts/scope/` (search-rec, ai-infra, llm, vlm, diffusion, embodied): each defines, for its topic, what is relevant, the direction codes, how to score, and when to set `star_candidate`.
+
+A paper can belong to several topics (e.g. a GPU vector index → search-rec and ai-infra; a GUI agent → vlm and llm). Tag every topic whose scope says TRUE; tag none if it fits no topic. Judge each topic independently against its own scope and scoring scale.
 
 ## Chinese writing (all Chinese fields)
 - Chinese text uses full-width Chinese punctuation（，。：；！？（）“”）; numbers, English words and formulas keep half-width characters. Never write a half-width comma or period between Chinese characters.
@@ -8,12 +10,13 @@ Read the topic's scope file first (`scope_prompt` in `topics/<topic>.json`, e.g.
 - NO filler: never use 值得注意的是 / 综上所述 / 总而言之 / 具有重要意义 / 奠定基础 / 开辟新方向 / 令人振奋 / 显著提升(without a number) / 三连排比. No preamble sentences; start with the substance.
 - Don't invent facts or numbers not in the abstract.
 
-Fields:
+Fields (one JSON object per paper):
+- `id`
 - `title_zh` (ALL papers): faithful Chinese rendering of the title, readable, not sensationalised. Model/system names stay in English.
 - `summary_zh` (ALL papers): ONE sentence (≤60 Chinese chars) saying concretely what the paper does / finds. No "本文" opener.
-- `abstract_zh` (ONLY relevant papers): complete, faithful translation of the abstract, same length as original. Inline markup:
-  - `==term==` around ≤3 key concepts the reader must grasp (the method's core idea/new concept names).
-  - `**phrase**` around ≤2 main results or caveats worth noticing (prefer ones with numbers).
-  - Do not nest them; do not mark trivial words.
 - `affiliation`: only if an institution/company is stated in the abstract or comment (e.g. "online experiments at AliExpress" → "AliExpress"); else "".
-- `exclude_reason` (ONLY non-relevant): ≤20 Chinese chars why it's out.
+- `tags`: object keyed by topic id, only for topics the paper belongs to, e.g.
+  `{"llm": {"direction": "F", "score": 0.62, "star_candidate": false, "star_why": ""}, "ai-infra": {...}}`.
+  `{}` when it belongs to no topic. `star_why` (≤40 Chinese chars, concrete) only when `star_candidate` is true.
+
+Do not translate the abstract here: full Chinese abstracts are written later, only for the papers an issue actually shows (`prompts/abstract.md`).
