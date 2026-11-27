@@ -203,6 +203,54 @@
    "term": "EPLB",
    "en": "Expert Parallelism Load Balancer",
    "def": "DeepSeek 开源的专家负载均衡工具：根据统计到的各专家负载，复制热门专家、重新安排专家到 GPU 的映射，让各卡负载接近。它不改路由结果，代价是冗余副本占显存，而且只能跟上较慢的负载变化。"
+  },
+  {
+   "id": "mopd",
+   "term": "多教师在线蒸馏",
+   "en": "Multi-teacher On-Policy Distillation (MOPD)",
+   "def": "让学生模型自己生成回答，再按任务类型挑一位教师模型，在学生走过的每个位置上让学生的 token 分布去贴近教师的分布。常用来把分别训练的几个专家模型（比如擅长推理的和擅长对话安全的）合成一个模型，训练信号全部来自教师，不需要额外的 reward。"
+  },
+  {
+   "id": "routing-replay",
+   "term": "路由回放",
+   "en": "Routing replay",
+   "def": "MoE 模型做 RL 时，推理引擎和训练框架的数值差异可能让同一个 token 选到不同的专家。路由回放让推理时记下每个 token 选了哪几个专家，训练时直接沿用这组选择，减少训练和推理之间的不一致。"
+  },
+  {
+   "id": "kimi-delta-attention",
+   "term": "KDA（Kimi Delta Attention）",
+   "en": "Kimi Delta Attention",
+   "def": "Kimi 提出的一种线性注意力：把历史压进一个固定大小的状态矩阵，每来一个新 token 只把“预测值与真实值之差”写回状态，并按行设置衰减系数决定忘掉多少。显存不随上下文变长而增长，通常和少量全注意力层交替使用。"
+  },
+  {
+   "id": "muon",
+   "term": "Muon 优化器",
+   "en": "Muon (MomentUm Orthogonalized by Newton–Schulz)",
+   "def": "针对矩阵参数的优化器：先算动量，再用 Newton–Schulz 迭代把动量矩阵近似正交化后作为更新方向，而不是像 AdamW 那样逐元素缩放。已有报告称同等效果下计算量约为 AdamW 的一半，代价是分布式训练时要把分片的矩阵拼回完整再算。"
+  },
+  {
+   "id": "z-loss",
+   "term": "Z-loss",
+   "en": "Z-loss",
+   "def": "一种辅助损失：对一组激活取 log-sum-exp 再平方，加到总 loss 上。log-sum-exp 近似最大值，所以它主要压制个别特别大的正值，防止激活一路变大导致 loss 尖峰。原本用在 router logits 上，这篇把它用在 MoE 层输出上。"
+  },
+  {
+   "id": "catastrophic-forgetting",
+   "term": "灾难性遗忘",
+   "en": "catastrophic forgetting",
+   "def": "模型在新数据上微调后，原本会的能力（代码、数学、安全拒答等）大幅下降。持续微调里最常被担心的问题。"
+  },
+  {
+   "id": "on-policy",
+   "term": "on-policy / off-policy",
+   "en": "on-policy / off-policy",
+   "def": "on-policy 指用模型自己当前生成的输出来训练（如 RL），off-policy 指用外部给定的数据训练（如 SFT 用的人工或强模型示范）。前者训练数据随模型变化，后者是固定的。"
+  },
+  {
+   "id": "sdft",
+   "term": "SDFT",
+   "en": "Self-Distillation Fine-Tuning",
+   "def": "自蒸馏微调：让学生模型自己生成答案，再用「看过示范答案的同一个模型」（参数取学生的滑动平均）当老师，逐 token 纠正学生。只需要示范数据就能做 on-policy 训练，原本用来减少遗忘。"
   }
  ]
 }

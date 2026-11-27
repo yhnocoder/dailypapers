@@ -1,0 +1,73 @@
+{
+ "id": "vlm",
+ "name": "VLM / 多模态",
+ "taxonomy_version": "v1",
+ "rules_version": "v1",
+ "categories": [
+  "cs.CV",
+  "cs.CL",
+  "cs.LG",
+  "cs.AI",
+  "cs.MM"
+ ],
+ "directions": [
+  {
+   "code": "A",
+   "name": "架构与训练"
+  },
+  {
+   "code": "B",
+   "name": "多模态推理"
+  },
+  {
+   "code": "C",
+   "name": "视频理解"
+  },
+  {
+   "code": "D",
+   "name": "文档与 OCR"
+  },
+  {
+   "code": "E",
+   "name": "视觉 Grounding 与感知"
+  },
+  {
+   "code": "F",
+   "name": "GUI Agent / Computer Use"
+  },
+  {
+   "code": "G",
+   "name": "统一理解与生成"
+  },
+  {
+   "code": "H",
+   "name": "评测与幻觉"
+  },
+  {
+   "code": "Z",
+   "name": "其他"
+  }
+ ],
+ "cadence": {
+  "run_days": [
+   "Wed",
+   "Sun"
+  ],
+  "_note": "weekdays (America/New_York) the editor task runs; daily topics publish one issue per batch, others one issue covering every batch since the previous issue"
+ },
+ "issue_cap": 20,
+ "stars": [
+  3,
+  5
+ ],
+ "classify_prompt": "prompts/classify.md",
+ "scope_prompt": "prompts/scope/vlm.md",
+ "writing_prompt": "prompts/writing.md",
+ "branch_prefix": "daily/vlm",
+ "start_date": "2026-11-26",
+ "translations": {
+  "tongtu_mode": "fast",
+  "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
+  "files_base": "https://dailypapers-files.awesomedays.workers.dev"
+ }
+}

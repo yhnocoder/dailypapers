@@ -1,0 +1,82 @@
+{
+ "id": "llm",
+ "name": "LLM",
+ "taxonomy_version": "v1",
+ "rules_version": "v1",
+ "categories": [
+  "cs.CL",
+  "cs.LG",
+  "cs.AI"
+ ],
+ "directions": [
+  {
+   "code": "A",
+   "name": "技术报告与模型发布"
+  },
+  {
+   "code": "B",
+   "name": "预训练与数据"
+  },
+  {
+   "code": "C",
+   "name": "架构"
+  },
+  {
+   "code": "D",
+   "name": "长上下文"
+  },
+  {
+   "code": "E",
+   "name": "后训练与对齐"
+  },
+  {
+   "code": "F",
+   "name": "强化学习与推理"
+  },
+  {
+   "code": "G",
+   "name": "Agent"
+  },
+  {
+   "code": "H",
+   "name": "可解释性与机制分析"
+  },
+  {
+   "code": "I",
+   "name": "评测与 Benchmark"
+  },
+  {
+   "code": "J",
+   "name": "安全与可靠性"
+  },
+  {
+   "code": "Z",
+   "name": "其他"
+  }
+ ],
+ "cadence": {
+  "run_days": [
+   "Sun",
+   "Mon",
+   "Tue",
+   "Wed",
+   "Thu"
+  ],
+  "_note": "weekdays (America/New_York) the editor task runs; daily topics publish one issue per batch, others one issue covering every batch since the previous issue"
+ },
+ "issue_cap": 15,
+ "stars": [
+  2,
+  4
+ ],
+ "classify_prompt": "prompts/classify.md",
+ "scope_prompt": "prompts/scope/llm.md",
+ "writing_prompt": "prompts/writing.md",
+ "branch_prefix": "daily/llm",
+ "start_date": "2026-11-25",
+ "translations": {
+  "tongtu_mode": "fast",
+  "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
+  "files_base": "https://dailypapers-files.awesomedays.workers.dev"
+ }
+}

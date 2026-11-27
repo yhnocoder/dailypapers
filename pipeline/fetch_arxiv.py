@@ -1,29 +1,33 @@
-"""Fetch one arXiv announcement batch for a topic.
+"""arXiv API helpers for pipeline/ingest.py.
 
-Usage: python3 pipeline/fetch_arxiv.py topics/search-rec.json 2026-11-24 out.json
-
-arXiv announces on Sun–Thu evenings (US/Eastern); the batch shown on weekday D
-contains submissions from the previous announcement cutoff (14:00 ET) up to D 14:00 ET.
-Monday's batch therefore covers Fri 14:00 → Mon 14:00. Holidays are not handled.
+window(D): submission window of batch D, from the previous batch's cutoff (14:00 ET) to D 14:00 ET.
+Monday's batch covers Fri 14:00 → Mon 14:00; the batch after an arXiv holiday also covers the holiday.
 """
-import json, re, sys, time, urllib.error, urllib.parse, urllib.request
+import os, re, sys, time, urllib.error, urllib.parse, urllib.request
 import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from batch_date import prev_batch  # noqa: E402
 
 ET_TZ = ZoneInfo("America/New_York")
 NS = {"a": "http://www.w3.org/2005/Atom", "x": "http://arxiv.org/schemas/atom"}
 API = "https://export.arxiv.org/api/query"
 
 
+MAX_RESULTS = 2000
+
+
 def window(d: date):
-    prev = d - timedelta(days=3 if d.weekday() == 0 else 1)
+    prev = prev_batch(d)
     to_utc = lambda x: datetime(x.year, x.month, x.day, 14, tzinfo=ET_TZ).astimezone(timezone.utc).strftime("%Y%m%d%H%M")
     return to_utc(prev), to_utc(d)
 
 
-def query(q: str):
-    url = API + "?" + urllib.parse.urlencode({"search_query": q, "max_results": 2000, "sortBy": "submittedDate"})
+def query(q: str, id_list: str = ""):
+    params = {"search_query": q, "max_results": MAX_RESULTS, "sortBy": "submittedDate"} if q else {"id_list": id_list, "max_results": 200}
+    url = API + "?" + urllib.parse.urlencode(params)
     for attempt, wait in enumerate((15, 45, 90, 180, None)):
         try:
             with urllib.request.urlopen(url, timeout=120) as r:
@@ -36,7 +40,10 @@ def query(q: str):
             time.sleep(wait)
     time.sleep(3)  # arXiv API etiquette
     clean = lambda s: re.sub(r"\s+", " ", s or "").strip()
-    for e in root.findall("a:entry", NS):
+    entries = root.findall("a:entry", NS)
+    if q and len(entries) >= MAX_RESULTS:  # no paging: a full page means the result was cut off
+        raise RuntimeError(f"arXiv query returned {len(entries)} results (the max): split the query further")
+    for e in entries:
         aid = re.sub(r"v\d+$", "", e.find("a:id", NS).text.split("/abs/")[-1])
         c = e.find("x:comment", NS)
         comment = clean(c.text) if c is not None else ""
@@ -53,22 +60,3 @@ def query(q: str):
             "code": code[0].rstrip(".") if code else None,
         }
 
-
-def main(topic_path, day, out_path):
-    t = json.load(open(topic_path))
-    a, b = window(date.fromisoformat(day))
-    w = f"submittedDate:[{a} TO {b}]"
-    papers = {}
-    full = " OR ".join(f"cat:{c}" for c in t["full_categories"])
-    for p in query(f"({full}) AND {w}"):
-        papers[p["id"]] = p
-    for cat, phrases in t.get("phrase_categories", {}).items():
-        ph = " OR ".join(f'abs:"{x}"' if " " in x else f"abs:{x}" for x in phrases)
-        for p in query(f"cat:{cat} AND ({ph}) AND {w}"):
-            papers.setdefault(p["id"], p)
-    json.dump(list(papers.values()), open(out_path, "w"), ensure_ascii=False, indent=0)
-    print(f"{day}: window {a}–{b} UTC, {len(papers)} papers")
-
-
-if __name__ == "__main__":
-    main(*sys.argv[1:4])

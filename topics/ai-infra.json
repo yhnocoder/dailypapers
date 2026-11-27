@@ -1,34 +1,24 @@
 {
  "id": "ai-infra",
  "name": "AI Infra",
- "taxonomy_version": "v1",
- "rules_version": "v1",
- "full_categories": [
+ "taxonomy_version": "v2",
+ "rules_version": "v2",
+ "categories": [
   "cs.DC",
   "cs.AR",
   "cs.PF",
   "cs.OS",
   "cs.PL",
+  "cs.NI",
   "cs.LG",
   "cs.CL",
-  "cs.AI"
+  "cs.AI",
+  "cs.CV"
  ],
- "phrase_categories": {
-  "cs.CV": [
-   "inference acceleration",
-   "quantization",
-   "GPU",
-   "throughput",
-   "serving",
-   "kernel",
-   "speedup",
-   "memory footprint"
-  ]
- },
  "directions": [
   {
    "code": "A",
-   "name": "训练系统（并行 / 通信 / 容错 / RL 训练）"
+   "name": "训练系统（并行 / 显存 / 容错 / RL 训练）"
   },
   {
    "code": "B",
@@ -36,26 +26,30 @@
   },
   {
    "code": "C",
-   "name": "算子与编译（Kernel / 编译器）"
+   "name": "通信与网络"
   },
   {
    "code": "D",
-   "name": "量化与高效推理"
+   "name": "算子与编译（Kernel / 编译器）"
   },
   {
    "code": "E",
-   "name": "硬件与体系结构"
+   "name": "量化与高效推理"
   },
   {
    "code": "F",
-   "name": "集群与资源调度"
+   "name": "硬件与体系结构"
   },
   {
    "code": "G",
-   "name": "Agent 基础设施"
+   "name": "集群与资源调度"
   },
   {
    "code": "H",
+   "name": "Agent 基础设施"
+  },
+  {
+   "code": "I",
    "name": "评测与性能分析"
   },
   {
@@ -63,11 +57,25 @@
    "name": "其他"
   }
  ],
+ "cadence": {
+  "run_days": [
+   "Sun",
+   "Mon",
+   "Tue",
+   "Wed",
+   "Thu"
+  ],
+  "_note": "weekdays (America/New_York) the editor task runs; daily topics publish one issue per batch, others one issue covering every batch since the previous issue"
+ },
+ "issue_cap": 15,
+ "stars": [
+  2,
+  4
+ ],
  "classify_prompt": "prompts/classify.md",
  "scope_prompt": "prompts/scope/ai-infra.md",
  "writing_prompt": "prompts/writing.md",
  "branch_prefix": "daily/infra",
- "min_candidates": 150,
  "start_date": "2026-11-25",
  "translations": {
   "tongtu_mode": "fast",
