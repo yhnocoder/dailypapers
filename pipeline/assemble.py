@@ -96,7 +96,11 @@ def main(topic_path, day, work):
     gp = os.path.join(ROOT, "site", "data", "glossary.json")
     g = load(gp, {"terms": []})
     have = {t["id"] for t in g["terms"]}
-    added = [t for t in new_terms if t.get("id") and t["id"] not in have]
+    added = []
+    for t in new_terms:  # two write-ups may define the same new term
+        if t.get("id") and t["id"] not in have:
+            have.add(t["id"])
+            added.append(t)
     g["terms"] += added
     dump(g, gp)
     miss_sum = [e["id"] for e in excluded if not e["summary_zh"]] + [r["id"] for r in papers if not r["summary_zh"]]

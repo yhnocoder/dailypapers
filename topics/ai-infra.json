@@ -1,0 +1,77 @@
+{
+ "id": "ai-infra",
+ "name": "AI Infra",
+ "taxonomy_version": "v1",
+ "rules_version": "v1",
+ "full_categories": [
+  "cs.DC",
+  "cs.AR",
+  "cs.PF",
+  "cs.OS",
+  "cs.PL",
+  "cs.LG",
+  "cs.CL",
+  "cs.AI"
+ ],
+ "phrase_categories": {
+  "cs.CV": [
+   "inference acceleration",
+   "quantization",
+   "GPU",
+   "throughput",
+   "serving",
+   "kernel",
+   "speedup",
+   "memory footprint"
+  ]
+ },
+ "directions": [
+  {
+   "code": "A",
+   "name": "训练系统（并行 / 通信 / 容错 / RL 训练）"
+  },
+  {
+   "code": "B",
+   "name": "推理服务（调度 / KV Cache / 投机解码）"
+  },
+  {
+   "code": "C",
+   "name": "算子与编译（Kernel / 编译器）"
+  },
+  {
+   "code": "D",
+   "name": "量化与高效推理"
+  },
+  {
+   "code": "E",
+   "name": "硬件与体系结构"
+  },
+  {
+   "code": "F",
+   "name": "集群与资源调度"
+  },
+  {
+   "code": "G",
+   "name": "Agent 基础设施"
+  },
+  {
+   "code": "H",
+   "name": "评测与性能分析"
+  },
+  {
+   "code": "Z",
+   "name": "其他"
+  }
+ ],
+ "classify_prompt": "prompts/classify.md",
+ "scope_prompt": "prompts/scope/ai-infra.md",
+ "writing_prompt": "prompts/writing.md",
+ "branch_prefix": "daily/infra",
+ "min_candidates": 150,
+ "start_date": "2026-11-25",
+ "translations": {
+  "tongtu_mode": "fast",
+  "upload_base": "https://dailypapers-upload.awesomedays.workers.dev",
+  "files_base": "https://dailypapers-files.awesomedays.workers.dev"
+ }
+}

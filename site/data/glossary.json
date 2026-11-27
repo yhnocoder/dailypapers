@@ -155,6 +155,54 @@
    "term": "梯度反转层",
    "en": "gradient reversal layer (GRL)",
    "def": "前向时原样传递、反向时把梯度乘以负数的一层。把它放在表示和一个领域分类器之间，分类器努力认出样本来自哪个域，表示却被推向让分类器认不出，从而学到与领域无关的特征。"
+  },
+  {
+   "id": "speculative-decoding",
+   "term": "投机解码",
+   "en": "speculative decoding",
+   "def": "先用一个小的草稿模型一次猜出几个后续 token，再让大模型一次前向并行验证，接受与它自己分布一致的最长前缀。输出分布与大模型单独生成完全一样（无损），省下的是大模型逐 token 前向的次数。"
+  },
+  {
+   "id": "acceptance-length",
+   "term": "接受长度 τ",
+   "en": "acceptance length",
+   "def": "投机解码中每一轮平均被大模型接受的 token 数（含大模型自己补的那一个）。τ 越大，大模型前向次数越少；实际加速还要扣掉草稿模型自己花的时间。"
+  },
+  {
+   "id": "pd-disaggregation",
+   "term": "PD 分离",
+   "en": "prefill–decode disaggregation",
+   "def": "把处理整段提示的 prefill 和逐 token 生成的 decode 放到不同的 GPU 实例上，各自按负载配置和扩缩容，prefill 算完后把 KV 缓存传给 decode 实例。"
+  },
+  {
+   "id": "chunked-prefill",
+   "term": "分块 prefill",
+   "en": "chunked prefill",
+   "def": "把长 prompt 的 prefill 切成固定大小的 token 块，每步只算一块，和正在生成的 decode 请求拼在一起跑，避免一个长 prompt 长时间独占 GPU。块越小 decode 等得越短，但模型权重要按块重复读取，计算效率下降。vLLM、Sarathi-Serve 都用这种做法。"
+  },
+  {
+   "id": "slo-goodput",
+   "term": "SLO goodput",
+   "en": "SLO goodput",
+   "def": "每秒有多少请求同时满足所有延迟目标（例如首 token 时间、每 token 时间、尾部 token 间隔）。和单纯的 token 吞吐不同，超时的请求一个都不算，所以更接近线上服务真正能接的量。"
+  },
+  {
+   "id": "hadamard-rotation",
+   "term": "Hadamard 旋转",
+   "en": "Hadamard rotation",
+   "def": "量化前先用正交的 Hadamard 矩阵把一组通道“搅匀”：向量长度不变，但个别特别大的离群值被摊到所有通道上，低比特量化的误差就小很多。QuaRot 等 4-bit 推理方法都用这个技巧，反量化时再乘一次转置即可还原。"
+  },
+  {
+   "id": "expert-parallelism",
+   "term": "专家并行（EP）",
+   "en": "Expert Parallelism",
+   "def": "把 MoE 模型同一层的不同专家放到不同 GPU（rank）上，token 通过 all-to-all 通信发给持有目标专家的 GPU 计算后再收回。每层的发送和收回都是同步点，所以整层的耗时由最忙的那张卡决定。"
+  },
+  {
+   "id": "eplb",
+   "term": "EPLB",
+   "en": "Expert Parallelism Load Balancer",
+   "def": "DeepSeek 开源的专家负载均衡工具：根据统计到的各专家负载，复制热门专家、重新安排专家到 GPU 的映射，让各卡负载接近。它不改路由结果，代价是冗余副本占显存，而且只能跟上较慢的负载变化。"
   }
  ]
 }
