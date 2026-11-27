@@ -10,7 +10,7 @@
  "rules_version": "v2",
  "overview": {
   "guide": [
-   "本期最集中的话题是让视频生成少花算力。[[@2611.33268|JetDiffusion]] 把 Wan2.1-14B 生成 720p 视频的耗时在 RTX 5090 上从约 3,177 秒压到 11.6 秒，核心是一种可训练的 90% 稀疏加 4-bit [[nvfp4|NVFP4]] 注意力 ==VSQA==。读它时要注意 **273 倍里约 32 倍来自去掉 CFG 和少走步**，且 3,177 秒是外推估计。少步蒸馏本身的毛病是另外两篇的话题：[[@2611.29431|HorizonFlow]] 发现 [[dmd|DMD]] 蒸馏里画质几百次迭代就收敛、运动远远落后，把两者的修正分开后，600 次迭代就把 Wan2.1-T2V-1.3B 蒸成 4 步模型；[[@2611.30728|Decide-then-Render]] 发现少步采样偏离 50 步结果是因为构图在最早几步就定了，于是先用半分辨率定构图、再按原种子渲染细节，免训练，快 11–25 倍。",
+   "本期最集中的话题是让视频生成少花算力。[[@2611.33268|JetDiffusion]] 把 Wan2.1-14B 生成 720p 视频的耗时在 RTX 5090 上从约 3,177 秒压到 11.6 秒，核心是一种可训练的 90% 稀疏加 4-bit [[nvfp4|NVFP4]] 注意力 ==VSQA==。读它时要注意 **273 倍里约 32 倍来自去掉 CFG 和少走步**，且 3,177 秒是外推估计。少步蒸馏本身的毛病是另外两篇的话题：[[@2611.29431|HorizonFlow]] 发现 [[dmd|DMD]] 蒸馏里画质几百次迭代就收敛、运动远远落后，把两者的修正分开后，600 次迭代就把 Wan2.1-T2V-1.3B 蒸成 4 步模型；[[@2611.30728|Decide-then-Render]] 发现少步采样偏离 50 步结果是因为构图在最早几步就定了，于是先用半分辨率定构图、再按原种子渲染细节，免训练，快 11–25 倍。视频生成的另一头是可控性：[[@2611.34457|ProxyGenBench]] 用粗糙的 3D 动画草稿指定场景布局、运动和镜头，评测 5 个视频生成模型，发现草稿越细，模型补全缺失内容反而可能越差；[[@2611.34290|StateWeaver]] 用多 Agent 协作生成长视频，把审片时发现的状态差异转成对参考图的修改要求，让后续镜头继承已确认的状态。",
    "训练侧两篇各省一样东西。[[@2611.29064|UNIFIED]] 让同一个扩散 Transformer 兼做编码、生成和解码，关键是每个位置在三种任务里都指同一块图像；ImageNet 256 上 215M 参数的 [[gfid-rfid|gFID]] 为 2.08（越低越好），好于同参数的 UNITE。但它每次前向的计算量是 UNITE 的 1.63 倍，**按训练算力对齐后两者只差 0.03 以内**，省的主要是参数。[[@2611.29138|GC-REPA]] 把预训练图像表征拆开用：图像级信息当条件，图像内信息交给 REPA 监督，SiT-XL/2 用 200K 次迭代就达到 REPA 训 4M 次的 FID。",
    "[[@2611.33232|一项 RL 与 best-of-N 的对比研究]] 在 SD3.5-M 上问一张 Flow-GRPO 图值几张底模图：不涉及物体相对位置的提示，翻底模 3 张就能追平；涉及位置时翻满 8 张找到正确图的比例只有 51.9%，RL 是 92.4%。**只用检测器或只用 VLM 当裁判，结论会分别偏向 RL 或 best-of-N。**想改 RL 算法本身的可以对照着读 [[@2611.30986|iTDM]]，它修正了前向扩散 RL 中 baseline 引起的梯度漂移，在 GenEval2 上收敛快近 3 倍。"
   ]
@@ -21,12 +21,12 @@
    3052
   ],
   [
-   "判定Diffusion / 生成相关",
+   "判定Diffusion相关",
    143
   ],
   [
    "入选",
-   20
+   22
   ],
   [
    "⭐ 精读",
@@ -591,6 +591,54 @@
     "hf": 15,
     "hn": 0
    }
+  },
+  {
+   "id": "2611.34457",
+   "title": "ProxyGenBench: Benchmarking Proxy-Guided Video Generation",
+   "title_zh": "ProxyGenBench：代理引导视频生成基准",
+   "affiliation": "",
+   "primary_cat": "cs.CV",
+   "direction": "G",
+   "star": false,
+   "score": 0.45,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34457",
+    "pdf": "https://arxiv.org/pdf/2611.34457",
+    "code": null
+   },
+   "summary_zh": "评测以动画 3D 体块等结构代理引导视频生成时，模型对代理细节缺失与伪影的处理。",
+   "abstract_zh": "近期的视频生成模型能产生逼真的视频，但如何控制场景的展开仍然困难。结构代理（如带动画的 3D blockout）通过指定场景布局、运动、相机行为和事件顺序来引导生成。但这类粗糙的输入没有给出细节，还可能带有不应被复现的伪影。因此，成功的代理引导生成必须做到：保留（Preserve）预期结构，补全（Complete）缺失内容并修正代理中的伪影，以及把文本、图像和音频条件绑定（Bind）到正确的实体和事件上。我们提出 ==ProxyGenBench== 来研究这些相互作用的要求，包含来自 60 个场景的 **312 个评测用例**，覆盖三类场景任务，并对代理保真度、文本详细程度和多模态输入做了受控变化。我们用经过验证的、针对每个用例的检查清单评测了五个视频生成器。实验表明，代理能改善时空控制，但**代理细节越多，补全效果可能反而越差**，而且很强的结构遵循并不保证绑定正确。",
+   "abstract_en": "Recent video generators produce realistic videos, yet controlling how scenes unfold remains challenging. Structural proxies, such as animated 3D blockouts, guide generation by specifying scene layout, motion, camera behavior, and event order. However, these coarse inputs leave details unspecified and may contain artifacts that should not be reproduced. Successful proxy-guided generation must therefore Preserve intended structure, Complete missing content and correct proxy artifacts, and Bind text, image, and audio conditions to the right entities and events. We introduce ProxyGenBench to study these interacting requirements, with 312 evaluation cases from 60 scenes across three scene tasks and controlled variations in proxy fidelity, text detail, and multimodal inputs. We evaluate five video generators using verified, case-specific checklists. Experiments show that proxies improve spatiotemporal control, but greater proxy detail can coincide with poorer completion, while strong structural adherence does not ensure correct binding.",
+   "batch": "2026-11-25",
+   "heat": {
+    "hf": 36,
+    "hn": 0
+   },
+   "boosted": "shown"
+  },
+  {
+   "id": "2611.34290",
+   "title": "StateWeaver: Multi-Agent Coordination of Story-State Transitions for Long-Horizon Video Generation",
+   "title_zh": "StateWeaver：面向长程视频生成的故事状态转移多 Agent 协同",
+   "affiliation": "",
+   "primary_cat": "cs.CV",
+   "direction": "B",
+   "star": false,
+   "score": 0.45,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.34290",
+    "pdf": "https://arxiv.org/pdf/2611.34290",
+    "code": null
+   },
+   "summary_zh": "用多 Agent 协调故事状态转移，保持长视频一致并正确呈现事件驱动的状态变化。",
+   "abstract_zh": "现代视频基础模型能生成高质量的短片段，但保持长视频的一致性、正确刻画由事件驱动的状态变化仍然困难。现有的 agent 工作流之所以面临这些问题，是因为持续的规划与修复会不断累积上下文，而参考素材的更新又很有限。我们提出 ==StateWeaver==，它结合 Active States 与 Hierarchical Collaboration，把由评审驱动的视觉参考更新与跨镜头的状态继承连接起来。Active States 把评审中发现的状态差异转换为具体的视觉资产需求，用来指导参考素材的构建、验证和重新生成，在修复目标属性的同时保留身份和已经正确的内容。已确认的生成结果会与对应的资产状态、故事时间和参考版本关联起来，供后续镜头验证和复用。==Hierarchical Collaboration== 按任务、片段和修复轮次隔离执行上下文，并用分层记忆在多组之间组织这一过程。在多个基准上，**StateWeaver 优于现有方法**，在预设分镜和自主规划分镜两种情况下，都能生成跨镜头一致性持续稳定的长视频。",
+   "abstract_en": "Modern video foundation models generate high-quality short clips, but preserving long-video consistency and correctly depicting event-driven state changes remain challenging. Existing agentic workflows face these challenges because continual planning and repair accumulate context, while reference updates remain limited. We introduce StateWeaver, which combines Active States and Hierarchical Collaboration to connect review-driven visual reference updates with cross-shot state inheritance. Active States translate state discrepancies identified during review into concrete visual asset requirements that guide reference construction, validation, and regeneration, preserving identity and already-correct content while repairing target attributes. Confirmed generation results are linked to the corresponding asset states, story time, and reference versions for verification and reuse by subsequent shots. Hierarchical Collaboration isolates execution contexts by task, clip, and repair round, and uses hierarchical memory to organize this process across multiple sets. Across multiple benchmarks, StateWeaver outperforms existing methods and produces long videos with sustained cross-shot consistency under predefined and autonomously planned storyboards.",
+   "batch": "2026-11-25",
+   "heat": {
+    "hf": 24,
+    "hn": 0
+   },
+   "boosted": "shown"
   }
  ],
  "others": [
@@ -1467,28 +1515,12 @@
    "direction": "D"
   },
   {
-   "id": "2611.34457",
-   "title": "ProxyGenBench: Benchmarking Proxy-Guided Video Generation",
-   "title_zh": "ProxyGenBench：代理引导视频生成基准",
-   "cat": "cs.CV",
-   "summary_zh": "评测以动画 3D 体块等结构代理引导视频生成时，模型对代理细节缺失与伪影的处理。",
-   "direction": "G"
-  },
-  {
    "id": "2611.34319",
    "title": "PostMesh: Self-Rewarded Preference Post-Training for Flow-Based Artist Mesh Generation",
    "title_zh": "PostMesh：面向基于流的艺术家网格生成的自奖励偏好后训练",
    "cat": "cs.CV",
    "summary_zh": "对基于流的艺术家网格生成器做自奖励偏好后训练，改进其输出质量。",
    "direction": "C"
-  },
-  {
-   "id": "2611.34290",
-   "title": "StateWeaver: Multi-Agent Coordination of Story-State Transitions for Long-Horizon Video Generation",
-   "title_zh": "StateWeaver：面向长程视频生成的故事状态转移多 Agent 协同",
-   "cat": "cs.CV",
-   "summary_zh": "用多 Agent 协调故事状态转移，保持长视频一致并正确呈现事件驱动的状态变化。",
-   "direction": "B"
   },
   {
    "id": "2611.34288",
