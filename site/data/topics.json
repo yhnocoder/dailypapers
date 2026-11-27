@@ -97,6 +97,65 @@
      "name": "其他"
     }
    ]
+  },
+  {
+   "id": "llm",
+   "dates": [
+    "2026-11-25"
+   ],
+   "name": "LLM",
+   "taxonomy_version": "v1",
+   "directions": [
+    {
+     "code": "A",
+     "name": "技术报告与模型发布"
+    },
+    {
+     "code": "B",
+     "name": "预训练与数据"
+    },
+    {
+     "code": "C",
+     "name": "架构"
+    },
+    {
+     "code": "D",
+     "name": "长上下文"
+    },
+    {
+     "code": "E",
+     "name": "后训练与对齐"
+    },
+    {
+     "code": "F",
+     "name": "强化学习与推理"
+    },
+    {
+     "code": "G",
+     "name": "Agent"
+    },
+    {
+     "code": "H",
+     "name": "可解释性与机制分析"
+    },
+    {
+     "code": "I",
+     "name": "评测与 Benchmark"
+    },
+    {
+     "code": "J",
+     "name": "安全与可靠性"
+    },
+    {
+     "code": "Z",
+     "name": "其他"
+    }
+   ],
+   "issues": {
+    "2026-11-25": [
+     "2026-11-25"
+    ]
+   }
   }
  ]
 }

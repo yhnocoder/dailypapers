@@ -47,7 +47,7 @@ def main(topic_path, key, work):
         sys.exit(f"key {key} must be the last batch of the issue ({batches[-1]})")
     pool, n_new, cats = {}, 0, set()
     for b in batches:
-        P = load(os.path.join(ROOT, "site", "data", "papers", f"{b}.json"))
+        P = load(os.path.join(ROOT, "data", "papers", f"{b}.json"))
         n_new += len(P["papers"])
         cats |= set(P["categories"])
         for p in P["papers"]:

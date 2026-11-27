@@ -1,6 +1,6 @@
 """Heat snapshot: community attention for recent arXiv papers (data only; not shown on the site yet).
 
-  python3 pipeline/heat.py [--date YYYY-MM-DD]      writes site/data/heat/<date>.json (date = today, US/Eastern)
+  python3 pipeline/heat.py [--date YYYY-MM-DD]      writes data/heat/<date>.json (date = today, US/Eastern)
 
 Heat keeps growing for a while after a paper appears, so we never overwrite older numbers:
 each run stores a full snapshot of everything the sources show inside a rolling window
@@ -68,7 +68,7 @@ def snapshot(day: date):
             break
     out = {"date": day.isoformat(), "taken_at": datetime.now(ET).isoformat(timespec="minutes"),
            "window_days": win, "errors": errors, "papers": papers}
-    path = os.path.join(ROOT, "site", "data", "heat", f"{day}.json")
+    path = os.path.join(ROOT, "data", "heat", f"{day}.json")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=0)
@@ -81,7 +81,7 @@ def snapshot(day: date):
 
 def latest():
     """Most recent snapshot, or {} when there is none."""
-    d = os.path.join(ROOT, "site", "data", "heat")
+    d = os.path.join(ROOT, "data", "heat")
     files = sorted(f for f in os.listdir(d) if f.endswith(".json")) if os.path.isdir(d) else []
     return json.load(open(os.path.join(d, files[-1]))) if files else {}
 

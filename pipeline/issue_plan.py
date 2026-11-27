@@ -4,7 +4,7 @@
 
 Prints one JSON object per issue, oldest first: {"key": <last batch date>, "batches": [...]}.
 
-A batch is "uncovered" for a topic when its pool exists (site/data/papers/<date>.json), it is
+A batch is "uncovered" for a topic when its pool exists (data/papers/<date>.json), it is
 not earlier than the topic's `start_date` (and within the last 14 days), and no published issue
 of the topic includes it (site/data/topics.json → issues). Using the set difference, a batch that
 arXiv announced late (holidays) is picked up by the next issue instead of falling between ranges.
@@ -37,7 +37,7 @@ def plan(topic_id, now, force=False):
     cfg = json.load(open(os.path.join(ROOT, "topics", f"{topic_id}.json")))
     last = latest_batch(now)
     lo = max(date.fromisoformat(cfg["start_date"]), last - timedelta(days=14)).isoformat()
-    pools = {os.path.basename(p)[:-5] for p in glob.glob(os.path.join(ROOT, "site", "data", "papers", "*.json"))}
+    pools = {os.path.basename(p)[:-5] for p in glob.glob(os.path.join(ROOT, "data", "papers", "*.json"))}
     if last.isoformat() not in pools:
         print(f"note: no pool yet for the latest batch {last} (ingest still running or failed)", file=sys.stderr)
     todo = sorted(d for d in pools if lo <= d <= last.isoformat() and d not in covered(topic_id))

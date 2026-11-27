@@ -4,7 +4,7 @@
   python3 pipeline/ingest.py fetch <date> WORK                 arXiv union of every topic's categories
                                                                + recent HF Daily / HN papers not in any pool
   python3 pipeline/ingest.py split WORK                        WORK/batches/b<i>.json for the tagging agents
-  python3 pipeline/ingest.py build <date> WORK                 WORK/out/*.json → site/data/papers/<date>.json
+  python3 pipeline/ingest.py build <date> WORK                 WORK/out/*.json → data/papers/<date>.json
 
 A batch is identified by its arXiv cutoff date (US/Eastern). The pool keeps, for every
 candidate: arXiv metadata, the English abstract, `title_zh`, `summary_zh`, `affiliation`,
@@ -19,7 +19,7 @@ from batch_date import ET, latest_batch  # noqa: E402
 from fetch_arxiv import query, window  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-POOL = os.path.join(ROOT, "site", "data", "papers")
+POOL = os.path.join(ROOT, "data", "papers")
 UA = {"User-Agent": "dailypapers-pipeline/1.0"}
 
 

@@ -6,8 +6,10 @@
 
 两类运行，各自是一个定时任务、一个独立会话，一次只做一件事：
 
-- **入库**（每天一次）：抓取当天 arXiv 批次（所有主题分类的并集）和 HF / HN 的热门论文，Sonnet 每篇读一次，打上所有主题的标签，存成论文池 `site/data/papers/<batch>.json`；同时存一份热度快照 `site/data/heat/<date>.json`（只存数据，页面暂不展示）。
+- **入库**（每天一次）：抓取当天 arXiv 批次（所有主题分类的并集）和 HF / HN 的热门论文，Sonnet 每篇读一次，打上所有主题的标签，存成论文池 `data/papers/<batch>.json`；同时存一份热度快照 `data/heat/<date>.json`（只存数据，页面暂不展示）。
 - **出刊**（每个主题按自己的频率）：从论文池取本主题的论文，选出前 N 篇、⭐ 精读、配图、tongtu 全文翻译、导读，产出 `site/data/<topic>/<key>.json`。
+
+论文池和热度快照放在仓库根目录的 `data/`，不部署到 Pages（每天约 2 MB，Pages 站点上限 1 GB）；页面只读 `site/data/` 里每期的数据，那里已经带上了要显示的全部内容。
 
 批次 = arXiv 截稿日（America/New_York），也是分支名和页面里用的日期。一期（issue）可以覆盖一个或多个批次，`key` 是它最后一个批次的日期；`site/data/topics.json` 里每个主题的 `issues[key]` 记录这一期覆盖了哪些批次。
 

@@ -34,7 +34,7 @@ def main(topic_path, work, *batches):
     heat = latest().get("papers", {})
     rel, seen = [], set()
     for b in batches:
-        for p in json.load(open(os.path.join(ROOT, "site", "data", "papers", f"{b}.json")))["papers"]:
+        for p in json.load(open(os.path.join(ROOT, "data", "papers", f"{b}.json")))["papers"]:
             if tid in p["tags"] and p["id"] not in seen:
                 seen.add(p["id"])
                 tag = p["tags"][tid]
