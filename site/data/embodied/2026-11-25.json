@@ -227,7 +227,11 @@
      "ref": "Figure 7",
      "caption_zh": "更多检索例子：SAM3（扰动下 BSM 0.423）的近邻在四个任务里都跟着查询做几乎同样的夹爪和关节动作，MAE（0.133）只有按闹钟那一例对得上。"
     }
-   ]
+   ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.29483v1/2611.29483v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.29483v1/2611.29483v1_out.zip"
+   }
   },
   {
    "id": "2611.28873",
