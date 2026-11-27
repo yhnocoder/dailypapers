@@ -5,9 +5,8 @@
  "rules_version": "v1",
  "overview": {
   "guide": [
-   "[[@2611.29613|Weight Coding]] 读的时候重点看那几个被训练压小的 LayerNorm 增益：Pinterest 生产召回模型里，光把它们重置回 1 就值 10 个点，**说明线上模型的权重本身可能就有现成的改进空间**；线上保存数的涨幅只在按保存目标优化的版本里出现。[[@2611.28645|PROSPER]] 解释了 LLM 换进 SPLADE 收益小的原因：扩展词把品牌、型号这类字面词压下去了，补回权重之后，在淘天作为多路召回里新增的一路拿到净 GMV +1.6%。[[@2611.31185|CO-GRAFT]] 让 RL 前后的两个模型在同一条轨迹里分角色接力，结论是只看最终答案的奖励几乎不改进 query，大块收益其实是学会了答案格式。[[@2611.28555|abc]] 是做学习型稀疏检索的人应该重新校准的一篇：**精确倒排索引在 top-1000 上比 Seismic 更快**，“LSR 只能走近似索引”的说法在召回深度大时不成立。",
-   "[[@2611.30243|搜索 Agent 能否纠正自己的错误]]在 BrowseComp-Plus 上把模型自己的闭卷错答放回对话再干预证据：把答案页排到第一位，Agent 常常还是不点开；直接把关键段落放进上下文，Qwen3.5 准确率比中性递送高 51.0 个点。**用户坚持错误答案时，Nemotron 的准确率掉 32.9 个点。**[[@2611.33210|生物医学自适应检索]]发现置信度在专科难题上的 AUROC 只有 0.506，接近随机，而检索在这些题上恰好最有用（+11.2%），五种校准修正都救不回来，作者建议默认总是检索。",
-   "[[@2611.30819|Ask Again]] 在 6 万条生成式引擎回答里测到：同一个问题问两次，排第一的条目有 32% 的概率不同，接近的两个领先者跑 25 次也只有 60% 能分出先后，品牌可见度监测常用的 7–8 次采样不够。[[@2611.29948|TriVS]] 把磁盘向量检索拆成内存簇路由、内存量化蒸馏、按向量读盘三步，Recall@10=0.9 时吞吐平均是 PipeANN 的 3.42 倍，磁盘 I/O 少 63.7%。[[@2611.29252|Zarc]] 在 4 张 H100 上对十亿向量做精确 kNN，10,000 个 query 用时 1.1 秒，暴力扫描要 5 分钟。"
+   "[[@2611.29613|Weight Coding]] 重点看被训练压小的 LayerNorm 增益：Pinterest 生产召回模型里，光把它们重置回 1 就值 10 个点，**线上模型的权重本身可能就有现成的改进空间**。[[@2611.28645|PROSPER]] 说明 LLM 换进 SPLADE 收益小，是因为扩展词压过了品牌、型号这类字面词。[[@2611.28555|abc]] 的精确倒排索引在 top-1000 上比 Seismic 更快，“学习型稀疏检索只能用近似索引”在召回深度大时不成立。[[@2611.31185|CO-GRAFT]] 的结论是只看最终答案的奖励几乎不改进 query。",
+   "[[@2611.30243|搜索 Agent 纠错评测]]发现，把答案页排到第一位，Agent 常常还是不点开；直接把关键段落放进上下文，准确率高出 51 个点。[[@2611.30819|Ask Again]] 测到同一个问题问两次，生成式引擎排第一的条目有 32% 的概率不同。[[@2611.29948|TriVS]] 把磁盘向量检索拆成内存路由、内存蒸馏、按向量读盘三步，吞吐是 PipeANN 的 3.42 倍。"
   ]
  },
  "funnel": [
@@ -28,7 +27,7 @@
   {
    "id": "2611.29613",
    "title": "Weight Coding: Evolving Web-Scale Recommenders through Direct Weight Edits with LLM Agents",
-   "title_zh": "LLM Agent 不训练、直接改权重：Pinterest 召回 Recall@10 涨 15 个点，其中 10 个来自把 LayerNorm 增益调回 1",
+   "title_zh": "不训练、直接改权重：Pinterest 召回 Recall@10 涨 15 个点",
    "affiliation": "Pinterest",
    "primary_cat": "cs.IR",
    "direction": "F",
@@ -58,7 +57,7 @@
   {
    "id": "2611.28645",
    "title": "PROSPER: LLMs as Sparse Retrievers for First-Stage Product Search",
-   "title_zh": "给 LLM 稀疏召回补回品牌词：Hit@1000 从 91.3% 提到 93.9%，线上净 GMV +1.6%",
+   "title_zh": "给 LLM 稀疏召回补回品牌词，淘天线上净 GMV +1.6%",
    "affiliation": "中国科学院计算技术研究所、中国科学院大学、阿姆斯特丹大学、阿里巴巴淘天集团",
    "primary_cat": "cs.IR",
    "direction": "B",
@@ -88,7 +87,7 @@
   {
    "id": "2611.28555",
    "title": "The abc index: Exact Retrieval for Learned Sparse Representations",
-   "title_zh": "学习型稀疏检索的精确索引比 Qdrant 快 6.5–84 倍，取 top-1000 时反超近似索引最多 7.4 倍",
+   "title_zh": "学习型稀疏检索用精确索引，比 Qdrant 最多快 84 倍",
    "affiliation": "比萨大学",
    "primary_cat": "cs.IR",
    "direction": "G",
@@ -118,7 +117,7 @@
   {
    "id": "2611.31185",
    "title": "CO-GRAFT: Attributing Reinforcement Learning Gains in Search Agents via Role-Level Policy Grafting",
-   "title_zh": "搜索 Agent 经 RL 最多涨 31.6 个点，写搜索 query 的贡献从未超过 15%，大头是推理和答案格式",
+   "title_zh": "RL 让搜索 Agent 变强，但写 query 的贡献不到 15%",
    "affiliation": "",
    "primary_cat": "cs.IR",
    "direction": "A",

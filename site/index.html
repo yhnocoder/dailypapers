@@ -37,7 +37,7 @@ button,select,summary{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 h1,h2,h3,p{margin:0}
 
-.page{max-width:1280px;margin:0 auto;padding:22px max(4vw,16px,env(safe-area-inset-right,0px)) 72px max(4vw,16px,env(safe-area-inset-left,0px))}
+.page{max-width:1440px;margin:0 auto;padding:22px max(4vw,16px,env(safe-area-inset-right,0px)) 72px max(4vw,16px,env(safe-area-inset-left,0px))}
 
 /* ── masthead ─────────────────────────────────────────── */
 .mast{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:0 16px;padding:6px 0 16px}
@@ -68,10 +68,11 @@ h1,h2,h3,p{margin:0}
 .nav .st{color:var(--accent)}
 
 /* ── front page ───────────────────────────────────────── */
-.front{display:grid;grid-template-columns:minmax(0,1fr) 272px;gap:0 49px;margin-top:30px;position:relative}
-.front::after{content:"";position:absolute;top:0;bottom:0;right:296px;border-left:1px solid var(--hair)}
+.front{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:0 49px;margin-top:30px;position:relative}
+.front::after{content:"";position:absolute;top:0;bottom:0;right:324px;border-left:1px solid var(--hair)}
 
-.story{display:grid;grid-template-columns:236px minmax(0,1fr);grid-template-areas:"head head" "nums body" "abs body";grid-template-rows:auto auto 1fr;gap:0 30px}
+.story{display:grid;grid-template-columns:300px minmax(0,1fr);grid-template-areas:"head head" "nums body" "abs body";grid-template-rows:auto auto 1fr;gap:0 30px}
+.story:not(.plain) .body{border-left:1px solid var(--hair);padding-left:30px}
 .story .head{grid-area:head}.story .nums{grid-area:nums}.story .body{grid-area:body}.story .abs{grid-area:abs}
 .story h2{font:900 clamp(29px,3.5vw,45px)/1.2 "Noto Serif SC",var(--serif);color:var(--ink);letter-spacing:.01em;text-wrap:balance}
 .story h2 .lat{font-family:var(--serif);font-weight:800}
@@ -87,8 +88,9 @@ h1,h2,h3,p{margin:0}
 @media(prefers-reduced-motion:reduce){#toast{transition:none}}
 .st{color:var(--accent)}
 
-.body{font-size:16.5px;line-height:1.85;columns:2;column-gap:30px;column-rule:1px solid var(--hair);text-align:left;hyphens:auto;orphans:2;widows:2}
-.body p+p{text-indent:2em}
+.body{font-size:16.5px;line-height:1.85;columns:1;column-gap:30px;column-rule:1px solid var(--hair);text-align:left;hyphens:auto;orphans:2;widows:2}
+.body p{margin:0}
+.body p+p{margin-top:.9em}
 .body p:first-child::first-line{font-weight:600}
 mark{color:inherit;background:linear-gradient(transparent 58%,var(--hl) 58%,var(--hl) 94%,transparent 94%);padding:0 .08em;margin:0 -.08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .body strong,.abs strong,.x strong{font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:.32em}
@@ -211,6 +213,7 @@ a.pref:hover,a.pref:focus-visible{text-decoration:underline;text-underline-offse
 @media(max-width:1100px){
   .front{grid-template-columns:minmax(0,1fr) 248px;gap:0 41px}.front::after{right:268px}
   .story{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "nums" "body" "abs";grid-template-rows:none}
+  .story:not(.plain) .body{border-left:0;padding-left:0}
   .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0 24px;margin:0 0 20px}
   .abs{margin-top:22px;padding-top:14px;border-top:1px solid var(--hair);font-size:14px}
   .more .story{grid-template-columns:minmax(0,1fr);grid-template-areas:"head" "nums" "body" "abs"}
