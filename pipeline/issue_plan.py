@@ -1,8 +1,13 @@
 """Which issues a topic's editor run should publish now.
 
   python3 pipeline/issue_plan.py --topic llm [--now YYYY-MM-DDTHH:MM] [--force]
+  python3 pipeline/issue_plan.py --group daily|other [--now YYYY-MM-DDTHH:MM]
 
 Prints one JSON object per issue, oldest first: {"key": <last batch date>, "batches": [...]}.
+With --group, every topic of one editor task is planned, in the order of topics/*.json's `order`
+(file name when absent), and each line also carries "topic": `daily` are the topics with 5 run days,
+`other` the rest. A topic belongs to a task by its cadence alone, so adding a topic or changing its
+run days needs no change to the scheduled tasks.
 
 A batch is "uncovered" for a topic when its pool exists (data/papers/<date>.json), it is
 not earlier than the topic's `start_date` (and within the last 14 days), and no published issue
@@ -23,6 +28,7 @@ from batch_date import ET, latest_batch  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+NOTED = []
 
 
 def covered(topic_id):
@@ -39,7 +45,8 @@ def plan(topic_id, now, force=False):
     last = latest_batch(now)
     lo = max(date.fromisoformat(cfg["start_date"]), last - timedelta(days=14)).isoformat()
     pools = {os.path.basename(p)[:-5] for p in glob.glob(os.path.join(ROOT, "data", "papers", "*.json"))}
-    if last.isoformat() not in pools:
+    if last.isoformat() not in pools and not NOTED:
+        NOTED.append(last)  # once per run, also when a whole group is planned
         print(f"note: no pool yet for the latest batch {last} (ingest still running or failed)", file=sys.stderr)
     todo = sorted(d for d in pools if lo <= d <= last.isoformat() and d not in covered(topic_id))
     if not todo:
@@ -56,10 +63,19 @@ def plan(topic_id, now, force=False):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--topic", required=True)
+    g = ap.add_mutually_exclusive_group(required=True)
+    g.add_argument("--topic")
+    g.add_argument("--group", choices=["daily", "other"])
     ap.add_argument("--now")
     ap.add_argument("--force", action="store_true")
     a = ap.parse_args()
     now = datetime.fromisoformat(a.now).replace(tzinfo=ET) if a.now else datetime.now(ET)
-    for i in plan(a.topic, now, a.force):
-        print(json.dumps(i))
+    if a.topic:
+        for i in plan(a.topic, now, a.force):
+            print(json.dumps(i))
+    else:
+        cfgs = [json.load(open(f)) for f in sorted(glob.glob(os.path.join(ROOT, "topics", "[!_]*.json")))]
+        for c in sorted(cfgs, key=lambda c: (c.get("order", 99), c["id"])):
+            if (len(c["cadence"]["run_days"]) >= 5) == (a.group == "daily"):
+                for i in plan(c["id"], now, a.force):
+                    print(json.dumps({"topic": c["id"], **i}))
