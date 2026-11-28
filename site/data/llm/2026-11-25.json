@@ -8,7 +8,7 @@
  "rules_version": "v2",
  "overview": {
   "guide": [
-   "两份技术报告值得看训练细节，而不只是榜单。[[@2611.34529|AliceAI-Foundation-80B-A3B-Base]] 是 Yandex 从头训的 MoE 基座（总参数 80B、每个 token 激活约 3B），在自建的两个俄语事实题基准上胜过激活参数约为它 4 倍的 DeepSeek-V4-Flash-Base。可复用的是两条经验：把没抓到或被过滤器丢掉的有用网页找回来；换验证集，因为按训练语料留出部分的 loss 给训练配置排序，与按下游平均分排序的一致率只有 42%。读时注意，基准题和找语料缺口用的都是 Yandex 自家的搜索数据。[[@2611.26358|Beam]] 是 Reflection AI 的 MoE（总参数 501.3B、激活 23.4B），在 10.5K 张 GB300 上跑了四周 RL；中途有两段刻意只练数学或只练软件工程，没练的一侧没有掉分，没练过搜索任务的 BrowseComp 也从 50.1% 涨到 57.9%。不过这是单次训练，没有对照曲线。",
+   "三份技术报告值得看训练细节，而不只是榜单。[[@2611.34529|AliceAI-Foundation-80B-A3B-Base]] 是 Yandex 从头训的 MoE 基座（总参数 80B、每个 token 激活约 3B），在自建的两个俄语事实题基准上胜过激活参数约为它 4 倍的 DeepSeek-V4-Flash-Base。可复用的是两条经验：把没抓到或被过滤器丢掉的有用网页找回来；换验证集，因为按训练语料留出部分的 loss 给训练配置排序，与按下游平均分排序的一致率只有 42%。读时注意，基准题和找语料缺口用的都是 Yandex 自家的搜索数据。[[@2611.26358|Beam]] 是 Reflection AI 的 MoE（总参数 501.3B、激活 23.4B），在 10.5K 张 GB300 上跑了四周 RL；中途有两段刻意只练数学或只练软件工程，没练的一侧没有掉分，没练过搜索任务的 BrowseComp 也从 50.1% 涨到 57.9%。不过这是单次训练，没有对照曲线。第三份是读者点名补进的精读 [[@2611.33314|GitHub Copilot 行内编辑模型]]，讲的是编辑器里「预测下一处改动」的线上系统：原来补全、附近改写、远距离改写由三个模型串行调用，现在一个模型一次输出一串带行号的 diff，客户端缓存后面几处，用户按 Tab 时不用再调模型，A/B 里输出 token 少了 58.93%。读时注意，同一个模型不改客户端时，被用户关掉的建议多了 12.24%，配合客户端改动后才少了 10.06%，而且这个结果在多重检验校正后不显著。",
    "遗忘问题可以和 [[@2611.34579|Tune for Retention, Not Just Gain]] 对照着读。它重跑了前人认为 SFT 遗忘最严重的设定：Llama-3.1-8B 以 MMLU 为新任务微调，原超参下 MMLU 涨 9.3 个点、另外五项旧能力平均掉 33 个点；把学习率从 5e-5 降到 1e-5、batch 从 128 降到 16，MMLU 涨 12.1 个点，旧能力反升 0.55 个点，与 GRPO 相当。**换 on-policy 方法之前，先在选超参时把旧能力算进去。**后训练的另一种副作用见 [[@2611.26863|LLMs Memorize Their Own Hallucinations]]：在知识任务上用结果奖励做 RL，被奖励强化的自生成幻觉，复述率平均上升 4.83%，没得到训练信号的只升 0.17%。",
    "本期有五篇讲 ==looped 模型==（反复使用同一组层来加深计算）。[[@2611.34821|LoopTitan]] 在参数、FLOPs 和 KV cache 都匹配的条件下拆解此前 looped MoE 的收益，发现参数复用本身几乎没有贡献，收益主要来自网络形状和 residual scale；用 Muon 训练时，不复用、更深的标准 MoE 能拿到多循环一次所得收益的 90.2%。另两篇各找到循环的用处：[[@2611.33896|Floodgates]] 让浅循环一次起草多个后续 token、深循环验证，作为无损解码最高加速 7.5 倍；[[@2611.31094|LoopRes]] 把现成的预训练 LLM 微调成循环结构，在 2 倍算力下让 Qwen3-1.7B-Base 比 SFT 高 29.1%。架构上还有一篇从今日热点补进来的精读：[[@2611.34051|Stable Gated DeltaNet-2]] 追查线性注意力模型 GDN-2 在 64K 上下文上训练时突然崩溃的原因，发现它擦除旧状态时读和改的方向不一致，即使不再写入新内容，状态也会指数增长，而 loss 曲线上几乎没有预兆；修法是把擦除改成对称的。读时注意，它在 128K 长上下文检索上领先的 6.80 分是相对 GDN-2 说的，和另外两种稳定方案只差 0.8–1.7 分。"
   ]
@@ -28,7 +28,7 @@
   ],
   [
    "⭐ 精读",
-   4
+   5
   ]
  ],
  "papers": [
@@ -224,6 +224,76 @@
    }
   },
   {
+   "id": "2611.33314",
+   "title": "Building a Unified Inline Code Editing Model for GitHub Copilot",
+   "title_zh": "Copilot 用一个模型一次输出多处 diff，取代三个模型串行调用",
+   "affiliation": "Microsoft（GitHub Copilot / VS Code 团队）",
+   "primary_cat": "cs.SE",
+   "direction": "A",
+   "star": true,
+   "score": 0.65,
+   "links": {
+    "abs": "https://arxiv.org/abs/2611.33314",
+    "pdf": "https://arxiv.org/pdf/2611.33314",
+    "code": null
+   },
+   "summary_zh": "介绍 GitHub Copilot 中预测开发者下一处编辑的统一行内编辑模型的构建过程。",
+   "abstract_zh": "AI 辅助编程的范围从完全 agentic 的编程到编辑器中的行内建议。行内建议需要根据一次编辑会话预测开发者最可能的下一处编辑。下一处编辑可能在光标处、附近几行，或更远的位置，一个编辑意图也可能横跨其中几处。此前的系统按固定顺序查询彼此独立的补全、附近编辑和远距离编辑模型，各自有不同的输出格式；因此它无法在一次响应中表达跨越远距离位置的意图，每条建议可能需要多次串行模型调用，并且即使修正更合适时也优先给出补全。我们提出一个统一模型，在同一个输出空间中预测这三类编辑：一系列带锚点的 diff patch，指明位置、删除的行和新增的行。这种表示允许一次响应包含多处编辑，因此客户端可以从缓存中提供后续编辑，而无需再次调用模型。我们分两个阶段训练该模型，先统一下一处编辑与远距离编辑预测，再加入代码补全。我们通过模型伪标注和编辑历史回放，从单处编辑数据合成多处编辑监督信号。我们使用二值的 LLM 评分奖励、在数据过滤、奖励和评测中共用的 patch 有效性分类体系，以及针对特定失败模式的 grader boosting。第二阶段还调整了客户端处理和展示模型输出的方式。在 GitHub Copilot 的受控在线 A/B 实验中，相对于三模型基线，**第一阶段将显示时间显著缩短 6.77%，输出 token 减少 58.93%**。在第二阶段，3-in-1 模型加上客户端适配，相对于 2-in-1 模型搭配补全模型，**将每位用户被主动关掉（dismissed）的建议减少了 10.06%**。在整份报告中，我们还分享了评测、训练以及端到端模型与系统设计方面的方法和经验。",
+   "abstract_en": "AI-assisted coding ranges from fully agentic coding to inline code suggestions in the editor. Inline suggestions require predicting a developer's most likely next edit from an editing session. The next edit may lie at the cursor, in nearby lines, or farther away, and one editing intent can span several of these. The preceding system queries separate completion, nearby edit, and long-distance edit models, each with its own output format, in a fixed sequence; it thus cannot express intents spanning distant locations in one response, can require several sequential model calls per suggestion, and prioritizes completion even when a correction would serve better. We present a unified model that predicts all three edit types in one output space: a sequence of anchored diff patches specifying locations, deleted lines, and added lines. This representation permits multiple edits per response, so the client can serve later edits from a cache without further model calls. We train this model in two phases, first unifying next edit and long-distance edit prediction, then adding code completion. We synthesize multi-edit supervision from single-edit data via model pseudolabeling and edit history playback. We use a binary LLM-graded reward, a patch validity taxonomy shared by data filtering, reward, and evaluation, and grader boosting for targeted failure modes. Phase 2 also adapts how the client processes and presents model outputs. In controlled online A/B experiments in GitHub Copilot, Phase 1 significantly reduces time to display by 6.77% and output tokens by 58.93% relative to the three-model baseline. In Phase 2, the 3-in-1 model and client adaptations reduce dismissed suggestions per user by 10.06% relative to the 2-in-1 model paired with the completion model. Throughout this report, we also share our methodology and learnings in evaluation, training, and end-to-end model and system design.",
+   "batch": "2026-11-25",
+   "analysis": [
+    "Copilot 的行内建议原本靠三个模型串行：补全模型在光标处续写，[[nes|NES]] 重写光标附近几行，远距离 NES 先猜行号再调一次 NES，一次最多调 4 次，且总先问补全。新模型只输出一串 ==锚定 diff patch==：每个 patch 写「文件路径:行号」，接至少一行 `-` 删除行和若干 `+` 新增行，纯插入也先删一行锚点再加回。例如开发者把参数 `fish` 改名、刚敲到 `fo`，模型一次给出 4 个 patch：补全成 `food`，改同文件两处用法，再改另一个文件的调用。**客户端只显示第一个，其余缓存，按 Tab 接受后直接弹出下一个，不再调模型。**光标行放在提示词末尾，便于复用 KV 缓存。",
+    "论文没给基座和参数量。第一阶段先合并两种 NES。已有数据每条只有一处编辑，于是合成多处编辑标签：把标签里的编辑挪进历史，让当时最强的模型续写下一处，合格就接上，最多 10 处；或把历史里最近的编辑挪进标签，由 LLM 判断意图一致才留。RL 每题采 8 个回答，奖励只有 0 和 1：规则只管判 0（解析不了、编译不过），前沿推理模型打分，0.8 分以上得 1。主裁判已有 14 条标准，另加一个只看插入的辅助裁判，专抓「内容对、位置偏一两行」，它判 0 则总分为 0，即 ==grader boosting==。第二阶段继续 RL，加约 9.6 万条补全样本和一个完整性辅助裁判（只给签名不给函数体判 0）。",
+    "线上 A/B 里，第一阶段模型仍搭配原补全模型，比三模型旧系统显示延迟降 6.77%、每次响应输出 token 降 58.93%，质量指标无显著变化。第二阶段先直接去掉补全模型，每用户接受的建议少 22.45%，客户端也得跟着改：[[speculative-decoding|投机解码]] 草稿改成以光标行开头的 patch，换回旧草稿延迟高 11.44%；被忽略的 [[ghost-text|ghost text]] 不再换样式重弹，同一模型下被关掉的建议少 22.40%。最终版对照「第一阶段模型＋补全模型」，每用户关掉的建议少 10.06%；**只换模型不改客户端时反而多 12.24%。**",
+    "10.06% 的 p 值是 0.045，作者承认 [[bonferroni|Bonferroni 校正]] 后不显著，且这些实验同时用来选模型，效应可能偏大。过滤数据、RL 打分和离线评测共用一个裁判模型，作者也说分不清提升有多少来自它。我觉得最有用的是这组对照：同一个模型只因客户端不同，被关掉的建议从多 12% 变成少 10%，模型和展示逻辑得放进同一场 A/B 调。"
+   ],
+   "star_reasons": [
+    "GitHub Copilot 线上行内建议模型的完整技术报告，从输出格式、数据、RL 到客户端都写了",
+    "锚定 diff patch 格式一次输出多处编辑，客户端缓存后续 patch，第一阶段输出 token 降 58.93%",
+    "从单处编辑数据合成多处编辑标签的两条流水线，以及 grader boosting 辅助裁判，可直接借鉴",
+    "多组同模型不同客户端的线上对照，说明展示逻辑对被关掉的建议数影响和模型一样大"
+   ],
+   "figures": [
+    {
+     "src": "https://arxiv.org/html/2611.33314v1/figures/teaser_followup_edit.png",
+     "ref": "Figure 1(b)",
+     "caption_zh": "同一次模型响应里的第二个 patch：光标下方 10 行的校验逻辑被改写，以并排对比的样式显示。它在用户接受光标处的补全后**直接从客户端缓存取出**，没有再调用模型。",
+     "after": 0
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33314v1",
+     "svg_id": "S4.F11.pic1",
+     "ref": "Figure 11",
+     "caption_zh": "RL 奖励的判定树：标签是「不改」时，回答有编辑就得 0；标签有编辑而回答不改，交给不编辑裁判（0.5 分过线）；回答有编辑，按标签是单处还是多处交给对应裁判（0.8 分过线）。最终奖励只有 0 或 1，图里省略了先行判 0 的规则检查。",
+     "after": 1
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33314v1",
+     "svg_id": "S2.F4.pic1",
+     "ref": "Figure 4",
+     "caption_zh": "旧的三模型系统在客户端的调用顺序：先问补全，没有再问 NES，再没有才问远距离 NES 并在跳到的位置再调一次 NES，一次触发最多串行 4 次调用。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33314v1/figures/quality_improvement_after.png",
+     "ref": "Figure 3(b)",
+     "caption_zh": "同一处上下文，统一模型把打到一半的 `Fa` 改成 `Fish`；旧系统先问补全模型，补成了 `FastingPenguin`（见 Figure 3(a)）。统一模型可以选择修正，而不是总把补全放在第一位。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33314v1",
+     "svg_id": "S4.F8.sf1.pic1",
+     "ref": "Figure 8(a)",
+     "caption_zh": "==模型伪标注==：把标签里的编辑挪进历史，让最强的 checkpoint 预测下一处，通过有效性和质量过滤就接到标签后面，直到不再编辑、被过滤掉或达到 10 处。"
+    },
+    {
+     "src": "https://arxiv.org/html/2611.33314v1",
+     "svg_id": "S5.F18.pic1",
+     "ref": "Figure 18",
+     "caption_zh": "第二阶段最终版本与对照组按显示样式拆开：ghost text 每用户显示数从 19.03 降到 16.72，其余样式从 7.09 升到 10.60；两类的被关掉比例都下降（ghost text 2.41% → 1.74%，其余 6.89% → 5.29%）。总的被关掉数下降来自 ghost text 少了。"
+    }
+   ],
+   "boosted": "star"
+  },
+  {
    "id": "2611.34051",
    "title": "Stable Gated DeltaNet-2: Understanding and Mitigating Recurrent State Instability",
    "title_zh": "GDN-2 长上下文训练崩溃的根源：擦除时读和改的方向不一致",
@@ -301,25 +371,6 @@
     "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.34051v1/2611.34051v1_out.zip"
    },
    "boosted": "star"
-  },
-  {
-   "id": "2611.33314",
-   "title": "Building a Unified Inline Code Editing Model for GitHub Copilot",
-   "title_zh": "为 GitHub Copilot 构建统一的行内代码编辑模型",
-   "affiliation": "GitHub Copilot",
-   "primary_cat": "cs.SE",
-   "direction": "A",
-   "star": false,
-   "score": 0.65,
-   "links": {
-    "abs": "https://arxiv.org/abs/2611.33314",
-    "pdf": "https://arxiv.org/pdf/2611.33314",
-    "code": null
-   },
-   "summary_zh": "介绍 GitHub Copilot 中预测开发者下一处编辑的统一行内编辑模型的构建过程。",
-   "abstract_zh": "AI 辅助编程的范围从完全 agentic 的编程到编辑器中的行内建议。行内建议需要根据一次编辑会话预测开发者最可能的下一处编辑。下一处编辑可能在光标处、附近几行，或更远的位置，一个编辑意图也可能横跨其中几处。此前的系统按固定顺序查询彼此独立的补全、附近编辑和远距离编辑模型，各自有不同的输出格式；因此它无法在一次响应中表达跨越远距离位置的意图，每条建议可能需要多次串行模型调用，并且即使修正更合适时也优先给出补全。我们提出一个统一模型，在同一个输出空间中预测这三类编辑：一系列带锚点的 diff patch，指明位置、删除的行和新增的行。这种表示允许一次响应包含多处编辑，因此客户端可以从缓存中提供后续编辑，而无需再次调用模型。我们分两个阶段训练该模型，先统一下一处编辑与远距离编辑预测，再加入代码补全。我们通过模型伪标注和编辑历史回放，从单处编辑数据合成多处编辑监督信号。我们使用二值的 LLM 评分奖励、在数据过滤、奖励和评测中共用的 patch 有效性分类体系，以及针对特定失败模式的 grader boosting。第二阶段还调整了客户端处理和展示模型输出的方式。在 GitHub Copilot 的受控在线 A/B 实验中，相对于三模型基线，**第一阶段将显示时间显著缩短 6.77%，输出 token 减少 58.93%**。在第二阶段，3-in-1 模型加上客户端适配，相对于 2-in-1 模型搭配补全模型，**将每位用户被忽略的建议减少了 10.06%**。在整份报告中，我们还分享了评测、训练以及端到端模型与系统设计方面的方法和经验。",
-   "abstract_en": "AI-assisted coding ranges from fully agentic coding to inline code suggestions in the editor. Inline suggestions require predicting a developer's most likely next edit from an editing session. The next edit may lie at the cursor, in nearby lines, or farther away, and one editing intent can span several of these. The preceding system queries separate completion, nearby edit, and long-distance edit models, each with its own output format, in a fixed sequence; it thus cannot express intents spanning distant locations in one response, can require several sequential model calls per suggestion, and prioritizes completion even when a correction would serve better. We present a unified model that predicts all three edit types in one output space: a sequence of anchored diff patches specifying locations, deleted lines, and added lines. This representation permits multiple edits per response, so the client can serve later edits from a cache without further model calls. We train this model in two phases, first unifying next edit and long-distance edit prediction, then adding code completion. We synthesize multi-edit supervision from single-edit data via model pseudolabeling and edit history playback. We use a binary LLM-graded reward, a patch validity taxonomy shared by data filtering, reward, and evaluation, and grader boosting for targeted failure modes. Phase 2 also adapts how the client processes and presents model outputs. In controlled online A/B experiments in GitHub Copilot, Phase 1 significantly reduces time to display by 6.77% and output tokens by 58.93% relative to the three-model baseline. In Phase 2, the 3-in-1 model and client adaptations reduce dismissed suggestions per user by 10.06% relative to the 2-in-1 model paired with the completion model. Throughout this report, we also share our methodology and learnings in evaluation, training, and end-to-end model and system design.",
-   "batch": "2026-11-25"
   },
   {
    "id": "2611.33893",
