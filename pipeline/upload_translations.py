@@ -7,10 +7,13 @@ For each paper it finds tongtu's work directory (`tongtu status <id> --json`), u
 and records the public-facing (Access-protected) URLs in WORK/translations.json, which
 pipeline/assemble.py reads. Papers whose translation failed are recorded with an "error".
 
+It also prints what each translation cost (tokens and USD, summed over tongtu's stage manifests,
+so a failed paper counts too) and saves it as WORK/tongtu_usage.json for the run's report.
+
 The upload token is never stored here: the session's network proxy injects it into the
 Authorization header for the upload host. Outside a session, set DAILYPAPERS_UPLOAD_TOKEN.
 """
-import io, json, os, subprocess, sys, urllib.request, zipfile
+import glob, io, json, os, subprocess, sys, urllib.request, zipfile
 
 
 def tongtu_workdir(pid):
@@ -18,6 +21,24 @@ def tongtu_workdir(pid):
     if out.returncode:
         return None
     return json.loads(out.stdout).get("workdir")
+
+
+def usage(wd):
+    """Tokens, cost and model time of one paper, summed over the stages that ran a model session."""
+    tot = {"input_tokens": 0, "output_tokens": 0, "cache_read_tokens": 0, "cache_write_tokens": 0,
+           "cost_usd": 0.0, "seconds": 0.0, "model": ""}
+    for f in sorted(glob.glob(os.path.join(wd, "build", "manifests", "*.json"))):
+        try:
+            s = json.load(open(f)).get("session") or {}
+        except (OSError, ValueError):
+            continue
+        u = s.get("usage") or {}
+        for k in ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens", "cost_usd"):
+            tot[k] += u.get(k) or 0
+        tot["seconds"] += s.get("duration_seconds") or 0
+        tot["model"] = s.get("model") or tot["model"]
+    tot["cost_usd"], tot["seconds"] = round(tot["cost_usd"], 4), round(tot["seconds"])
+    return tot
 
 
 def put(url, data, ctype):
@@ -38,8 +59,12 @@ def main(topic_path, work, *ids):
         return
     path = os.path.join(work, "translations.json")
     result = json.load(open(path)) if os.path.exists(path) else {}
+    up_path = os.path.join(work, "tongtu_usage.json")
+    used = json.load(open(up_path)) if os.path.exists(up_path) else {}
     for pid in ids:
         wd = tongtu_workdir(pid)
+        if wd:
+            used[pid] = usage(wd)
         idv = os.path.basename(wd) if wd else None
         pdf = os.path.join(wd, "out", f"{idv}.zh.pdf") if wd else None
         if not pdf or not os.path.exists(pdf):
@@ -55,6 +80,15 @@ def main(topic_path, work, *ids):
         result[pid] = {"pdf": f"{files}/papers/{idv}/{idv}.zh.pdf", "zip": f"{files}/papers/{idv}/{idv}_out.zip"}
         print(f"{pid}: uploaded {idv}")
     json.dump(result, open(path, "w"), ensure_ascii=False, indent=1)
+    json.dump(used, open(up_path, "w"), ensure_ascii=False, indent=1)
+    print("tongtu usage (input / output / cache read / cache write tokens, USD):")
+    for pid in ids:
+        u = used.get(pid)
+        if u:
+            print(f"  {pid}: {u['input_tokens']:,} / {u['output_tokens']:,} / {u['cache_read_tokens']:,} / "
+                  f"{u['cache_write_tokens']:,}, ${u['cost_usd']:.2f}, {u['seconds']} s, {u['model']}"
+                  + ("" if "pdf" in result.get(pid, {}) else "  (no PDF)"))
+    print(f"  total ${sum(used[p]['cost_usd'] for p in ids if p in used):.2f} for {sum(p in used for p in ids)} paper(s)")
 
 
 if __name__ == "__main__":
