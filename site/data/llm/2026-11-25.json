@@ -291,6 +291,10 @@
      "caption_zh": "第二阶段最终版本与对照组按显示样式拆开：ghost text 每用户显示数从 19.03 降到 16.72，其余样式从 7.09 升到 10.60；两类的被关掉比例都下降（ghost text 2.41% → 1.74%，其余 6.89% → 5.29%）。总的被关掉数下降来自 ghost text 少了。"
     }
    ],
+   "translation": {
+    "pdf": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.33314v1/2611.33314v1.zh.pdf",
+    "zip": "https://dailypapers-files.awesomedays.workers.dev/papers/2611.33314v1/2611.33314v1_out.zip"
+   },
    "boosted": "star"
   },
   {
